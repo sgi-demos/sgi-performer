@@ -1,0 +1,220 @@
+<HTML>
+<HEAD>
+<TITLE>pfGroup</TITLE>
+</HEAD>
+<BODY>
+<H1>pfGroup</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfGroup(3pf)                                         pfGroup(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewGroup,</B>    <B>pfGetGroupClassType,</B>    <B>pfAddChild,</B>   <B>pfIn-</B>
+       <B>sertChild,</B> <B>pfReplaceChild,</B>  <B>pfRemoveChild,</B>  <B>pfSearchChild,</B>
+       <B>pfGetChild,</B>  <B>pfGetNumChildren,</B> <B>pfBufferAddChild,</B> <B>pfBuffer-</B>
+       <B>RemoveChild</B> - Create, modify, and query a group node.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfGroup *   <B>pfNewGroup</B>(void);
+
+       pfType *    <B>pfGetGroupClassType</B>(void);
+
+       int         <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+
+       int         <B>pfInsertChild</B>(pfGroup *group, int index,  pfN-
+                     ode *child);
+
+       int         <B>pfReplaceChild</B>(pfGroup *group,    pfNode *old,
+                     pfNode *new);
+
+       int         <B>pfRemoveChild</B>(pfGroup *group, pfNode* child);
+
+       int         <B>pfSearchChild</B>(pfGroup *group, pfNode* child);
+
+       pfNode *    <B>pfGetChild</B>(const pfGroup *group, int index);
+
+       int         <B>pfGetNumChildren</B>(const pfGroup *group);
+
+       int         <B>pfBufferAddChild</B>(pfGroup *group,          pfN-
+                     ode *child);
+
+       int         <B>pfBufferRemoveChild</B>(pfGroup *group,       pfN-
+                     ode *child);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfGroup</B>  is  derived  from  the
+       parent  class <B>pfNode</B>, so each of these member functions of
+       class <B>pfNode</B> are also  directly  usable  with  objects  of
+       class  <B>pfGroup</B>.   Casting an object of class <B>pfGroup</B> to an
+       object of class <B>pfNode</B> is  taken  care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfGroup</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfGroup</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+       A  pfGroup  is  the  internal node type of the OpenGL Per-
+       former hierarchy and is derived from  pfNode.   A  pfGroup
+       has  a  list of children which are traversed when <I>group</I> is
+       traversed.  Children may be any pfNode which includes both
+       internal nodes (pfGroups) and leaf nodes (pfNodes).  Other
+       nodes which are derived from pfGroup may use pfGroup  API.
+       OpenGL Performer nodes derived from pfGroup are:
+              <B>pfScene</B>
+              <B>pfSwitch</B>
+              <B>pfLOD</B>
+              <B>pfSequence</B>
+              <B>pfLayer</B>
+              <B>pfSCS</B>
+              <B>pfDCS</B>
+              <B>pfMorph</B>
+
+       <B>pfNewGroup</B>  creates  and  returns  a  handle to a pfGroup.
+       Like other pfNodes, pfGroups  are  always  allocated  from
+       shared memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetGroupClassType</B>  returns  the  <B>pfType</B>*  for  the class
+       <B>pfGroup</B>.  The <B>pfType</B>* returned by  <B>pfGetGroupClassType</B>  is
+       the  same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfGroup</B>.  Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  <B>pfIsOfType</B>  to  test  if  an  object is of a type
+       derived from a Performer type  rather  than  to  test  for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfAddChild</B>  appends <I>child</I> to <I>group</I> and increments the ref-
+       erence count of <I>child</I>.  <B>pfRemoveChild</B> removes  <I>child</I>  from
+       the  list  and  shifts the list down over the vacant spot,
+       e.g. - if <I>child</I> had index 0, then index 1 becomes index 0,
+       index  2 becomes index 1 and so on.  <B>pfRemoveChild</B> returns
+       a 1 if <I>child</I> was actually removed and  0  if  it  was  not
+       found  in the list. <B>pfRemoveChild</B> decrements the reference
+       count of <I>child</I> but does not delete <I>child</I> if its  reference
+       count reaches 0.
+
+       <B>pfInsertChild</B>  inserts  <I>child</I>  before the child with index
+       <I>index</I>.   <I>index</I>   must   be   within   the   range   0   to
+       <B>pfGetNumChildren</B>(<I>group</I>).
+
+       <B>pfReplaceChild</B>  replaces <I>old</I> with <I>new</I> and returns 1 if the
+       operation was successful or 0 if <I>old</I> is  not  a  child  of
+       <I>group</I>.
+
+       <B>pfSearchChild</B>  returns  the index of <I>child</I> if it was found
+       in the children list of <I>group</I> or -1 if it was not found.
+
+       <B>pfGetNumChildren</B> returns the number of children in  <I>group</I>.
+       <B>pfGetChild</B>  returns a handle to the child with index <I>index</I>
+       or NULL if the index is out of range.
+
+       The bounding volume of a pfGroup encompasses all its chil-
+       dren.   Modifications  to the child list of a pfGroup will
+       cause OpenGL Performer to recompute new  bounding  volumes
+       for  the  pfGroup  unless  it  is configured to use static
+       their    non-buffered    counterparts    <B>pfAddChild</B>    and
+       <B>pfRemoveChild</B> except that the addition or removal  request
+       is not carried out immediately but is recorded by the cur-
+       rent pfBuffer. The request  is  delayed  until  the  first
+       <B>pfMergeBuffer</B>  when  both  <I>group</I> and <I>node</I> are found in the
+       main   OpenGL   Performer   pfBuffer.    The    list    of
+       <B>pfBufferAddChild</B>  and <B>pfBufferRemoveChild</B> requests is tra-
+       versed in <B>pfMergeBuffer</B> after all nodes have been  merged.
+       <B>pfBufferAddChild</B>  and  <B>pfBufferRemoveChild</B>  return <B>TRUE</B> if
+       the request was recorded and <B>FALSE</B> otherwise.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfLookupNode, pfNode, pfBuffer, pfDelete
+
+
+
+                                                     pfGroup(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

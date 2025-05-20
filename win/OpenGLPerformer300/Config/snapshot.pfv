@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+<Module>
+  <class>pfvmLoader</class>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>esprit.flt</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module><class>pfvmTrackball</class></Module>
+
+<Module>
+  <class>pfvmSnapshot</class>
+  <data>
+    <BaseName>pfsnap</BaseName>
+    <SingleChan>0</SingleChan>
+    <SaveAlpha>0</SaveAlpha>
+    <key>ENTER</key>
+  </data>
+</Module>
+
+</viewer>
+
+

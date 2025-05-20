@@ -1,0 +1,182 @@
+<HTML>
+<HEAD>
+<TITLE>pfuClipTex</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuClipTex</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuAddClipTextureToPipes(3pf)       pfuAddClipTextureToPipes(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuAddMPClipTextureToPipes,</B>   <B>pfuAddMPClipTexturesToPipes,</B>
+       <B>pfuInitClipTexConfig,</B> <B>pfuMakeClipTexture,</B>  <B>pfuFreeClipTex-</B>
+       <B>Config,</B>      <B>pfuInitImgCacheConfig,</B>     <B>pfuMakeImageCache,</B>
+       <B>pfuFreeImgCacheConfig</B> - Connect an MPClipTexture to one or
+       more Pipes
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfGroup
+                   *   <B>pfuAddMPClipTextureToPipes</B>(pfMPClipTextures *master,
+                     pfPipe *masterpipe, pfPipe *pipes[]);
+
+       pfGroup
+                   *   <B>pfuAddMPClipTexturesToPipes</B>(pfList *mpcliptextures,
+                     pfPipe *masterpipe, pfPipe *pipes[]);
+
+       void        <B>pfuInitClipTexConfig</B>(pfuClipTexConfig *config);
+
+       void        <B>pfuMakeClipTexture</B>(pfuClipTexConfig *config);
+
+       void        <B>pfuFreeClipTexConfig</B>(pfuClipTexConfig *config);
+
+       void        <B>pfuInitImgCacheConfig</B>(pfuImgCacheConfig *config);
+
+       void        <B>pfuMakeImageCache</B>(pfuImgCacheConfig *config);
+
+       void        <B>pfuFreeImgCacheConfig</B>(pfuImgCacheConfig *config);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfMPClipTextures  must be attached to pipes if they are to
+       update properly.  In order to connect the  same  pfMPClip-
+       Texture to more than one pipe, the pfMPClipTexture must be
+       cloned; the original pfMPClipTexture becomes  the  master,
+       and the new pfMPClipTexture becomes the slave.
+
+       This  is done automatically if the same pfMPClipTexture is
+       added to more than one pipe. This routine makes  the  pro-
+       cess  more  convenient,  by  allowing  the user to specify
+       which pipe should contain the master cliptexture, what set
+       of  pipes  should  have the pfMPClipTextures attached, and
+       the pfMPClipTexture(s) that should be attached.
+
+       This routine does additional checking to  avoid  erroneous
+       operations.  For  example,  it checks to avoid common mis-
+       takes such as; trying to attach the  same  pfMPClipTexture
+       to the same pfPipe more than once, not adding a slave to a
+       pfPipe that already contains the slave's master, etc. This
+       makes  it possible to run the routine multiple times with-
+       out generating warnings.
+
+       <B>pfuAddMPClipTextureToPipes</B> takes a pointer to an pfMPClip-
+       Texture <I>master</I> which is put in <I>masterpipe</I>. All other pipes
+       in <I>pipes</I> are given slaves to this cliptexture.
+       If only a single pfMPClipTexture needs to be attached, use
+       the  <B>pfuAddMPClipTextureToPipes</B>  routine.  If  a number of
+       pfMPClipTextures need to be attached to pfPipes,  you  can
+       call <B>pfuAddMPClipTextureToPipes</B> multiple times or create a
+       list of them and pass  it  to  <B>pfuAddMPClipTexturesToPipes</B>
+       using  <I>mpcliptextures</I>.  This  is particulary convenient if
+       you   are    using    the    clipcenter    nodes,    since
+       <B>pfuProcessClipCenters</B> fills in the pfList you give it with
+       the list of pfMPClipTexture objects in the scene graph.
+
+       <B>pfuInitClipTexConfig</B>,       <B>pfuMakeClipTexture</B>,        and
+       <B>pfuFreeClipTexConfig</B>  are used together to create and con-
+       figure  clip  textures.  These  routines   are   used   by
+       <B>pfdLoadClipTexture</B>,  and  can  be  used by applications to
+       build cliptextures dynamically or to  design  custom  clip
+       texture  configuration  file  formats.  pfuMakeClipTexture
+       takes a single argument, a pointer to a properly filled in
+       pfuClipTexConfig structure, and uses the information in it
+       to create and configure a cliptexture, its  image  caches,
+       and  its  pyramid  image  tiles.  The pfuInitClipTexConfig
+       called before pfuMakeClipTexture; it's purpose is to  fill
+       in  the  pfuClipTexConfig  structure  with default values.
+       pfuFreeClipTexConfig is called last, after the cliptexture
+       has  been  created. It correctly frees any elements of the
+       structure that have been created (although it doesn't free
+       the structure itself).
+
+       The recommended proceedure is to allocate a pfuClipTexCon-
+       fig structure, call pfuInitClipTexConfig to initialize it,
+       fill  in  the values of the structure to describe the clip
+       texture  desired,  then  call  pfuMakeClipTexture  with  a
+       pointer  to  the  initialized  and  filled  in  structure.
+       Finally, call pfuFreeClipTexConfig to free  any  structure
+       elements,   then  delete  the  pfuClipTexConfig  structure
+       itself. The advantage of this proceedure is that structure
+       elements  are  filled  in  with reasonable default values,
+       allowing optional values to be left out. It also  improves
+       error  checking,  since the error checking code knows what
+       the default values should be,  allowing  it  to  warn  the
+       application if mandatory values weren't filled in.
+
+       The  pfuClipTexConfig structure has three types of values:
+       configuration data for the  cliptexture  itself,  function
+       pointers  to  user-supplied  functions that load the image
+       caches and image tiles that the clip texture requires, and
+       pointers to user-defined data structures used by the user-
+       supplied configuration functions.
+
+       The  user-supplied  image  cache  configuration   function
+       should  be  an  argument of the following format: pfImage-
+       Cache *func(pfClipTexture *ct, int level, pfuClipTexConfig
+       *config)
+
+       This    function    should    use   <B>pfuInitImgCacheConfig</B>,
+       <B>pfuMakeImageCache</B>, and <B>pfuFreeImgCacheConfig</B> in  the  same
+       way as was done for configuring cliptextures, and return a
+       pointer to the created and configured  image  cache.  This
+       function  can  access the user-supplied data in the icData
+       element of the _pfuClipTexConfig structure for  additional
+       This function should create  and  configure  the  required
+       image  tile  and return a pointer to it. This function can
+       access the user-supplied data in the tileData  element  of
+       the  _pfuClipTexConfig  structure  for additional informa-
+       tion.
+
+       The configuration functions allow the application to  cus-
+       tomize  how  image  caches  and image tiles are configured
+       when an clip texture is created.  The pfdLoadImage.c  file
+       uses  this functionality and should be used as an example.
+
+       The    <B>pfuInitImgCacheConfig</B>,    <B>pfuMakeImageCache</B>,    and
+       <B>pfuFreeImgCacheConfig</B>  functions  are used in the same way
+       as described for <B>pfuInitClipTexConfig</B>, <B>pfuMakeClipTexture</B>,
+       and  <B>pfuFreeClipTexConfig</B>.   The  major difference is that
+       the pfuImgCacheConfig structure doesn't require  user-sup-
+       plied function or data pointers.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       ClipTexture functionality is not supported under Linux.
+
+       The  libpfutil  source code, object code and documentation
+       are provided as unsupported software.  Routines  are  sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfuProcessClipCenters,   pfuNewClipCenterNode,  pfClipTex-
+       ture, pfImageCache, pfImageTile, pfMPClipTexture,  pfMPIm-
+       ageCache, pfTexLoad, pfTexture, pfuGetClosestPoint
+
+
+
+                                    pfuAddClipTextureToPipes(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

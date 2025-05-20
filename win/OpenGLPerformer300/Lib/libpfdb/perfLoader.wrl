@@ -1,0 +1,641 @@
+#VRML V2.0 utf8
+
+##################################################################
+#  NODE SUPPORT FILE ($OWBUILTINS)
+#
+#  This file contains some additional information for OpenWorlds.
+#  Every PROTO definition can contain several extra fields which signal
+#  to the OpenWorlds parser what type of node this is.  The following
+#  are reserved OpenWorlds field names:
+#
+#  OWurl:  SFString containing the Script URL which contains the
+#          implementation of the node.  If this string contains the
+#          value "NOT_SUPPORTED", the OpenWorlds browser will ignore
+#          any instances of the node.
+#
+#  OWsensor:  SFBool which signals that this node is also a sensor node
+#             (i.e., will get called every frame)
+#
+#  OWgrouping:  SFBool which signals that this node can have children
+#               and can be at the top level of the scene graph (i.e. Shape,
+#               Transform, Group, etc.) Note that this definition is
+#               slightly expanded from the VRML grouping-node definition.
+#
+#  OWinit:  SFString containing an alternative initialize function name
+#           to call for creating instances of this node.  This is used
+#           to override default node behavors.
+#
+#  For more information on the Node Support File, see the OpenWorlds
+#  Programming Guide, Chapter 3, "Writing C++ Nodes".
+#
+##################################################################
+
+PROTO Anchor [
+  field SFBool OWgrouping TRUE
+  exposedField MFNode children [ ]
+  exposedField SFString description ""
+  exposedField MFString parameter [ ]
+  exposedField MFString url [ ]
+  field SFVec3f bboxCenter 0 0 0
+  field SFVec3f bboxSize -1 -1 -1
+  eventIn MFNode addChildren
+  eventIn MFNode removeChildren
+  field	       SFVec3f     bboxCenter   0  0  0
+  field	       SFVec3f     bboxSize    -1 -1 -1
+  field  SFString OWinit   "GroupInitialize"
+  field  SFString OWurl    "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Appearance [
+  exposedField SFNode texture NULL
+  exposedField SFNode textureTransform NULL
+  exposedField SFNode material NULL
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO AudioClip [
+  exposedField   SFString description  ""
+  exposedField   SFBool   loop         FALSE
+  exposedField   SFFloat  pitch        1
+  exposedField   SFTime   startTime    0
+  exposedField   SFTime   stopTime     0
+  exposedField   MFString url          []
+  eventOut       SFTime   duration_changed
+  eventOut       SFBool   isActive
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Background [
+  field SFBool OWgrouping TRUE
+  exposedField MFColor groundColor [ ]
+  exposedField MFFloat groundAngle [ ]
+  exposedField MFColor skyColor [ 0 0 0 ]
+  exposedField MFFloat skyAngle [ ]
+  exposedField MFString frontUrl [ ]
+  exposedField MFString backUrl [ ] 
+  exposedField MFString rightUrl [ ]
+  exposedField MFString leftUrl [ ] 
+  exposedField MFString topUrl [ ]
+  exposedField MFString bottomUrl [ ]
+  eventIn SFBool set_bind
+  eventOut SFBool isBound 
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Billboard [
+  field SFBool OWgrouping TRUE
+  exposedField MFNode children [ ]
+  exposedField SFVec3f axisOfRotation 0 1 0
+  field SFVec3f bboxCenter 0 0 0
+  field SFVec3f bboxSize -1 -1 -1
+  eventIn MFNode addChildren
+  eventIn MFNode removeChildren
+  field  SFString OWinit   "GroupInitialize"
+  field  SFString OWurl    "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Box [
+  field	SFVec3f size 2 2 2 
+  field	SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Collision [
+  field SFBool OWgrouping TRUE
+  exposedField MFNode children [ ]
+  exposedField SFBool collide TRUE
+  field SFNode proxy NULL
+  field SFVec3f bboxCenter 0 0 0
+  field SFVec3f bboxSize -1 -1 -1
+  eventIn MFNode addChildren
+  eventIn MFNode removeChildren
+  eventOut SFTime collideTime
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Color [
+  exposedField MFColor color []
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO ColorInterpolator [
+  exposedField MFFloat key [ ]
+  exposedField MFColor keyValue [ ]
+  eventIn SFFloat set_fraction
+  eventOut SFColor value_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Cone [
+  field SFFloat bottomRadius 1 
+  field SFFloat height 2
+  field SFBool side TRUE
+  field SFBool bottom TRUE
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Coordinate [
+  exposedField MFVec3f point []
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO CoordinateInterpolator [
+  exposedField MFFloat key [ ]
+  exposedField MFVec3f keyValue [ ]
+  eventIn SFFloat set_fraction
+  eventOut MFVec3f value_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Cylinder [
+  field SFFloat radius 1
+  field SFFloat height 2
+  field SFBool side TRUE
+  field SFBool top TRUE
+  field SFBool bottom TRUE
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO CylinderSensor [
+  field SFBool OWgrouping		TRUE
+  exposedField SFFloat minAngle 0
+  exposedField SFFloat maxAngle -1
+  exposedField SFBool enabled TRUE
+  exposedField SFFloat diskAngle 0.262
+  exposedField SFFloat offset 0
+  exposedField SFBool autoOffset TRUE
+  eventOut SFBool isActive
+  eventOut SFVec3f trackPoint_changed
+  eventOut SFRotation rotation_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO DirectionalLight [
+  field SFBool OWgrouping TRUE
+  exposedField SFBool on TRUE
+  exposedField SFFloat intensity 1
+  exposedField SFFloat ambientIntensity 0
+  exposedField SFColor color 1 1 1
+  exposedField SFVec3f direction 0 0 -1
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO ElevationGrid [
+  field SFInt32 xDimension 0
+  field SFFloat xSpacing 0.0
+  field SFInt32 zDimension 0
+  field SFFloat zSpacing 0.0
+  field MFFloat height [ ]
+  exposedField SFNode color NULL
+  field SFBool colorPerVertex TRUE
+  exposedField SFNode normal NULL
+  field SFBool normalPerVertex TRUE
+  exposedField SFNode texCoord NULL
+  field SFBool ccw TRUE
+  field SFBool solid TRUE
+  field SFFloat creaseAngle 0
+  eventIn MFFloat set_height
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Extrusion [
+  field MFVec3f spine [ 0 0 0, 0 1 0 ]
+  field MFVec2f crossSection [ 1 1, 1 -1, -1 -1, -1 1, 1 1]
+  field MFVec2f scale [ 1 1 ]
+  field MFRotation orientation [ 0 0 1  0 ]
+  field SFBool beginCap TRUE
+  field SFBool endCap TRUE
+  field SFBool ccw TRUE
+  field SFBool solid TRUE
+  field SFBool convex TRUE
+  field SFFloat creaseAngle 0
+  eventIn MFVec3f set_spine
+  eventIn MFVec2f set_crossSection 
+  eventIn MFVec2f set_scale
+  eventIn MFRotation set_orientation
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Fog [
+  field SFBool OWgrouping TRUE
+  exposedField SFString fogType "LINEAR"
+  exposedField SFFloat visibilityRange 0
+  exposedField SFColor color 1 1 1
+  eventIn SFBool set_bind
+  eventOut SFBool isBound
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO FontStyle [
+  field SFFloat size 1.0
+  field MFString family "SERIF"
+  field SFString style "PLAIN"
+  field SFBool horizontal TRUE
+  field SFBool leftToRight TRUE
+  field SFBool topToBottom TRUE
+  field SFString language ""
+  field MFString justify [ "BEGIN" ]
+  field SFFloat spacing 1.0
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Group [
+  field SFBool	OWgrouping TRUE
+  eventIn      MFNode      addChildren
+  exposedField MFNode      children         []
+  eventIn      MFNode      removeChildren
+  field        SFVec3f     bboxCenter 0 0 0
+  field        SFVec3f     bboxSize -1 -1 -1
+  field        SFString    OWurl       "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO ImageTexture [
+  exposedField MFString url [ ]
+  field SFBool repeatS TRUE
+  field SFBool repeatT TRUE
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO IndexedFaceSet [
+  eventIn MFInt32 set_colorIndex
+  eventIn MFInt32 set_coordIndex
+  eventIn MFInt32 set_normalIndex
+  eventIn MFInt32 set_texCoordIndex
+  exposedField SFNode coord NULL
+  field MFInt32 coordIndex []
+  exposedField SFNode texCoord NULL
+  field MFInt32 texCoordIndex []
+  exposedField SFNode color NULL
+  field MFInt32 colorIndex []
+  field SFBool colorPerVertex TRUE
+  exposedField SFNode normal NULL
+  field MFInt32 normalIndex []
+  field SFBool normalPerVertex TRUE
+  field SFBool ccw TRUE
+  field SFBool solid TRUE
+  field SFBool convex TRUE
+  field SFFloat creaseAngle 0
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO IndexedLineSet [
+  eventIn MFInt32 set_colorIndex
+  eventIn MFInt32 set_coordIndex
+  exposedField SFNode coord NULL
+  field MFInt32 coordIndex [ ]
+  exposedField SFNode color NULL
+  field MFInt32 colorIndex [ ]
+  field SFBool colorPerVertex TRUE
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Inline [
+  field SFBool        OWgrouping TRUE 
+  exposedField MFString url [ ]
+  field SFVec3f bboxCenter 0 0 0
+  field SFVec3f bboxSize -1 -1 -1
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO LOD [
+  field SFBool        OWgrouping TRUE
+  field MFFloat range [ ]
+  field SFVec3f center 0 0 0
+  exposedField MFNode level [ ] 
+  field SFString OWurl "NOT_SUPPORTED"
+] { } 
+
+
+PROTO Material [
+  exposedField SFColor diffuseColor      0.8 0.8 0.8
+  exposedField SFColor specularColor     0 0 0
+  exposedField SFFloat ambientIntensity 0.2
+  exposedField SFColor emissiveColor     0 0 0
+  exposedField SFFloat shininess 0.2
+  exposedField SFFloat transparency 0.0 
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO MovieTexture [
+  exposedField MFString url [ ] 
+  exposedField SFFloat speed 1
+  exposedField SFBool loop FALSE
+  exposedField SFTime startTime 0
+  exposedField SFTime stopTime 0
+  field SFBool repeatS TRUE
+  field SFBool repeatT TRUE
+  eventOut SFTime duration_changed
+  eventOut SFBool isActive
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO NavigationInfo [
+  exposedField MFFloat avatarSize [0.25, 1.6, 0.75 ]
+  exposedField SFBool headlight TRUE
+  exposedField SFFloat speed 1.0
+  exposedField MFString type "WALK"
+  exposedField SFFloat visibilityLimit 0.0
+  eventIn SFBool set_bind
+  eventOut SFBool isBound
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Normal [
+  exposedField MFVec3f vector []
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO NormalInterpolator [
+  exposedField MFFloat key [ ]
+  exposedField MFVec3f keyValue [ ]
+  eventIn SFFloat set_fraction
+  eventOut MFVec3f value_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO OrientationInterpolator [
+  exposedField MFFloat key [ ]
+  exposedField MFRotation keyValue [ ]
+  eventIn SFFloat set_fraction
+  eventOut SFRotation value_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO PixelTexture [
+  exposedField SFImage image 0 0 0
+  field SFBool repeatS TRUE
+  field SFBool repeatT TRUE
+  field SFString OWurl "NOT_SUPPORTED"
+ ] { }
+
+
+PROTO PlaneSensor [
+  field SFBool OWgrouping	  TRUE
+  exposedField SFVec2f minPosition 0 0
+  exposedField SFVec2f maxPosition -1 -1
+  exposedField SFBool enabled TRUE
+  exposedField SFVec3f offset 0 0 0
+  exposedField SFBool autoOffset TRUE
+  eventOut SFBool isActive
+  eventOut SFVec3f trackPoint_changed
+  eventOut SFVec3f translation_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO PointLight [
+  field SFBool OWgrouping TRUE
+  exposedField SFBool on TRUE
+  exposedField SFFloat intensity 1
+  exposedField SFFloat ambientIntensity 0
+  exposedField SFColor color 1 1 1
+  exposedField SFVec3f location 0 0 0
+  exposedField SFFloat radius 100
+  exposedField SFVec3f attenuation 1 0 0
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO PointSet [
+  exposedField SFNode coord NULL
+  exposedField SFNode color NULL
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { } 
+
+
+PROTO PositionInterpolator [
+  exposedField MFFloat key [ ]
+  exposedField MFVec3f keyValue [ ]
+  eventIn SFFloat set_fraction
+  eventOut SFVec3f value_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { } 
+
+
+PROTO ProximitySensor [
+  field SFBool OWgrouping	  TRUE
+  exposedField SFVec3f center 0 0 0
+  exposedField SFVec3f size 0 0 0
+  exposedField SFBool enabled TRUE
+  eventOut SFBool isActive
+  eventOut SFVec3f position_changed
+  eventOut SFRotation orientation_changed
+  eventOut SFTime enterTime
+  eventOut SFTime exitTime
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO ScalarInterpolator [
+  exposedField MFFloat key [ ]
+  exposedField MFFloat keyValue [ ]
+  eventIn SFFloat set_fraction
+  eventOut SFFloat value_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Script [ 
+  exposedField MFString url [ ]
+  field SFBool mustEvaluate FALSE
+  field SFBool directOutput FALSE
+] { }
+
+
+PROTO Shape [
+  field SFBool OWgrouping TRUE
+  exposedField SFNode geometry NULL
+  exposedField SFNode appearance NULL
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Sound [
+  field SFBool OWgrouping	  TRUE
+  exposedField SFNode source NULL
+  exposedField SFFloat intensity 1
+  exposedField SFFloat priority 0
+  exposedField SFVec3f location 0 0 0
+  exposedField SFVec3f direction 0 0 1
+  exposedField SFFloat minFront 1
+  exposedField SFFloat maxFront 10
+  exposedField SFFloat minBack 1
+  exposedField SFFloat maxBack 10
+  field SFBool spatialize TRUE
+  field SFString OWurl "NOT_SUPPORTED"
+] { } 
+
+
+PROTO Sphere [
+  field SFFloat radius 1
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO SphereSensor [
+  field SFBool OWgrouping	  TRUE	    
+  exposedField SFBool enabled TRUE
+  exposedField SFRotation offset 0 1 0  0
+  exposedField SFBool autoOffset TRUE
+  eventOut SFBool isActive
+  eventOut SFVec3f trackPoint_changed
+  eventOut SFRotation rotation_changed
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO SpotLight [
+  field SFBool OWgrouping TRUE
+  exposedField SFBool on TRUE
+  exposedField SFFloat intensity 1
+  exposedField SFFloat ambientIntensity 0
+  exposedField SFColor color 1 1 1
+  exposedField SFVec3f location 0 0 0 
+  exposedField SFVec3f direction 0 0 -1
+  exposedField SFFloat beamWidth 1.570796
+  exposedField SFFloat cutOffAngle 0.785398
+  exposedField SFFloat radius 100
+  exposedField SFVec3f attenuation 1 0 0
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Switch [ 
+  field SFBool	OWgrouping TRUE
+  exposedField SFInt32 whichChoice -1
+  exposedField MFNode choice [ ]
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Text [
+  exposedField MFString string [ ] 
+  exposedField SFNode fontStyle NULL
+  exposedField SFFloat maxExtent 0.0
+  exposedField MFFloat length [ ]
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO TextureCoordinate [
+  exposedField MFVec2f point []
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO TextureTransform [
+  exposedField SFVec2f translation 0 0 
+  exposedField SFFloat rotation 0
+  exposedField SFVec2f scale 1 1
+  exposedField SFVec2f center 0 0
+  field SFString OWurl "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO TimeSensor [
+  field SFBool	OWsensor		TRUE
+  exposedField SFTime   cycleInterval 1
+  exposedField SFBool   enabled       TRUE
+  exposedField SFBool   loop          FALSE
+  exposedField SFTime   startTime     0
+  exposedField SFTime   stopTime      0
+  eventOut     SFTime   cycleTime
+  eventOut     SFFloat  fraction_changed
+  eventOut     SFBool   isActive
+  eventOut     SFTime   time
+  field		 SFString OWurl		"NOT_SUPPORTED"
+] { }
+
+
+PROTO TouchSensor [
+  field SFBool OWgrouping TRUE
+  exposedField SFBool enabled TRUE
+  eventOut     SFVec3f hitNormal_changed
+  eventOut     SFVec3f hitPoint_changed
+  eventOut     SFVec2f hitTexCoord_changed
+  eventOut     SFBool  isActive
+  eventOut     SFBool  isOver
+  eventOut     SFTime  touchTime
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO Transform [
+  field SFBool	OWgrouping		TRUE
+  eventIn      MFNode      addChildren
+  eventIn      MFNode      removeChildren
+  exposedField SFVec3f     center           0 0 0
+  exposedField MFNode      children         []
+  exposedField SFRotation  rotation         0 0 1  0
+  exposedField SFVec3f     scale            1 1 1
+  exposedField SFRotation  scaleOrientation 0 0 1  0
+  exposedField SFVec3f     translation      0 0 0
+  field        SFVec3f     bboxCenter       0 0 0
+  field        SFVec3f     bboxSize         -1 -1 -1
+  field        SFString    OWurl             "STATIC_BUILTINS.dll"
+] { }
+
+
+PROTO Viewpoint [
+  field SFBool	OWgrouping   TRUE
+  eventIn SFBool set_bind
+  exposedField SFVec3f position 0 0 10
+  exposedField SFRotation orientation 0 0 1  0
+  exposedField SFFloat fieldOfView 0.785398
+  field SFString description ""
+  exposedField SFBool jump TRUE
+  eventOut SFTime bindTime
+  eventOut SFBool isBound
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO VisibilitySensor [
+  field SFBool	OWgrouping    TRUE
+  exposedField SFVec3f center 0 0 0
+  exposedField SFVec3f size 0 0 0
+  exposedField SFBool enabled TRUE
+  eventOut SFBool isActive
+  eventOut SFTime enterTime
+  eventOut SFTime exitTime
+  field SFString OWurl "NOT_SUPPORTED"
+] { }
+
+
+PROTO WorldInfo [
+  field SFString title ""
+  field MFString info [ ] 
+  field SFString OWurl "NOT_SUPPORTED"
+] { } 
+
+
+

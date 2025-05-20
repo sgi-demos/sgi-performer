@@ -1,0 +1,215 @@
+<HTML>
+<HEAD>
+<TITLE>pfVec2</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVec2</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVec2(3pf)                                           pfVec2(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfVec2</B> - Set and operate on 2-component vectors
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLinMath.h&gt;
+
+       void*     <B>pfVec2::operator</B> <B>new</B>(size_t);
+
+       void*     <B>pfVec2::operator</B> <B>new</B>(size_t, void *arena);
+
+                 <B>pfVec2::pfVec2</B>();
+
+                 <B>pfVec2::pfVec2</B>(float x, float y);
+
+       void      <B>pfVec2::addScaled</B>(const pfVec2&amp; v1,     float s,
+                   const pfVec2&amp; v2);
+
+       void      <B>pfVec2::add</B>(const pfVec2&amp; v1, const pfVec2&amp; v2);
+
+       int       <B>pfVec2::almostEqual</B>(const pfVec2&amp; v2,
+                   float tol);
+
+       void      <B>pfVec2::combine</B>(float s1,      const pfVec2&amp; v1,
+                   float s2, const pfVec2&amp; v2);
+
+       void      <B>pfVec2::copy</B>(const pfVec2&amp; v);
+
+       float     <B>pfVec2::distance</B>(const pfVec2&amp; pt2);
+
+       float     <B>pfVec2::dot</B>(const pfVec2&amp; v2);
+
+       int       <B>pfVec2::equal</B>(const pfVec2&amp; v2);
+
+       float     <B>pfVec2::length</B>(void);
+
+       void      <B>pfVec2::negate</B>(const pfVec2&amp; v);
+
+       float     <B>pfVec2::normalize</B>(void);
+
+       void      <B>pfVec2::scale</B>(float s, const pfVec2&amp; v);
+
+       void      <B>pfVec2::set</B>(float x, float y);
+
+       float     <B>pfVec2::sqrDistance</B>(const pfVec2&amp; pt2);
+
+       void      <B>pfVec2::sub</B>(const pfVec2&amp; v1, const pfVec2&amp; v2);
+
+       float&amp;    <B>pfVec2::operator</B> <B>[]</B>(int i);
+
+       int       <B>pfVec2::operator</B> <B>==</B>(const pfVec2&amp; v);
+
+       pfVec2    <B>pfVec2::operator</B> <B>-</B>() const;
+
+       pfVec2    <B>pfVec2::operator</B> <B>+</B>(const pfVec2&amp; v);
+
+
+       pfVec2&amp;   <B>pfVec2::operator</B> <B>+=</B>(const pfVec2&amp; v);
+
+       pfVec2&amp;   <B>pfVec2::operator</B> <B>-=</B>(const pfVec2&amp; v);
+
+       pfVec2    <B>pfVec2::operator</B> <B>*</B>(const pfVec2&amp; v, float d);
+
+       pfVec2    <B>pfVec2::operator</B> <B>*</B>(float d, const pfVec2&amp; v);
+
+       pfVec2    <B>pfVec2::operator</B> <B>/</B>(const pfVec2&amp; v, float d);
+
+
+                 struct pfVec2 {
+                     float vec[2];
+                 };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Math functions for 2-component vectors.  Most of these
+       routines have macro equivalents.
+
+       Most accesses to pfVec2 go through pfVec2::operator[], but
+       pfVec2 is a public struct whose data member vec is
+       directly accessible, e.g.  for passing to a routine
+       expecting a float* such as glTexCoord2fv.  The default
+       constructor <B>pfVec2()</B> is empty and does not initialize the
+       values in the vector.  An initializing constructor
+       <B>pfVec2</B>(float, float) accepts the initial values for the
+       vector.  <B>new</B>(arena) allocates a pfVec2 from the specified
+       memory arena, or from the heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfVec2 from the default memory arena (-
+       <B>pfGetSharedArena</B>).  pfVec2s can also be created automati-
+       cally on the stack or statically.  pfVec2s allocated with
+       <B>new</B> can be deleted with <B>pfDelete</B>, not <B>delete</B>.
+
+       The name <I>vec</I> has been used below to indicate the pfVec2 on
+       which the member function is being invoked.
+
+       <B>pfVec2::set</B>: <I>vec</I>[0] = <I>x</I>, <I>vec</I>[1] = <I>y</I>.  Macro equivalent is
+       <B>PFSET_VEC2</B>.
+
+       <B>pfVec2::copy</B>: <I>vec</I> = <I>v</I>.  Macro equivalent is  <B>PFCOPY_VEC2</B>.
+
+       <B>pfVec2::negate</B>: <I>vec</I> = -<I>v</I>.  Macro equivalent is
+       <B>PFNEGATE_VEC2</B>.
+
+       <B>pfVec2::add</B>: <I>vec</I> = <I>v1</I> + <I>v2</I>.  Sets <I>vec</I> to the sum of vec-
+       tors <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFADD_VEC2</B>.
+
+       <B>pfVec2::sub</B>: <I>vec</I> = <I>v1</I> - <I>v2</I>.  Sets <I>vec</I> to the difference of
+       <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFSUB_VEC2</B>.
+
+       <B>pfVec2::addScaled</B>: <I>vec</I> = <I>v1</I> + <I>s</I> * <I>v2</I>.  Sets <I>vec</I> to the
+       vector <I>v1</I> plus the vector <I>v2</I> scaled by <I>s</I>.  Macro equiva-
+       lent is  <B>PFADD_SCALED_VEC2</B>.
+
+       <B>pfVec2::scale</B>: <I>vec</I> = <I>s</I> * <I>v1</I>.  Sets <I>vec</I> to the vector <I>v</I>
+       scaled by <I>s</I>.  Macro equivalent is  <B>PFSCALE_VEC2</B>.
+
+
+       <B>pfVec2::dot</B> = <I>vec</I> dot <I>v2</I> = <I>vec</I>[0] * <I>v2</I>[0] + <I>vec</I>[1] * <I>v2</I>[1]
+       .  Returns dot product of the vectors <I>vec</I> and <I>v2</I>.  Macro
+       equivalent is  <B>PFDOT_VEC2</B>.
+
+       <B>pfVec2::length</B> = |vec| = sqrt(<I>vec</I> dot <I>vec</I>).  Returns
+       length of the vector <I>vec</I>.  Macro equivalent is
+       <B>PFLENGTH_VEC2</B>.
+
+       <B>pfVec2::sqrDistance</B> = (<I>vec</I> - <I>v2</I>) dot (<I>vec</I> - <I>v2</I>).  Returns
+       square of distance between two points <I>v1</I> and <I>v2</I>.  Macro
+       equivalent is  <B>PFSQR_DISTANCE_PT2</B>.
+
+       <B>pfVec2::distance</B> = sqrt((<I>vec</I> - <I>v2</I>) dot (<I>vec</I> - <I>v2</I>)).
+       Returns distance between two points <I>vec</I> and <I>v2</I>.  Macro
+       equivalent is  <B>PFDISTANCE_PT2</B>.
+
+       <B>pfVec2::equal</B> = (<I>vec</I> == <I>v2</I>).  Tests for strict component-
+       wise equality of two vectors <I>vec</I> and <I>v2</I> and returns FALSE
+       or TRUE.  Macro equivalent is  <B>PFEQUAL_VEC2</B>.
+
+       <B>pfVec2::almostEqual</B>.  Tests for approximate component-wise
+       equality of two vectors <I>vec</I> and <I>v2</I>.  It returns FALSE or
+       TRUE depending on whether the absolute value of the dif-
+       ference between each pair of components is less than the
+       tolerance <I>tol</I>.  Macro equivalent is  <B>PFALMOST_EQUAL_VEC2</B>.
+
+       <B>float&amp;</B> <B>operator</B> <B>[]</B>(int i) Accesses indexed component of
+       the vector.
+
+       <B>int</B> <B>operator</B> <B>==</B>(const pfVec2&amp;) Equality comparison opera-
+       tor.
+
+       <B>pfVec2</B> <B>operator</B> <B>-</B>() const Nondestructive unary negation -
+       returns a new vector.
+
+       <B>pfVec2</B> <B>operator</B> <B>+</B>(const pfVec2&amp;) <B>pfVec2</B> <B>operator</B> <B>-</B>(const
+       pfVec2&amp;) Component-wise binary vector addition and sub-
+       traction operators.
+
+       <B>pfVec2&amp;</B> <B>operator</B> <B>=</B>(const pfVec2&amp;) Vector assignment opera-
+       tor.
+
+       <B>pfVec2&amp;</B> <B>operator</B> <B>*=</B>(float) <B>pfVec2&amp;</B> <B>operator</B> <B>/=</B>(float) Com-
+       ponent-wise scalar multiplication and division operators.
+
+       <B>pfVec2&amp;</B> <B>operator</B> <B>+=</B>(const pfVec2&amp;) <B>pfVec2&amp;</B> <B>operator</B>
+       <B>-=</B>(const pfVec2&amp;) Component-wise vector addition and sub-
+       traction operators.
+
+       <B>pfVec2</B> <B>operator</B> <B>*</B>(const pfVec2&amp;, float) <B>pfVec2</B> <B>operator</B>
+       <B>*</B>(float, const pfVec2&amp;) <B>pfVec2</B> <B>operator</B> <B>/</B>(const pfVec2&amp;,
+       float) Component-wise binary scalar multiplication and
+       division operators.
+
+       Routines can accept the same vector as source, destina-
+       tion, or as a repeated operand.
+
+
+
+       C++ does not support array deletion (i.e. <B>delete[]</B>) for
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfVec2[n].
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfMatrix, pfVec3, pfVec4
+
+
+
+                                                      pfVec2(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

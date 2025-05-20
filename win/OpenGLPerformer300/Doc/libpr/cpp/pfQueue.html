@@ -1,0 +1,337 @@
+<HTML>
+<HEAD>
+<TITLE>pfQueue</TITLE>
+</HEAD>
+<BODY>
+<H1>pfQueue</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfQueue(3pf)                                         pfQueue(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfQueue,</B>    <B>pfGetNumGlobalQueueServiceProcs,</B>    <B>pfGetGlob-</B>
+       <B>alQueueServiceProcPID,</B> <B>pfGetGlobalQueueServiceProcQueue</B>  -
+       Multiprocess-safe dynamically-sized queue utility
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfQueue.h&gt;
+
+                             <B>pfQueue::pfQueue</B>();
+
+                             <B>pfQueue::pfQueue</B>(int eltSize,
+                               int nElts);
+
+       static pfType *       <B>pfQueue::getClassType</B>(void);
+
+       void                  <B>pfQueue::insert</B>(void *elt);
+
+       void                  <B>pfQueue::insertFront</B>(void *elt);
+
+       void *                <B>pfQueue::remove</B>(void);
+
+       void *                <B>pfQueue::attemptRemove</B>(void);
+
+       void                  <B>pfQueue::setArrayLen</B>(int length);
+
+       int                   <B>pfQueue::getArrayLen</B>(void);
+
+       int                   <B>pfQueue::getNum</B>(void);
+
+       int                   <B>pfQueue::addServiceProc</B>(pfQueueServiceFuncType fnc);
+
+       int                   <B>pfQueue::getNumServiceProcs</B>(void);
+
+       int                   <B>pfQueue::getServiceProcPID</B>(int which);
+
+       void                  <B>pfQueue::setSortMode</B>(int boolean);
+
+       int                   <B>pfQueue::getSortMode</B>(void);
+
+       int                   <B>pfQueue::getElementSize</B>(void);
+
+       void                  <B>pfQueue::setInputRange</B>(int low,
+                               int high);
+
+       void                  <B>pfQueue::getInputRange</B>(int *low,
+                               int *high);
+
+       void                  <B>pfQueue::setOutputRange</B>(int low,
+                               int high);
+
+       void                  <B>pfQueue::getOutputRange</B>(int *low,
+                               int *high);
+
+       void                  <B>pfQueue::setSortFunc</B>(pfQueueSortFuncType func);
+
+                               int token);
+
+       int                   <B>pfGetNumGlobalQueueServiceProcs</B>(void);
+
+       int                   <B>pfGetGlobalQueueServiceProcPID</B>(int n);
+
+       pfQueue*              <B>pfGetGlobalQueueServiceProcQueue</B>(int n);
+
+       typedef
+                             int           <B>(*pfQueueServiceFuncType)</B>(void *data);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfQueue</B>  is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class  <B>pfQueue</B>.  This is also true for ancestor classes of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfQueue</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The  pfQueue  data  type  is  implemented as a dynamically
+       sized array of arbitrary,  but  homogeneously-sized,  ele-
+       ments.
+       specified  memory arena, or from the process heap if <I>arena</I>
+       is <B>NULL</B>. <B>new</B> allocates a pfQueue from the  default  memory
+       arena   (see  <B>pfGetSharedArena</B>).   Like  other  pfObjects,
+       pfQueues cannot be created  statically,  automatically  on
+       the  stack  or in arrays.  pfQueues should be deleted with
+       <B>pfDelete</B> rather than with the delete operator.
+
+       <B>pfQueue::getClassType</B> returns the <B>pfType</B>*  for  the  class
+       <B>pfQueue</B>.  The <B>pfType</B>* returned by <B>pfQueue::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking  the  virtual
+       function   <B>getType</B>  on  any  instance  of  class  <B>pfQueue</B>.
+       Because OpenGL Performer allows  subclassing  of  built-in
+       types,  when  decisions  are  made based on the type of an
+       object, it is usually better to use  the  member  function
+       <B>isOfType</B>  to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality  of
+       the <B>pfType</B>*'s.
+
+       A pfQueue dynamically increases its array size by a factor
+       of 2 and zeros the additional memory whenever it runs  out
+       of  array memory.  This way the array size quickly reaches
+       its final size without many reallocations of memory.  How-
+       ever, some memory (up to one half if the total allocation)
+       at the end of the array may be wasted.  If  you  know  the
+       exact number of elements in the array, you can specify the
+       pfQueue array length either when creating  it  (the  <I>nElts</I>
+       argument  to  <B>new</B>  <B>pfQueue</B>)  or with <B>pfQueue::setArrayLen</B>.
+       <B>pfQueue::getArrayLen</B> returns the current array  length  of
+       the pfQueue.
+
+       <B>pfQueue::insert</B>  adds  an element, <I>elt</I> to the the pfQueue.
+       The queue array is grown automatically if adding  an  ele-
+       ment  forces the number of elements to be greater then the
+       length of the queue array.
+
+       Normally, a queue element is inserted at the back  of  the
+       queue, and all the elements that where inserted first must
+       be removed before  the  element  itself  is  removed.  The
+       <B>pfQueue::insertFront</B>  call  adds  an  element  to  the .in
+       0.125i front.in 0.125i
+        of the queue, so it will be  the  next  element  removed.
+       This function is used internally by performer to help kill
+       queue service processes cleanly.
+
+       <B>pfQueue::remove</B> removes and returns an  element  from  the
+       queue.
+
+       Note  that  both inserting and removing from a pfQueue can
+       be done from multiple  processes  without  collision,  but
+       that the pfQueue enforces with locks that only one process
+       can actually be inserting into the queue and  one  process
+       removing from the queue at one time.
+
+       Also  note  that calls to remove will block waiting for an
+       element to be inserted onto the queue when  the  queue  is
+       empty.
+
+       <B>pfQueue::attemptRemove</B> removes and returns an element from
+       the queue. Unlike <B>pfQueue::remove</B>,  this  command  doesn't
+       to service elements of a queue.  The  process  ID  of  the
+       spawned  process  is  provided to the caller as the return
+       value. This new thread will  share  all  of  the  caller's
+       address  space  and  will simply invoke the supplied func-
+       tion, <I>func</I>, to service a queue element whenever the  queue
+       is  non-empty.   Thus,  this  process simply loops calling
+       <B>pfQueue::remove</B> and then calling  <I>func</I>  with  the  element
+       just removed from the queue.
+
+       The  number  of  currently  active  service  processes  is
+       returned by <B>pfQueue::getNumServiceProcs</B>.
+
+       The process ID of a  particular  service  process  can  be
+       obtained through <B>pfQueue::getServiceProcPID</B>.
+
+       Further  information  regarding all processes allocated to
+       service all queues can be  queried  through  three  global
+       routines.    <B>pfGetNumGlobalQueueServiceProcs</B>  returns  the
+       number  of  processes  that  have  been  sproc'd  by   all
+       pfQueue's           to           service           queues.
+       <B>pfGetGlobalQueueServiceProcPID</B> returns the process  id  of
+       the        <I>n</I>th        service       process       created.
+       <B>pfGetGlobalQueueServiceProcQueue</B> returns the pfQueue asso-
+       ciated with a particular service process.
+
+       <B>pfQueue::setSortMode</B>  changes  the  fundamental  mode of a
+       queue. A queue is either sorting (sort mode  is  non-zero)
+       or  false  (sort mode is zero). When a queue is in sorting
+       mode, a special process, called the sort proc, is created.
+       The  sort proc calls a user defined function call the sort
+       function to sort the elements  of  the  queue.  A  sorting
+       queue  is  divided  into three parts, the input queue, the
+       sort list, and the output queue. Elements can be added and
+       removed from a queue in the same way whether a queue is in
+       sorting or non-sorting mode.  Both the input queue and the
+       output queue have high and low watermarks.
+
+       When the number of elements on the input queue exceeds the
+       high water mark, the number  of  elements  on  the  output
+       queue    drops    below    the    low   water   mark,   or
+       <B>pfQueue::notifySortProc</B> is called, the sort process  wakes
+       up  an  performs  three steps. If the input queue is above
+       the high water mark, it copies elements into the sort list
+       (which  is a pfList structure) down to the low water mark.
+       The sort proc then calls the sort  function,  which  sorts
+       the  list.  Finally, if the output queue has dropped below
+       the low water mark, the sort proc  removes  elements  from
+       the end of the sort list and puts them on the output queue
+       up to the high water mark. The  sort  proc  knows  nothing
+       about  the  elements of the queue. Only the sort function,
+       supplied by the application, actually sorts  the  elements
+       based  on  understanding the priorities of their contents.
+       If a sort function hasn't been provided before  attempting
+       to change the queue to sorting mode, then an error message
+       is generated and the call is ignored.
+
+       <B>pfQueue::getSortMode</B> returns the current sort mode  value.
+       A  non-zero  value  indicates  sorting  mode. A zero value
+       indicates non-sorting, or normal mode.
+       for the input queue. This queue is active when  the  queue
+       is  in  sorting  mode.  Changes to the low and high values
+       won't take effect until the next time  the  queue  transi-
+       tions from non-sorting to sorting mode. The default values
+       for input range are 0 for the low water mark,  and  3  for
+       the  high water mark.  <B>pfQueue::getInputRange</B> returns cur-
+       rently set water mark values. Values read by this function
+       may not have taken effect yet.
+
+       <B>pfQueue::setOutputRange</B>  sets the high and low water marks
+       for the output queue. This queue is active when the  queue
+       is  in  sorting  mode.  Changes to the low and high values
+       won't take effect until the next time  the  queue  transi-
+       tions from non-sorting to sorting mode. The default values
+       for output range are 2 for the low water mark, and  5  for
+       the high water mark.  <B>pfQueue::getOutputRange</B> returns cur-
+       rently set water mark values. Values read by this function
+       may not have taken effect yet.
+
+       <B>pfQueue::setSortFunc</B> provides a pointer to a function used
+       to sort the elements of queue when the queue is in sorting
+       mode.  The  function  should  take  a  single  argument, a
+       pointer to a  pfQueueSortFuncData  structure,  and  return
+       void.  The pointer will contain a pointer to a pfList con-
+       taining pointers to the elements to be sorted, the current
+       values  for the high and low water marks for the input and
+       output queues, and volatile integers indicating  the  cur-
+       rent  size  of the input and output queues. The sort func-
+       tion should do a single sort of the elements in the pfList
+       and return. The default value of the sort function pointer
+       is NULL. A queue can not  enter  sorting  mode  without  a
+       valid  sort function pointer. Changes to the sorting func-
+       tion don't take effect until the next transition from  non
+       sorting to sorting mode.
+
+       The volatile integer values are used for very latency sen-
+       sitive operations, or sort algorithms that may be lengthy.
+       The  sort  function can periodically check the size of the
+       input and output queues, and  return  early,  leaving  the
+       list in an incompletely sorted state if necessary.
+
+       <B>pfQueue::getSortFunc</B>  returns  a  pointer  to  the current
+       sorting function. This may not be the sort  function  cur-
+       rently in use.
+
+       <B>pfQueue::getSortProcPID</B>  returns  the  process  id  of the
+       sorting process. This value can be used to change the  run
+       priority of the process, or move it to another CPU. If the
+       queue is not in sorting mode, the process id with be zero.
+
+       <B>pfQueue::notifySortProc</B>  signals  the sort proc to run the
+       sort function now, rather than waiting for the high or low
+       water  marks  for  the  input or output queues to signal a
+       sorting run. This function can be called when the applica-
+       tion  knows that the sorted queue is out of order or needs
+       culling.
+
+       <B>pfQueue::signalAllServiceProcs</B> places a  <I>count</I>  copies  of
+       <I>token</I>  at  the  beginning  of the queue, then P's the exit
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       pfQueues  currently  only  support  an  element  size   of
+       <B>sizeof(void*)</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfImageCache, pfClipTexture
+
+
+
+                                                     pfQueue(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

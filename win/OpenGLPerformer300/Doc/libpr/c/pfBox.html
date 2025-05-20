@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+<TITLE>pfBox</TITLE>
+</HEAD>
+<BODY>
+<H1>pfBox</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfBox(3pf)                                             pfBox(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMakeEmptyBox,</B>     <B>pfBoxExtendByPt,</B>     <B>pfBoxExtendByBox,</B>
+       <B>pfBoxAroundPts,</B>   <B>pfBoxAroundBoxes,</B>    <B>pfBoxAroundSpheres,</B>
+       <B>pfBoxAroundCyls,</B> <B>pfBoxContainsPt,</B> <B>pfBoxContainsBox,</B> <B>pfBox-</B>
+       <B>ContainsSphere,</B> <B>pfBoxIsectSeg,</B>  <B>pfXformBox</B>  -  Operate  on
+       axis-aligned bounding boxes
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfMakeEmptyBox</B>(pfBox *box);
+
+       void   <B>pfBoxExtendByPt</B>(pfBox *dst, const pfVec3 pt);
+
+       void   <B>pfBoxExtendByBox</B>(pfBox *dst, const pfBox *box);
+
+       void   <B>pfBoxAroundPts</B>(pfBox *dst,       const pfVec3 *pts,
+                int npt);
+
+       void   <B>pfBoxAroundBoxes</B>(pfBox* dst,   const pfBox **boxes,
+                int nbox);
+
+       void   <B>pfBoxAroundSpheres</B>(pfBox *dst,
+                const pfSphere **sphs, int nsph);
+
+       void   <B>pfBoxAroundCyls</B>(pfBox *dst,          const pfCylin-
+                der **sphs, int ncyl);
+
+       int    <B>pfBoxContainsPt</B>(const pfBox* box, const pfVec3 pt);
+
+       int    <B>pfBoxContainsBox</B>(const pfBox *box1,
+                const pfBox *box2);
+
+       int    <B>pfBoxContainsSphere</B>(const pfBox* box,
+                const pfSphere *sphere);
+
+       int    <B>pfBoxIsectSeg</B>(const pfBox* box,   const pfSeg* seg,
+                float* d1, float* d2);
+
+       void   <B>pfXformBox</B>(pfBox *dst,            const pfBox *box,
+                const pfMatrix xform);
+
+
+              typedef struct
+              {
+                  pfVec3      min;
+                  pfVec3      max;
+              } pfBox;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfBox is an axis-aligned box which can be used for
+       intersection tests and for maintaining bounding informa-
+       tion about geometry.  A box represents the axis-aligned
+       hexahedral volume: (x, y, z) where min[0] &lt;= x &lt;= max[0],
+
+       <B>pfBoxExtendByPt</B> extends the size of box <I>dst</I> to include the
+       point <I>pt</I>.
+
+       <B>pfBoxExtendByBox</B> extends the size of box <I>dst</I> to include
+       the box <I>box</I>.
+
+       <B>pfBoxAroundPts</B>, <B>pfBoxAroundBoxes</B> <B>pfBoxAroundCyls</B> and
+       <B>pfBoxAroundSpheres</B> set <I>dst</I> to be an axis-aligned box
+       encompassing the given primitives.  <I>npt</I>, <I>nbox</I>, <I>ncyls</I> and
+       <I>nsph</I> are the number of points, boxes, and spheres in the
+       respective primitive lists.
+
+       <B>pfBoxContainsPt</B> returns <B>TRUE</B> or <B>FALSE</B> depending on whether
+       the point <I>pt</I> is in the interior of the specified box.
+
+       The return value from <B>pfBoxContainsBox</B> is the OR of one or
+       more bit fields.  The returned value may be:
+
+              <B>PFIS_FALSE</B>:
+                   The intersection of the second box argument
+                   and the first box is empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+                   The intersection of the second box argument
+                   and the first box is definitely non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+                   The second box argument is non-empty and lies
+                   entirely inside the first box.
+
+       The return value from <B>pfBoxContainsSphere</B> is the OR of one
+       or more bit fields.  The returned value may be:
+
+              <B>PFIS_FALSE</B>:
+                   The intersection of the box and the sphere is
+                   empty, or the box is empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+                   The intersection of the box and the sphere is
+                   non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+                   The sphere lies entirely inside the box, or
+                   the sphere is empty.
+
+       <B>pfBoxIsectSeg</B> intersect the line segment <I>seg</I> with the vol-
+       ume of an axis-aligned box <I>box</I>.  The possible return val-
+       ues include all of the above as well as:
+
+              <B>PFIS_FALSE</B>:
+                   <I>seg</I> lies entirely in the exterior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_START_IN</B>:
+                   The starting point of <I>seg</I> lies in the inte-
+                   rior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_END_IN</B>:
+                   The ending point of <I>seg</I> lies in the interior.
+
+       segment (0 &lt;= d1 &lt;= d2 &lt;= seg-&gt;length) intersected with
+       the specified volume.
+
+       <B>pfXformBox</B> sets <I>dst</I> to a box which contains <I>box</I> as trans-
+       formed by the matrix <I>xform</I>, i.e. a box around (<I>box</I> *
+       <I>xform</I>).  Because transformed boxes must be axis-aligned,
+       most rotations cause the box to grow, and the transforma-
+       tion is not reversed by the inverse rotation.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The bit fields returned by the contains functions are
+       structured so that bitwise AND-ing the results of sequen-
+       tial tests can be used to compute composite results, e.g.
+       testing exclusion against a number of half spaces.
+
+       Because pfBoxes are axially aligned, they tend to grow
+       when transformed.  Hence, they are best for static geome-
+       try or other cases in which the bounding geometry does not
+       need to be transformed.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfSeg, pfSphere
+
+
+
+                                                       pfBox(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

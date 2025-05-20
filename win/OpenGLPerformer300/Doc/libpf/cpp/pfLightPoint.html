@@ -1,0 +1,312 @@
+<HTML>
+<HEAD>
+<TITLE>pfLightPoint</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLightPoint</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLightPoint(3pf)                               pfLightPoint(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfLightPoint</B>  -  Set  and  get  pfLightPoint  size, color,
+       shape, rotation and position.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfLightPoint.h&gt;
+
+                         <B>pfLightPoint::pfLightPoint</B>(int num);
+
+       static pfType *   <B>pfLightPoint::getClassType</B>(void);
+
+       int               <B>pfLightPoint::getNumPoints</B>(void);
+
+       void              <B>pfLightPoint::setSize</B>(float size);
+
+       float             <B>pfLightPoint::getSize</B>(void);
+
+       void              <B>pfLightPoint::setColor</B>(int index,
+                           pfVec4 &amp;clr);
+
+       void              <B>pfLightPoint::getColor</B>(int index,
+                           pfVec4 &amp;clr);
+
+       void              <B>pfLightPoint::setRot</B>(float azim,
+                           float elev, float roll);
+
+       void              <B>pfLightPoint::getRot</B>(float *azim,
+                           float *elev, float *roll);
+
+       void              <B>pfLightPoint::setShape</B>(int dir,
+                           float henv,              float venv,
+                           float falloff);
+
+       void              <B>pfLightPoint::getShape</B>(int *dir,
+                           float *henv,            float *venv,
+                           float *falloff);
+
+       void              <B>pfLightPoint::setFogScale</B>(float onsetScale,
+                           float opaqueScale);
+
+       void              <B>pfLightPoint::getFogScale</B>(float *onsetScale,
+                           float *opaqueScale);
+
+       void              <B>pfLightPoint::setPos</B>(int index,
+                           pfVec3 &amp;pos);
+
+       void              <B>pfLightPoint::getPos</B>(int index,
+                           pfVec3 &amp;pos);
+
+       pfGeoSet*         <B>pfLightPoint::getGSet</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfLightPoint</B>  is  derived  from
+       the parent class <B>pfNode</B>, so each of these member functions
+       of class <B>pfNode</B> are also directly usable with  objects  of
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfLightPoint</B> can also  be
+       used  with  these  functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfLightPoint</B> can also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfLightPoint is now obsoleted in favor of the <B>libpr</B> primi-
+       tive  pfLPointState.  <B>pfLightPoint::getGSet</B>  returns   the
+       underlying  pfGeoSet  from  which the pfLPointState can be
+       found:
+
+
+       gset = lpoint-&gt;getGSet();
+       gstate = gset-&gt;getGState();
+       lpstate = gstate-&gt;getAttr(PFSTATE_LPOINTSTATE);
+
+
+       A pfLightPoint is a pfNode that contains one or more light
+       points.  The light point node is quite different from a
+       pfLightSource; it is visible as one or more self-illumi-
+       nated small points but these points do not illuminate sur-
+       rounding objects. In contrast to this, a pfLightSource
+       does illuminate scene contents but is itself not a visible
+       object.  All the light points in a pfLightPoint node share
+       all their attributes except point location and color.
+
+       <B>new</B> <B>pfLightPoint</B> creates and returns a handle to a
+       pfLightPoint.  Like other pfNodes, pfLightPoints are
+       always allocated from shared memory and cannot be created
+       statically, on the stack or in arrays.  pfLightPoints
+       should be deleted using <B>pfDelete</B> rather than the delete
+       operator.  <I>num</I> specifies the maximum number of individual
+       light points the node may contain. The function
+       <B>pfLightPoint::getNumPoints</B> returns this maximum number of
+       light points that the pfLightPoint node can hold.  This is
+       the value set when the light point node was created using
+       <B>new</B> <B>pfLightPoint</B> and is the size of the internal position
+       and color arrays used to represent the light points.
+
+       <B>pfLightPoint::getClassType</B> returns the <B>pfType</B>* for the
+       class <B>pfLightPoint</B>.  The <B>pfType</B>* returned by
+       <B>pfLightPoint::getClassType</B> is the same as the <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfLightPoint</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when decisions are
+       made based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfLightPoint::setSize</B> sets the screen size of each point
+       of light in the pfLightPoint.  <I>size</I> is specified in pixels
+       and is used as the argument to <B>pntsizef</B>.  Whenever possi-
+       ble, antialiased points are used but the actual represen-
+       tation of a light point depends on the hardware being
+       used.  See the <B>pntsizef</B> man page for a description of
+       available light point sizes on OpenGL hardware.
+       <B>pfLightPoint::getSize</B> returns the size of the pfLight-
+       Point.
+
+       color into <I>clr</I>.
+
+       <B>pfLightPoint::setRot</B> is used for directional lights.  The
+       direction of all light points in the pfLightPoint is the
+       positive Y axis, rotated about the X axis by <I>elev</I> then
+       rotated about the Z axis by <I>azim</I>.  <I>roll</I> only affects the
+       light envelope as described below.  The direction vector
+       is rotated by any transformations (see pfSCS, pfDCS) above
+       the pfLightPoint in the hierarchy.
+
+       <B>pfLightPoint::getRot</B> copies the pfLightPoint's rotation
+       into <I>azim</I>, <I>elev</I>, and <I>roll</I>.
+
+       <B>pfLightPoint::setShape</B> describes the intensity distribu-
+       tion of a light point about its direction vector.  <I>dir</I> is
+       a symbolic token:
+
+              <B>PFLP_OMNIDIRECTIONAL</B>
+                   the pfLightPoint will be drawn as omnidirec-
+                   tional light points.  Light distribution is
+                   equal in all directions.  All other arguments
+                   are ignored.
+
+              <B>PFLP_UNIDIRECTIONAL</B>
+                   the pfLightPoint will be drawn as unidirec-
+                   tional point lights.  Light distribution is an
+                   elliptical cone centered about the light
+                   direction vector.
+
+              <B>PFLP_BIDIRECTIONAL</B>
+                   the pfLightPoint will be drawn as bidirec-
+                   tional light points.  Light distribution is
+                   two elliptical cones centered about the posi-
+                   tive and negative light direction vectors.
+
+       <I>henv</I> and <I>venv</I> are total angles (not half-angles) in
+       degrees which specify the horizontal and vertical
+       envelopes about the direction vector.  An envelope is a
+       symmetric angular spread in a specific plane about the
+       light direction vector.  The default direction is along
+       the positive Y axis so the horizontal envelope is in the X
+       plane and the vertical in the Z plane.  Both direction and
+       envelopes are rotated by the <B>pfLightPoint::setRot</B> and any
+       inherited transformations.  The default envelope angles
+       are 360.0 degrees which is equivalent to an omnidirec-
+       tional light.
+
+       When the vector from the eyepoint to the light position is
+       outside a light's envelope, the light point is not dis-
+       played.  If within, the intensity of the light point is
+       computed based on the location of the eye within the
+       elliptical cone.  Intensity ranges from 1.0 when the eye
+       lies on the light direction vector to 0.0 on the edge of
+       the cone.  <I>falloff</I> is an exponent which modifies the
+       intensity.  A value of 0 indicates that there is no
+       falloff and values &gt; 0 increase the falloff rate.  The
+       default <I>falloff</I> is 4.  As intensity decreases, the light
+       point's transparency increases.
+
+       sets the fog range scale factors that affects all light
+       points in the pfLightPoint.  <I>onsetScale</I> and <I>opaqueScale</I>
+       multiply the onset and opaque ranges (<B>pfFog::setRange</B>) of
+       the currently active fog.  Thus if the scale factors are
+       greater than 1.0, the light points will be more visible
+       through fog than reflective surfaces.  The default fog
+       scale factors are both 4.0.  <B>pfLightPoint::getFogScale</B>
+       copies the fog scale factors of the pfLightPoint into
+       <I>onsetScale</I> and <I>opaqueScale</I>.
+
+       <B>pfLightPoint::setPos</B> sets the position of light point with
+       index <I>index</I> to <I>pos</I>.  <I>index</I> is clamped to the range [0,
+       <I>num</I>-1].  All positions are transformed by any inherited
+       transformations.  The final position and orientation of a
+       light point <I>i</I> is transformed by <B>R</B> <B>*</B> <B>T[index]</B> <B>*</B> <B>M</B> where <B>R</B>
+       is a rotation matrix defined by <B>pfLightPoint::setRot</B>, <B>T[i]</B>
+       is the position of light point <I>i</I>, and <B>M</B> is the transforma-
+       tion inherited by the pfLightPoint from its hierarchy.
+
+       <B>pfLightPoint::getPos</B> copies the <I>index</I>th position into <I>pos</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Light point processing in OpenGL Performer has been sub-
+       sumed by the new <B>pfLPointState</B> mechanism, which is both
+       more powerful and more efficient. Application developers
+       are encouraged to transition to these new light point
+       facilities.
+
+       <B>pfLightPoint</B> nodes, unlike <B>pfLPointState</B> GeoSets, do not
+       provide size or intensity modulation based on distance to
+       the viewer and the viewport size. Also, directional lights
+       are significantly more expensive to cull than omnidirec-
+       tional lights.
+
+       Falloff distribution is cosine(incidence angle) ^ falloff.
+
+       When sorting is enabled (see <B>pfChannel::setTravMode</B> and
+       <B>PFCULL_SORT</B>), light points are drawn after opaque geometry
+       unless the pfLightPoint node has a pre-draw or post-draw
+       callback (see <B>pfNode::setTravFuncs</B>).
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfNode, pfLPointState
+
+
+
+                                                pfLightPoint(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

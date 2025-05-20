@@ -1,0 +1,276 @@
+<HTML>
+<HEAD>
+<TITLE>pfvmNavigator</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvmNavigator</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvmNavigator(3pf)                             pfvmNavigator(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvmNavigator</B>  -  pfvViewer Module for Look-Around Naviga-
+       tion
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfvm/pfvmNavigator.h&gt;
+
+              <B>pfvmNavigator::pfvmNavigator</B>();
+
+       int    <B>pfvmNavigator::setCoord</B>( pfVec3&amp; _xyz,
+                pfVec3&amp; _hpr );
+
+       int    <B>pfvmNavigator::getCoord</B>( pfVec3&amp;_xyz,
+                pfVec3&amp; _hpr );
+
+       int    <B>pfvmNavigator::setDefaultCoord</B>( pfVec3&amp; _xyz,
+                pfVec3&amp; _hpr );
+
+       int    <B>pfvmNavigator::getDefaultCoord</B>( pfVec3&amp; _xyz,
+                pfVec3&amp; _hpr );
+
+       int    <B>pfvmNavigator::getViewIndex</B>();
+
+       void   <B>pfvmNavigator::setViewIndex</B>(int i);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfvmNavigator</B> is  derived  from
+       the  parent class <B>pfvModule</B>, so each of these member func-
+       tions of class <B>pfvModule</B> are  also  directly  usable  with
+       objects  of  class  <B>pfvmNavigator</B>.   This is also true for
+       ancestor classes of class <B>pfvModule</B>.
+
+       int            <B>pfvModule::getScope</B>();
+       int            <B>pfvModule::getScopeIndex</B>();
+       pfvObject*     <B>pfvModule::getScopeTarget</B>();
+       void           <B>pfvModule::bindCallback</B>(int which);
+       void           <B>pfvModule::unbindCallback</B>(int which);
+       int            <B>pfvModule::getCBMask</B>();
+       virtual void   <B>pfvModule::preConfig</B>();
+       virtual void   <B>pfvModule::postConfig</B>();
+       virtual void   <B>pfvModule::enterView</B>(pfvView*v);
+       virtual void   <B>pfvModule::exitView</B>(pfvView*v);
+       virtual void   <B>pfvModule::enterWorld</B>();
+       virtual void   <B>pfvModule::exitWorld</B>();
+       virtual void   <B>pfvModule::sync</B>();
+       virtual void   <B>pfvModule::frame</B>();
+       virtual void   <B>pfvModule::preCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::preDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::overlay</B>(pfvDispChan*chan);
+       int            <B>pfvModule::bindKeys</B>(char*keys);
+       int            <B>pfvModule::unbindKeys</B>(char*keys)
+       char*          <B>pfvModule::getEventMask</B>()
+       void           <B>pfvModule::setEventMask</B>(char* str);
+       also  be used with these functions designed for objects of
+       class <B>pfvobject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       Since the class <B>pfvobject</B> is itself derived from the  par-
+       ent  class  <B>pfObject</B>,  objects  of class <B>pfvmNavigator</B> can
+       also be used with these functions designed for objects  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfvmNavigator</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfvmNavigator is a pfvViewer module that  allows  user  to
+       navigate  3d  scenes  in a Look-Around fashion using mouse
+       and keyboard input.
+
+       <B>setCoord()</B> will set current eye position to  the  provided
+       xyz and hpr values.
+
+       position (xyz,hpr).
+
+       <B>getViewIndex()</B> will return the index of the  pfvView  that
+       pfvmNavigator  is  navigating. See notes on module scoping
+       below for more details.
+
+       <B>setViewIndex()</B> specifies the index  of  the  pfvView  that
+       pfvmNavigator  will  be  navigating.  Note that currently,
+       view index is over-written by pfvmNavigator in  its  post-
+       Config  callback,  and  the  recommended  way to associate
+       pfvmNavigator modules to specific views is to  scope  them
+       accordingly.
+
+
+
+       Navigation with the pfvmNavigator module works as follows:
+
+           o Hold left and right mouse buttons to strafe sideways
+             or move vertically.
+           o Hold middle mouse button to change heading and pitch,
+             and to carry on moving at current speed. Left clicking
+             while holding middle button down will accellerate;
+           o Right clicking while holding middle button down will
+             slow down (and eventually move backwards).
+           o Hold all three mouse buttons down together to go back
+             to default position.
+
+       Note that navgation parameters such as max speed, accell
+       rate, reset position, etc are read from an xml configura-
+       tion file.  S
+
+
+       ========
+       <B>XML</B> <B>tags</B>
+       ========
+
+
+
+           &lt;module&gt;
+               &lt;class&gt;pfvmNavigator&lt;/class&gt;
+               &lt;data&gt;
+                   ...
+                   parameters
+                   ...
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+       where <B>parameters</B> is one or more of the following:
+
+       <B>&lt;viewIndex&gt;</B>int<B>&lt;/viewIndex&gt;</B> specifies the index of the
+       pfvView that pfvmNavigator will be navigating. Use of this
+       token is not recommended.
+
+       <B>&lt;dzone&gt;</B>float<B>&lt;/dzone&gt;</B> specifies the fraction of the screen
+       area over which mouse  will not cause navigator to change
+       heading or pitch. Default value is 0.1.
+
+       <B>&lt;deltaH&gt;</B>float<B>&lt;/deltaH&gt;</B> specifies the rate of change in the
+       multiplied by the vertical distance between mouse and cen-
+       ter of screen when user is rotating viewpoint.  Default
+       value is 0.1,
+
+       <B>&lt;initSpeed&gt;</B>float<B>&lt;/initSpeed&gt;</B> specifies the speed of for-
+       ward motion on the very first frame when user starts mov-
+       ing. The default value is 0.001.
+
+       When accellerating or decellerating, current speed is mul-
+       tiplied (or divided) by a constant value, leading to an
+       exponential speedup/slowdown. When slowing down, as soon
+       as speed falls below a minimum value, direction of motion
+       is reversed.
+
+       <B>&lt;minSpeed&gt;</B>float<B>&lt;/minSpeed&gt;</B> specifies the minimum speed
+       mentioned above.  The default value is 0.0004.
+
+       <B>&lt;maxSpeed&gt;</B>float<B>&lt;/maxSpeed&gt;</B> specifies the maximum for-
+       ward/backward motion speed. The default value is 0.03.
+
+       <B>&lt;deltaSpeed&gt;</B>float<B>&lt;/deltaSpeed&gt;</B> specifies the constant
+       value by which speed is multiplied or divided when speed-
+       ing up or slowing down. The default value is 1.03.
+
+       <B>&lt;deltaStrafe&gt;</B>float<B>&lt;/deltaStrafe&gt;</B> specifies the speed at
+       which strafing will occcur. This value is multiplied by
+       the horizontal distance between mouse and center of screen
+       when user is strafing. Default value is 0.05.
+
+       <B>&lt;deltaZ&gt;</B>float<B>&lt;/deltaZ&gt;</B> specifies the speed at which verti-
+       cal motion will occcur. This value is multiplied by the
+       vertical distance between mouse and center of screen when
+       user is moving vertically. Default value is 0.05.
+
+
+       <B>&lt;default_xyz&gt;</B>float,float,float<B>&lt;/default_xyz&gt;</B> specifies the
+       reset eye position.
+
+       <B>&lt;default_hpr&gt;</B>float,float,float<B>&lt;/default_hpr&gt;</B> pecifies the
+       reset eye orientation.
+
+
+
+       =======
+       <B>Scoping</B>
+       =======
+
+       A pfvmNavigator module can be scoped globally or to a sin-
+       gle view.
+
+       If scoped to a specific view, pfvmNavigator will respond
+       to input over that view only and will navigate eyepoint
+       for that view.
+
+       If scoped globally, pfvmNavigator will respond to input
+       over view0 (the first view in pfvViewer's view-list), and
+       will navigate its eyepoint.
+
+       Scoping pfvmNavigator modules to specific pfvWorlds is not
+       /usr/share/Performer/src/pguide/libpfv/viewer/mod-
+       ules/pfvmNavigator
+
+       For examples of pfvViewer XML configuration files, look at
+       the sample .pfv files in /usr/share/Performer/config.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvModule, pfvViewer, pfvXml
+
+
+
+                                               pfvmNavigator(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<TITLE>pfdBreakup</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdBreakup</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdBreakup(3pf)                                   pfdBreakup(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdBreakup</B>  - Create an artificial hierarchy from unstruc-
+       tured input geometry.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfNode *   <B>pfdBreakup</B>(pfGeode *geode,     float geodeSize,
+                    int stripLength, int geodeChild);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdBreakup</B>  accepts  a  pfGeode that contains pfGeoSets of
+       type <B>PFGS_TRISTRIPS</B> and builds a new scene graph, with the
+       same  geometric  content  but  with  a spatial subdivision
+       structure designed for efficient processing. When the sub-
+       division process is successful <B>pfdBreakup</B> returns the root
+       of the new scene graph.   <B>NULL</B>  is  returned  on  failure.
+       Failure  is  often  due  to  providing  non-<B>PFGS_TRISTRIPS</B>
+       <B>pfGeoSets</B> to <B>pfdBreakup</B>.
+
+       The <B>pfGeoSets</B> in <I>geode</I> are subdivided based on their  geo-
+       metrical centers using an octree.  The degree of recursive
+       partitioning desired is specified in  the  function  argu-
+       ments.   The  resulting scene graph is a <I>pfGroup</I> that con-
+       tains  more  <I>pfGroup</I>s,  recursively.   The  bottom   level
+       <I>pfGroup</I>s  contains  <I>pfGeode</I>s each of which is of a size no
+       larger than <I>geodeSize</I> (<I>geodeSize</I> is the  maximum  size  of
+       the  leaf  octants  in  world coordinate) and has triangle
+       strips no longer than <I>stripLength</I>.  Each  <B>pfGeode</B>  created
+       will have no more than <I>geodeChild</I> <B>pfGeoSet</B>s.  If the input
+       geode has size less than <I>geodeSize</I> and has  no  more  than
+       <I>geodeChild</I>  <B>pfGeoSet</B>s, then we returns the <I>pfGeode</I> instead
+       of a <I>pfGroup</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The input geode is not deleted.
+
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       <B>pfdBreakup</B> does not work for indexed <B>pfGeoSets</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfGeode, pfNode
+
+
+
+                                                  pfdBreakup(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

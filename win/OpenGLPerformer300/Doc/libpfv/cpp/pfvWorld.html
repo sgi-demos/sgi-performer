@@ -1,0 +1,85 @@
+<HTML>
+<HEAD>
+<TITLE>pfvWorld</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvWorld</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvWorld(3pf)                                       pfvWorld(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvWorld</B>  -  Configure  one  or  more  scenes (Worlds) for
+       pfvViewer Applications
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvViewer.h&gt;
+
+                  <B>pfvWorld::pfvWorld</B>();
+
+       int        <B>pfvWorld::getNumViews</B>();
+
+       pfvView*   <B>pfvWorld::getView</B>(int i=0);
+
+       pfScene*   <B>pfvWorld::getScene</B>();
+
+       int        <B>pfvWorld::addNode</B>(pfNode*node);
+
+       uint64_t   <B>pfvWorld::getViewMask</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvWorld class is used to represent the contents of  a
+       scene in a pfvViewer application. In addition to having an
+       associated pfScene, a  pfvWorld  will  manage  a  list  of
+       scoped pfvModules.
+
+       A  pfvWorld object cannot be created through its construc-
+       tor (which is private). Instead, a pfvWorld must  be  cre-
+       ated through the pfvViewer::createWorld method.
+
+       During  the  course  of  an  application a pfvWorld may be
+       viewed by a number of views, and possibly by more than one
+       view simoultaneously.
+
+       <B>pfvWorld::getNumViews()</B>  will  return  the number of views
+       currently viewing world. Note  that  this  number  is  not
+       updated      immediately      after      a     call     to
+       <B>pfvView::setTargetWorld()</B>, but will be updated at the  end
+       of  the  current  frame, when pfvViewer carries out actual
+       switching (see man page for pfvView).
+
+       <B>pfvWorld::getView</B> returns the ith view  in  world's  view-
+       list, if i is a valid index, or NULL otherwise.
+
+       <B>pfvWorld::getScene()</B>  returns  a  pointer  to  the pfScene
+       object associated to a pfvWorld. Since pfScene  object  is
+       created  by pfvViewer::config, this method returns NULL if
+       called before modules' POSTCONFIG callbacks are called.
+
+       <B>pfvWorld::addNode()</B> adds node to pfScene  associated  with
+       world.   This  method  must be called after pfConfig() has
+       been called (by viewer), ie no sooner than modules'  POST-
+       CONFIG  callbacks.
+
+       <B>pfvWorld::getViewMask()</B>  returns  a 64-bit mask indicating
+       which views are currently viewing  this  world.   The  bit
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

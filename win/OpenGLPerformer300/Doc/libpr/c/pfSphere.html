@@ -1,0 +1,182 @@
+<HTML>
+<HEAD>
+<TITLE>pfSphere</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSphere</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSphere(3pf)                                       pfSphere(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMakeEmptySphere,</B>  <B>pfSphereExtendByPt,</B>  <B>pfSphereExtendBy-</B>
+       <B>Sphere,</B> <B>pfSphereExtendByCyl,</B> <B>pfSphereAroundPts,</B>  <B>pfSphere-</B>
+       <B>AroundSpheres,</B>   <B>pfSphereAroundCyls,</B>  <B>pfSphereAroundBoxes,</B>
+       <B>pfSphereContainsPt,</B>  <B>pfSphereContainsSphere,</B>  <B>pfSphereCon-</B>
+       <B>tainsCyl,</B> <B>pfSphereContainsBox,</B> <B>pfSphereIsectSeg,</B> <B>pfOrthoX-</B>
+       <B>formSphere</B> - Set, transform and extend a sphere
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfMakeEmptySphere</B>(pfSphere *sph);
+
+       void   <B>pfSphereExtendByPt</B>(pfSphere* dst, const pfVec3 pt);
+
+       void   <B>pfSphereExtendBySphere</B>(pfSphere* dst,
+                const pfSphere* sph);
+
+       void   <B>pfSphereExtendByCyl</B>(pfSphere* dst,   const pfCylin-
+                der* cyl);
+
+       void   <B>pfSphereAroundPts</B>(pfSphere *dst, const pfVec3 *pts,
+                int npt);
+
+       void   <B>pfSphereAroundSpheres</B>(pfSphere *dst,
+                const pfSphere **sphs, int nsph);
+
+       void   <B>pfSphereAroundCyls</B>(pfSphere *dst,    const pfCylin-
+                ders **sphs, int ncyl);
+
+       void   <B>pfSphereAroundBoxes</B>(pfSphere *dst,
+                const pfBox **boxes, int nbox);
+
+       int    <B>pfSphereContainsPt</B>(const pfSphere* sp,
+                const pfVec3 pt);
+
+       int    <B>pfSphereContainsSphere</B>(const pfSphere *sph1,
+                const pfSphere *sph2);
+
+       int    <B>pfSphereContainsCyl</B>(const pfSphere *sph,
+                const pfCylinder *cyl);
+
+       int    <B>pfSphereContainsBox</B>(const pfSphere *sph,
+                const pfBox *box);
+
+       int    <B>pfSphereIsectSeg</B>(const pfSphere* sph,
+                const pfSeg* seg, float* d1, float* d2);
+
+       void   <B>pfOrthoXformSphere</B>(pfSphere *dst,
+                const pfSphere *sph, const pfMatrix xform);
+
+
+              typedef struct
+              {
+                  pfVec3 center;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfSphere represents a sphere as a <I>center</I> and a <I>radius</I>.
+       The routines listed here provide means of creating and
+       extending spheres for use as bounding geometry.  pfSphere
+       is a public struct whose data members <I>center</I> and <I>radius</I>
+       may be operated on directly.
+
+
+       <B>pfMakeEmptySphere</B> sets <I>sph</I> so that it appears empty to
+       extend and around operations.
+
+       <B>pfSphereExtendByPt</B>, <B>pfSphereExtendBySphere</B>, and
+       <B>pfSphereExtendByCyl</B> set <I>dst</I> to a sphere which contains
+       both <I>dst</I> and the point <I>pt</I>, the sphere <I>sph</I> or the cylinder
+       <I>cyl</I>, respectively.
+
+       <B>pfSphereAroundPts</B>, <B>pfSphereAroundBoxes</B>,
+       <B>pfSphereAroundSpheres</B> and <B>pfSphereAroundCyls</B> set <I>dst</I> to a
+       sphere which contains a set of points, boxes, spheres or
+       cylinders, respectively.  These routines are passed the
+       address of an array of pointers to the objects being
+       bounded along with the number of objects.
+
+       <B>pfSphereContainsPt</B>, returns <B>TRUE</B> or <B>FALSE</B> depending on
+       whether the point <I>pt</I> is in the interior of the specified
+       sphere.
+
+       <B>pfSphereContainsSphere</B>, <B>pfSphereContainsCyl</B> and
+       <B>pfSphereContainsBox</B> test whether the sphere  specified by
+       the first argument contains a non-empty portion of the
+       volume specified by the secondsecond argument and the
+       sphere is empty.
+
+       <B>PFIS_MAYBE</B>:
+              The intersection of the second argument and the
+              sphere might be non-empty.
+
+       <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+              The intersection of the second argument and the
+              sphere is  definitely non-empty.
+
+       <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+              The second argument is non-empty and lies entirely
+              inside the sphere.
+
+
+</PRE>
+<H2>pfSphereIsectSeg intersects the line segment seg with the volume</H2><PRE>
+of the pfSphere <I>sphere</I>.  The possible return values are:
+
+
+
+</PRE>
+<H2>PFIS_FALSE:</H2><PRE>
+     <I>seg</I> lies entirely in the exterior.
+
+
+</PRE>
+<H2>PFIS_MAYBE | PFIS_TRUE | PFIS_START_IN:</H2><PRE>
+     The starting point of <I>seg</I> lies in the interior.
+
+
+</PRE>
+<H2>PFIS_MAYBE | PFIS_TRUE | PFIS_END_IN:</H2><PRE>
+     The ending point of <I>seg</I> lies in the interior.
+
+<= d1 &lt;= d2 &lt;= seg-&gt;length) intersected with the sphere.
+
+
+</PRE>
+<H2>pfOrthoXformSphere returns in dst the sphere sph transformed by</H2><PRE>
+the orthogonal transform <I>xform</I>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The bit fields returned by the contains functions are
+       structured so that bitwise AND-ing the results of sequen-
+       tial tests can be used to compute composite results, e.g.
+       testing exclusion against a number of half spaces.
+
+       Some of the extend and around operations are time consum-
+       ing and should be used sparingly.  In general, the quality
+       of a bound generated by a series of extend operations will
+       be no better, and sometimes much worse, than a bound gen-
+       erated by a single around operation.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfCylinder, pfSeg, pfVec3
+
+
+
+                                                    pfSphere(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

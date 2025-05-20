@@ -1,0 +1,201 @@
+<HTML>
+<HEAD>
+<TITLE>pfvDispPipe</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvDispPipe</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvDispPipe(3pf)                                 pfvDispPipe(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvDispPipe</B> - Configure one or more hardware pipes through
+       an XML file or API calls.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvDisplay.h&gt;
+
+       virtual int            <B>pfvDispPipe::config</B>();
+
+       pfPipe*                <B>pfvDispPipe::getHandle</B>();
+
+       virtual
+                              pfvDispPWin*   <B>pfvDispPipe::createPWin</B>(pfvXmlNode*xml=NULL);
+
+       int                    <B>pfvDispPipe::getNumPWins</B>();
+
+       pfvDispPWin*           <B>pfvDispPipe::getPWin</B>(int index);
+
+       pfvDispPWin*           <B>pfvDispPipe::findPWin</B>(char* _name);
+
+       int                    <B>pfvDispPipe::setWSConnName</B>( char* _name );
+
+       char*                  <B>pfvDispPipe::getWSConnName</B>();
+
+       int                    <B>pfvDispPipe::setScreen</B>(int _screen);
+
+       int                    <B>pfvDispPipe::getScreen</B>();
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfvDispPipe</B> is derived from the
+       parent class <B>pfvObject</B>, so each of these member  functions
+       of  class  <B>pfvObject</B> are also directly usable with objects
+       of class <B>pfvDispPipe</B>.  This  is  also  true  for  ancestor
+       classes of class <B>pfvObject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       Since  the class <B>pfvObject</B> is itself derived from the par-
+       ent class <B>pfObject</B>, objects of class <B>pfvDispPipe</B> can  also
+       be used with these functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The  <B>pfvDispPipe</B>  class  is a libpfv wrapper for the libpf
+       <B>pfPipe</B> class. It allows a pipe  object  to  be  configured
+       through an XML file or programatically through the API.  A
+       <B>pfvDispPipe</B> cannot be created directly, instead, it has to
+       be   created   through   the   <B>createPipe</B>  method  on  the
+       <B>pfvDisplayMngr</B> class  or  a  derived  class  such  as  the
+       <B>pfvViewer</B>.  All <B>pfvDispPipe</B> objects must be created before
+       calling <B>pfDisplayMngr::preConfig</B>.
+
+       <B>pfvDispPipe::config</B> initializes a graphics pipe to a user-
+       requested  screen  index  or to a named Display connection
+       and then iterates through all <B>pfvDispWin</B>s in the pipe  and
+       calls  <B>pfvDispPWin::config</B>  on  each  one.  This method is
+       called from the <B>pfvDisplayMngr::config</B> function  and  nor-
+       mally should not be called by application code.
+
+       <B>pfvDispPipe::getHandle</B>  returns  a  handle  to  the <B>pfPipe</B>
+       object associated with  this  <B>pfvDispPipe</B>.  This  function
+       must  be  called  after  <B>pfvDisplayMngr::config</B> or it will
+       return NULL.
+
+       <B>pfvDispPipe::createPWin</B> creates a new  <B>pfvDispPWin</B>  object
+       on  this  pipe, and returns a handle to it. The newly cre-
+       ated <B>pfvDispPWin</B> will be added to both this  <B>pfvDispPipe</B>'s
+       <B>pfvDispPWin</B>  list,  and  <B>pfvDisplayMngr</B> global <B>pfvDispPWin</B>
+       list. The index associated with the  <B>pfvDispPWin</B>  will  be
+       its position in Display Manager's global <B>pfvDispPWin</B> list.
+       The optional <I>xml</I> parameter can be used to  supply  an  XML
+       field   which   describes   the   configuration   of   the
+       <B>pfvDispPWin</B>. If the <I>xml</I> parameter is NULL,  a  <B>pfvDispPWin</B>
+       will be constructed that contains no <B>pfvDispChan</B>'s.
+
+       <B>pfvDispPipe::getNumPWins</B>    returns    the    number    of
+       <B>pfvDispPWin</B>'s currently in the  <B>pfvDispPipe</B>'s  <B>pfvDispPWin</B>
+       list.
+
+       <B>pfvDispPipe::getPWin</B>  returns a pointer to the <B>pfvDispPWin</B>
+
+       <B>pfvDispPipe::setWSConnName</B> is used to specify an X  server
+       and  default screen for the successive opening of the win-
+       dow. This method must be called before <B>pfvDispPipe::config</B>
+       is  called.  Note  that <B>pfvDispPipe::config</B> will be called
+       automatically by method pfvDispMngr::postConfig and should
+       not be called by application code directly.
+
+       <B>pfvDispPipe::getWSConnName</B>  returns  the the name of the X
+       Display that was specified via <B>pfvDispPipe::setWSConnName</B>.
+
+       <B>pfvDispPipe::setScreen</B>   specifies   the  hardware  screen
+       (graphics pipeline) used for rendering by the <B>pfPipe</B> asso-
+       ciated with this <B>pfvDispPipe</B>. Refer to <B>pfPipe</B> man page for
+       more information.
+
+       <B>pfvDispPipe::getScreen</B> will return the  screen  index  set
+       through  <B>pfvDispPipe::setScreen</B>,  or  -1 if screen has not
+       been set.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>XML</B> <B>FILE</B> <B>CONFIGURATION</B>
+
+       A pfDispPipe object can be fully configured using  an  xml
+       tag, by calling method <B>parseXml()</B> or by passing an XmlNode
+       to <B>pfDisplayMngr::createPipe</B>.  If a &lt;pipe&gt;  tag  is  found
+       inside  a  display  manager tag &lt;display&gt;, Display Manager
+       will automatically create a new pipe by parsing the &lt;pipe&gt;
+       tag.
+
+       The list of valid tags inside &lt;pipe&gt; is:
+
+
+              <B>&lt;name&gt;</B>        a  string that will uniquely identify
+                            the pipe
+
+              <B>&lt;screen&gt;</B>      a screen index
+
+              <B>&lt;wsconnName&gt;</B>  window server  connection  name.  See
+                            man  page  for  pfPipeWindow,  method
+                            setWSConnectionName.
+
+              <B>&lt;pwin&gt;</B>        sets up a pfvDispPWin. See  man  page
+                            pfvDispPWin for details.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvXml,  pfvDisplayMngr,  pfvViewer,  pfvDispPWin, pfPipe,
+       pfPipeWindow
+
+
+
+                                                 pfvDispPipe(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

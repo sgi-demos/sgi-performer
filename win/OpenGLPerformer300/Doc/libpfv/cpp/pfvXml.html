@@ -1,0 +1,329 @@
+<HTML>
+<HEAD>
+<TITLE>pfvXml</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvXml</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvXmlNode(3pf)                                   pfvXmlNode(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvXmlNode</B> - Read and write XML configuration files.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvXml.h&gt;
+
+                            <B>pfvXmlNode::pfvXmlNode</B>();
+
+                            <B>pfvXmlNode::~pfvXmlNode</B>();
+
+       static
+                            pfvXmlNode*   <B>pfvXmlNode::parseFile</B>(char* filename);
+
+       char*                <B>pfvXmlNode::pfvXmlNode::getName</B>();
+
+       void                 <B>pfvXmlNode::setName</B>(char* _name);
+
+       int                  <B>pfvXmlNode::nameCmp</B>(char* str);
+
+       int                  <B>pfvXmlNode::nameCaseSensitiveCmp</B>(char* str);
+
+       int                  <B>pfvXmlNode::getNumAttr</B>();
+
+       int                  <B>pfvXmlNode::getAttr</B>(int i,
+                              char** _name, char** val);
+
+       char*                <B>pfvXmlNode::getAttr</B>(char* _name);
+
+       int                  <B>pfvXmlNode::setAttr</B>(char* _name,
+                              char*val);
+
+       int                  <B>pfvXmlNode::setAttr</B>(const char ** atts);
+
+       int                  <B>pfvXmlNode::findAttr</B>(char* _name);
+
+       int                  <B>pfvXmlNode::removeAttr</B>(char* _name);
+
+       int                  <B>pfvXmlNode::removeAttr</B>(int i);
+
+       char*                <B>pfvXmlNode::getValue</B>();
+
+       void                 <B>pfvXmlNode::setValue</B>(char* val);
+
+       char*                <B>pfvXmlNode::getString</B>();
+
+       void                 <B>pfvXmlNode::setString</B>(char* val);
+
+       int                  <B>pfvXmlNode::getBool</B>(int* v);
+
+       int                  <B>pfvXmlNode::getInt</B>(int* v);
+
+       int                  <B>pfvXmlNode::getIntArray</B>(int num,
+                              int* dst);
+
+       int                  <B>pfvXmlNode::getFloat</B>(float* f);
+
+       pfvXmlNode*          <B>pfvXmlNode::getParent</B>();
+
+       int                  <B>pfvXmlNode::getNumChildren</B>();
+
+       pfvXmlNode*          <B>pfvXmlNode::getChild</B>(int i);
+
+       pfvXmlNode*          <B>pfvXmlNode::findChild</B>(char* _name);
+
+       int                  <B>pfvXmlNode::addChild</B>(pfvXmlNode* child);
+
+       int                  <B>pfvXmlNode::addLeaf</B>(char* _name,
+                              char* val);
+
+       int                  <B>pfvXmlNode::removeChild</B>(pfvXmlNode* child);
+
+       int                  <B>pfvXmlNode::removeChild</B>(int i);
+
+       int                  <B>pfvXmlNode::write</B>(char* filename);
+
+       int                  <B>pfvXmlNode::write</B>(FILE*fp,
+                              int indent);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvXmlNode class allows easy parsing of XML configura-
+       tion  files.   A single pfvXmlNode represents the contents
+       of a single XML tag.  As XML tags may contain other  tags,
+       pfvXmlNodes  can  be  joined together to form a hierarchy.
+       The contents of an entire XML file can be  parsed  into  a
+       hierarchy  of  pfvXmlNodes  rooted by a single node.  Each
+       pfvXmlNode has a name, an optional list of attributes, and
+       either a string value or a list of children nodes.
+
+       <B>new</B>  <B>pfvXmlNode</B> creates and returns a handle to a pfvXmlN-
+       ode. By default the node will have no name, no attributes,
+       no value and no children.
+
+       <B>delete</B>  <B>pfvXmlNode</B>  will  delete  a pfvXmlNode and all the
+       data associated with  it,  including  its  name,  list  of
+       attributes, its value and its list of children nodes. Note
+       that deleting a pfvXmlNode will cause the recursive  dele-
+       tion of all of its children.
+
+       <B>pfvXmlNode::parseFile</B>  will try to open the XML file named
+       filename, and will parse its contents into a hierarchy  of
+       pfvXmlNode  classes,  returning a pointer to the root node
+       of the hierarchy.
+
+       <B>pfvXmlNode::pfvXmlNode::getName</B> returns the  name  of  the
+       xmlNode or NULL if the xmlNode has no name.
+
+       <B>pfvXmlNode::setName</B> sets the name of the xmlNode to _name.
+
+       <B>pfvXmlNode::nameCmp</B> executes a case-insensitive comparison
+       of  the  string str with the name of the xmlNode. A return
+       of 0 indicates that the two strings match.
+
+
+       <B>pfvXmlNode::nameCaseSensitiveCmp</B> executes a case-sensitive
+       <B>pfvXmlNode::getAttr(int</B> <B>i,</B> <B>char**</B> <B>_name,</B> <B>char**</B> <B>val)</B>  sets
+       *_name  and *_val to point to the name and value of the i-
+       th attribute of the xmlNode.
+
+       <B>pfvXmlNode::getAttr(char*</B> <B>_name)</B> searches  for  the  first
+       attribute  of  the  xmlNode  whose  name matches _name and
+       returns a pointer to its associated value.
+
+       <B>pfvXmlNode::setAttr(char*</B> <B>_name,</B> <B>char*</B> <B>val)</B> sets the value
+       associated  with the first attribute of xmlNode whose name
+       matches _name to val.  The string pointed  to  by  val  is
+       copied  into  memory  managed by xmlNode.  If no attribute
+       matches _name, a new attribute with  name  _name  will  be
+       added to xmlNode attribute-list.
+
+       <B>pfvXmlNode::setAttr(const</B>  <B>char</B> <B>**atts)</B> allows to set mul-
+       tiple attributes of xmlNode. atts points to  an  array  of
+       pointers  to  strings. Each pair of consecutive strings is
+       interpreted as an attribute's name and  value.  The  first
+       attribute  with  matching  name  is  set to the associated
+       value.  If no attribute of xmlNode maches  given  name,  a
+       new  attribute  will  be added to attribute-list. The atts
+       array must be terminated by a NULL element.
+
+       <B>pfvXmlNode::findAttr</B>  returns  the  index  of  the   first
+       attribute  of  xmlNode  whose  name  matches  _name. If no
+       atribute is found with matching name, -1 is returned.
+
+       <B>pfvXmlNode::removeAttr(char*</B>  <B>name)</B>  removes   the   first
+       attribute  of  xmlNode  whose  name  matches _name. Method
+       returns 1 if an attribute was removed, 0 otherwise.
+
+       <B>pfvXmlNode::removeAttr(int</B> <B>i)</B> removes the  i-th  attribute
+       of xmlNode, if i is a valid index. Method returns 1 if the
+       attribute was removed, and 0 otherwise.
+
+       <B>pfvXmlNode::getValue</B> returns the value  string  associated
+       with xmlNode.
+
+       <B>pfvXmlNode::setValue</B> sets the value string associated with
+       xmlNode to the string pointed to by val. String is  copied
+       into memory managed by xmlNode.
+
+       <B>pfvXmlNode::getString</B>       is      an      alias      for
+       <B>pfvXmlNode::getValue</B>.
+
+       <B>pfvXmlNode::setString</B>      is      an      alias       for
+       <B>pfvXmlNode::setValue</B>.
+
+       <B>pfvXmlNode::getBool</B>  parses  the  value  string associated
+       with xmlNode and interprets it  as  a  bool,  setting  the
+       value  of *v to 1 if string matches "1", "yes", "y", "on",
+       or setting *v to 0 if string matches  "0",  "no",  "n"  or
+       "off".  Method  returns  1  if a valid conversion was per-
+       formed, 0 otherwise.
+
+       <B>pfvXmlNode::getInt</B> parses the value string associated with
+       xmlNode and interprets it as an integer, setting the value
+       of *v to the converted integer value. Method returns 1  if
+       conversions that were carried out.
+
+       <B>pfvXmlNode::getFloat</B> parses the  value  string  associated
+       with  xmlNode  and  interprets  it as a float, setting the
+       value of *v to the converted floating point value.  Method
+       returns  1  if  a valid conversion was performed, 0 other-
+       wise.
+
+       <B>pfvXmlNode::getFloatArray</B> parses the value string  associ-
+       ated with xmlNode and interprets it as an array of floats.
+       Up to num floats separated by commas are  looked  for  and
+       the  corresponding  converted  values  stored in the array
+       pointed to by dst. Method returns the number of successful
+       conversions that were carried out.
+
+       <B>pfvXmlNode::getInputMngrKey</B>  parses the value string asso-
+       ciated with xmlNode and interprets it as a key, as defined
+       in  pfvinput.h. See <B>pfvInputMngr:getKeyFromName</B> for a list
+       of valid  strings  and  their  corresponding  key  values.
+       *keyName is set to the converted key value. Method returns
+       1 if a valid conversion was performed, 0 otherwise.
+
+       <B>pfvXmlNode::getNotifyLevel</B> parses the value string associ-
+       ated  with  xmlNode  and  interprets  it as a notification
+       level corresponding to those used as arguments to function
+       pfNotifyLevel.   *nl  is set to the converted notify level
+       value. Method returns 1 if a  valid  conversion  was  per-
+       formed,  0  otherwise.   The  supported  strings and their
+       associated values are:
+
+       "ALWAYS"         -&gt; PFNFY_ALWAYS
+       "FATAL"          -&gt; PFNFY_FATAL
+       "WARN"           -&gt; PFNFY_WARN
+       "NOTICE"         -&gt; PFNFY_NOTICE
+       "INFO"           -&gt; PFNFY_INFO
+       "DEBUG"          -&gt; PFNFY_DEBUG
+       "FP_DEBUG"       -&gt; PFNFY_FP_DEBUG
+       "INTERNAL_DEBUG" -&gt; PFNFY_INTERNAL_DEBUG
+
+       <B>pfvXmlNode*</B> <B>pfvXmlNode::getParent</B> returns a pointer to the
+       parent node of xmlNode, or NULL if xmlNode has no parent.
+
+       <B>pfvXmlNode::getNumChildren</B> returns the number of children
+       nodes of xmlNode.
+
+       <B>pfvXmlNode::getChild</B> returns a pointer to the i-th child
+       of xmlNode, if i is a valid index, or 0 otherwise.
+
+       <B>pfvXmlNode::findChild</B> returns a pointer to the first child
+       of xmlNode whose name matches _name, or NULL if no child
+       of xmlNode matches _name.
+
+       <B>pfvXmlNode::addChild</B> adds node child to the list of chil-
+       dren nodes of xmlNode. If node is already a child of xmlN-
+       ode, it will not be added again.
+
+       <B>pfvXmlNode::addLeaf</B> creates a new xmlNode, assigns it name
+       _name, sets its value to the string pointed to by val, and
+       adds it to xmlNode as a child.
+       <B>pfvXmlNode::write(char*</B> <B>filename)</B> creates an xml file con-
+       tainig the data currently associated with xmlNode and all
+       of its children. The format of the generated file is suit-
+       able for being re-loaded with method
+       <B>pfvXmlNode::parseFile</B>.
+
+       <B>pfvXmlNode::write(FILE*fp,</B> <B>int</B> <B>indent)</B> appends the data
+       currently associated with xmlNode and all of its children
+       to the open xml file fp. The value of indent determines
+       the amount of spaces prepended to each outputed line.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       File Format Specifications:
+
+        o Files must start with the line: &lt;?xml version="1.0" ?&gt;
+        o The rest of the file must be included into a single
+          root-tag: &lt;node&gt;...&lt;/node&gt;
+        o Each tag (xmlNode) starts with an opening tag containing
+          its name, eg: &lt;name&gt;, and an optional list of attributes,
+          eg: &lt;name attr0="attr0-val" attr1="atr1-val"&gt;
+        o Attribute values must be bound by double-quotes.
+        o xmlNodes may either have a value (a string), or a list of
+          children tags
+          Eg:
+            &lt;name attr0="attr-val0"&gt;value&lt;/name&gt;
+          or
+            &lt;name attr0="attr-val0" attr1="attr1-val"&gt;
+              &lt;childname..&gt;...&lt;/childname&gt;
+              &lt;child2&gt;..&lt;/child2&gt;
+            &lt;/name&gt;
+
+        o xmlNodes end with a closing tag containing name as specified
+          by corresponding opening tag, eg: &lt;color&gt;blue&lt;/color&gt;,
+          or: &lt;color&gt; &lt;r&gt;0.3&lt;/r&gt; &lt;g&gt;0.5&lt;/g&gt; &lt;b&gt;1.0&lt;/b&gt; &lt;/color&gt;
+
+       Example:
+
+         &lt;?xml version="1.0" ?&gt;
+         &lt;rootnode&gt;
+           &lt;node0 attr0="foo"&gt;
+             &lt;childNode0&gt;value&lt;/childNode0&gt;
+             &lt;childNode1 att="xyz"&gt;string&lt;/childNode1&gt;
+           &lt;/node0&gt;
+           &lt;node1&gt;val&lt;/node1&gt;
+         &lt;/rootnode&gt;
+
+
+       External references:
+
+
+       The special tag &lt;include&gt;filename&lt;/include&gt; allows xml
+       files to be referenced from within other xml files. When
+       referencing file is parsed, xmlNodes with name "include"
+       will be substituted with the xmlNodes returned by a call
+       to <B>pfvXmlNode::loadFile(filename)</B>.
+
+       Example:
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvInputMngr, pfNotify, Expat
+
+
+
+                                                  pfvXmlNode(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

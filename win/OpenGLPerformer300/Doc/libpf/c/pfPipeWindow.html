@@ -1,0 +1,886 @@
+<HTML>
+<HEAD>
+<TITLE>pfPipeWindow</TITLE>
+</HEAD>
+<BODY>
+<H1>pfPipeWindow</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfPipeWindow(3pf)                               pfPipeWindow(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewPWin,</B> <B>pfGetPWinClassType,</B> <B>pfPWinAspect,</B> <B>pfPWinConfig-</B>
+       <B>Func,</B> <B>pfPWinFBConfig,</B> <B>pfPWinFBConfigAttrs,</B> <B>pfPWinFBConfig-</B>
+       <B>Data,</B>   <B>pfPWinFBConfigId,</B>  <B>pfPWinFullScreen,</B>  <B>pfPWinGLCxt,</B>
+       <B>pfPWinIndex,</B> <B>pfPWinList,</B> <B>pfPWinMode,</B> <B>pfPWinName,</B>  <B>pfPWinO-</B>
+       <B>rigin,</B>  <B>pfPWinOriginSize,</B>  <B>pfPWinOverlayWin,</B> <B>pfPWinScreen,</B>
+       <B>pfPWinShare,</B> <B>pfPWinSize,</B> <B>pfPWinStatsWin,</B> <B>pfPWinType,</B>  <B>pfP-</B>
+       <B>WinWSConnectionName,</B>   <B>pfPWinWSDrawable,</B>   <B>pfPWinWSWindow,</B>
+       <B>pfGetPWinAspect,</B> <B>pfGetPWinChanIndex,</B>  <B>pfGetPWinConfigFunc,</B>
+       <B>pfGetPWinCurOriginSize,</B>      <B>pfGetPWinCurScreenOriginSize,</B>
+       <B>pfGetPWinCurState,</B> <B>pfGetPWinCurWSDrawable,</B> <B>pfGetPWinFBCon-</B>
+       <B>fig,</B> <B>pfGetPWinFBConfigAttrs,</B> <B>pfGetPWinFBConfigData,</B> <B>pfGet-</B>
+       <B>PWinFBConfigId,</B> <B>pfGetPWinGLCxt,</B> <B>pfGetPWinIndex,</B> <B>pfGetPWin-</B>
+       <B>List,</B>   <B>pfGetPWinMode,</B>   <B>pfGetPWinName,</B>   <B>pfGetPWinOrigin,</B>
+       <B>pfGetPWinOverlayWin,</B>  <B>pfGetPWinPipe,</B>   <B>pfGetPWinPipeIndex,</B>
+       <B>pfGetPWinPosPVChan,</B>  <B>pfGetPWinScreen,</B>  <B>pfGetPWinScreenOri-</B>
+       <B>gin,</B>   <B>pfGetPWinSelect,</B>   <B>pfGetPWinShare,</B>   <B>pfGetPWinSize,</B>
+       <B>pfGetPWinStatsWin,</B>  <B>pfGetPWinType,</B>  <B>pfGetPWinWSConnection-</B>
+       <B>Name,</B>  <B>pfGetPWinWSDrawable,</B>   <B>pfGetPWinWSWindow,</B>   <B>pfPWin-</B>
+       <B>PVChan,</B>   <B>pfPWinAddPVChan,</B>  <B>pfPWinRemovePVChan,</B>  <B>pfPWinRe-</B>
+       <B>movePVChanIndex,</B>   <B>pfGetPWinNumPVChans,</B>   <B>pfGetPWinPVChan,</B>
+       <B>pfGetPWinPVChanId,</B>    <B>pfGetPWinPVChanIndex,</B>    <B>pfBindPWin-</B>
+       <B>PVChans,</B> <B>pfUnbindPWinPVChans,</B> <B>pfAttachPWin,</B>  <B>pfAttachPWin-</B>
+       <B>Win,</B> <B>pfClosePWin,</B> <B>pfClosePWinGL,</B> <B>pfConfigPWin,</B> <B>pfOpenPWin,</B>
+       <B>pfIsPWinOpen,</B> <B>pfIsManagedPWin,</B> <B>pfMQueryPWin,</B>  <B>pfQueryPWin,</B>
+       <B>pfChoosePWinFBConfig,</B> <B>pfSelectPWin,</B> <B>pfAttachPWinSwapGroup,</B>
+       <B>pfAttachPWinWinSwapGroup,</B>  <B>pfPWinInSwapGroup,</B>  <B>pfPWinSwap-</B>
+       <B>Barrier,</B>  <B>pfGetPWinSwapBarrier,</B>  <B>pfSwapPWinBuffers,</B> <B>pfGet-</B>
+       <B>NumChans,</B> <B>pfAddChan,</B> <B>pfGetChan,</B> <B>pfInsertChan,</B>  <B>pfMoveChan,</B>
+       <B>pfRemoveChan,</B>   <B>pfInitGfx</B>   -  Initialize  and  manipulate
+       pfPipeWindows within a pfPipe
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfPipeWindow*         <B>pfNewPWin</B>(pfPipe *p);
+
+       pfType*               <B>pfGetPWinClassType</B>(void);
+
+       void                  <B>pfPWinAspect</B>(pfPipeWindow *pwin,
+                               int x, int y);
+
+       void                  <B>pfPWinConfigFunc</B>(pfPipeWindow *pwin,
+                               pfPWinFuncType func);
+
+       void                  <B>pfPWinFBConfig</B>(pfPipeWindow *pwin,
+                               XVisualInfo *vi);
+
+       void                  <B>pfPWinFBConfigAttrs</B>(pfPipeWindow *pwin,
+                               int *attr);
+
+       void                  <B>pfPWinFBConfigData</B>(pfPipeWindow *pwin,
+                               void *data);
+
+       void                  <B>pfPWinFBConfigId</B>(pfWindow *win,
+       void                  <B>pfPWinIndex</B>(pfPipeWindow *pwin,
+                               int index);
+
+       void                  <B>pfPWinList</B>(pfPipeWindow *pwin,
+                               pfList *wlist);
+
+       void                  <B>pfPWinMode</B>(pfPipeWindow *pwin,
+                               int mode, int val);
+
+       void                  <B>pfPWinName</B>(pfPipeWindow *pwin,
+                               const char *name);
+
+       void                  <B>pfPWinOrigin</B>(pfPipeWindow *pwin,
+                               int xo, int yo);
+
+       void                  <B>pfPWinOriginSize</B>(pfPipeWindow *pwin,
+                               int xo, int yo, int xs, int ys);
+
+       void                  <B>pfPWinOverlayWin</B>(pfPipeWindow *pwin,
+                               pfWindow *ow);
+
+       void                  <B>pfPWinScreen</B>(pfPipeWindow *pwin,
+                               int screen);
+
+       void                  <B>pfPWinShare</B>(pfPipeWindow *pwin,
+                               int mode);
+
+       void                  <B>pfPWinSize</B>(pfPipeWindow *pwin,
+                               int xs, int ys);
+
+       void                  <B>pfPWinStatsWin</B>(pfPipeWindow *pwin,
+                               pfWindow *sw);
+
+       void                  <B>pfPWinType</B>(pfPipeWindow *pwin,
+                               uint type);
+
+       void                  <B>pfPWinWSConnectionName</B>(const pfWindow *win,
+                               const char *name);
+
+       void                  <B>pfPWinWSDrawable</B>(pfPipeWindow *pwin,
+                               pfWSConnection dsp,    pfWSDraw-
+                               able gxw);
+
+       void                  <B>pfPWinWSWindow</B>(pfPipeWindow *pwin,
+                               pfWSConnection dsp,     pfWSWin-
+                               dow wsw);
+
+       void                  <B>pfGetPWinAspect</B>(pfPipeWindow *pwin,
+                               int *x, int *y);
+
+       int                   <B>pfGetPWinChanIndex</B>(pfPipeWindow *pwin,
+                               pfChannel *chan);
+
+       pfPWinFuncType        <B>pfGetPWinConfigFunc</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfGetPWinCurOriginSize</B>(pfPipeWindow *pwin,
+                               int *xo,    int *yo,    int *xs,
+                               int *ys);
+
+
+       XVisualInfo*          <B>pfGetPWinFBConfig</B>(pfPipeWindow *pwin);
+
+       int*                  <B>pfGetPWinFBConfigAttrs</B>(pfPipeWindow *pwin);
+
+       void*                 <B>pfGetPWinFBConfigData</B>(pfPipeWindow *pwin);
+
+       int                   <B>pfGetPWinFBConfigId</B>(const pfWindow *win);
+
+       pfGLContext           <B>pfGetPWinGLCxt</B>(pfPipeWindow *pwin);
+
+       int                   <B>pfGetPWinIndex</B>(pfPipeWindow *pwin);
+
+       pfList*               <B>pfGetPWinList</B>(const pfPipeWindow *pwin);
+
+       int                   <B>pfGetPWinMode</B>(pfPipeWindow *pwin,
+                               int mode);
+
+       const char*           <B>pfGetPWinName</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfGetPWinOrigin</B>(pfPipeWindow *pwin,
+                               int *xo, int *yo);
+
+       pfWindow*             <B>pfGetPWinOverlayWin</B>(pfPipeWindow *pwin);
+
+       pfPipe*               <B>pfGetPWinPipe</B>(pfPipeWindow *pwin);
+
+       int                   <B>pfGetPWinPipeIndex</B>(const pfPipeWindow *pwin);
+
+       pfPipeVideoChannel*   <B>pfGetPWinPosPVChan</B>(const pfPipeWindow *pwin,
+                               int x, int y);
+
+       int                   <B>pfGetPWinScreen</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfGetPWinScreenOrigin</B>(pfPipeWindow *pwin,
+                               int *xo, int *yo);
+
+       pfWindow*             <B>pfGetPWinSelect</B>(pfPipeWindow *pwin);
+
+       uint                  <B>pfGetPWinShare</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfGetPWinSize</B>(pfPipeWindow *pwin,
+                               int *xs, int *ys);
+
+       pfWindow*             <B>pfGetPWinStatsWin</B>(pfPipeWindow *pwin);
+
+       uint                  <B>pfGetPWinType</B>(pfPipeWindow *pwin);
+
+       const
+                             char*           <B>pfGetPWinWSConnectionName</B>(const pfWindow *win);
+
+       pfWSDrawable          <B>pfGetPWinWSDrawable</B>(pfPipeWindow *pwin);
+
+       Window                <B>pfGetPWinWSWindow</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfPWinPVChan</B>(pfPipeWindow* pwin,
+                               int num,        pfPipeVideoChan-
+                               nel *pvchan);
+
+                               int num);
+
+       int                   <B>pfGetPWinNumPVChans</B>(const pfPipeWindow* pwin);
+
+       pfPipeVideoChannel*   <B>pfGetPWinPVChan</B>(pfPipeWindow* pwin,
+                               int num);
+
+       pfPipeVideoChannel*   <B>pfGetPWinPVChanId</B>(pfPipeWindow* pwin,
+                               int num);
+
+       int                   <B>pfGetPWinPVChanIndex</B>(pfPipeWindow* pwin,
+                               pfPipeVideoChannel *pvchan);
+
+       void                  <B>pfBindPWinPVChans</B>(pfPipeWindow* pwin);
+
+       void                  <B>pfUnbindPWinPVChans</B>(pfPipeWindow* pwin);
+
+       int                   <B>pfAttachPWin</B>(pfPipeWindow *pwin0,
+                               pfPipeWindow *pwin1);
+
+       int                   <B>pfAttachPWinWin</B>(pfPipeWindow *pwin,
+                               pfWindow *w);
+
+       void                  <B>pfClosePWin</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfClosePWinGL</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfConfigPWin</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfOpenPWin</B>(pfPipeWindow *pwin);
+
+       int                   <B>pfIsPWinOpen</B>(pfPipeWindow *pwin);
+
+       int                   <B>pfIsManagedPWin</B>(pfPipeWindow *pwin);
+
+       int                   <B>pfMQueryPWin</B>(pfPipeWindow *pwin,
+                               int *which, int *dst);
+
+       int                   <B>pfQueryPWin</B>(pfPipeWindow *pwin,
+                               int which, int *dst);
+
+       pfFBConfig            <B>pfChoosePWinFBConfig</B>(pfPipeWindow *pwin,
+                               pfWSConnection dsp,  int screen,
+                               int *attr);
+
+       pfWindow*             <B>pfSelectPWin</B>(pfPipeWindow *pwin);
+
+       void                  <B>pfAttachPWinSwapGroup</B>(pfPipeWindow* pwin0,
+                               pfPipeWindow* pwin1);
+
+       void                  <B>pfAttachPWinWinSwapGroup</B>(pfPipeWindow* pwin,
+                               pfWindow* win);
+
+       int                   <B>pfPWinInSwapGroup</B>(pfPipeWindow* pwin);
+
+       void                  <B>pfPWinSwapBarrier</B>(pfPipeWindow* pwin,
+                               int barrier);
+
+       int                   <B>pfGetPWinSwapBarrier</B>(pfPipeWindow* pwin);
+
+       pfChannel*            <B>pfGetChan</B>(pfPipeWindow *pwin,
+                               int which);
+
+       void                  <B>pfInsertChan</B>(pfPipeWindow *pwin,
+                               int where, pfChannel *chan);
+
+       void                  <B>pfMoveChan</B>(pfPipeWindow *pwin,
+                               int where, pfChannel *chan);
+
+       void                  <B>pfRemoveChan</B>(pfPipeWindow *pwin,
+                               pfChannel *chan);
+
+       extern void           <B>pfInitGfx</B>(void);
+
+
+                             /* pfPipeWindow-specific types */
+                             typedef void (*pfPWinFuncType)(pfPipeWindow *pw);
+
+                             /* X-Window system based Performer types */
+                             typedef Display         *pfWSConnection;
+                             typedef XVisualInfo     pfFBConfig;
+                             typedef Window          pfWSWindow;
+                             typedef Drawable        pfWSDrawable;
+
+                             typedef GLXFBConfigSGIX pfGLXFBConfig;
+                             typedef GLXContext      pfGLContext;
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfPipeWindow</B> is derived from
+       the parent class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B> are also directly usable with
+       objects of class <B>pfPipeWindow</B>.  Casting an object of class
+       <B>pfPipeWindow</B> to an object of class <B>pfObject</B> is taken care
+       of automatically.  This is also true for casts to objects
+       of ancestor classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj, int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfPipeWindow</B> can also be
+       used with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>pwin</I>  identifies a pfPipeWindow.
+
+       <I>dsp</I>   identifies a pfWSConnection.
+
+       <I>wsw</I>   identifies a pfWSWindow.
+
+       <I>gxw</I>   identifies a pfWSDrawable.
+
+       <I>gc</I>    identifies a pfGLContext.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL Performer programs render a pfChannel to a
+       pfPipeWindow of the same parent pfPipe. Multiple
+       pfPipeWindows can be open on a single pfPipe. A pfPipe and
+       all of its windows have the same screen, or hardware
+       graphics pipeline.  By default, pfChannels are assigned to
+       the first pfPipeWindow of a pfPipe.  pfChannels can be
+       removed from the pfPipeWindow and assigned to other
+       pfPipeWindows.  pfPipeWindows can be opened/closed and
+       created at any time.  Refer to the <B>pfPipe</B> man page for
+       more information on how pfPipeWindows fit into the hierar-
+       chy of pfPipes, pfPipeWindows, and pfChannels.
+
+       pfPipeWindows are similar to pfWindows but are
+       tracked/maintained by libpf and are needed by libpf to
+       draw pfChannels.  Because of their similarity, many of the
+       pfPipeWindow routines are identical to pfWindow routines
+       except for the fact that the pfPWin&lt;*&gt; routines operate on
+       a pfPipeWindow and the pfWin&lt;*&gt; routines operate on a
+       pfWindow.  These corresponding routines are listed in the
+       table below and their functionality is documented in the
+       pfWindow man page.  Routines documented here have special
+       extended functionality for pfPipeWindows.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       center tab($); C | C L | L .  pfPipeWindow routine$pfWin-
+       dow routine _ pfPWinAspect$pfWinAspect pfPWinFBCon-
+       fig$pfWinFBConfig pfPWinFBConfigAttrs$pfWinFBConfigAttrs
+       pfPWinFBConfigData$pfWinFBConfigData pfPWinFBCon-
+       figId$pfWinFBConfigId pfPWinFullScreen$pfWinFullScreen
+       pfPWinGLCxt$pfWinGLCxt pfPWinIndex$pfWinIndex pfPWin-
+       Mode$pfWinMode pfPWinName$pfWinName pfPWinOrigin$pfWinOri-
+       gin pfPWinOriginSize$pfWinOriginSize pfPWinOverlay-
+       Win$pfWinOverlayWin pfPWinScreen$pfWinScreen pfPWin-
+       Share$pfWinShare pfPWinSize$pfWinSize pfPWin-
+       StatsWin$pfWinStatsWin pfPWinWSConnectionName$pfWinWSCon-
+       nectionName pfPWinWSDrawable$pfWinWSDrawable pfPWinWSWin-
+       dow$pfWinWSWindow pfGetPWinAspect$pfGetWinAspect pfGetP-
+       WinCurOriginSize$pfGetWinCurOriginSize pfGetPWin-
+       CurScreenOriginSize$pfGetWinCurScreenOriginSize pfGetPWin-
+       CurState$pfGetWinCurState pfGetPWinCurWSDrawable$pfGetWin-
+       CurWSDrawable pfGetPWinFBConfig$pfGetWinFBConfig pfGetP-
+       WinFBConfigAttrs$pfGetWinFBConfigAttrs pfGetPWinFBConfig-
+       Data$pfGetWinFBConfigData pfGetPWinFBConfigId$pfGetWinFB-
+       ConfigId pfGetPWinGLCxt$pfGetWinGLCxt pfGetPWinIn-
+       dex$pfGetWinIndex pfGetPWinList$pfGetWinList pfGetPWin-
+       Mode$pfGetWinMode pfGetPWinName$pfGetWinName pfGetPWinOri-
+       gin$pfGetWinOrigin pfGetPWinOverlayWin$pfGetWinOverlayWin
+       pfGetPWinScreen$pfGetWinScreen pfGetPWinSelect$pfGetWinSe-
+       lect pfGetPWinShare$pfGetWinShare pfGetPWinSize$pfGetWin-
+       Size
+
+
+       center tab($); C | C L | L .  pfPipeWindow routine$pfWin-
+       dow routine _ pfGetPWinStatsWin$pfGetWinStatsWin pfGetP-
+       WinType$pfGetWinType pfGetPWinWSConnectionName$pfGetWinWS-
+       ConnectionName pfGetPWinWSDrawable$pfGetWinWSDrawable
+       pfGetPWinWSWindow$pfGetWinWSWindow pfChoosePWinFBCon-
+       fig$pfChooseWinFBConfig pfAttachPWin$pfAttachWin pfSelect-
+       PWin$pfSelectWin pfAttachPWinSwapGroup$pfAttachWinSwap-
+       Group pfAttachPWinWinSwapGroup$pfAttachWinSwapGroup pfP-
+       WinInSwapGroup$pfWinInSwapGroup pfPWinSwapBarrier$pfWin-
+       SwapBarrier pfGetPWinSwapBarrier$pfGetWinSwapBarrier
+       pfSwapPWinBuffers$pfSwapWinBuffers pfIsP-
+       WinOpen$pfIsWinOpen pfIsManagedPWin$pfIsManagedWin
+       pfQueryPWin$pfQueryWin pfMQueryPWin$pfMQueryWin
+
+       <B>pfNewPWin</B> creates and returns a handle to a pfPipeWindow
+       on the screen managed by <I>pipe</I>.  Like other pfUpdatables,
+       pfPipeWindows are always allocated from shared memory.
+       The pipe of a pfPipeWindow cannot be changed.
+       <B>pfGetPWinPipe</B> returns a pointer to the pfPipe of <I>pwin</I>.
+       Like other pfObjects, pfPipeWindows must be created in the
+       application process.
+
+       <B>pfGetPWinClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfPipeWindow</B>.  The <B>pfType</B>* returned by <B>pfGetPWinClassType</B>
+       is the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of class <B>pfPipeWindow</B>.  Because OpenGL
+       Performer allows subclassing of built-in types, when deci-
+       sions are made based on the type of an object, it is usu-
+       ally better to use <B>pfIsOfType</B> to test if an object is of a
+       type derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+       want to be able to directly specify the framebuffer con-
+       figuration of an X window in the application process.  See
+       the <B>XVisualIDFromVisual(3X11)</B> and <B>XGetVisualInfo(3X11)</B> man
+       pages for more information about X visuals.
+
+
+       <B>pfPWinScreen</B> will set the screen of <I>pwin</I> and on the parent
+       pfPipe.  Once set, the screen cannot be changed.  If the
+       screen of the parent pfPipe had already been set when the
+       pfPipeWindow was created, the pfPipeWindow will inherit
+       that screen setting and will not accept another.  The
+       pfPipeWindow will direct all rendering comments to the
+       hardware graphics pipeline specified by <I>screen</I>.  As with
+       pfWindows, if a screen is never set, the default screen of
+       the current window system connection will be set as the
+       screen when the window is opened with <B>pfOpenPWin::</B>.
+       <B>pfGetPWinScreen</B> will return the screen of the pfPipeWin-
+       dow.  If the screen has not yet been set, (-1) will be
+       returned.  See the <B>pfGetCurWSConnection</B> man page for more
+       information on the specification of a default screen.  See
+       the <B>pfPipeScreen</B> man page for special restrictions and
+       proper specification of pfPipe and pfPipeWindow screens in
+       multipipe configurations.
+
+       <B>pfPWinWSConnectionName</B> allows you to specify the exact
+       window server and default screen for the successive open-
+       ing of the window. This can be used for specifying remote
+       displays or on machines running more than one window
+       server.  <B>pfGetPWinWSConnectionName</B> will return the name
+       specifying the current window server target.  As with the
+       setting of screens, a window server target specified on a
+       pfPipe will take precedence over a target set on a
+       pfPipeWindow. If a window server target is not specified
+       for the parent pfPipe of a pfPipeWindow, the parent pfPipe
+       will inherit the window setting.   Because of these
+       restrictions, this routine must be called in the applica-
+       tion process, before the first call to <B>pfFrame</B>.  See the
+       <B>pfPipeScreen</B> man page for special restrictions and proper
+       specification of pfPipe and pfPipeWindow screens in multi-
+       pipe configurations.
+
+       <B>pfGetPWinIndex</B> returns the index of <I>pwin</I> in the pfPipeWin-
+       dow list of the parent pfPipe.
+
+       pfChannels are assigned to a pfPipeWindow upon their cre-
+       ation.  pfPipeWindows also have list-style API for adding,
+       removing, inserting, and reordering pfChannels on a
+       pfPipeWindow: <B>pfAddChan</B> will append <I>chan</I> as the last
+       pfChannel of <I>pwin</I> and and returns the resulting index or
+       (-1) if an error was encountered.  <B>pfInsertChan</B> will
+       insert <I>chan</I> as the <I>where</I>th pfChannel of <I>pwin</I>.  <B>pfMoveChan</B>
+       will move <I>chan</I> from its current position in the pfChannel
+       list of <I>pwin</I> to position <I>where</I>.  If <I>chan</I> does not belong
+       to <I>pwin</I>, no action is taken and an error flag of (-1) is
+       returned; otherwise, <I>where</I> is returned.  <B>pfRemoveChan</B> will
+       remove <I>chan</I> from <I>pwin</I>.  If <I>chan</I> does not belong to <I>pwin</I>,
+       no action is done and an error flag of (-1) is returned.
+       Otherwise, the previous index of <I>chan</I> is returned.
+       <B>pfGetChan</B> returns a pointer to the <I>index</I>th pfChannel of
+       is needed to be done, a <B>pfConfigPWin</B> draw process callback
+       should be used.
+
+       <B>pfConfigPWin</B>, called from the application process, will
+       trigger the configuration callback function to be called
+       in the draw process for the current frame.  If no user
+       configuration callback function has been specified, a
+       default configuration function will be called that will
+       open and initialize <I>pwin</I>.  <B>pfPWinConfigFunc</B>, called from
+       the application process, specifies a draw process callback
+       function, <I>func</I>, to configure <I>pwin</I>.  The configure function
+       can be used to make draw process calls to open, initial-
+       ize, and close pfPipeWindows.  In this window configura-
+       tion callback function <B>pfOpenPWin</B> can be called on the
+       pfPipeWindow, or an OpenGL window can be created and
+       assigned to the pfPipeWindow.  <B>pfGetPWinConfigFunc</B> returns
+       the pointer to the user-specified window configuration
+       callback function, or NULL of no such function has been
+       set.  If the application is multiprocessed, the window is
+       opened asynchronously in the DRAW process.  The draw pro-
+       cess is activated by a call to <B>pfFrame</B>. This means that an
+       immediate query of state from the APP process after an APP
+       process call to <B>pfOpenPWin</B> or <B>pfConfigPWin</B> may not return
+       valid results.
+
+       <B>pfOpenPWin</B> will cause <I>pwin</I> to be opened and initialized
+       via <B>pfInitGfx</B>. If called from the application process, the
+       pfPipeWindow will be automatically opened in the draw pro-
+       cess for the corresponding frame.  If called in the draw
+       process, the pfPipeWindow will be opened automatically.
+       Similarly, <B>pfClosePWin</B> and <B>pfClosePWinGL</B> can be called
+       from either the application process or the draw process
+       and will cause the <I>pwin</I> or the graphics context, respec-
+       tively, to be closed in the draw process for the given
+       frame. If application specific work needs to be done in
+       the draw process for manipulating pfPipeWindows,
+       <B>pfConfigPWin</B> should be used.
+
+       OpenGL Performer automatically calls <B>pfInitGfx</B> for windows
+       that it creates and opens. For pfPipeWindows, <B>pfInitGfx</B>
+       does the same operations as for pfWindows, and in addi-
+       tion, will apply a default material and a default MODULATE
+       texture environment (<B>pfApplyTEnv</B>), and enable backface
+       culling (<B>pfCullFace</B>(<B>PFCF_BACK</B>)).
+
+       <B>pfPWinList</B> can be used to specify a pfList of pfWindows,
+       <I>wlist</I>, that can draw into a single pfPipeWindow. This
+       enables a pfPipeWindow to maintain a list of alternate
+       framebuffer configurations for the base pfPipeWindow.  A
+       pfPipeWindow always maintains a default main graphics
+       pfWindow and a pfWindow list.  Two of the windows in this
+       list are so commonly needed that they have special names
+       and can be created automatically for the user: OVERLAY and
+       STATS.  The user can also add his own pfWindows to the
+       pfWindow list for additional configurations.  This list
+       may only hold pfWindows, NOT pfPipeWindows.  With window
+       lists, we have an effective pfWindow hierarchy of:
+       screen-&gt;pfPipe-&gt;pfPipeWindow[graphics, stats, overlay,
+       ...]-&gt;pfChannel(s).  See the <B>pfWinList</B> man page for more
+       current pfWindow.  See <B>pfWinIndex</B> for more details of this
+       operation.  <B>pfGetPWinIndex</B> will return the current index
+       of the pfPipeWindow.
+
+       <B>pfPWinType</B> sets the type of a pfPipeWindow where <I>type</I> is
+       an or-ed bitmask that may contain the type constants
+       listed below.  <B>pfGetPWinType</B> returns the type of a
+       pfPipeWindow.  A change in the type of a pfPipeWindow
+       takes effect upon the call to <B>pfOpenPWin</B>.  The type of an
+       open pfPipeWindow cannot be changed.  The pfWindow type
+       attributes all start with <B>PFPWIN_TYPE_</B> and are:
+
+              <B>PFPWIN_TYPE_X</B>
+                     has identical characteristics to the
+                     <B>PFWIN_TYPE_X</B> specification for pfWindows.
+                     See the <B>pfWinType</B> man page for more informa-
+                     tion.
+
+              <B>PFPWIN_TYPE_SHARE</B>
+                     Specifies that this window should be auto-
+                     matically attached to the first pfPipeWindow
+                     on the parent pfPipe.  See the <B>pfAttachWin</B>
+                     man page for more details.
+
+              <B>PFPWIN_TYPE_STATS</B>
+                     has identical characteristics to the
+                     <B>PFWIN_TYPE_STATS</B> specification for pfWin-
+                     dows.  See the <B>pfWinType</B> man page for more
+                     information.
+
+              <B>PFPWIN_TYPE_PBUFFER</B>
+                     The window drawable will be created in a
+                     pbuffer.  For this, you must also specify an
+                     GLXFBConfigSGIX with <B>pfPWinFBConfig</B> before
+                     the window is opened.
+
+              <B>PFPWIN_TYPE_NOXEVENTS</B>
+                     OpenGL Performer will not track X configura-
+                     tion events (resizing, repositioning, etc.)
+                     on this window.  This can save a little bit
+                     of system overhead so for a deployed,
+                     static, real-time flight simulator in
+                     "training" mode where every little bit
+                     counts, use this.  In development mode, or
+                     for interactive applications, you probably
+                     want to leave this off.
+
+              <B>PFPWIN_TYPE_UNMANAGED</B>
+                     OpenGL Performer will not do automatic X
+                     window management on this window.  This
+                     includes size and position tracking, resiz-
+                     ing of alternate configuration windows, and
+                     swapbuffers. OpenGL Performer will still
+                     make the graphics context of this window
+                     current if it is open for a pfPipe to render
+                     to and has attached pfChannels. pfPipeWin-
+                     dows with drawables that are of type GLXP-
+                     bufferSGIX or Pixmap are automatically made
+                     unmanaged.
+
+       from the last time the window size was set or an X config-
+       uration event was detected. Otherwise it returns the size
+       set by <B>pfPWinSize</B>.
+
+       <B>pfGetPWinScreenOrigin</B> returns the cached screen relative
+       origin of <I>win</I>, if open, from the last time the <I>pwin</I> size
+       was set or an X configuration event was detected.  Other-
+       wise it returns the origin and size set by <B>pfPWinOrigin</B>.
+
+
+       <B>pfPWinPVChan</B> sets pfPipeVideoChannel <I>pvchan</I> for the
+       pfPipeWindow <I>pwin</I> based on the index <I>num</I>.  <B>pfGetPWinPVChan</B>
+       performs the opposite task, returning a pointer to the
+       <I>num</I>'th pfPipeVideoChannel of the pfPipeWindow.  The total
+       number of pfPipeVideoChannels associated with the
+       pfPipeWindow is returned by <B>pfGetPWinNumPVChans</B>.
+
+       <B>pfPWinAddPVChan</B> adds the pfPipeVideoChannel <I>pvchan</I> to a
+       pfPipeWindow and returns the resulting index or (-1) if an
+       error was encountered. If <I>pvchan</I> has not already been
+       assigned a hardware video channel, then the next active
+       hardware video channel after the previous pfPipeVideoChan-
+       nel on the pfPipeWindow will be assigned to the new
+       pfPipeVideoChannel.  This assignment can be changed with
+       <B>pfPVChanId</B>.  pfPipeWindows start out with an initial
+       pfPipeVideoChannel that will reference the first active
+       hardware video channel.
+
+       <B>pfPWinRemovePVChan</B> removes the pfPipeVideoChannel  <I>pvchan</I>
+       from a pfPipeWindow using the pfPipeVideoChannel's pointer
+       as search through the list, while <B>pfPWinRemovePVChanIndex</B>
+       is used to remove the pfPipeVideoChannel indexed by <I>num</I>
+       from the pfPipeWindow's pfPipeVideoChannel list.
+
+       The index value can be obtained from <B>pfGetPWinPVChanIndex</B>
+       which returns the index of pfPipeVideoChannel <I>pvchan</I>.  The
+       opposite action is provided by <B>pfGetPWinPVChanId</B> which
+       accepts the argument <I>num</I> and returns the pointer to the
+       <I>num</I>'th pfPipeVideoChannel of the indicated pfPipeWindow.
+
+       All of the pfPipeVideoChannels associated with a
+       pfPipeWindow can be bound with <B>pfBindPWinPVChans</B> and
+       unbound with <B>pfUnbindPWinPVChans</B>.
+
+       <B>pfGetPWinPosPVChan</B> returns the pointer to the pfPipeV-
+       ideoChannel on <I>pwin</I> that contains the screen relative
+       position <I>x</I>, <I>y</I>x.  This can be useful for getting the
+       pfPipeVideoChannel that contains the mouse.
+
+       <B>pfAttachPWin</B> will add the windows of the share group of
+       <I>pwin1</I> to that of <I>pwin0</I>.  <B>pfAttachPWinWin</B> will place the
+       pfWindow <I>win</I> in the share group of <I>pwin</I>.  pfPipeWindow
+       share groups can contain pfWindow so long as the primary
+       group window is a pfPipeWindow.  This is useful if you
+       want to have a process sproced off the DRAW process with a
+       pfWindow and graphics context for creating OpenGL display
+       lists and textures shared with the pfPipeWindow of the
+       main drawing process.
+
+       token with pfChannel share groups to easily and automati-
+       cally create window swap groups.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       The following is an example of basic pfPipeWindow cre-
+       ation:
+
+       { /* in the application process after pfConfig() */
+            pfPipeWindow *pw;
+            pw = pfNewPWin(<B>pfGetPipe(0)</B>);
+            pfPWinName(pw,"PipeWin");
+            pfPWinOriginSize(pw, 0, 0, 500, 500);
+            pfPWinType(pw, PFPWIN_TYPE_X);
+            pfOpenPWin(pw);
+            /* set off the draw process to open window */
+            pfFrame();
+       }
+
+
+       If special draw process operations are to be done with the
+       opening of the window, a pfConfigPWin callback function
+       should be used.
+
+       {
+            /* in the application process pfPipeWindow init callback */
+            pfPWinConfigFunc(pw,OpenPipeWin);
+            /* trigger the draw process to call the config callback
+             * for this frame
+             */
+            pfConfigPWin(pw);
+       }
+       /* in the draw process pfPipeWindow init callback */
+       void OpenPipeWin(pfPipeWindow *pw)
+       {
+            pfOpenPWin(pw);
+            /* do other application specific draw process work,
+             * such as downloading scene textures, displaying
+             * welcome messages, etc.
+             */
+       }
+
+
+       If you have triggered the opening of a pfPipeWindow from
+       the application process, you may have to wait for it to be
+       opened in the DRAW process to do queries that depend on
+       state of an opened window. While you wait, you must call
+       pfFrame to trigger DRAW frames.
+
+       while (!pfIsPWinOpen(pwin)) pfFrame();
+
+
+       The following is an example that shows the creation of
+       multiple pfPipeWindows for a single pfPipe and the assign-
+       ment of pfChannels to the different windows:
+
+       {
+           pfChannel *chan[MAX_CHANS];
+           pfPipeWindow *pwin[MAX_PWINS];
+               sprintf(str, "OpenGL Performer - Win %d", loop);
+               pfPWinName(pwin[loop], str);
+               pfPWinOriginSize(pwin[loop], (loop&amp;0x1)*315, ((loop&amp;0x2)&gt;&gt;1)*340, 300, 300);
+            pfPWinConfigFunc(pwin[loop], OpenPipeWin);
+               pfConfigPWin(pwin[loop]);
+           }
+
+           /* Create and configure a pfChannel for each pfPipeWindow. */
+           for (int loop=0; loop &lt; NumWins; loop++)
+           {
+               chan[loop] = pfNewChan(p);
+               pfAddChan(pwin[loop], chan[loop]);
+           }
+
+           /* set off the draw process to config window */
+           pfFrame();
+       }
+
+
+       <B>pfOpenPWin</B> and <B>pfClosePWin</B> can both be called from the
+       application process, or from the draw process.  The fol-
+       lowing example demonstrates using <B>pfConfigPWin</B> to close a
+       pfPipeWindow:
+
+       {
+           /* in the application process specify a close config func */
+           pfPWinConfigFunc(pw,ClosePipeWin);
+           pfConfigPWin(pw);
+
+       }
+
+       /* in the draw process pfPipeWindow init callback */
+       void ClosePipeWin(pfPipeWindow *pw)
+       {
+           pfClosePWin(pw);
+           /* do other application specific draw process calls */
+       }
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfPipeWindows handle the multiprocessing details of OpenGL
+       Performer applications for pfWindows. pfPipeWindows must
+       be created in the application process.  However, with some
+       minor exceptions, pfPipeWindows may be configured, opened,
+       closed, and edited in either the  application process or
+       draw process.  Typically, a pfPipeWindow is created and
+       configured in the application process.  Custom graphics
+       state is initialized in a <B>pfPWinConfigFunc</B> callback func-
+       tion.  The pfPipeWindow of a channel or a channel's posi-
+       tion in a pfPipeWindow list may only be modified in the
+       application process.  The specification of the current
+       drawing window with <B>pfSelectPWin</B> must be done in the draw-
+       ing process.  Explicit specification of the pfGLContext or
+       pfFBConfig must be done in the drawing process.
+       pfPipeWindow queries are also best done in the draw pro-
+       cess as the query may have to access the graphics context
+       to provide the requested information.
+
+       The following table shows from which process pfPipeWindow
+       routines may be called.  center tab($); C | C | C L | L |
+       L.  pfPipeWindow routine$Application Process$Draw Process
+       _ pfNewPWin$Yes$No pfPWinAspect$Yes$Yes pfPWinConfig-
+       Func$Yes$No pfPWinFBConfig$Yes$No pfPWinFBConfigAt-
+       trs$Yes$Yes pfPWinFBConfigData$No$Yes pfPWinFBCon-
+       figId$Yes$Yes pfPWinFullScreen$Yes$Yes pfPWinGLCxt$No$Yes
+       pfPWinIndex$Yes$Yes pfPWinList$Yes$Yes pfPWinMode$Yes$Yes
+       pfPWinName$Yes$Yes pfPWinOrigin$Yes$Yes pfPWinOrigin-
+       Size$Yes$Yes pfPWinOverlayWin$Yes$Yes pfPWinScreen$Yes$Yes
+       pfPWinShare$Yes$Yes pfPWinSize$Yes$Yes pfPWin-
+       StatsWin$Yes$Yes pfPWinType$Yes$Yes pfPWinWSConnection-
+       Name$Yes$No pfPWinWSDrawable$Yes$Yes pfPWinWSWin-
+       dow$Yes$Yes
+
+       center tab($); C | C | C L | L | L.  pfPipeWindow rou-
+       tine$Application Process$Draw Process _ pfAttachP-
+       Win$Yes$Yes pfPWinAddPVChan$Yes$Yes pfClosePWin$Yes$Yes
+       pfClosePWinGL$Yes$Yes pfConfigPWin$Yes$Yes pfOpen-
+       PWin$Yes$Yes pfIsPWinOpen$Yes$Yes pfMQueryPWin$No$Yes
+       pfQueryPWin$No$Yes pfChoosePWinFBConfig$No$Yes pfSelectP-
+       Win$No$Yes pfAttachPWinSwapGroup$Yes$Yes pfPWinSwapBar-
+       rier$Yes$Yes pfSwapPWinBuffers$No$Yes pfGetNum-
+       Chans$Yes$Yes pfAddChan$Yes$No pfGetChan$Yes$Yes pfIn-
+       sertChan$Yes$No pfMoveChan$Yes$No pfRemoveChan$Yes$No
+
+       Note that whenever any pfObjects are given to a pfPipeWin-
+       dow, such as <B>pfPWinList</B>, the data must be valid for access
+       by the graphics process.  This data, such as pfLists and
+       pfWindows, should always be allocated from shared memory.
+       Structures provided by X, such as that returned by
+       <B>pfChoosePWinFBConfig</B>, or <B>pfChooseFBConfig</B>, will not have
+       been allocated in shared memory.  Therefore, those rou-
+       tines must be called from the draw process.  Under OpenGL
+       operation, <B>pfWinFBConfigId</B> can be used to set the frame-
+       buffer configuration of an X window in the application
+       process.
+
+       pfPipeWindows support windows in the multiprocessed libpf
+       environment and are the glue between pfChannels and
+       pfPipes.  There are times when you might want to use
+       pfWindows, instead of pfPipeWindows, even in a libpf
+       application.  For example, popping up a simple dialog win-
+       dow in the draw process should use pfWindows and not
+       pfPipeWindows.  Additionally, if you want to maintain
+       alternate windows with different visual (framebuffer) con-
+       figurations for your pfPipeWindow, you use pfWindows that
+       are alternate framebuffer configurations for the base
+       pfPipeWindow.  The PFWIN_STATS_WIN, PFWIN_OVERLAY_WIN, and
+       other pfPWinList windows must themselves be pfWindows and
+       not pfPipeWindows.  See the pfPWinList routine below and
+       the pfWindow man page for more information.
+
+       <B>X</B> <B>Window</B> <B>origin</B> <B>and</B> <B>size</B>: There are some subtle issues in
+       the management of origin and size of X windows.It can be
+       very expensive to immediately obtain the current screen
+       relative origin of a window, particularly if the window is
+       in a hierarchy.  pfPipeWindows have the size and position
+       of the window tracked by the application process. However,
+       it is still recommended that user code should not rely on
+       force that their double-buffering is synchronized so that
+       they are guaranteed to always be displaying the same frame
+       and have their hardware swapbuffers happen simultaneously.
+       This is often referred to as Gang Swap.  For this to work,
+       you must first have the graphics pipelines genlocked.  See
+       the <B>genlock(7)</B> man page for more informations.  Next, you
+       must connect the proper cable between the SwapReady con-
+       nectors on the graphics pipelines.  On the InfiniteReality
+       this is a simple BNC cable of any Ohms.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       pfPipeWindows cannot be deleted.
+
+       Detach from share groups and swap groups is not supported.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfNewChan, pfGetPipe, pfNewWin, pfGetCurWSConnection, gen-
+       lock, XGetVisualInfo, XVisualIDFromVisual
+
+
+
+                                                pfPipeWindow(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

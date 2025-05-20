@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<TITLE>pfdSpatial</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdSpatial</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdSpatialize(3pf)                             pfdSpatialize(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdSpatialize,</B>  <B>pfdTravGetGSets</B>  -  Collect  and partition
+       pfGeoSets in scene graphs.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfGroup *   <B>pfdSpatialize</B>(pfGroup *group,  float maxGeode-
+                     Size, int maxGeoSets);
+
+       pfList *    <B>pfdTravGetGSets</B>(pfNode *node);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdSpatialize</B>  gathers  together  all the <B>pfGeoSets</B> refer-
+       enced in the graph rooted at <I>group</I>.  It constructs  a  new
+       subgraph  where  all the <B>pfGeoSets</B> are grouped together by
+       their spatial location. An octree is used to  control  the
+       grouping.  It  is  ensured  that  no  more than <I>maxGeoSets</I>
+       <B>pfGeoSets</B> will be grouped together in one <B>pfGeode</B> and that
+       the  spatial width of every individual <B>pfGeode</B> constructed
+       will never exceed <I>maxGeodeSize</I>. The new graph is  returned
+       to the caller.
+
+       <B>pfdTravGetGSets</B> traverses the graph rooted at <I>node</I> to find
+       all the referenced pfGeoSets.   A  list  containing  every
+       pfGeoSet  found  by  this  traversal  is  returned  to the
+       caller.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet
+
+
+
+                                               pfdSpatialize(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

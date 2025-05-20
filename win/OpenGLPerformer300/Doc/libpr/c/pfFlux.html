@@ -1,0 +1,456 @@
+<HTML>
+<HEAD>
+<TITLE>pfFlux</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFlux</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFlux(3pf)                                           pfFlux(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewFlux,</B>  <B>pfNewFluxInitFunc,</B>  <B>pfGetFluxInitFunc,</B>  <B>pfGet-</B>
+       <B>FluxClassType,</B>   <B>pfGetFluxDataSize,</B>   <B>pfGetFluxNumBuffers,</B>
+       <B>pfFluxInitData,</B>    <B>pfFluxCallDataFunc,</B>   <B>pfGetFluxCurData,</B>
+       <B>pfGetFluxCurDataFromData,</B>  <B>pfGetFluxWritableData,</B>   <B>pfGet-</B>
+       <B>FluxWritableDataFromData,</B>             <B>pfGetFluxBufferData,</B>
+       <B>pfFluxWriteComplete,</B> <B>pfFluxWriteCompleteFromData,</B>  <B>pfFlux-</B>
+       <B>Mode,</B> <B>pfGetFluxMode,</B> <B>pfFluxSrcChanged,</B> <B>pfGetFluxSrcEngine,</B>
+       <B>pfGetFluxNumSrcEngines,</B>   <B>pfGetFluxClientEngine,</B>    <B>pfGet-</B>
+       <B>FluxNumClientEngines,</B>  <B>pfFluxMask,</B> <B>pfGetFluxMask,</B> <B>pfFluxE-</B>
+       <B>valuate,</B>   <B>pfFluxEvaluateEye,</B>   <B>pfFluxSyncGroup,</B>    <B>pfGet-</B>
+       <B>FluxSyncGroup,</B>   <B>pfGetFluxNamedSyncGroup,</B>   <B>pfGetFluxSync-</B>
+       <B>GroupName,</B>    <B>pfGetFluxNumNamedSyncGroups,</B>     <B>pfFluxSync-</B>
+       <B>GroupReady,</B> <B>pfFluxEnableSyncGroup,</B> <B>pfFluxDisableSyncGroup,</B>
+       <B>pfGetFluxEnableSyncGroup,</B>  <B>pfFluxSyncComplete,</B>   <B>pfFluxDe-</B>
+       <B>faultNumBuffers,</B>   <B>pfGetFluxDefaultNumBuffers,</B>  <B>pfGetFlux,</B>
+       <B>pfFluxFrame,</B> <B>pfGetFluxFrame</B> - Create, initialize, and man-
+       age a pfFlux
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfFlux*              <B>pfNewFlux</B>(size_t nbytes,     int num-
+                              Buffers, void *arena);
+
+       pfFlux*              <B>pfNewFluxInitFunc</B>(pfFluxInitFuncType initFunc,
+                              int numBuffers, void *arena);
+
+       pfFluxInitFuncType   <B>pfGetFluxInitFunc</B>(const pfFlux* _flux);
+
+       pfType*              <B>pfGetFluxClassType</B>(void);
+
+       size_t               <B>pfGetFluxDataSize</B>(const pfFlux* flux);
+
+       int                  <B>pfGetFluxNumBuffers</B>(const pfFlux* flux,
+                              int type);
+
+       void                 <B>pfFluxInitData</B>(pfFlux* flux,
+                              void *data);
+
+       void                 <B>pfFluxCallDataFunc</B>(pfFlux* flux,
+                              pfFluxDataFuncType func,
+                              void *funcData);
+
+       void*                <B>pfGetFluxCurData</B>(pfFlux* flux);
+
+       void*                <B>pfGetFluxCurDataFromData</B>(void *data);
+
+       void*                <B>pfGetFluxWritableData</B>(pfFlux* flux);
+
+       void*                <B>pfGetFluxWritableDataFromData</B>(void *data);
+
+       void*                <B>pfGetFluxBufferData</B>(int bufferId);
+
+       void                 <B>pfFluxWriteComplete</B>(pfFlux* flux);
+                              int mode);
+
+       void                 <B>pfFluxSrcChanged</B>(pfFlux* flux);
+
+       pfEngine*            <B>pfGetFluxSrcEngine</B>(const pfFlux* flux,
+                              int index);
+
+       int                  <B>pfGetFluxNumSrcEngines</B>(const pfFlux* flux);
+
+       pfEngine*            <B>pfGetFluxClientEngine</B>(const pfFlux* flux,
+                              int index);
+
+       int                  <B>pfGetFluxNumClientEngines</B>(const pfFlux* flux);
+
+       void                 <B>pfFluxMask</B>(pfFlux* flux, uint mask);
+
+       uint                 <B>pfGetFluxMask</B>(const pfFlux* flux);
+
+       void                 <B>pfFluxEvaluate</B>(pfFlux* flux,
+                              int mask);
+
+       void                 <B>pfFluxEvaluateEye</B>(pfFlux* flux,
+                              int mask, pfVec3 eyePos);
+
+       void                 <B>pfFluxSyncGroup</B>(pfFlux* flux,
+                              uint syncGroup);
+
+       uint                 <B>pfGetFluxSyncGroup</B>(pfFlux* flux);
+
+       uint                 <B>pfGetFluxNamedSyncGroup</B>(const char *name);
+
+       const
+                            char*          <B>pfGetFluxSyncGroupName</B>(uint syncGroup);
+
+       int                  <B>pfGetFluxNumNamedSyncGroups</B>(void);
+
+       void                 <B>pfFluxSyncGroupReady</B>(uint syncGroup);
+
+       void                 <B>pfFluxEnableSyncGroup</B>(uint syncGroup);
+
+       void                 <B>pfFluxDisableSyncGroup</B>(uint syncGroup);
+
+       int                  <B>pfGetFluxEnableSyncGroup</B>(uint syncGroup);
+
+       void                 <B>pfFluxSyncComplete</B>(void);
+
+       int                  <B>pfFluxDefaultNumBuffers</B>(int numBuffers);
+
+       int                  <B>pfGetFluxDefaultNumBuffers</B>(void);
+
+       pfFlux*              <B>pfGetFlux</B>(void *data);
+
+       void                 <B>pfFluxFrame</B>(int frame);
+
+       int                  <B>pfGetFluxFrame</B>(int frame);
+
+       typedef
+                            int          <B>(*pfFluxInitFuncType)</B>(pfFluxMemory *_fmem);
+
+       class  <B>pfFlux</B>.   Casting  an  object of class <B>pfFlux</B> to an
+       object of class <B>pfObject</B> is taken care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfFlux</B> can also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>flux</I>  identifies a pfFlux.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A <B>pfFlux</B> is a container for holding dynamic data.  It con-
+       tains multiple buffers of  data  each  associated  with  a
+       frame number.  This allows multiple processes to each have
+       a copy of the data appropriate to the frame they are work-
+       ing on.
+
+       <B>pfNewFlux</B> creates and returns a handle to a <B>pfFlux</B>.  <I>arena</I>
+       specifies a malloc arena out of which the <B>pfFlux</B> is  allo-
+       cated  or  <B>NULL</B>  for allocation off the process heap.  The
+       argument <I>nbytes</I> specifies the length  of  each  associated
+       pfFluxMemory.   The argument <I>numBuffers</I> specifies the num-
+       ber of pfFluxMemory data buffers that the pfFlux  will  be
+       created     with.     <I>numBuffers</I>    can    be    set    to
+
+       <B>pfNewFluxInitFunc</B> also allocates a <B>pfFlux</B> from the  speci-
+       fied  memory  arena.   However  the size of the associated
+       pfFluxMemorys and their initialization  is  determined  by
+       the     call    back    function    <I>initFunc</I>    of    type
+       <B>pfFluxInitFuncType</B>.  The  <I>initFunc</I>  takes  a  pfFluxMemory
+       <I>fmem</I>,  and  returns  an  int.   It  will be called once to
+       determine the size of pfFluxMemorys to create and it  will
+       be  called once for each pfFluxMemory created.  If <I>fmem</I> is
+       NULL it should return the size of pfFluxMemorys to create.
+       If  <I>fmem</I>  is not NULL it should do any desired initializa-
+       tion of the data portion of the pfFluxMemory.  For example
+       it  might  call  <B>pfFluxedGSetInit</B> to turn the data portion
+       into a pfGeoSet and then add coordinate attributes etc. to
+       that  pfGeoSet.  This is how a fluxed pfGeoSet is created.
+
+       A <B>pfFlux</B> can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetFluxClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfFlux</B>.  The <B>pfType</B>* returned by <B>pfGetFluxClassType</B> is the
+       same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on  any
+       instance of class <B>pfFlux</B>.  Because OpenGL Performer allows
+       subclassing of built-in types,  when  decisions  are  made
+       based  on  the  type of an object, it is usually better to
+       use <B>pfIsOfType</B> to test if an object is of a  type  derived
+       from  a  Performer  type  rather  than  to test for strict
+       equality of the <B>pfType</B>*'s.
+
+       <B>pfGetFluxDataSize</B> returns the size of the data buffers  in
+       a pfFlux.
+
+       <B>pfGetFluxNumBuffers</B>  the  number  of data buffers a pfFlux
+       contains, if <I>type</I> is set to <B>PFFLUX_BUFFERS_GENERATED</B>.   If
+       <I>type</I>  is  set  to <B>PFFLUX_BUFFERS_SPECIFIED</B>, it will return
+       what the <I>numBuffers</I> argument was set to  when  the  pfFlux
+       was created.
+
+       <B>pfFluxInitData</B> initializes all data buffers of a pfFlux to
+       the data referenced by <I>data</I>.  <I>data</I> should be at  least  as
+       large as the data buffers of the pfFlux.
+
+       <B>pfFluxCallDataFunc</B>  calls  <I>func</I> for each data buffers of a
+       pfFlux.  <I>func</I> will be called with the pointer to the  data
+       buffer  and  with  <I>funcData</I>.   This  function is useful in
+       manipulating the buffers of a pfFlux when  they  contained
+       fluxed Performer objects such as fluxed pfGeoSets.
+
+       <B>pfGetFluxCurData</B>  returns  a  pointer  to the current data
+       buffer of a pfFlux.  The current buffer  is  the  readable
+       data  buffer whose frame number is the closest to the cur-
+       rent flux frame number, but not greater then  the  current
+       flux frame number.
+
+       Example of reading data:
+
+
+       pfVec3 *cur_verts;
+
+       cur_verts = (pfVec3*)pfGetFluxCurData(flux);
+       frame number that matches the current flux frame number.
+
+       <B>pfFluxWriteComplete</B> will mark the data buffer whose frame
+       number matches the current flux frame number, as readable.
+       It has no effect if there is no buffer for the current
+       flux frame number.
+
+       Example of writing data:
+
+
+       pfVec3 *verts;
+       int i, num_verts;
+
+       verts = (pfVec3*)pfGetFluxWritableData(flux);
+
+       /* Set all verts to 1.0, 2.0, 3.0 */
+       num_verts = pfGetFluxDataSize(flux) / sizeof(pfVec3);
+       for (i = 0; i &lt; num_verts; i++)
+           pfSetVec3(verts[i], 1.0f, 2.0f, 3.0f);
+
+       pfFluxWriteComplete(flux);
+
+
+
+       <B>pfGetFluxBufferData</B> returns the untyped data pointer asso-
+       ciated with buffer <I>bufferId</I> of <I>flux</I>.
+
+       <B>pfFluxMode</B> and <B>pfGetFluxMode</B> set and get the modes of a
+       pfFlux.  <I>mode</I> is the mode you are setting and <I>val</I> is the
+       value you are setting the mode to.  The modes are:
+
+       center tab($) ; c | c lB | lB .  <I>mode</I>$default _
+       PFFLUX_PUSH$PF_OFF PFFLUX_ON_DEMAND$PF_OFF
+       PFFLUX_COPY_LAST_DATA$PF_OFF PFFLUX_WRITE_ONCE$PF_OFF
+
+       <B>PFFLUX_PUSH</B> controls what is done to a pfFlux's client
+       pfEngines when <B>pfFluxWriteComplete</B> is done.  Setting it to
+       <B>PF_ON</B> will cause <B>pfEngineEvaluate</B> to be done to its
+       clients.  Setting it to <B>PF_OFF</B> will cause
+       <B>pfEngineSrcChanged</B> to be done to its clients.
+
+       <B>PFFLUX_ON_DEMAND</B> controls on demand evaluation triggering.
+       Setting it to <B>PF_ON</B> will cause an evaluation of the pfFlux
+       to occur, if <B>pfGetFluxCurData</B> is called and the data
+       buffer for the current flux frame is dirty.
+
+       <B>PFFLUX_COPY_LAST_DATA</B> controls what happens when a buffer
+       is assigned a new frame number.  Setting it to <B>PF_ON</B> will
+       cause the data, from the data buffer with the frame number
+       that is closest to but not greater then the new frame num-
+       ber, to be copied to the data buffer that is getting the
+       new frame number.  This is useful when a random portion of
+       a pfFluxes data will be updated with each write.
+
+       <B>PFFLUX_WRITE_ONCE</B> is used to avoid multiple writes on a
+       pfFlux within the same frame. It controls what happens
+       when <B>pfGetFluxWritableData</B> is called and there is already
+       a readable data buffer with the current frame number (Hav-
+       ing a readable data buffer means that someone called
+       given frame.
+
+       <B>pfFluxSrcChanged</B> will mark the data buffer, with a frame
+       number matching the current flux frame number, as dirty.
+
+       <B>pfGetFluxSrcEngine</B> returns the <I>i</I>th source pfEngine of a
+       pfFlux.  A pfFlux gains source pfEngines by being the des-
+       tination of a pfEngine.
+
+       <B>pfGetFluxNumSrcEngines</B> returns the number of source
+       pfEngines of a pfFlux.
+
+       <B>pfGetFluxClientEngine</B> returns the <I>i</I>th client pfEngine of a
+       pfFlux.  A pfFlux gains client pfEngines by being a source
+       of a pfEngine.
+
+       <B>pfGetFluxNumClientEngines</B> returns the number of client
+       pfEngines of a pfFlux.
+
+       <B>pfFluxMask</B> and <B>pfGetFluxMask</B> set and get the evaluation
+       mask of a pfFlux.  The default mask is <B>PFFLUX_BASIC_MASK</B>.
+
+       <B>pfFluxEvaluate</B> and <B>pfFluxEvaluateEye</B> trigger an evaluation
+       of a pfFlux if any of the bits in <I>mask</I> match any of the
+       bits in the evaluation mask of the pfFlux.  The evaluation
+       of a pfFlux is equivalent to calling <B>pfEngineEvaluate</B> on
+       the source engines of the pfFlux followed by calling
+       <B>pfFluxWriteComplete</B> on the pfFlux.
+
+       <B>pfFluxSyncGroup</B> and <B>pfGetFluxSyncGroup</B> set and get the
+       sync group of a pfFlux.
+
+       pfFlux sync groups are used to synchronize the completion
+       of multiple pfFluxes.  When <B>pfFluxWriteComplete</B> id called
+       on a pfFlux that is part of an enabled sync group the data
+       buffer for the current flux frame will not be made read-
+       able and instead the pfFlux will be scheduled for later
+       completion.  All pfFluxes are created as part of sync
+       group 0, which can never be enabled.  One example where
+       sync groups are useful is, when pfFluxes are being evalu-
+       ated in an asynchronys process.
+
+       <B>pfGetFluxNamedSyncGroup</B> will returns a sync group number
+       associated with <I>name</I>.  If name is not yet associated with
+       a sync group, the next unused sync group number will be
+       named <I>name</I>.  Once a sync group has been named its name can
+       never be changed.
+
+       <B>pfGetFluxSyncGroupName</B> returns the name of <I>syncGroup</I>.
+
+       <B>pfGetFluxNumNamedSyncGroups</B> returns the number of named
+       sync groups.
+
+       <B>pfFluxSyncGroupReady</B> specifies that the <I>syncGroup</I> is ready
+       for completion if it has been enabled.  This will have no
+       effect if <I>syncGroup</I> has not been enabled.
+
+       <B>pfFluxEnableSyncGroup</B> and <B>pfFluxDisableSyncGroup</B> enable
+       and disable a sync group.  <B>pfGetFluxEnableSyncGroup</B>
+       function, as it is called by <B>pfFrame</B>.
+
+       <B>pfGetFlux</B> will return the pfFlux that the data buffer
+       pointer <I>data</I> is a part of.  It will return NULL if <I>data</I> is
+       not part of a pfFlux.  This is useful to find out if an
+       attribute of a pfGeoSet is a pfFlux.
+
+       <B>pfFluxDefaultNumBuffers</B> sets the default number of buffers
+       that are allocated when a pfFlux is created using
+       <B>PFFLUX_DEFAULT_NUM_BUFFERS</B>.  Normally there is no reason
+       to call this function, as it is called by <B>pfConfig</B>.  If
+       you are not calling <B>pfConfig</B> in your application and you
+       are using pfFlux you should call <B>pfFluxDefaultNumBuffers</B>
+       before you fork any processes.  <B>pfGetFluxDefaultNumBuffers</B>
+       returns the current default number of buffers.
+
+       <B>pfFluxFrame</B> will set the current flux frame number for the
+       process that is invoking it.  This is the frame number
+       that <B>pfGetFluxCurData</B> <B>pfGetFluxWritableData</B> and
+       <B>pfFluxWriteComplete</B> will use in determining which buffers
+       to operate on.  Normally there is no reason to call this
+       function, as it is called by <B>pfFrame</B> for all Performer
+       processes.  <B>pfGetFluxFrame</B> returns the current flux frame
+       number.
+
+       pfFluxes can be connected to other Performer objects using
+       the following functions:
+
+              <B>pfEngineSrc</B>
+              <B>pfEngineDst</B>
+              <B>pfNewFCS</B>
+              <B>pfFCSFlux</B>
+              <B>pfGSetAttr</B>
+              <B>pfGSetBBoxFlux</B>
+              <B>pfASDAddQueryArray</B>
+              <B>pfBboardPosFlux</B>
+              <B>pfLODRangeFlux</B>
+              <B>pfSwitchValFlux</B>
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfFlux replaces the obsoleted pfCycleBuffers.  The follow-
+       ing shows how to convert code using pfCycleBuffers to use
+       pfFlux:
+
+           /* Replace pfCyclebuffer creation with pfFlux: */
+           pfFlux *flux = pfNewFlux(size, <B>PFFLUX_DEFAULT_NUM_BUFFERS</B>);
+
+           /* replace getting of read-only data
+            * pfCBufGetCurData() for read becomes:
+            */
+           pfFluxGetCurData();
+
+           /* replace getting of data to edit */
+
+           /* get writable buffer BEFORE editing data
+            *
+            */
+            pfGetFluxWritableData();
+
+
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFluxMemory, pfEngine, pfFCS, pfFrame, pfGetFrameTime-
+       Flux, pfASD, pfBillboard, pfGeoSet, pfLOD, pfSwitch
+
+
+
+                                                      pfFlux(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

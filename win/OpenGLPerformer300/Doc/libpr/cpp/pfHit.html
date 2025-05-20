@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<TITLE>pfHit</TITLE>
+</HEAD>
+<BODY>
+<H1>pfHit</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfHit(3pf)                                             pfHit(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfHit</B>  -  Intersection and bounding operations on drawable
+       geometry
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoSet.h&gt;
+
+       int               <B>pfHit::query</B>(uint which, void *dst);
+
+       int               <B>pfHit::mQuery</B>(uint *which, void *dst);
+
+       static pfType *   <B>pfHit::getClassType</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfHit::query</B> and <B>pfHit::mQuery</B> read out  information  from
+       the  pfHit  object.   <B>pfHit::query</B> copies an item from the
+       object into the location specified by <I>dst</I>.   <I>which</I>  speci-
+       fies  the item to be copied using one of the <B>PFHIT_</B> tokens
+       listed above.  <B>pfHit::mQuery</B>  copies  a  series  of  items
+       sequentially  into the buffer specified by <I>dst</I>.  The items
+       and their order are defined by a NULL-terminated array  of
+       query tokens pointed to by <I>which</I>.  For both functions, the
+       return value is the number of bytes written to the  desti-
+       nation buffer.
+
+       <B>PFQHIT_FLAGS</B>  returns a bit vector indicating the validity
+       of information in the structure.  It is formed by  a  bit-
+       wise  OR-ing  of  the <B>PFHIT_POINT</B>, <B>PFHIT_NORM</B>, <B>PFHIT_PRIM</B>,
+       <B>PFHIT_TRI</B>, <B>PFHIT_VERTS</B> and <B>PFHIT_XFORM</B> symbols.
+
+       center tab($) ; c | c lB  |  l  .   Flags  Bit$Validity  _
+       PFHIT_POINT$Point  of intersection PFHIT_NORM$Polygon nor-
+       mal   PFHIT_PRIM$Index   of    primitive    in    pfGeoSet
+       PFHIT_TRI$Index     of     triangle    within    primitive
+       PFHIT_VERTS$Triangle   vertices   PFHIT_XFORM$Non-identity
+       transformation matrix
+
+       Other queried quantities are valid if non-NULL.
+
+       <B>PFQHIT_POINT</B>,  <B>PFQHIT_NORM</B>  and <B>PFQHIT_SEG</B> query the point
+       of intersection, the normal of the triangle at that point,
+       and  the  current  segment  as clipped by the intersection
+       process.  All are in local coordinates, i.e. they  do  not
+       include  the  transformations of pfSCSes and pfDCSes above
+       them in the scene graph.  When  intersecting  with  primi-
+       tives  inside  a  pfGeoSet,  <B>PFQHIT_PRIM</B>,  <B>PFQHIT_TRI</B>  and
+       <B>PFQHIT_VERTS</B> provide the index of the primitive within the
+       pfGeoSet,  the triangle within the primitive, and the ver-
+       tices   of   the   intersected   triangle,   respectively.
+       <B>PFQHIT_GSET</B>  returns  the GeoSet.  <B>PFQHIT_NODE</B> returns the
+       parent pfGeode.
+
+       <B>PFQHIT_PATH</B> returns a pfPath* denoting the traversal path.
+       Like  the  pfHit  object  it  is  reused and should not be
+       freed.
+       is usually better to use  the member function <B>isOfType</B>  to
+       test  if  an  object is of a type derived from a Performer
+       type rather than  to  test  for  strict  equality  of  the
+       <B>pfType</B>*'s.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfCylinder, pfNode, pfGeoSet, pfObject, pfSeg
+
+
+
+                                                       pfHit(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,209 @@
+<HTML>
+<HEAD>
+<TITLE>pfTexEnv</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTexEnv</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTexEnv(3pf)                                       pfTexEnv(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewTEnv,</B>  <B>pfGetTEnvClassType,</B> <B>pfTEnvMode,</B> <B>pfGetTEnvMode,</B>
+       <B>pfTEnvBlendColor,</B>    <B>pfGetTEnvBlendColor,</B>     <B>pfApplyTEnv,</B>
+       <B>pfGetCurTEnv</B>  -  Create, modify and query texture environ-
+       ment
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfTexEnv *   <B>pfNewTEnv</B>(void *arena);
+
+       pfType *     <B>pfGetTEnvClassType</B>(void);
+
+       void         <B>pfTEnvMode</B>(pfTexEnv *tenv, int mode);
+
+       int          <B>pfGetTEnvMode</B>(const pfTexEnv *tenv);
+
+       void         <B>pfTEnvBlendColor</B>(pfTexEnv *tenv,     float r,
+                      float g, float b, float a);
+
+       void         <B>pfGetTEnvBlendColor</B>(pfTexEnv *tenv, float* r,
+                      float* g, float* b, float* a);
+
+       void         <B>pfApplyTEnv</B>(pfTexEnv *tenv);
+
+       pfTexEnv *   <B>pfGetCurTEnv</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfTexEnv</B> is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfTexEnv</B>.  Casting an object of class <B>pfTexEnv</B> to an
+       object of class <B>pfObject</B> is taken care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfTexEnv</B> can also be used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>tenv</I>  identifies a pfTexEnv.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfNewTEnv</B>  creates  and  returns  a  handle to a pfTexEnv.
+       <I>arena</I> specifies a malloc arena out of which  the  pfTexEnv
+       is  allocated or <B>NULL</B> for allocation off the process heap.
+       pfTexEnvs can be deleted with <B>pfDelete</B>.   See  the  OpenGL
+       <B>glTexEnv(3g)</B> man page for more details on texture environ-
+       ments.
+
+       <B>pfGetTEnvClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfTexEnv</B>.   The  <B>pfType</B>* returned by <B>pfGetTEnvClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>  on
+       any  instance of class <B>pfTexEnv</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test  if  an  object  is  of  a  type
+       derived  from  a  Performer  type  rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+
+       <B>pfTEnvMode</B> sets the texture environment mode.  <I>mode</I>  is  a
+       symbolic  token  that specifies a texture environment mode
+       and is one of the following:
+              <B>PFTE_MODULATE</B>
+              <B>PFTE_BLEND</B>
+              <B>PFTE_DECAL</B>
+              <B>PFTE_REPLACE</B>
+              <B>PFTE_ADD</B>
+              <B>PFTE_ALPHA</B>
+
+       The default mode is <B>PFTE_MODULATE</B>.  <B>pfGetTEnvMode</B>  returns
+       the  mode  of <I>tenv</I>.  See the OpenGL <B>glTexEnvf(3g)</B> man page
+       for more details on texture environments.
+
+       n<B>pfTEnvBlendColor</B>  sets  the  texture  environment   blend
+       color.   This  color  is used when the texture environment
+       mode is <B>PFTE_BLEND</B> or <B>PFTE_ADD</B>.  The default  OpenGL  Per-
+       former  texture  environment blend color is [1,1,1,1].  It
+       is different  from  the  default  OpenGL  blend  color  of
+       [0,0,0,0].   This  was done to maintain compatibility with
+       previous OpenGL Performer  releases.   <B>pfGetTEnvBlendColor</B>
+       copies  the  texture environment blend color into <I>r</I>, <I>g</I>, <I>b</I>,
+       <I>a</I>.
+
+       <B>pfApplyTEnv</B> makes <I>tenv</I> the  current  texture  environment.
+       When  texturing is enabled (see below), this texture envi-
+
+              1.     Texturing  must   be   enabled:   <B>pfEnable</B>(-
+                     <B>PFEN_TEXTURE</B>)
+
+              2.     A pfTexEnv must be applied: <B>pfApplyTEnv</B>
+
+              3.     A pfTexture must be applied: <B>pfApplyTex</B>
+
+              4.     Geometry   must  have  texture  coordinates:
+                     <B>pfGSetAttr</B>, <B>PFGS_TEXCOORD2</B>
+
+       The texture environment state element is identified by the
+       <B>PFSTATE_TEXENV</B> token.  Use this token with <B>pfGStateAttr</B> to
+       set the texture  environment  of  a  pfGeoState  and  with
+       <B>pfOverride</B>  to  override  subsequent  texture  environment
+       changes.
+
+       Example 1:
+
+       /* Set up blue 'blend' texture environment */
+       tev = pfNewTEnv(NULL);
+       pfTEnvMode(tev, PFTE_BLEND);
+       pfTEnvBlendColor(tev, 0.0f, 0.0f, 1.0f);
+
+       /* Set up textured/blended pfGeoState */
+       pfGStateMode(gstate, PFSTATE_ENTEXTURE, PF_ON);
+       pfGStateAttr(gstate, PFSTATE_TEXENV, tev);
+       pfGStateAttr(gstate, PFSTATE_TEXTURE, tex);
+
+       /* Attach gstate to gset */
+       pfGSetGState(gset, gstate);
+
+       /* Set texture coordinate array. 'gset' is non-indexed */
+       pfGSetAttr(gset, PFGS_TEXCOORD2, PFGS_PER_VERTEX, tcoords, NULL);
+
+       /* Draw textured gset */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       pfApplyTEnv(tev);
+
+       /* Override so that all textured geometry uses 'tev' */
+       pfOverride(PFSTATE_TEXENV, PF_ON);
+
+
+       <B>pfApplyTEnv</B> is a display-listable command.  If a pfDis-
+       pList has been opened by <B>pfOpenDList</B>, <B>pfApplyTEnv</B> will not
+       have immediate effect but will be captured by the pfDis-
+       pList and will only have effect when that pfDispList is
+       later drawn with <B>pfDrawDList</B>.
+
+       <B>pfGetCurTEnv</B> returns the currently active pfTexEnv or NULL
+       if there is no active pfTexEnv.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>PFTE_ALPHA</B> is supported only on RealityEngine graphics
+       systems.
+
+
+                                                    pfTexEnv(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

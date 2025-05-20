@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+<TITLE>pfdBuildASD</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdBuildASD</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdBuildASD(3pf)                                 pfdBuildASD(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdBuildASD,</B>  <B>pfdStoreASD,</B>  <B>pfdBreakTiles,</B> <B>pfdPagingLooka-</B>
+       <B>head,</B> <B>pfdWriteFile,</B> <B>pfdLoadConfig</B> - Construct  pfASD  node
+       structure from surface data
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfASD *   <B>pfdBuildASD</B>(unsigned int numx,
+                   unsigned int numy,  pfVec3 *data,  int mode,
+                   int inputlods,  int buildpaging,  char *pre-
+                   name,    char *confname,     char *pagename,
+                   int *lookahead);
+
+       void      <B>pfdStoreASD</B>(pfASD *asd, FILE *f);
+
+       void      <B>pfdBreakTiles</B>(int numlods,  pfASDLODRange *lods,
+                   int numverts,   pfASDVert *verts,   int num-
+                   faces,    pfASDFace *faces,   int numfaces0,
+                   char *prename, char *conf);
+
+       void      <B>pfdPagingLookahead</B>(char *confname,   char *page-
+                   name, int *lookahead);
+
+       void      <B>pfdWriteFile</B>(int ***FACE,  int **numf, int ***V,
+                   int **numv,     pfASDFace *faces,     pfASD-
+                   Vert *verts,   pfBox *facebounds,   int lod,
+                   int x, int y, char *prename);
+
+       pfASD *   <B>pfdLoadConfig</B>(char *fname, char *pagename);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdBuildASD</B> accepts an input surface description (such  as
+       a terrain height field) and builds a new pfASD node, which
+       represents the surface as  hierarchical  level  of  detail
+       meshes that are combined and morphed in real-time to model
+       and render the surface efficiently.
+
+       A rectangular surface input to <B>pfdBuildASD</B> is specified as
+       an  array  <I>data</I> of <I>numx</I> columns and <I>numy</I> rows of vertices,
+       arranged in row-major format.  Adjacent  vertices  in  the
+       input  array are assumed to maintain the same adjacency in
+       the pfASD node that is created.  Coarser levels of  detail
+       of the surface are constructed using an algorithm selected
+       via <I>mode</I>. It will build <I>inputlods</I> number of LODs as speci-
+       fied by the user.
+
+       <B>pfdBuildASD</B>   will  generate  appropriate  <B>PFTERRAIN_LODS</B>,
+       <B>PFTERRAIN_COORDS</B>, <B>PFTERRAIN_NORMALS</B>, <B>PFTERRAIN_FACES</B>,  and
+       a  default  pfGeoState for the pfASD node that is created.
+       A uniform meshing will be performed which yields efficient
+       triangle  strips.  <I>buildpaging</I> indicates if the pfASD node
+       constructed should be a pageable node.  If a pageable node
+       is  desired, then a set of paging ASD patches will be cre-
+       ated under the base name <I>pagename</I>, with  <I>lookahead</I>  number
+
+       <B>pfdWriteFile</B>  writes  pageable  pfASD  subtiles out in the
+       fixed format.
+
+       <B>pfdLoadConfig</B> constructs a paging pfASD node  from  config
+       file and pagename file.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       We   provided  a  few  examples  in  pguide/libpf/C  buil-
+       darcinfo.c, buildbw.c, builddem.c, builddted.c  that  con-
+       structs  from  raw  elevation  data  a set of files that a
+       pfASD node pages.  Unfortunately there is a size limit  on
+       how  many  levels of ASD we can constructure before we run
+       out of memory.  Use environment varaible  PFASDLODSIZE  to
+       specify  the number of LODs to build. I suggestion setting
+       the value to 9 for illustration purposes.
+
+       Once the files are built, the next step is to convert them
+       into  intermediate  run-time  paging format using a set of
+       paging size that  is  calculated  based  on  LODRange  and
+       lookahead.   pguide/libpf/C/convasd.c provides the program
+       that converts the data.  Notice we assume the LODRange and
+       lookahead are the ones calculated from pfdBuildASD.c. User
+       can modify the numbers based on  applications.  This  way,
+       the  intermediate  paging data can be set for a particular
+       LODRange without regenerating the paging tiles.
+
+       To summarize, an example of generating some paging ASD is:
+       create  a  dir  bw/  buildbw  pflogo.bw  bw/tile bw/config
+       bw/page  convasd  bw/config  bw/page  modify   asdfly/pag-
+       ing.config  to  pick  up  the  config  and page file, then
+       run_paging.
+
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfASD, pfTerrain
+
+
+
+                                                 pfdBuildASD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,319 @@
+<HTML>
+<HEAD>
+<TITLE>pfDCS</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDCS</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDCS(3pf)                                             pfDCS(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfDCS</B>  -  Create,  modify  and get the matrix of a dynamic
+       coordinate system.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfDCS.h&gt;
+
+                         <B>pfDCS::pfDCS</B>();
+
+       static pfType *   <B>pfDCS::getClassType</B>(void);
+
+       void              <B>pfDCS::setTrans</B>(float x,        float y,
+                           float z);
+
+       void              <B>pfDCS::setRot</B>(float h,          float p,
+                           float r);
+
+       void              <B>pfDCS::setCoord</B>(pfCoord *coord);
+
+       void              <B>pfDCS::setScale</B>(float s);
+
+       void              <B>pfDCS::setScale</B>(float x,        float y,
+                           float z);
+
+       void              <B>pfDCS::setMat</B>(pfMatrix &amp;m);
+
+       void              <B>pfDCS::getMat</B>(pfMatrix &amp;m);
+
+       const pfMatrix*   <B>pfDCS::getMatPtr</B>(void);
+
+       void              <B>pfDCS::setMatType</B>(uint val);
+
+       uint              <B>pfDCS::getMatType</B>();
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL Performer class <B>pfDCS</B> is derived from the par-
+       ent class <B>pfSCS</B>, so each  of  these  member  functions  of
+       class <B>pfSCS</B> are also directly usable with objects of class
+       <B>pfDCS</B>.  This is also true for ancestor  classes  of  class
+       <B>pfSCS</B>.
+
+       void              <B>pfSCS::getMat</B>(pfMatrix &amp;mat);
+       const pfMatrix*   <B>pfSCS::getMatPtr</B>(void);
+
+
+       Since  the  class  <B>pfSCS</B> is itself derived from the parent
+       class <B>pfGroup</B>, objects of class <B>pfDCS</B>  can  also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfGroup</B>.
+
+       int        <B>pfGroup::addChild</B>(pfNode *child);
+       int        <B>pfGroup::insertChild</B>(int index, pfNode *child);
+       int        <B>pfGroup::replaceChild</B>(pfNode *old,         pfN-
+                    ode *new);
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       Since the class <B>pfGroup</B> is itself derived from the  parent
+       class <B>pfNode</B>, objects of class <B>pfDCS</B> can also be used with
+       these functions designed for objects of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfDCS</B> can  also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfDCS</B> can  also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfDCS  (Dynamic  Coordinate  System)  is  a pfSCS whose
+       matrix can be modified.
+
+       <B>new</B> <B>pfDCS</B> creates and returns a handle to a  pfDCS.   Like
+       other  pfNodes,  pfDCSes  are always allocated from shared
+       memory and cannot be created statically, on the  stack  or
+       in  arrays.   pfDCSes  should  be  deleted  using <B>pfDelete</B>
+       rather than the delete operator.
+
+       <B>pfDCS::getClassType</B> returns  the  <B>pfType</B>*  for  the  class
+       <B>pfDCS</B>.  The <B>pfType</B>* returned by <B>pfDCS::getClassType</B> is the
+       same as the <B>pfType</B>* returned by invoking the virtual func-
+       tion  <B>getType</B>  on  any  instance  of class <B>pfDCS</B>.  Because
+       OpenGL Performer allows  subclassing  of  built-in  types,
+       when decisions are made based on the type of an object, it
+       is usually better to use  the member function <B>isOfType</B>  to
+       test  if  an  object is of a type derived from a Performer
+       type rather than  to  test  for  strict  equality  of  the
+       <B>pfType</B>*'s.
+
+       The  initial  transformation  is the identity matrix.  The
+       transformation of a pfDCS  can  be  set  by  specifying  a
+       matrix  or translation, scale and rotation.  When indepen-
+       dently setting translation, rotation, and scale, the pfDCS
+       matrix  is  computed  as S*R*T, where S is the scale, R is
+       the rotation, and T  is  the  translation.  The  order  of
+       effect  is  then  scale  followed  by rotation followed by
+       translation.
+
+       pfDCS operations are absolute rather than cumulative.  For
+       example:
+
+       dcs-&gt;setTrans(2.0f, 0.0f, 0.0f);
+       dcs-&gt;setTrans(1.0f, 0.0f, 0.0f);
+
+       specifies a translation by 1 unit along the X coordinate
+       axis, not 3 units.
+
+       By default a pfDCS uses a bounding sphere which is
+       dynamic, so it is automatically updated when the pfDCS
+       transformation is changed or when children are added,
+       deleted or changed.  This behavior may be changed using
+       <B>pfNode::setBound</B>.  The bound for a pfDCS encompasses all
+       B(i)*S*R*T, where B(i) is the bound for the child 'i' and
+       S*R*T represents the scale, rotation, and translation
+       transformation of the pfDCS.
+       previous scale leaving the rotation and translation
+       unchanged. <B>pfDCS::setScale</B> specifies a non-uniform scale
+       of <I>x</I>, <I>y</I>, <I>z</I>.
+
+       <B>pfDCS::setRot</B> sets the rotation portion of the matrix:
+
+              <I>h</I>    Specifies heading, the rotation about the Z
+                   axis.
+
+              <I>p</I>    Specifies pitch, the rotation about the X
+                   axis.
+
+              <I>r</I>    Specifies roll, rotation about the Y axis.
+
+       The matrix created is R*P*H, where R is the roll trans-
+       form, P is the pitch transform and H is the heading trans-
+       form.  The new (h,p,r) combination replaces the previous
+       specification, leaving the scale and translation
+       unchanged.  The convention is natural for a model in which
+       +Y is "forward," +Z is "up" and +X is "right".  To main-
+       tain 1/1000 degree resolution in the single precision
+       arithmetic used internally for sine and cosine calcula-
+       tions, the angles <I>h</I>, <I>p</I>, <I>r</I> should be in the range of -7500
+       to +7500 degrees.
+
+       <B>pfDCS::setCoord</B> sets the rotation and translation portion
+       of the pfDCS according to <I>coord</I>.  This is equivalent to:
+
+       dcs-&gt;setRot(coord-&gt;hpr[0], coord-&gt;hpr[1], coord-&gt;hpr[2]);
+       dcs-&gt;setTrans(coord-&gt;xyz[0], coord-&gt;xyz[1], coord-&gt;xyz[2]);
+
+
+       <B>pfDCS::setMat</B> sets the transformation matrix for the pfDCS
+       to <I>m</I>.
+
+       Normally <B>pfDCS::setMat</B> is used as a replacement for the
+       above routines which individually set the scale, rotation
+       and translational components.  The mechanisms can be com-
+       bined but only if the supplied matrix can be represented
+       as scale followed by a rotation followed by a translation
+       (e.g. a point pt is transformed by the matrix as: pt' =
+       pt*S*R*T), which implies that no shearing or non-uniform
+       scaling is present.
+
+       <B>pfDCS::setMatType</B> allows the specification of information
+       about the type of transformation the matrix represents.
+       This information allows Performer to speed up some opera-
+       tions.  The matrix type is specified as the OR of
+
+              PFMAT_TRANS: matrix may include a translational
+              component in the 4th row.
+
+              PFMAT_ROT
+                     matrix may include a rotational component in
+                     the left upper 3X3 submatrix.
+
+              PFMAT_SCALE
+                     matrix may include a uniform scale in the
+                     left upper 3X3 submatrix.
+
+              PFMAT_HOM_SCALE
+                     matrix may have mat[4][4] != 1.
+
+              PFMAT_MIRROR
+                     matrix may include mirroring transformation
+                     that switches between right handed and left
+                     handed coordinate systems.
+
+
+              <B>pfDCS::getMatType</B> returns the matrix type as
+              set by <B>pfDCS::setMatType</B>.  If no matrix type is set
+              the default is ~0, corresponding to a general
+              matrix.
+
+              The transformation of a pfDCS affects all its chil-
+              dren.  As the hierarchy is traversed from top to
+              bottom, each new matrix is pre-multiplied to create
+              the new transformation.  For example, if DCSb is
+              below DCSa in the scene graph, any geometry G below
+              DCSa is transformed as G*DCSb*DCSa.
+
+              <B>pfNode::flatten</B> cannot flatten pfDCSes since they
+              may change at run-time.  In this case
+              <B>pfNode::flatten</B> will compute a pfSCS representing
+              the accumulated static transformation that the
+              pfDCS inherits and insert it above the pfDCS.
+              Static transformations below a pfDCS are flattened
+              as usual.  See <B>pfNode::flatten</B> for more details.
+
+              The presence of transformations in the scene graph
+              impacts the performance of intersection, culling
+              and drawing.  pfGeoSet culling (see <B>PFCULL_GSET</B> in
+              <B>pfChannel::setTravMode</B>) is disabled in portions of
+              the scene graph below pfDCSes.
+
+              Both pre and post CULL and DRAW callbacks attached
+              to a pfDCS (<B>pfNode::setTravFuncs</B>) will be affected
+              by the transformation represented by the pfDCS,
+              i.e. - the pfDCS matrix will already have been
+              applied to the matrix stack before the pre callback
+              is called and will be popped only after the post
+              callback is called.
+
+              <B>pfDCS::getMat</B> copies the transformation matrix
+              value from the pfDCS into the matrix <I>m</I>.  For faster
+              matrix access, <B>pfDCS::getMatPtr</B> can be used to get
+              a const pointer to the pfDCS's matrix.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfCoord, pfGroup, pfChannel, pfLookupNode, pfFlatten,
+       pfMatrix, pfNode, pfSCS, pfScene, pfTraverser, pfDelete
+
+
+
+                                                       pfDCS(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

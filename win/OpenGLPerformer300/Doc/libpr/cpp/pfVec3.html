@@ -1,0 +1,257 @@
+<HTML>
+<HEAD>
+<TITLE>pfVec3</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVec3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVec3(3pf)                                           pfVec3(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfVec3</B> - Set and operate on 3-component vectors
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLinMath.h&gt;
+
+       void*          <B>pfVec3::operator</B> <B>new</B>(size_t);
+
+       void*          <B>pfVec3::operator</B> <B>new</B>(size_t, void *arena);
+
+                      <B>pfVec3::pfVec3</B>();
+
+                      <B>pfVec3::pfVec3</B>(float x, float y, float z);
+
+       void           <B>pfVec3::addScaled</B>(const pfVec3&amp; v1,
+                        float s, const pfVec3&amp; v2);
+
+       void           <B>pfVec3::add</B>(const pfVec3&amp; v1,
+                        const pfVec3&amp; v2);
+
+       int            <B>pfVec3::equal</B>(const pfVec3&amp; v2);
+
+       int            <B>pfVec3::almostEqual</B>(const pfVec3&amp; v2,
+                        float tol);
+
+       void           <B>pfVec3::combine</B>(float s1, const pfVec3&amp; v1,
+                        float s2, const pfVec3&amp; v2);
+
+       void           <B>pfVec3::copy</B>(const pfVec3&amp; v);
+
+       void           <B>pfVec3::cross</B>(const pfVec3&amp; v1,
+                        const pfVec3&amp; v2);
+
+       float          <B>pfVec3::distance</B>(const pfVec3&amp; pt2);
+
+       float          <B>pfVec3::dot</B>(const pfVec3&amp; v2);
+
+       float          <B>pfVec3::length</B>(void);
+
+       void           <B>pfVec3::negate</B>(const pfVec3&amp; v);
+
+       float          <B>pfVec3::normalize</B>(void);
+
+       void           <B>pfVec3::scale</B>(float s, const pfVec3&amp; v);
+
+       void           <B>pfVec3::set</B>(float x, float y, float z);
+
+       float          <B>pfVec3::sqrDistance</B>(const pfVec3&amp; pt2);
+
+       void           <B>pfVec3::sub</B>(const pfVec3&amp; v1,
+                        const pfVec3&amp; v2);
+
+       void           <B>pfVec3::xformVec</B>(const pfVec3&amp; v,
+                        const pfMatrix&amp; m);
+
+
+       const float&amp;   <B>pfVec3::operator</B> <B>[]</B>(int i);
+
+       int            <B>pfVec3::operator</B> <B>==</B>(const pfVec3&amp; v);
+
+       pfVec3         <B>pfVec3::operator</B> <B>-</B>() const;
+
+       pfVec3         <B>pfVec3::operator</B> <B>+</B>(const pfVec3&amp; v);
+
+       pfVec3         <B>pfVec3::operator</B> <B>-</B>(const pfVec3&amp; v);
+
+       pfVec3&amp;        <B>pfVec3::operator</B> <B>=</B>(const pfVec3&amp; v);
+
+       pfVec3&amp;        <B>pfVec3::operator</B> <B>*=</B>(float d);
+
+       pfVec3&amp;        <B>pfVec3::operator</B> <B>/=</B>(float d);
+
+       pfVec3&amp;        <B>pfVec3::operator</B> <B>+=</B>(const pfVec3&amp; v);
+
+       pfVec3&amp;        <B>pfVec3::operator</B> <B>-=</B>(const pfVec3&amp; v);
+
+       pfVec3         <B>pfVec3::operator</B>         <B>*</B>(const pfVec3&amp; v,
+                        float d);
+
+       pfVec3         <B>pfVec3::operator</B>                 <B>*</B>(float d,
+                        const pfVec3&amp; v);
+
+       pfVec3         <B>pfVec3::operator</B>         <B>/</B>(const pfVec3&amp; v,
+                        float d);
+
+       pfVec3         <B>pfVec3::operator</B>         <B>*</B>(const pfVec3&amp; v,
+                        const pfMatrix&amp; m);
+
+
+                      struct pfVec3 {
+                          float vec[3];
+                      };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Math functions for 3-component vectors.  Most of these
+       routines have macro equivalents.
+
+       Most accesses to pfVec3 go through pfVec3::operator[], but
+       pfVec3 is a public struct whose data member vec is
+       directly accessible, e.g.  when necessary for passing to a
+       routine expecting a float* such as glColor3fv.  The
+       default constructor <B>pfVec3()</B> is empty and does not ini-
+       tialize the values in the vector.  An initializing con-
+       structor <B>pfVec3</B>(float, float, float) accepts the initial
+       values for the vector.  <B>new</B>(arena) allocates a pfVec3 from
+       the specified memory arena, or from the heap if <I>arena</I> is
+       NULL.  <B>new</B> allocates a pfVec3 from the default memory
+       arena (<B>pfGetSharedArena</B>).  pfVec3s can also be created
+       automatically on the stack or statically.  pfVec3s allo-
+       cated with <B>new</B> can should be deleted with <B>pfDelete</B>, not
+       <B>delete</B>.
+
+       The name <I>vec</I> has been used below to indicate the pfVec3 on
+       <B>pfVec3::negate</B>: <I>vec</I> = -<I>v</I>.  Macro equivalent is
+       <B>PFNEGATE_VEC3</B>.
+
+       <B>pfVec3::add</B>: <I>vec</I> = <I>v1</I> + <I>v2</I>.  Sets <I>vec</I> to the sum of vec-
+       tors <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFADD_VEC3</B>.
+
+       <B>pfVec3::sub</B>: <I>vec</I> = <I>v1</I> - <I>v2</I>.  Sets <I>vec</I> to the difference of
+       <I>v1</I> and <I>v2</I>.  Macro equivalent is  <B>PFSUB_VEC3</B>.
+
+       <B>pfVec3::scale</B>: <I>vec</I> = <I>s</I> * <I>v1</I>.  Sets <I>vec</I> to the vector <I>v</I>
+       scaled by <I>s</I>.  Macro equivalent is  <B>PFSCALE_VEC3</B>.
+
+       <B>pfVec3::addScaled</B>: <I>vec</I> = <I>v1</I> + <I>s</I> * <I>v2</I>.  Sets <I>vec</I> to the
+       vector <I>v1</I> plus the vector <I>v2</I> scaled by <I>s</I>.  Macro equiva-
+       lent is  <B>PFADD_SCALED_VEC3</B>.
+
+       <B>pfVec3::combine</B>: <I>vec</I> = <I>s1</I> * <I>v1</I> + <I>s2</I> * <I>v2</I>.  Sets <I>vec</I> to be
+       the linear combination of <I>v1</I> and <I>v2</I> with scales <I>s1</I> and <I>s2</I>,
+       respectively.  Macro equivalent: <B>PFCOMBINE_VEC3</B>.
+
+       <B>pfVec3::normalize</B>: <I>vec</I> = <I>vec</I> / length(<I>vec</I>).  Normalizes
+       the vector <I>vec</I> to have unit length and returns the origi-
+       nal length of the vector.
+
+       <B>pfVec3::cross</B>: <I>vec</I> = <I>v1</I> X <I>v2</I>.  Sets <I>vec</I> to the cross-prod-
+       uct of two vectors <I>v1</I> and <I>v2</I>.
+
+       <B>pfVec3::xformVec</B>: <I>vec</I> = <I>v</I> * <I>m</I> (<I>vec</I>[i]=<I>v[i]</I> i=0, 1, 2; <I>v</I>[3]
+       = 0).  Transforms <I>v</I> as a vector by the matrix <I>m</I>.
+
+       <B>pfVec3::xformPt</B>: <I>vec</I> = <I>vec</I> * <I>m</I> (<I>vec</I>[i]=<I>vec[i]</I> i=0, 1, 2;
+       <I>vec</I>[3] = 1).  Transforms <I>vec</I> as a point by the matrix <I>m</I>
+       using the 4X3 submatrix.
+
+       <B>pfVec3::fullXformPt</B>: <I>vec</I> = <I>v</I> * <I>m</I> (<I>vec</I>[i]=<I>v[i]</I> i=0, 1, 2;
+       <I>vec</I>[3] = 1).  Transforms <I>vec</I> as a point by the matrix <I>m</I>
+       using the full 4X4 matrix and scaling <I>dst</I> by the resulting
+       w coordinate.
+
+       <B>pfVec3::dot</B> = <I>vec</I> dot <I>v2</I> = <I>vec</I>[0] * <I>v2</I>[0] + <I>vec</I>[1] * <I>v2</I>[1]
+       + <I>vec</I>[2] * <I>v2</I>[2].  Returns dot product of the vectors <I>vec</I>
+       and <I>v2</I>.  Macro equivalent is  <B>PFDOT_VEC3</B>.
+
+       <B>pfVec3::length</B> = |vec| = sqrt(<I>vec</I> dot <I>vec</I>).  Returns
+       length of the vector <I>vec</I>.  Macro equivalent is
+       <B>PFLENGTH_VEC3</B>.
+
+       <B>pfVec3::sqrDistance</B> = (<I>vec</I> - <I>v2</I>) dot (<I>vec</I> - <I>v2</I>).  Returns
+       square of distance between two points <I>vec</I> and <I>v2</I>.  Macro
+       equivalent is <B>PFSQR_DISTANCE_PT3</B>.
+
+       <B>pfVec3::distance</B> = sqrt((<I>vec</I> - <I>v2</I>) dot (<I>vec</I> - <I>v2</I>)).
+       Returns distance between two points <I>vec</I> and <I>v2</I>.  Macro
+       equivalent is  <B>PFDISTANCE_PT3</B>.
+
+       <B>pfVec3::equal</B> = (<I>vec</I> == <I>v2</I>).  Tests for strict component-
+       wise equality of two vectors <I>vec</I> and <I>v2</I> and returns FALSE
+       or TRUE.  Macro equivalent is  <B>PFEQUAL_VEC3</B>.
+
+       Accesses indexed component of vector.
+
+       <B>int</B> <B>operator</B> <B>==</B>(const pfVec3&amp;) Equality comparison opera-
+       tor.
+
+       <B>pfVec3</B> <B>operator</B> <B>-</B>() const Nondestructive unary negation -
+       returns a new vector.
+
+       <B>pfVec3</B> <B>operator</B> <B>+</B>(const pfVec3&amp;) <B>pfVec3</B> <B>operator</B> <B>-</B>(const
+       pfVec3&amp;) Component-wise binary vector addition and sub-
+       traction operators.
+
+       <B>pfVec3&amp;</B> <B>operator</B> <B>=</B>(const pfVec3&amp;) Vector assignment opera-
+       tor.
+
+       <B>pfVec3&amp;</B> <B>operator</B> <B>*=</B>(float) <B>pfVec3&amp;</B> <B>operator</B> <B>/=</B>(float) Com-
+       ponent-wise scalar multiplication and division operators.
+
+       <B>pfVec3&amp;</B> <B>operator</B> <B>+=</B>(const pfVec3&amp;) <B>pfVec3&amp;</B> <B>operator</B>
+       <B>-=</B>(const pfVec3&amp;) Component-wise vector addition and sub-
+       traction operators.
+
+       <B>pfVec3</B> <B>operator</B> <B>*</B>(const pfVec3&amp;, float) <B>pfVec3</B> <B>operator</B>
+       <B>*</B>(float d, const pfVec3&amp;) <B>pfVec3</B> <B>operator</B> <B>/</B>(const pfVec3&amp;,
+       float) <B>pfVec3</B> <B>operator</B> <B>*</B>(const pfVec3&amp;, const pfMatrix&amp;)
+       Component-wise binary scalar multiplication and division
+       operators.
+
+       Routines can accept the same vector as source, destina-
+       tion, or as a repeated operand.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       When using overloaded operators in C++, assignment opera-
+       tors, e.g.  "+=", are somewhat more efficient than the
+       corresponding binary operators, e.g. "+", because the lat-
+       ter construct a temporary intermediate object.  Use
+       assignment operators or macros for binary operations where
+       optimal speed is important.
+
+       C++ does not support array deletion (i.e. <B>delete[]</B>) for
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfVec3[n].
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfMatrix, pfVec2, pfVec4
+
+
+
+                                                      pfVec3(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,366 @@
+<HTML>
+<HEAD>
+<TITLE>pfiInputXform</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiInputXform</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiInputXform(3pf)                             pfiInputXform(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiNewIXform,</B>     <B>pfiNewInputCoord,</B>     <B>pfiNewMotionCoord,</B>
+       <B>pfiNewInput,</B> <B>pfiGetIXformClassType,</B>  <B>pfiGetInputClassType,</B>
+       <B>pfiGetInputCoordClassType,</B>     <B>pfiGetMotionCoordClassType,</B>
+       <B>pfiIsIXformInMotion,</B> <B>pfiInputName,</B> <B>pfiIsIXGetName,</B>  <B>pfiIn-</B>
+       <B>putFocus,</B>  <B>pfiGetInputFocus,</B>  <B>pfiInputEventMask,</B> <B>pfiGetIn-</B>
+       <B>putEventMask,</B>   <B>pfiInputEventStreamCollector,</B>    <B>pfiGetIn-</B>
+       <B>putEventStreamCollector,</B>     <B>pfiInputEventStreamProcessor,</B>
+       <B>pfiGetInputEventStreamProcessor,</B>     <B>pfiInputEventHandler,</B>
+       <B>pfiGetInputEventHandler,</B>   <B>pfiIXformMat,</B>  <B>pfiGetIXformMat,</B>
+       <B>pfiIXformInput,</B> <B>pfiGetIXformInput,</B> <B>pfiIXformInputCoordPtr,</B>
+       <B>pfiGetIXformInputCoordPtr,</B> <B>pfiIXformMotionCoord,</B> <B>pfiGetIX-</B>
+       <B>formMotionCoord,</B> <B>pfiIXformResetCoord,</B> <B>pfiGetIXformResetCo-</B>
+       <B>ord,</B>  <B>pfiIXformCoord,</B> <B>pfiGetIXformCoord,</B> <B>pfiIXformStartMo-</B>
+       <B>tion,</B>   <B>pfiGetIXformStartMotion,</B>    <B>pfiIXformMotionLimits,</B>
+       <B>pfiGetIXformMotionLimits,</B>  <B>pfiIXformDBLimits,</B> <B>pfiGetIXfor-</B>
+       <B>mDBLimits,</B> <B>pfiIXformBSphere,</B>  <B>pfiGetIXformBSphere,</B>  <B>pfiIX-</B>
+       <B>formUpdateFunc,</B>  <B>pfiGetIXformUpdateFunc,</B>  <B>pfiIXformMotion-</B>
+       <B>Funcs,</B> <B>pfiGetIXformMotionFuncs,</B> <B>pfiResetInput,</B> <B>pfiCollect-</B>
+       <B>InputEvents,</B>  <B>pfiProcessInputEvents,</B> <B>pfiStopIXform,</B> <B>pfiRe-</B>
+       <B>setIXform,</B> <B>pfiUpdateIXform,</B>  <B>pfiResetIXformPosition,</B>  <B>pfi-</B>
+       <B>HaveFastMouseClick</B> - pfiInputXform functions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfiInputXform *    <B>pfiNewIXform</B>(void *arena);
+
+       pfiInputCoord *    <B>pfiNewInputCoord</B>(void *arena);
+
+       pfiMotionCoord *   <B>pfiNewMotionCoord</B>(void *arena);
+
+       pfiInput *         <B>pfiNewInput</B>(void *arena);
+
+       pfType *           <B>pfiGetIXformClassType</B>(void);
+
+       pfType *           <B>pfiGetInputClassType</B>(void);
+
+       pfType *           <B>pfiGetInputCoordClassType</B>(void);
+
+       pfType *           <B>pfiGetMotionCoordClassType</B>(void);
+
+       int                <B>pfiIsIXformInMotion</B>(pfiInputXform *ix);
+
+       void               <B>pfiInputName</B>(pfiInput *in,
+                            const char *name);
+
+       const char *       <B>pfiIsIXGetName</B>(pfiInput *in);
+
+       void               <B>pfiInputFocus</B>(pfiInput *in, int focus);
+
+       int                <B>pfiGetInputFocus</B>(pfiInput *in);
+
+       void               <B>pfiInputEventMask</B>(pfiInput *in,
+                            int emask);
+
+       void               <B>pfiGetInputEventStreamCollector</B>(pfiInput *in,
+                            pfuEventHandlerFuncType *func,
+                            void **data);
+
+       void               <B>pfiInputEventStreamProcessor</B>(pfiInput *in,
+                            pfiEventStreamHandlerType func,
+                            void *data);
+
+       void               <B>pfiGetInputEventStreamProcessor</B>(pfiInput *in,
+                            pfuEventHandlerFuncType *func,
+                            void **data);
+
+       void               <B>pfiInputEventHandler</B>(pfiInput *in,
+                            pfuEventHandlerFuncType func,
+                            void *data);
+
+       void               <B>pfiGetInputEventHandler</B>(pfiInput *in,
+                            pfuEventHandlerFunc-
+                            Type *func void **data);
+
+       void               <B>pfiIXformMat</B>(pfiInputXform *ix,   PFMA-
+                            TRIX mat);
+
+       void               <B>pfiGetIXformMat</B>(pfiInputXform *ix,
+                            PFMATRIX mat);
+
+       void               <B>pfiIXformInput</B>(pfiInputXform *ix,  pfi-
+                            Input *in);
+
+       pfiInput *         <B>pfiGetIXformInput</B>(pfiInputXform *ix);
+
+       void               <B>pfiIXformInputCoordPtr</B>(pfiInputXform *ix,
+                            pfiInputCoord *icoord);
+
+       pfiInputCoord
+                          *    <B>pfiGetIXformInputCoordPtr</B>(pfiInputXform *ix);
+
+       void               <B>pfiIXformMotionCoord</B>(pfiInputXform *ix,
+                            pfiMotionCoord *xcoord);
+
+       void               <B>pfiGetIXformMotionCoord</B>(pfiInputXform *ix,
+                            pfiMotionCoord *xcoord);
+
+       void               <B>pfiIXformResetCoord</B>(pfiInputXform *ix,
+                            pfCoord *resetPos);
+
+       void               <B>pfiGetIXformResetCoord</B>(pfiInputXform *ix,
+                            pfCoord *resetPos);
+
+       void               <B>pfiIXformCoord</B>(pfiInputXform *ix, pfCo-
+                            ord *coord);
+
+       void               <B>pfiGetIXformCoord</B>(pfiInputXform *ix,
+                            pfCoord *coord);
+
+       void               <B>pfiIXformStartMotion</B>(pfiInputXform *ix,
+                            float startSpeed,    float startAc-
+                            cel);
+
+
+       void               <B>pfiGetIXformMotionLimits</B>(pfiInputXform *ix,
+                            float *maxSpeed, float *angularVel,
+                            float *maxAccel);
+
+       void               <B>pfiIXformDBLimits</B>(pfiInputXform *ix,
+                            pfBox *dbLimits);
+
+       void               <B>pfiGetIXformDBLimits</B>(pfiInputXform *ix,
+                            pfBox *dbLimits);
+
+       void               <B>pfiIXformBSphere</B>(pfiInputXform *ix,
+                            pfSphere *sphere);
+
+       void               <B>pfiGetIXformBSphere</B>(pfiInputXform *ix,
+                            pfSphere *sphere);
+
+       void               <B>pfiIXformUpdateFunc</B>(pfiInputXform *ix,
+                            pfiInputXformUpdateFuncType func,
+                            void *data);
+
+       void               <B>pfiGetIXformUpdateFunc</B>(pfiInputXform *ix,
+                            pfiInputXformUpdateFuncType *func,
+                            void **data);
+
+       void               <B>pfiIXformMotionFuncs</B>(pfiInputXform *ix,
+                            pfiInputXformFuncType start, pfiIn-
+                            putXformFuncType stop, void *data);
+
+       void               <B>pfiGetIXformMotionFuncs</B>(pfiInputXform *ix,
+                            pfiInputXformFuncType *start,  pfi-
+                            InputXformFuncType *stop,
+                            void **data);
+
+       void               <B>pfiResetInput</B>(pfiInput *in);
+
+       void               <B>pfiCollectInputEvents</B>(pfiInput *in);
+
+       void               <B>pfiProcessInputEvents</B>(pfiInput *in);
+
+       void               <B>pfiStopIXform</B>(pfiInputXform *ix);
+
+       void               <B>pfiResetIXform</B>(pfiInputXform *ix);
+
+       void               <B>pfiUpdateIXform</B>(pfiInputXform *ix);
+
+       void               <B>pfiResetIXformPosition</B>(pfiInputXform *ix);
+
+       int                <B>pfiHaveFastMouseClick</B>(pfuMouse *mouse,
+                            int button, float msecs);
+
+
+                          typedef int (*pfiEventStreamHandlerType)(pfiInput *, pfuEventStream *);
+                          typedef int (*pfiInputXformFuncType)(pfiInputXform *, void *);
+                          typedef int (*pfiInputXformUpdateFuncType)(pfiInputXform *, pfiInputCoord *, void *);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiInputXform</B> is a basic facility for tying together rou-
+       methods are declared in /usr/include/Performer/pfui/pfiIn-
+       putXform.h.
+
+       <B>pfiInit</B> should be called once before any pfiInputXform
+       routines and before the forked creation of any additional
+       processes that will be calling pfiInputXform routines.
+
+       <B>pfiGetIXformClassType</B>  returns the <B>pfType</B>* for the class
+       <B>pfiXformer</B>.  Because OpenGL Performer allows subclassing
+       of built-in types, when decisions are made based on the
+       type of an object, it is usually better to use <B>pfIsOfType</B>
+       to test if an object is of a type derived from a Performer
+       type rather than to test for strict equality of the
+       <B>pfType</B>*'s.
+
+       <B>pfiNewIXform</B> creates a new <B>pfiInputXform</B> data structure as
+       described above and returns a pointer to that structure.
+       <I>arena</I> should specify the shared arena handle returned by
+       <B>pfGetSharedArena</B> or from the process dynamic memory area.
+
+       <B>pfiIXformInput</B> makes <I>in</I> the pfiInput of the pfiInputXform
+       <I>ix</I>.  A pfiInput structure make be created with
+       <B>pfiNewInput</B>.  By default, a pfiInputXform has a NULL pfi-
+       Input*.  <B>pfiGetIXformInput</B> will return the pfiInput* of
+       the pfiInputXform <I>ix</I>.
+
+       <B>pfiIXformInputCoordPtr</B> makes <I>icoord</I> the pfiInputCoord of
+       the pfiInputXform <I>ix</I>.  A pfiInput structure make be cre-
+       ated with <B>pfiNewInputCoord</B>.  By default, a pfiInputXform
+       has a NULL pfiInputCoord*.  <B>pfiGetIXformInputCoordPtr</B> will
+       return the pfiInputCoord* of the pfiInputXform <I>ix</I>.
+
+       <B>pfiIXformMotionCoord</B> will copy the contents of <I>mcoord</I> to
+       the pfiMotionCoord of <I>ix</I>.  A pfiMotionCoord structure make
+       be created with <B>pfiNewMotionCoord</B>.  A pfiInputXform has a
+       fixed pfiMotionCoord structure.
+
+       <B>pfiIXformMat</B> sets the current transformation matrix of <I>ix</I>
+       to be <I>mat</I>.  This will also cause the current position of
+       <I>ix</I> to be recomputed.  <B>pfiGetIXformMat</B> will return the cur-
+       rent transformation matrix of <I>ix</I>.
+
+       <B>pfiIXformCoord</B> sets the current position (XYZ and HPR) of
+       <I>ix</I> to be <I>coord</I>.  This will also cause the current trans-
+       formation matrix of <I>ix</I> to be recomputed.
+       <B>pfiGetIXformCoord</B> will return the current position pfCoord
+       of <I>ix</I>.
+
+       <B>pfiIXformResetCoord</B> specifies the position that <I>ix</I> should
+       reset to upon a call to <B>pfiResetIXformPosition</B>.
+       <B>pfiGetIXformResetCoord</B> will return the current reset posi-
+       tion.  This position is by default xyz=(0.0, 0.0, 0.0) and
+       hpr=(0.0, 0.0, 0.0).
+
+       <B>pfiIXformDBLimits</B> will set the database bounding box of <I>ix</I>
+       to be <I>dbLimits</I>. A bounding sphere and database center (if
+       not previously set with <B>pfiIXformBSphere</B>) will be automat-
+       ically recalculated.  The default bounding box is of size
+       PFI_BIGDB and is centered at (0.0, 0.0, 0.0).
+       sphere.
+
+       <B>pfiIXformStartMotion</B> specifies the starting speed and
+       acceleration to be used by <I>ix</I> when starting motion.  These
+       parameters may be queried with <B>pfiGetIXformStartMotion</B>.
+
+       <B>pfiIXformMotionLimits</B> specifies the maximum speed, angular
+       velocity, and acceleration for <I>ix</I>.  These parameters may
+       be queried with <B>pfiGetIXformMotionLimits</B>.
+
+       <B>pfiHaveFastMouseClick</B> will determine if a mouse button
+       <I>button</I> of <I>mouse</I> was clicked for less than <I>msecs</I>.
+
+       <B>pfiIXformUpdateFunc</B> specifies the callback function and
+       associated data that will be called upon a call to
+       <B>pfiUpdateIXform</B> on <I>ix</I>.  <B>pfiGetIXformUpdateFunc</B> will return
+       the update callback function pointer and associated data.
+       By default, the update callback function is NULL.
+
+       <B>pfiInputEventStreamCollector</B> sets the callback function
+       and associated data for the collection of events for the
+       event stream of the pfiInput <I>in</I>.  This routine will be
+       called upon a call to <B>pfiCollectInputEvents</B> on <I>in</I><B>.</B>
+       <I>pfiGetInputEventStreamCollector</I> <B>will</B> <B>return</B> <B>the</B> <B>current</B>
+       <B>callback</B> <B>function</B> <B>and</B> <B>data.</B>
+
+       <I>pfiInputEventStreamProcessor</I> <B>sets</B> <B>the</B> <B>callback</B> <B>function</B>
+       <B>and</B> <B>associated</B> <B>data</B> <B>for</B> <B>processing</B> <B>of</B> <B>the</B> <B>events</B> <B>stored</B> <B>in</B>
+       <B>the</B> <B>event</B> <B>stream</B> <B>of</B> <B>the</B> <B>pfiInput</B> <I>in.</I>  <I>This</I> <I>routine</I> <I>will</I> <I>be</I>
+       <I>called</I> <I>upon</I> <I>a</I> <I>call</I> <I>to</I> <I>pfiProcessInputEvents</I> <B>on</B> <I>in</I><B>.</B>
+       <B>pfiGetInputEventStreamProcessor</B> <B>will</B> <B>return</B> <B>the</B> <B>current</B>
+       <B>callback</B> <B>function</B> <B>and</B> <B>data.</B>
+
+       <B>pfiIXformMode</B> <B>sets</B> <B>the</B> <B>specified</B> <I>mode</I> <B>of</B> <I>ix</I> <B>to</B> <B>have</B> <B>value</B>
+       <I>val</I><B>.</B>  <B>pfiGetIXformMode</B> <B>returns</B> <B>the</B> <B>value</B> <B>of</B> <B>specified</B> <I>mode</I>
+       <B>of</B> <I>ix</I><B>.</B>  <B>pfiInputXform</B> <B>modes</B> <B>and</B> <B>corresponding</B> <B>values</B> <B>are:</B>
+
+              <B>PFIX_MODE_MOTION</B>
+                        sets the basic motion mode for the motion
+                        model.  <B>PFIX_MOTION_STOP</B> is the basic
+                        motion mode that all pfiInputXforms must
+                        understand.
+
+              <B>PFIX_MODE_MOTION_MOD</B>
+                        sets a bitmask of special motion modi-
+                        fiers. A bitmask of 0x0 implies that
+                        motion does not undergo any special modi-
+                        fications beyond that expected by the
+                        current motion mode.
+
+              <B>PFIX_MODE_ACCEL</B>
+                        sets the current acceleration mode for
+                        <I>ix</I>.  <B>PFIX_ACCEL_NONE</B> is the basic accel-
+                        eration mode that all pfiInputXforms must
+                        understand.
+
+              <B>PFIX_MODE_AUTO</B>
+                        sets the automatic motion condition <I>val</I>.
+
+                        <B>PFIX_LIMIT_POS_NONE</B> will prohibit limits
+                        on position.
+
+              <B>PFIX_MODE_LIMIT_SPEED</B>
+                        sets a bitmask indicating what types of
+                        speed limits that <I>ix</I> should enforce.  The
+                        bitmask <I>val</I> may contain one or more of
+                        <B>PFIX_LIMIT_SPEED_MAX</B> and
+                        <B>PFIX_LIMIT_SPEED_DB</B>.  A value of
+                        <B>PFIX_LIMIT_SPEED_NONE</B> will prohibit lim-
+                        its on speed.
+
+              <B>PFIX_MODE_LIMIT_ACCEL</B>
+                        sets a bitmask indicating what types of
+                        speed limits that <I>ix</I> should enforce.  The
+                        bitmask <I>val</I> may contain one or more of
+                        <B>PFIX_LIMIT_ACCEL_MAX</B> and
+                        <B>PFIX_LIMIT_ACCEL_DB</B>.  A value of
+                        <B>PFIX_LIMIT_ACCEL_NONE</B> will prohibit lim-
+                        its on acceleration.
+
+       <B>pfiStopIXform</B> halts motion of <I>ix</I> by setting the current
+       speed and acceleration to zero.
+
+       <B>pfiResetIXform</B> resets the motion and positional parameters
+       to their initial values.
+
+       <B>pfiResetIXformPosition</B> sets current position of <I>ix</I> to be
+       the current reset position, which can be set with
+       <B>pfiIXformResetCoord</B>.
+
+       <B>pfiUpdateIXform</B> copies the current position of the pfiMo-
+       tionCoord of <I>ix</I> to the stored previous position of the
+       pfiMotionCoord and calls the current update callback func-
+       tion with its associated data.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+                                               pfiInputXform(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

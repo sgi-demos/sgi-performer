@@ -1,0 +1,357 @@
+<HTML>
+<HEAD>
+<TITLE>pfLOD</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLOD</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLOD(3pf)                                             pfLOD(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfLOD</B> - Create, modify, and query level of detail nodes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfLOD.h&gt;
+
+                           <B>pfLOD::pfLOD</B>();
+
+       static pfType *     <B>pfLOD::getClassType</B>(void);
+
+       void                <B>pfLOD::setRange</B>(int index,
+                             float range);
+
+       float               <B>pfLOD::getRange</B>(int index);
+
+       int                 <B>pfLOD::getNumRanges</B>(void);
+
+       void                <B>pfLOD::setTransition</B>(int index,
+                             float distance);
+
+       float               <B>pfLOD::getTransition</B>(int index);
+
+       int                 <B>pfLOD::getNumTransitions</B>(void);
+
+       void                <B>pfLOD::setRangeFlux</B>(int index,
+                             pfFlux *flux);
+
+       pfFlux*             <B>pfLOD::getRangeFlux</B>(int index);
+
+       int                 <B>pfLOD::getNumRangeFluxes</B>(void);
+
+       void                <B>pfLOD::setCenter</B>(pfVec3 &amp;center);
+
+       void                <B>pfLOD::getCenter</B>(pfVec3 &amp;center);
+
+       void                <B>pfLOD::setLODState</B>(pfLODState *ls);
+
+       pfLODState*         <B>pfLOD::getLODState</B>(void);
+
+       void                <B>pfLOD::setLODStateIndex</B>(int index);
+
+       void                <B>pfLOD::getLODStateIndex</B>(void);
+
+       float               <B>pfLOD::evaluate</B>(const pfChannel *chan,
+                             const pfMatrix *offset);
+
+       void                <B>pfLOD::setUserEvalFunc</B>(pfLOD *lod,
+                             pfLODEvalFuncType evalFunc);
+
+       pfLODEvalFuncType   <B>pfLOD::getUserEvalFunc</B>(pfLOD *lod);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfLOD</B> is derived from the  par-
+       ent  class  <B>pfGroup</B>,  so each of these member functions of
+       class <B>pfGroup</B> are also directly  usable  with  objects  of
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       int        <B>pfGroup::searchChild</B>(pfNode* child);
+       pfNode *   <B>pfGroup::getChild</B>(int index);
+       int        <B>pfGroup::getNumChildren</B>(void);
+       int        <B>pfGroup::bufferAddChild</B>(pfNode *child);
+       int        <B>pfGroup::bufferRemoveChild</B>(pfNode *child);
+
+
+       Since the class <B>pfGroup</B> is itself derived from the  parent
+       class <B>pfNode</B>, objects of class <B>pfLOD</B> can also be used with
+       these functions designed for objects of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfLOD</B> can  also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>lod</I>  identifies a pfLOD.
+
+            typedef float (*pfLODEvalFuncType)
+                          (pfLOD *lod, pfChannel *chan, pfMatrix *offset);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfLOD is a level-of-detail (LOD) node.  Level-of-detail
+       is a technique for manipulating model complexity based on
+       image quality and rendering speed.  Typically, a model is
+       drawn in finer detail when close to the viewer (occupies
+       large screen area) than when it is far away (occupies lit-
+       tle screen area).  In this way, costly detail is drawn
+       only when necessary.
+
+       Additionally, OpenGL Performer can adjust LODs based on
+       rendering load.  If a scene is taking too long to draw,
+       OpenGL Performer can globally modify LODs so that they are
+       drawn coarser and render time is reduced (see
+       <B>pfChannel::setStress</B>).
+
+       OpenGL Performer uses range-based LOD and adjusts for
+       field-of-view and viewport pixel size.  Range is computed
+       as the distance from the pfChannel eyepoint which is draw-
+       ing the scene to a point designated as the center of a
+       pfLOD.  This range is then potentially modified by pfChan-
+       nel attributes (see <B>pfChannel::setLODAttr</B>,
+       <B>pfChannel::setStress</B>).  This range indexes the pfLOD range
+       list to select a single child to draw.
+
+       pfLOD is derived from pfGroup so it can have children and
+       use pfGroup API to manipulate its child list.  In addition
+       to a list of children, a pfLOD has a list of ranges which
+       specify the transition points between levels-of-detail.
+       <B>new</B> <B>pfLOD</B> creates and returns a handle to a pfLOD.  Like
+       other pfNodes, pfLODs are always allocated from shared
+       memory and cannot be created statically, on the stack or
+       in arrays.  pfLODs should be deleted using <B>pfDelete</B> rather
+       when decisions are made based on the type of an object, it
+       is usually better to use  the member function <B>isOfType</B> to
+       test if an object is of a type derived from a Performer
+       type rather than to test for strict equality of the
+       <B>pfType</B>*'s.
+
+       <B>pfLOD::setCenter</B> sets the object-space point which defines
+       the center of the pfLOD.  <I>center</I> is affected by any trans-
+       forms in the hierarchy above the pfLOD (see pfSCS).
+       <B>pfLOD::getCenter</B> copies the LOD center point into <I>center</I>.
+
+       <B>pfLOD::setRange</B> sets the value of range list element <I>index</I>
+       to <I>range</I> which is a floating point distance specified in
+       world coordinates.  A child is selected based on the com-
+       puted range (LODRange) from the eyepoint to the pfLOD cen-
+       ter and the range list (<I>Ranges</I>) according to the following
+       pseudocode decision test:
+
+       if (LODRange &lt; Ranges[0])
+           draw nothing;
+       else
+       if (LODRange &gt;= Ranges[i] &amp;&amp; LODRange &lt; Ranges[i+1])
+           draw Child[i];
+       else
+       if (LODRange &gt;= Ranges[N-1] where N is length of Ranges)
+           draw nothing;
+
+
+       Ranges specified by <B>pfLOD::setRange</B> must be positive and
+       increasing with index or results are undefined.
+       <B>pfLOD::getRange</B> returns the range with index <I>index</I> and
+       <B>pfLOD::getNumRanges</B> returns the number of ranges currently
+       set.
+
+       Normally, LOD transitions are abrupt switches that can
+       cause distracting visual artifacts.  However, OpenGL Per-
+       former provides two ways to achieve smooth LOD transi-
+       tions.  The first way is by having morphing LODs that
+       transition smoothly between the static LODs.  The second
+       way is to blend between the LODs, by drawing both LODs
+       during a transition range and alpha blending between them.
+       Morphing LODs tends to achieve better draw performance
+       because you are never drawing two LODs at once.  But mor-
+       phing LODs do require special modeling and the morph
+       engine will require some amount of CPU time to calculate
+       the morphed geometry.  Blended LODs have the advantage
+       that no special modeling is required, and so it is easy to
+       enable blended LODs.
+
+       A morphing LOD is created by connecting a <B>pfFlux</B> to a
+       <B>pfLOD</B> node using <B>pfLOD::setRangeFlux</B>.  This <B>pfFlux</B> is then
+       connected to the <B>PFENG_MORPH_FRAME</B> source of one or more
+       <B>PFENG_MORPH</B> <B>pfEngines</B>.  When a LOD is selected, which has
+       a range flux attached, the range flux will be updated.
+       The value of the range flux will be between 0.0 and 1.0,
+       depending on where the computed range is within the range
+       for the LOD.  Morphing is discussed in greater depth in
+       the <B>pfEngine</B> man page.
+
+       children.  The number of transitions is equal to the num-
+       ber of LOD children + 1.  Thus Transitions[0] specifies
+       the distance over which LOD child 0 should fade in. Tran-
+       sitions[1] specifies the distance over which OpenGL Per-
+       former will fade between child 0 and child 1.  Transi-
+       tions[N] specifies the distance over which the last lod
+       child will fade out.  Note that performer will regulate
+       the transition such that the fade will be centered based
+       on the ranges specified by pfLODRange.  It is also impor-
+       tant to note the pfLODTransition distances should be spec-
+       ified such that there is no overlap between transitions or
+       reasonable, but undefined, behavior will result.  Thus, it
+       is important to consider pfLODRanges when specifying tran-
+       sition distances.  <B>pfLOD::getTransition</B> returns the range
+       with index <I>index</I> and <B>pfLOD::getNumRanges</B> returns the num-
+       ber of ranges currently set.
+
+       Note that in practice OpenGL Performer will multiply this
+       transition distance by a global transition scale (this
+       scale is set by calls to <B>pfChannel::setLODAttr</B> with the
+       <B>PFLOD_FADE</B> token).
+
+       The default behavior of pfLODTransition is that each tran-
+       sition is set to a distance of 1.0 (except Transitions[0]
+       which is set to 0.0 by default).  This makes it easy to
+       specify a "global fade range" by controlling a
+       <B>pfChannel::setLODAttr</B> attribute - <B>PFLOD_FADE</B>.  By setting
+       <B>PFLOD_FADE</B> to 10.0, all transitions that have not be
+       explicitly set will use 10.0 * 1.0 = 10.0 as their fade
+       distance (except Transitions[0] which will not fade at
+       all).
+
+       Note that if one does not desire control over individual
+       lod transitions, it is not necessary to call
+       <B>pfLOD::setTransition</B>.
+
+       If a particular LOD is morphing you will probably want to
+       set its transitions to 0.0.
+
+       <B>pfLOD::setLODState</B> associates the given pfLOD and pfLOD-
+       State.  This enables the control of how a particular pfLOD
+       responds to stress and range.  <B>pfLOD::getLODState</B> returns
+       the pfLODState associated with lod if there is one or NULL
+       if one does not exist.
+
+       <B>pfLOD::setLODStateIndex</B> allows pfLODStates to be indexed
+       on a per channel basis.  <I>index</I> is an index into an pfList
+       of pfLODStates specified via <B>pfChannel::setLODStateList</B>.
+       <B>pfLOD::getLODStateIndex</B> returns the index currently speci-
+       fied for the pfLOD or -1 if no index has been specified.
+
+       Note that if an out of range index is specified for a
+       given pfLOD then the pfLODState specified as the global
+       pfLODState for that channel will be used.
+
+       <B>pfLOD::evaluate</B> returns the index of the child that the
+       Performer Cull traversal would produce given a specific
+       channel and matrix offset.  The integer portion of the
+       return value represents the selected child, while the
+       that child one would be 75% opaque while child two would
+       be 25% opaque.  Similarly a value of 3.9 would represent
+       child three being 10% opaque (solid) while child four was
+       90% opaque.  The value -1.0 is returned when no children
+       are visible.  Note that negative floating point values
+       (like -.3) mean that Performer is currently fading in
+       child 0 and that it is 70% opaque.  Thus return values
+       will range from -1.0 &lt;= return value &lt; N+1 where N is the
+       number of children for the LOD.  (See <B>pfChannel</B> and
+       <B>pfLODState</B>)
+
+       <B>pfLOD::setUserEvalFunc</B> sets a user function for picking an
+       LOD result. The result of this user function is a floating
+       point number similar to the result of <B>pfLOD::evaluate</B>.
+       <B>pfLOD::getUserEvalFunc</B> returns the current user evaluation
+       function.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Intersection traversals currently always intersect with an
+       LODRange of 0.  To intersect with other ranges, a pfSwitch
+       with the same parent and children as the pfLOD can be cre-
+       ated with the pfLOD used for drawing and the pfSwitch used
+       for intersecting (see <B>pfChannel::setTravMask</B>).
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfGroup, pfLODState, pfNode, pfDelete
+
+
+
+                                                       pfLOD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

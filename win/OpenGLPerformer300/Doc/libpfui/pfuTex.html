@@ -1,0 +1,264 @@
+<HTML>
+<HEAD>
+<TITLE>pfuTex</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuTex</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuTex(3pf)                                           pfuTex(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuNewSharedTex,</B> <B>pfuGetSharedTexList,</B> <B>pfuMakeTexList,</B> <B>pfu-</B>
+       <B>MakeSceneTexList,</B> <B>pfuDownloadTexList,</B> <B>pfuGetTexSize,</B>  <B>pfu-</B>
+       <B>NewTexList,</B>  <B>pfuLoadTexListFiles,</B>  <B>pfuLoadTexListFmt,</B> <B>pfu-</B>
+       <B>NewProjector,</B>  <B>pfuProjectorPreDrawCB,</B>   <B>pfuProjectorMovie,</B>
+       <B>pfuGetProjectorHandle,</B>  <B>pfuProjectorHandle,</B>  <B>pfuGetProjec-</B>
+       <B>torScreenList,</B>   <B>pfuAddProjectorScreen,</B>   <B>pfuRemoveProjec-</B>
+       <B>torScreen,</B>   <B>pfuReplaceProjectorScreen,</B>  <B>pfuLoadDetailTex-</B>
+       <B>tures</B> - Create and initialize textures, create and display
+       movies.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfTexture *    <B>pfuNewSharedTex</B>(const char *filename,
+                        void *arena);
+
+       pfList *       <B>pfuGetSharedTexList</B>(void);
+
+       pfList *       <B>pfuMakeTexList</B>(pfNode *node);
+
+       pfList *       <B>pfuMakeSceneTexList</B>(pfScene *scene);
+
+       void           <B>pfuDownloadTexList</B>(pfList *list,
+                        int style);
+
+       int            <B>pfuGetTexSize</B>(pfTexture *tex);
+
+       void           <B>pfuNewTexList</B>(pfTexture *tex);
+
+       pfList *       <B>pfuLoadTexListFiles</B>(pfList *movieTexList,
+                        char nameList[][PF_MAXSTRING],
+                        int len);
+
+       pfList *       <B>pfuLoadTexListFmt</B>(pfList *movieTexList,
+                        const char *fmtStr,          int start,
+                        int end);
+
+       pfSequence *   <B>pfuNewProjector</B>(pfTexture *handle);
+
+       int            <B>pfuProjectorPreDrawCB</B>(pfTraverser *trav,
+                        void *travData);
+
+       void           <B>pfuProjectorMovie</B>(pfSequence *proj,
+                        pfList *movie);
+
+       pfTexture *    <B>pfuGetProjectorHandle</B>(pfSequence *proj);
+
+       void           <B>pfuProjectorHandle</B>(pfSequence *proj, pfTex-
+                        ture *new);
+
+       pfList
+                      *       <B>pfuGetProjectorScreenList</B>(pfSequence *proj);
+
+       void           <B>pfuAddProjectorScreen</B>(pfSequence *proj,
+
+       void           <B>pfuLoadDetailTextures</B>(pfList *list,  pfuDe-
+                        tailInfo *di, int ndi);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These utilities assist in the sharing and  downloading  of
+       textures.
+
+       For  consistent frame rates, it is very important to down-
+       load textures into the graphics pipeline's  physical  tex-
+       ture  memory before beginning simulation.  This is so that
+       there is no momentary pause while the  textures  are  pro-
+       cessed (<B>texdef</B>) and downloaded (<B>texbind</B>).
+
+       An  example  of the use of these functions can be found in
+       /usr/share/Performer/src/sample/C/common/generic.c   which
+       is  used  by a number of sample applications including the
+       OpenGL Performer <B>perfly</B> sample application.
+
+       <B>pfuNewSharedTex</B> examines the application's global list  of
+       previously  allocated  textures for the file <I>filename</I>.  If
+       the file has already  been  loaded,  the  address  of  the
+       existing  pfTexture  structure  is returned; if not, a new
+       pfTexture is allocated in <I>arena</I>, the named file  is  read,
+       and  the  address  is  returned  for  reference  in future
+       requests.
+
+       <B>pfuGetSharedTexList</B> returns the list of all textures allo-
+       cated  using the <B>pfuNewSharedTex</B> texture-sharing mechanism
+       described above during the current execution of  the  pro-
+       cess.  The list returned is useful for many things includ-
+       ing texture downloading.
+
+       <B>pfuMakeTexList</B> constructs a list  of  textures  by  recur-
+       sively  traversing the OpenGL Performer scene graph rooted
+       by <I>node</I>.  Since this traversal is  exhaustive  no  texture
+       will be missed.
+
+       Performer  supports  the  notion  of a <I>scene</I> <I>pfGeoState</I> to
+       represent common rendering state for a pfScene. When  this
+       mechanism   is   used,   the   texture   list   built   by
+       <B>pfuMakeTexList</B> will not include the texture defined by the
+       scene  pfGeoState. The function <B>pfuMakeSceneTexList</B> dupli-
+       cates the function of <B>pfuMakeTexList</B> and  adds  the  scene
+       pfGeoState's  texture  to the list if the scene pfGeoState
+       defines a texture.
+
+       <B>pfuDownloadTexList</B> visits each texture in  the  list  pro-
+       vided in <I>list</I> and performs one of the following functions:
+
+              <B>PFUTEX_APPLY</B>
+                   Download each texture  without  any  on-screen
+                   fanfare.
+
+              <B>PFUTEX_SHOW</B>
+                   Show  each  texture  in the screen while down-
+                   loading.  This is the source  of  the  "slide-
+                   show" seen as the OpenGL Performer <B>perfly</B> pro-
+                   gram starts up.
+
+       In  most  cases,  <B>pfuDownloadTexList</B> will be called in the
+       first traversal through the channel draw callback on  each
+       configured  <B>pfPipe</B>.  This function <B>must</B> be called from the
+       draw process  since  it  makes  direct  graphics  function
+       calls.
+
+       <B>pfuGetTexSize</B>  queries the number of bytes of texture used
+       in <I>tex</I>.
+
+       <B>pfuNewTexList</B> preallocates a sequence of 16  frames  on  a
+       <B>pfTexture</B> for animation.
+
+       <B>pfuLoadTexListFiles</B>  fills  a list within a <B>pfTexture</B> from
+       the array of file  names,  <I>nameList</I>,  which  contains  <I>len</I>
+       names.  If  <I>movieTexList</I>  is passed as NULL, a new list is
+       automatically allocated. The filled list is returned.
+
+       <B>pfuLoadTexListFmt</B> fills a list within a <B>pfTexture</B>  from  a
+       sequence  of  files  indicated  by the <B>printf</B>-style format
+       string <I>fmtStr</I>.  <B>pfuLoadTexListFmt</B> uses <B>sprintf</B> and  <I>fmtStr</I>
+       to  construct filenames ranging sequentially from <I>start</I> to
+       <I>end</I> and adds the textures in these files to the list.
+
+       The following routines are used to create  and  display  a
+       movie.  A  movie has a projector (a <B>pfSequence</B> node with a
+       special <B>pfUserData</B> and pre-draw callback), a default  base
+       frame  (a  <B>pfTexture*</B>), one or more screens (<B>pfTexture*</B>'s)
+       and a reel of movie frames (a <B>pfList</B> of <B>pfTexture*</B>).
+
+       The <B>pfSequence</B> API is used to run the projector  and  con-
+       trol  the movie display. Screens can be added, removed, or
+       replaced at will.  Each projector can have any  number  of
+       screens  but  each screen should be in only one projector.
+       The projector node  should  be  the  first  child  of  the
+       <B>pfScene</B>  node.  It  draws no geometry, but only configures
+       its <B>pfTexture*</B> screen to display the  correct  image  when
+       accessed later via traversal of the normal scene graph (or
+       a direct <B>pfApplyTex</B>).
+
+       <B>pfuNewProjector</B> creates and returns a <B>pfSequence</B>  contain-
+       ing  the  list  of  textures  in <I>handle</I>, with the textures
+       stored as the leaves under  the  <B>pfSequence</B>  and  installs
+       <B>pfuProjectorPreDrawCB</B>  as the default pre-draw stage call-
+       back.
+
+       <B>pfuProjectorMovie</B> sets the <B>pfSequence</B> passed  in  <I>proj</I>  to
+       the  list  of textures passed in <I>movie</I>. This enables <I>movie</I>
+       to be played in all the screens of <I>proj</I>.
+
+       <B>pfuProjectorHandle</B> sets the <B>pfSequence</B> passed in  <I>proj</I>  to
+       the  list  of  textures  contained in the <B>pfTexture</B> handle
+       <I>new</I>.
+
+       <B>pfuGetProjectorHandle</B> returns the  <B>pfTexture</B>  handle  from
+       the <B>pfSequence</B> passed in <I>proj</I>.
+
+       <B>pfuGetProjectorScreenList</B>  returns  the list of screens in
+       the <B>pfSequence</B> passed in <I>proj</I>.
+
+
+       <B>pfuReplaceProjectorScreen</B> replaces the screen <I>old</I>  in  the
+       movie  <I>proj</I>  with  the screen <I>mew</I>. This sets <I>old</I>'s texture
+       list to NULL and its frame to -1.
+
+       The following code fragment shows how a movie can be  cre-
+       ated.
+
+       Example 1:
+
+         /* create a projector with a pfTexture handle for the movie tape.
+          * The reel base texture can also be used as a base screen.
+          * The movie can be the texture list on the handle here, or can
+          * be added/replaced later with pfuProjectorMovie(proj, tape) or with
+          * pfuProjectorHandle(proj, newHandle);
+          */
+           pfTexture *handle = pfNewTex(pfGetSharedArena());
+           pfSequence *proj = pfuNewProjector(handle);
+
+         /* set AUTO_IDLE mode on the handle - new screens on the projector inherit
+          * this mode from the handle
+          */
+           pfTexLoadMode(handle, PFTEX_LIST_AUTO_IDLE, 1);
+
+         /* Create a pfList to hold the frames of the movie */
+           pfList *tape = pfuLoadTexListFmt(NULL, fmtStr)
+                /* or pfuLoadTexListFiles(NULL, fileNameList); */
+
+         /* put the movie in the projector */
+           pfuProjectorMovie(proj, tape);
+
+
+       <B>pfuLoadDetailTextures</B> will define the detail textures
+       according to their associations specified with <I>di</I> to the
+       base textures found in <I>list</I>.
+
+       typedef struct {
+           char *texname;
+           char *detailname;
+           int level;
+           pfTexture *detailtex;
+           int setSpline;
+           pfVec2 spline[4];
+       } pfuDetailInfo;
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfApplyTex, pfList, pfScene, pfSequence, pfTexture,
+       pfUserData, printf, sprintf
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

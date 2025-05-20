@@ -1,0 +1,2313 @@
+<HTML>
+<HEAD>
+<TITLE>pfChannel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfChannel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfChannel(3pf)                                     pfChannel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewChan,</B>  <B>pfGetChanClassType,</B> <B>pfGetChanPipe,</B> <B>pfChanView-</B>
+       <B>port,</B> <B>pfGetChanViewport,</B>  <B>pfGetChanOrigin,</B>  <B>pfGetChanSize,</B>
+       <B>pfChanLODState,</B>   <B>pfGetChanLODState,</B>   <B>pfChanLODStateList,</B>
+       <B>pfGetChanLODStateList,</B> <B>pfGetChanPWinIndex,</B>  <B>pfGetChanPWin,</B>
+       <B>pfChanTravFunc,</B>     <B>pfGetChanTravFunc,</B>    <B>pfAllocChanData,</B>
+       <B>pfChanData,</B> <B>pfGetChanData,</B> <B>pfGetChanDataSize,</B>  <B>pfPassChan-</B>
+       <B>Data,</B>  <B>pfClearChan,</B>  <B>pfAttachChan,</B>  <B>pfDetachChan,</B> <B>pfASDat-</B>
+       <B>tachChan,</B>  <B>pfASDdetachChan,</B>  <B>pfChanShare,</B>  <B>pfGetChanShare,</B>
+       <B>pfChanFOV,</B>  <B>pfGetChanFOV,</B> <B>pfChanNearFar,</B> <B>pfGetChanNearFar,</B>
+       <B>pfChanAutoAspect,</B> <B>pfGetChanAutoAspect,</B> <B>pfGetChanBaseFrust,</B>
+       <B>pfGetChanPtope,</B> <B>pfMakePerspChan,</B> <B>pfMakeOrthoChan,</B> <B>pfMakeS-</B>
+       <B>impleChan,</B>        <B>pfGetChanFrustType,</B>        <B>pfChanAspect,</B>
+       <B>pfGetChanAspect,</B>      <B>pfOrthoXformChan,</B>     <B>pfGetChanNear,</B>
+       <B>pfGetChanFar,</B> <B>pfGetChanEye,</B> <B>pfApplyChan,</B> <B>pfChanContainsPt,</B>
+       <B>pfChanContainsSphere,</B>  <B>pfChanContainsCyl,</B>  <B>pfChanContains-</B>
+       <B>Box,</B>  <B>pfChanCullPtope,</B>   <B>pfGetChanCullPtope,</B>   <B>pfChanPick,</B>
+       <B>pfChanNodeIsectSegs,</B>      <B>pfChanScene,</B>     <B>pfGetChanScene,</B>
+       <B>pfChanESky,</B> <B>pfGetChanESky,</B> <B>pfChanGState,</B>  <B>pfGetChanGState,</B>
+       <B>pfChanGStateTable,</B>  <B>pfGetChanGStateTable,</B> <B>pfChanStressFil-</B>
+       <B>ter,</B> <B>pfGetChanStressFilter,</B> <B>pfChanStress,</B> <B>pfGetChanStress,</B>
+       <B>pfGetChanLoad,</B>      <B>pfChanTravMode,</B>     <B>pfGetChanTravMode,</B>
+       <B>pfChanTravMask,</B>     <B>pfGetChanTravMask,</B>      <B>pfChanBinSort,</B>
+       <B>pfGetChanBinSort,</B>    <B>pfChanBinOrder,</B>    <B>pfGetChanBinOrder,</B>
+       <B>pfGetChanFreeBin,</B> <B>pfChanBinSortPriority,</B> <B>pfGetChanBinSort-</B>
+       <B>Priority,</B> <B>pfChanBinChildOrderMask,</B> <B>pfGetChanBinChildOrder-</B>
+       <B>Mask,</B>  <B>pfChanBinFlags,</B>  <B>pfGetChanBinFlags,</B>  <B>pfChanBinCall-</B>
+       <B>Back,</B>  <B>pfGetChanBinCallBack,</B> <B>pfChanBinUserData,</B> <B>pfGetChan-</B>
+       <B>BinUserData,</B>    <B>pfChanFindSubBin,</B>     <B>pfChanFindBinParent,</B>
+       <B>pfGetChanCullProgram,</B>  <B>pfChanView,</B>  <B>pfGetChanView,</B> <B>pfChan-</B>
+       <B>ViewMat,</B> <B>pfGetChanViewMat,</B>  <B>pfChanViewOffsets,</B>  <B>pfGetChan-</B>
+       <B>ViewOffsets,</B>    <B>pfGetChanOffsetViewMat,</B>   <B>pfGetChanFStats,</B>
+       <B>pfChanStatsMode,</B>      <B>pfDrawChanStats,</B>      <B>pfChanLODAttr,</B>
+       <B>pfGetChanLODAttr,</B>    <B>pfChanProjMode,</B>    <B>pfGetChanProjMode,</B>
+       <B>pfGetChanPVChan,</B>   <B>pfChanPWinPVChanIndex,</B>   <B>pfGetChanPWin-</B>
+       <B>PVChanIndex,</B>   <B>pfChanOutputViewport,</B>  <B>pfGetChanOutputView-</B>
+       <B>port,</B> <B>pfGetChanOutputOrigin,</B> <B>pfGetChanOutputSize,</B>  <B>pfChan-</B>
+       <B>PixScale,</B> <B>pfGetChanPixScale,</B> <B>pfChanMinPixScale,</B> <B>pfGetChan-</B>
+       <B>MinPixScale,</B>   <B>pfChanMaxPixScale,</B>    <B>pfGetChanMaxPixScale,</B>
+       <B>pfChanCallig,</B> <B>pfGetChanCallig,</B> <B>pfGetChanCurCallig,</B> <B>pfChan-</B>
+       <B>CalligEnable,</B>   <B>pfGetChanCalligEnable,</B>   <B>pfApp,</B>    <B>pfCull,</B>
+       <B>pfDraw,</B>  <B>pfLPoint,</B> <B>pfDrawBin,</B> <B>pfDrawScene,</B> <B>pfNodePickSetup</B>
+       - Set and get pfChannel definition parameters.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfChannel *       <B>pfNewChan</B>(pfPipe *pipe);
+
+       pfType *          <B>pfGetChanClassType</B>(void);
+
+       pfPipe *          <B>pfGetChanPipe</B>(const pfChannel *chan);
+
+       void              <B>pfChanViewport</B>(pfChannel* chan, float l,
+                           float r, float b, float t);
+
+       void              <B>pfGetChanSize</B>(const pfChannel* chan,
+                           int *xs, int *ys);
+
+       void              <B>pfChanLODState</B>(pfChannel* chan,
+                           const pfLODState *ls);
+
+       void              <B>pfGetChanLODState</B>(const pfChannel* chan,
+                           pfLODState *ls);
+
+       void              <B>pfChanLODStateList</B>(const pfChannel* chan,
+                           pfList *lsList);
+
+       pfList*           <B>pfGetChanLODStateList</B>(const pfChannel* chan);
+
+       int               <B>pfGetChanPWinIndex</B>(pfChannel *chan);
+
+       pfPipeWindow *    <B>pfGetChanPWin</B>(pfChannel *chan);
+
+       void              <B>pfChanTravFunc</B>(pfChannel* chan,
+                           int trav, pfChanFuncType func);
+
+       pfChanFuncType    <B>pfGetChanTravFunc</B>(pfChannel* chan,
+                           int trav);
+
+       void *            <B>pfAllocChanData</B>(pfChannel* chan,
+                           int size);
+
+       void              <B>pfChanData</B>(pfChannel *chan,  void *data,
+                           size_t size);
+
+       void *            <B>pfGetChanData</B>(pfChannel* chan);
+
+       size_t            <B>pfGetChanDataSize</B>(const pfChannel *chan);
+
+       void              <B>pfPassChanData</B>(pfChannel* chan);
+
+       void              <B>pfClearChan</B>(pfChannel* chan);
+
+       int               <B>pfAttachChan</B>(pfChannel* chan0,   pfChan-
+                           nel* chan1);
+
+       int               <B>pfDetachChan</B>(pfChannel* chan0,   pfChan-
+                           nel* chan1);
+
+       int               <B>pfASDattachChan</B>(pfChannel* chan0,
+                           pfChannel* chan1);
+
+       int               <B>pfASDdetachChan</B>(pfChannel* chan0,
+                           pfChannel* chan1);
+
+       void              <B>pfChanShare</B>(pfChannel* chan, uint mask);
+
+       uint              <B>pfGetChanShare</B>(pfChannel* chan);
+
+       void              <B>pfChanFOV</B>(pfChannel* chan,  float horiz,
+                           float vert);
+
+       void              <B>pfGetChanFOV</B>(const pfChannel* chan,
+
+       void              <B>pfChanAutoAspect</B>(pfChannel* chan,
+                           int which);
+
+       int               <B>pfGetChanAutoAspect</B>(const pfChannel* chan);
+
+       void              <B>pfGetChanBaseFrust</B>(const pfChannel* chan,
+                           pfFrustum *frust);
+
+       void              <B>pfGetChanPtope</B>(const pfChannel *chan,
+                           pfPolytope *ptope);
+
+       void              <B>pfMakePerspChan</B>(pfChannel* chan,
+                           float left, float right,  float bot-
+                           tom, float top);
+
+       void              <B>pfMakeOrthoChan</B>(pfChannel* chan,
+                           float left, float right,  float bot-
+                           tom, float top);
+
+       void              <B>pfMakeSimpleChan</B>(pfChannel* chan,
+                           float fov);
+
+       int               <B>pfGetChanFrustType</B>(const pfChannel* chan);
+
+       void              <B>pfChanAspect</B>(pfChannel* chan, int which,
+                           float widthHeightRatio);
+
+       float             <B>pfGetChanAspect</B>(const pfChannel* chan);
+
+       void              <B>pfOrthoXformChan</B>(pfChannel* dst, pfChan-
+                           nel* src, const pfMatrix mat);
+
+       void              <B>pfGetChanNear</B>(const pfChannel* chan,
+                           pfVec3 ll,   pfVec3 lr,   pfVec3 ul,
+                           pfVec3 ur);
+
+       void              <B>pfGetChanFar</B>(const pfChannel* chan,
+                           pfVec3 ll,   pfVec3 lr,   pfVec3 ul,
+                           pfVec3 ur);
+
+       int               <B>pfGetChanEye</B>(const pfChannel* chan,
+                           pfVec3 eye);
+
+       void              <B>pfApplyChan</B>(pfChannel *chan);
+
+       int               <B>pfChanContainsPt</B>(const pfVec3 pt,
+                           pfChannel* chan);
+
+       int               <B>pfChanContainsSphere</B>(const pfChannel* chan,
+                           const pfSphere* sph);
+
+       int               <B>pfChanContainsCyl</B>(const pfChannel* chan,
+                           const pfCylinder* cyl);
+
+       int               <B>pfChanContainsBox</B>(const pfChannel* chan,
+                           const pfBox* box);
+
+       void              <B>pfChanCullPtope</B>(pfChannel *chan,
+                           pfHit **picklist[]);
+
+       int               <B>pfChanNodeIsectSegs</B>(pfChannel *chan,
+                           pfNode *node,      pfSegSet *segSet,
+                           pfHit **hits[], pfMatrix *mat);
+
+       void              <B>pfChanScene</B>(pfChannel* chan,
+                           pfScene *scene);
+
+       pfScene *         <B>pfGetChanScene</B>(const pfChannel* chan);
+
+       void              <B>pfChanESky</B>(pfChannel* chan,     pfEarth-
+                           Sky *sky);
+
+       pfEarthSky *      <B>pfGetChanESky</B>(const pfChannel* chan);
+
+       void              <B>pfChanGState</B>(pfChannel *chan,
+                           pfGeoState *gstate);
+
+       pfGeoState *      <B>pfGetChanGState</B>(const pfChannel *chan);
+
+       void              <B>pfChanGStateTable</B>(pfChannel *chan,
+                           pfList *gstable);
+
+       pfList
+                         *          <B>pfGetChanGStateTable</B>(const pfChannel *chan);
+
+       void              <B>pfChanStressFilter</B>(pfChannel *chan,
+                           float frac,  float low,  float high,
+                           float scale, float max);
+
+       void              <B>pfGetChanStressFilter</B>(const pfChannel *chan,
+                           float *frac,             float *low,
+                           float *high,           float *scale,
+                           float *max);
+
+       void              <B>pfChanStress</B>(pfChannel *chan,
+                           float stress);
+
+       float             <B>pfGetChanStress</B>(const pfChannel *chan);
+
+       float             <B>pfGetChanLoad</B>(const pfChannel *chan);
+
+       void              <B>pfChanTravMode</B>(pfChannel *chan,
+                           int trav, int mode);
+
+       int               <B>pfGetChanTravMode</B>(const pfChannel *chan,
+                           int trav);
+
+       void              <B>pfChanTravMask</B>(pfChannel* chan,
+                           int trav, uint mask);
+
+       uint              <B>pfGetChanTravMask</B>(const pfChannel* chan,
+                           int trav);
+
+       void              <B>pfChanBinSort</B>(pfChannel *chan,  int bin,
+                           int sortType, uint64_t *sortOrders);
+
+       int               <B>pfGetChanBinSort</B>(const pfChannel *chan,
+
+       int               <B>pfGetChanFreeBin</B>(pfChannel* chan);
+
+       void              <B>pfChanBinSortPriority</B>(pfChannel* _chan,
+                           int bin, int priority);
+
+       int               <B>pfGetChanBinSortPriority</B>(const pfChannel* _chan,
+                           int bin);
+
+       void              <B>pfChanBinChildOrderMask</B>(pfChannel* _chan,
+                           int bin, uint64_t orderMask);
+
+       uint64_t          <B>pfGetChanBinChildOrderMask</B>(const pfChannel* _chan,
+                           int bin);
+
+       void              <B>pfChanBinFlags</B>(pfChannel* _chan,
+                           int bin, int flags);
+
+       int               <B>pfGetChanBinFlags</B>(const pfChannel* _chan,
+                           int bin);
+
+       void              <B>pfChanBinCallBack</B>(pfChannel* _chan,
+                           int bin,   int type,    pfDListFunc-
+                           Type func);
+
+       pfDListFuncType   <B>pfGetChanBinCallBack</B>(pfChannel* _chan,
+                           int bin, int type);
+
+       void              <B>pfChanBinUserData</B>(pfChannel* _chan,
+                           int bin, void *userData, int size);
+
+       void*             <B>pfGetChanBinUserData</B>(pfChannel* _chan,
+                           int bin, int *size);
+
+       int               <B>pfChanFindSubBin</B>(pfChannel* _chan,
+                           int bin1, int bin2, int create);
+
+       int               <B>pfChanFindBinParent</B>(pfChannel* _chan,
+                           int bin, int lastKnownParent);
+
+       pfCullProgram*    <B>pfGetChanCullProgram</B>(pfChannel* _chan);
+
+       void              <B>pfChanView</B>(pfChannel* chan,  pfVec3 xyz,
+                           pfVec3 hpr);
+
+       void              <B>pfGetChanView</B>(pfChannel* chan,
+                           pfVec3 xyz, pfVec3 hpr);
+
+       void              <B>pfChanViewMat</B>(pfChannel* chan,     pfMa-
+                           trix mat);
+
+       void              <B>pfGetChanViewMat</B>(const pfChannel* chan,
+                           pfMatrix mat);
+
+       void              <B>pfChanViewOffsets</B>(pfChannel* chan,
+                           pfVec3 xyz, pfVec3 hpr);
+
+       void              <B>pfGetChanViewOffsets</B>(const pfChannel* chan,
+                           pfVec3 xyz, pfVec3 hpr);
+                           uint mode, uint val);
+
+       void              <B>pfDrawChanStats</B>(pfChannel* chan);
+
+       void              <B>pfChanLODAttr</B>(pfChannel* chan, int attr,
+                           float val);
+
+       float             <B>pfGetChanLODAttr</B>(pfChannel* chan,
+                           int attr);
+
+       void              <B>pfChanProjMode</B>(pfChannel* chan,
+                           int mode);
+
+       int               <B>pfGetChanProjMode</B>(const pfChannel* chan);
+
+       pfPipeVideoChannel *
+                         <B>pfGetChanPVChan</B>(const pfChannel* chan);
+
+       void              <B>pfChanPWinPVChanIndex</B>(pfChannel* chan,
+                           int num);
+
+       int               <B>pfGetChanPWinPVChanIndex</B>(const pfChannel* chan);
+
+       void              <B>pfChanOutputViewport</B>(const pfChannel* chan,
+                           float l, float r, float b, float t);
+
+       void              <B>pfGetChanOutputViewport</B>(const pfChannel* chan,
+                           float *l,     float *r,    float *b,
+                           float *t);
+
+       void              <B>pfGetChanOutputOrigin</B>(const pfChannel* chan,
+                           int  *xo, int *yo);
+
+       void              <B>pfGetChanOutputSize</B>(const pfChannel* chan,
+                           int  *xs, int *ys);
+
+       void              <B>pfChanPixScale</B>(pfChannel* chan,
+                           float s);
+
+       float             <B>pfGetChanPixScale</B>(const pfChannel* chan);
+
+       void              <B>pfChanMinPixScale</B>(pfChannel* chan,
+                           float min);
+
+       float             <B>pfGetChanMinPixScale</B>(const pfChannel* chan);
+
+       void              <B>pfChanMaxPixScale</B>(pfChannel* chan,
+                           float max);
+
+       float             <B>pfGetChanMaxPixScale</B>(const pfChannel* chan);
+
+       void              <B>pfChanCallig</B>(pfChannel* chan,   pfCalli-
+                           graphic* callig);
+
+       pfCalligraphic*   <B>pfGetChanCallig</B>(const pfChannel* chan);
+
+       pfCalligraphic*   <B>pfGetChanCurCallig</B>(pfChannel* chan);
+
+       void              <B>pfChanCalligEnable</B>(pfChannel* chan,
+
+       void              <B>pfDraw</B>(void);
+
+       void              <B>pfLPoint</B>(void);
+
+       void              <B>pfDrawBin</B>(int bin);
+
+       void              <B>pfDrawScene</B>(void);
+
+       void              <B>pfNodePickSetup</B>(pfNode *node);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfChannel</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfChannel</B>.  Casting an object of class <B>pfChannel</B>  to
+       an  object  of  class  <B>pfObject</B> is taken care of automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of  class <B>pfChannel</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>chan</I>  identifies a pfChannel.
+             <B>PFTRAV_DRAW</B>
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfChannel is essentially a view onto a scene.  <B>pfNewChan</B>
+       creates  a new pfChannel on the pfPipe identified by <I>pipe</I>.
+       The new pfChannel will be rendered  by  the  <I>pipe</I>  into  a
+       pfPipeWindow    window    associated    with   <I>pipe</I>   (See
+       <B>pfConfigPWin</B>).  <B>pfNewChan</B> creates and returns a handle  to
+       a  pfChannel.  pfChannels are always allocated from shared
+       memory.
+
+       <B>pfGetChanClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfChannel</B>.   The <B>pfType</B>* returned by <B>pfGetChanClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>  on
+       any instance of class <B>pfChannel</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test  if  an  object  is  of  a  type
+       derived  from  a  Performer  type  rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+
+   <B>PIPE</B> <B>WINDOWS,</B> <B>PIPES,</B> <B>AND</B> <B>CHANNELS</B>
+       <B>pfGetChanPipe</B>  returns  the   parent   pfPipe   of   <I>chan</I>.
+       <B>pfGetChanPWin</B> returns the pfPipeWindow of <I>chan</I>.
+
+       Multiple  pfChannels  may  be  rendered by a single pfPipe
+       into a single pfPipeWindow.  It is recommended that multi-
+       ple  pfChannels  rather  than  multiple pfPipes be used to
+       render multiple views on a single hardware  pipeline.   If
+       necessary,  multiple  pfPipeWindows  can  be rendered by a
+       single pfPipe on a single hardware pipeline.   The  handle
+       returned  by  <B>pfNewChan</B>  should  be  used  to identify the
+       pfChannel in OpenGL Performer routines.
+
+       Upon creation, pfChannels are  automatically  assigned  to
+       the    first    pfPipeWindow   of   its   parent   pfPipe.
+       <B>pfGetChanPWin</B> will return the pfPipeWindow of <I>chan</I>.
+
+       Channels of a pfPipeWindow are drawn in the order in which
+       they are assigned to the pfPipeWindow.  <B>pfGetChanPWinIndex</B>
+       can be used to get  the  position  of  a  channel  in  its
+       pfPipeWindow  list.  A return value of (-1) indicates that
+       the channel is not assigned to a  pfPipeWindow.   Channels
+       can be re-ordered in their pfPipeWindow, or moved to other
+       pfPipeWindows via list style API  on  pfPipeWindows.   See
+       the  <B>pfAddChan</B>, <B>pfInsertChan</B>, <B>pfMoveChan</B>, and <B>pfRemoveChan</B>
+       man pages for more information.
+
+       All active pfChannels are culled and drawn by <B>pfFrame</B>.   A
+       pfChannel  is  by  default  active  but can be selectively
+       turned on and off by <B>PFDRAW_ON</B> and <B>PFDRAW_OFF</B> arguments to
+       <B>pfChanTravMode</B>.   Multiple  pfChannels on a pfPipe will be
+       drawn only if they are assigned to a pfPipeWindow and will
+       be   drawn  in  the  order  they  were  assigned  to  that
+       pfPipeWindow.
+
+       <B>pfChanViewport</B> specifies the fractional viewport  used  by
+       <B>pfGetChanViewport</B> copies the fractional viewport  of  <I>chan</I>
+       into <I>l</I>, <I>r</I>, <I>b</I>, <I>t</I>.
+
+       <B>pfChanOutputViewport</B>  sets the area of the pfChannel view-
+       port that is to be output to display.  Typically this does
+       not  need to be set and is by default equal to that set by
+       <B>pfChanViewportpfChanProjMode</B> is used to set the projection
+       mode,  which  is  important  when  using the Dynamic Video
+       Resizing (DVR) feature of  InfiniteReality  graphics  sys-
+       tems.  In  operation,  the  two modes are nearly indistin-
+       guishable and are mostly important in  the  case  where  a
+       pfChannel  has  a  draw callback function that expects the
+       viewport  to  be  set  to  the  default  (PFCHAN_PROJ_OUT-
+       PUT_VIEWPORT)  value.   The  <I>mode</I> argument is one of these
+       values:
+
+
+              PFCHAN_PROJ_OUTPUT_VIEWPORT
+                     This is the default mode of  operation.   it
+                     sets the graphics library viewport and scis-
+                     sor mask (see <B>glScissor(3g)</B>) to  the  output
+                     viewport  of  the pfChannel, which typically
+                     is also the full viewport.
+
+              PFCHAN_PROJ_VIEWPORT
+                     The viewport will be set to the full pfChan-
+                     nel  viewport  but  the  screen scissor mask
+                     will be set to the  pfChannel  output  view-
+                     port.
+
+              PFCHAN_PROJ_WINDOW
+                     This mode sets the graphics library viewport
+                     for the pfChannel to be the full  extent  of
+                     the  pfPipeWindow,  then uses the projection
+                     matrix and GL scissor mask to scale down the
+                     displayed area to the output viewport.  This
+                     can be important when using the DVR facility
+                     since  it reduces any jitter that might oth-
+                     erwise  occur  between   adjacent   channels
+                     caused  by  clamping  viewport boundaries to
+                     integer pixel values.
+
+       Use <B>pfGetChanProjMode</B> to get  the  current  setting  of  a
+       channel's projection mode.
+
+
+       <B>pfGetChanOrigin</B>  copies the window coordinates of the ori-
+       gin of <I>chan</I>'s viewport into <I>xo</I> and <I>yo</I>.
+
+       <B>pfGetChanSize</B> copies the X and Y  pixel  sizes  of  <I>chan</I>'s
+       viewport into <I>xs</I> and <I>ys</I>.
+
+
+   <B>APPLICATION-DEFINED</B> <B>CALLBACKS</B> <B>AND</B> <B>DATA</B>
+       Although OpenGL Performer normally handles all culling and
+       drawing, invocation of user written and registered  exten-
+       sion  functions (<I>callback</I> <I>functions</I>) is supported to allow
+       custom culling and drawing by the  application.   Further-
+       more,  OpenGL  Performer  manages  callback data such that
+       User-data  that  is passed to these functions is allocated
+       on    a    per-channel    basis    by     <B>pfAllocChanData</B>.
+       <B>pfAllocChanData</B> returns a pointer to a word-aligned buffer
+       of shared memory of <I>size</I> bytes.  Alternately, applications
+       can  provide  passthrough  data with <B>pfChanData</B>. <I>data</I> is a
+       memory block of <I>size</I> bytes which should be allocated  from
+       a shared malloc arena visible to all OpenGL Performer pro-
+       cesses when multiprocessing (see <B>pfMultiprocess</B>).
+
+       <B>pfGetChanDataSize</B> returns the size of  <I>chan</I>'s  passthrough
+       data  block.   <B>pfGetChanData</B> returns a pointer to a buffer
+       that was set by <B>pfChanData</B> or allocated by <B>pfAllocChanData</B>
+       or   <B>NULL</B>   if  no  buffer  has  been  allocated  or  set.
+       <B>pfChanTravFunc</B> returns the  app,  cull  or  draw  callback
+       functions  for  <I>chan</I>  or <B>NULL</B> if the callback has not been
+       set.
+
+       In order to propagate user data downstream to the cull and
+       draw  callbacks,  <B>pfPassChanData</B> should be called whenever
+       the user data is changed to indicate that the data  should
+       be   "passed   through"  the  OpenGL  Performer  rendering
+       pipeline.  The next call to <B>pfFrame</B> will copy the  channel
+       buffer  into  internal OpenGL Performer memory so that the
+       application will then be free to modify data in the buffer
+       without fear of corruption.
+
+       In  the  cull phase of the rendering pipeline, OpenGL Per-
+       former invokes the cull callback with  a  pointer  to  the
+       pfChannel  being  culled  and a pointer to the pfChannel's
+       data buffer.  The cull callback may  modify  data  in  the
+       buffer.   The  potentially  modified buffer is then copied
+       and passed to the user's draw callback.  Modifications  to
+       the  data  buffer  are  not visible upstream. For example,
+       changes made by the cull or draw process are not  seen  by
+       the application process.
+
+       When  OpenGL  Performer  is configured for multiprocessing
+       (see <B>pfMultiprocess</B>), it is important to realize that  the
+       cull and draw callbacks may be invoked from different pro-
+       cesses and thus may run in parallel  with  each  other  as
+       well  as  with  the main application process.  OpenGL Per-
+       former provides both shared arenas (see <B>pfGetSemaArena</B> and
+       <B>pfGetSharedArena</B>)  and  channel data (<B>pfAllocChanData</B>) for
+       interprocess communication.
+
+       With user callbacks, it is possible to extend or even com-
+       pletely  replace  OpenGL  Performer  actions  with  custom
+       traversal, culling and drawing.  <B>pfApp</B>, <B>pfCull</B>, <B>pfDraw</B> and
+       <B>pfLPoint</B>  trigger the default OpenGL Performer processing.
+       This default processing is invoked  automatically  in  the
+       absence  of any user callbacks specified by <B>pfChanTravFunc</B>
+       ,  otherwise  the  user  callback  usually  invokes   them
+       directly.
+
+       <B>pfApp</B>  carries out the application traversal for the chan-
+       nel and should only be invoked in the application callback
+       specified  by <B>pfChanTravFunc</B>.  The application callback is
+       invoked once  for  each  channel  group  that  is  sharing
+       <B>PFCHAN_APPFUNC</B>.
+       will  be  immediately  executed,  such  as  pfCalligraphic
+       parametrisation for the current frame. Note also that  the
+       light  point process does not have any graphic context and
+       therefore it is forbidden to do some direct graphic  calls
+       here.
+
+       <B>pfCull</B>  should  only  be  called  in the cull callback and
+       causes OpenGL Performer to cull the  current  channel  and
+       generate an OpenGL Performer display list (see <B>pfDispList</B>)
+       suitable for rendering if the <B>PFMP_CULL_DL_DRAW</B>  multipro-
+       cessing  mode  is  enabled (see <B>pfMultiprocess</B>).  Then, in
+       the draw callback only, <B>pfDraw</B> will  traverse  the  pfDis-
+       pList  and  send  rendering commands to the graphics hard-
+       ware, thus drawing the scene.
+
+       If the <B>PFMP_CULL_DL_DRAW</B> multiprocessing mode is  not  set
+       then  all  display-listable  operations  will  be  applied
+       directly to the graphics pipeline rather than  accumulated
+       in  a  pfDispList for subsequent drawing.  In essence, the
+       draw process does the work of both <B>pfCull</B> and <B>pfDraw</B> with-
+       out  the intermediate step of building a pfDispList.  This
+       mode avoids the overhead  of  building  and  traversing  a
+       pfDispList  but consequently is not suitable for multipass
+       renderings which require multiple invocations of <B>pfDraw</B>.
+
+       When the draw callback is invoked,  the  graphics  context
+       will already have been properly configured for drawing the
+       pfChannel.  Specifically, the  viewport,  perspective  and
+       viewing  matrices are set to the correct values.  In addi-
+       tion, graphics library light sources corresponding to  the
+       active pfLightSources in the scene will be enabled so that
+       geometry rendered in the draw callback  will  be  properly
+       lit.   User  modifications  of  this initial state are not
+       reset by <B>pfDraw</B>.
+
+       If a draw callback is specified, OpenGL Performer will not
+       automatically  clear the viewport, leaving control of this
+       to the application.   <B>pfClearChan</B>  called  from  the  draw
+       callback  will  clear the channel viewport.  If <I>chan</I> has a
+       pfEarthSky (see <B>pfChanESky</B>), then the pfEarthSky  will  be
+       drawn.   Otherwise,  the viewport will be cleared to black
+       and the z-buffer cleared to its maximum value.
+
+       By default, <B>pfFrame</B> causes <B>pfCull</B> and <B>pfDraw</B> to be invoked
+       for each active pfChannel.  It is legal for the draw call-
+       back to call <B>pfDraw</B> more than once for  multipass  render-
+       ings.  Note that <B>pfDraw</B> will render the internal multipass
+       <B>pfLightSource</B> projected texture lights and  shadows  every
+       time  it  is called. <B>pfDrawScene</B> may be more convenient as
+       it will draw the scene without the internal multipass.
+
+
+       Example 1: Set up channel callbacks and passthrough data
+
+       typedef struct
+       {
+           int        val;
+       } PassData;
+
+
+           /* Initialize OpenGL Performer */
+           pfInit();
+           pfConfig();
+
+           /* Create and initialize pfChannel 'chan' */
+           chan = pfNewChan(<B>pfGetPipe(0)</B>);
+            :
+
+           /* Setup channel passthrough data */
+           pd = (PassData*)pfAllocChanData(chan, sizeof(PassData));
+
+           /* Bind cull and draw callback functions to channel */
+           pfChanTravFunc(chan, PFTRAV_CULL, cullFunc);
+           pfChanTravFunc(chan, PFTRAV_DRAW, drawFunc);
+
+           pd-&gt;val = 0;
+           pfPassChanData(chan);
+           pfFrame();
+            :
+       }
+
+       void
+       cullFunc(pfChannel *chan, void *data)
+       {
+           PassData    *pd = (PassData*)data;
+           pd-&gt;val++;
+           pfCull();
+       }
+
+       void
+       drawFunc(pfChannel *chan, void *data)
+       {
+           PassData    *pd = (PassData*)data;
+           fprintf(stderr, "%ld\n", pd-&gt;val);
+           pfClearChan(chan);
+           pfDraw();
+       }
+
+
+
+   <B>SHARING</B> <B>ATTRIBUTES</B> <B>THROUGH</B> <B>CHANNEL</B> <B>GROUPS</B>
+       OpenGL Performer supports the notion of a 'channel group'
+       which is a collection of pfChannels that share certain
+       attributes.  A channel group is created by attaching a
+       pfChannel to another with <B>pfAttachChan</B>.  If <I>chan0</I> or <I>chan1</I>
+       are themselves members of a channel group, then all chan-
+       nels that are grouped with either <I>chan0</I> or <I>chan1</I> are com-
+       bined into a single channel group.  All attached channels
+       acquire the share mask and shared attributes of the chan-
+       nel group.  A channel is removed from a channel group by
+       <B>pfDetachChan</B>.
+
+       The attributes shared by the members of a channel group
+       are specified by the <I>mask</I> argument to <B>pfChanShare</B>.  By
+       definition, all channels in a group have the same share
+       mask.  A pfChannel that is attached to a channel group
+       inherits the share mask of the group.  <I>mask</I> is a bitwise
+       OR of the following tokens which enumerate the attributes
+                   The view position and orientation are shared.
+
+              <B>PFCHAN_VIEW_OFFSETS</B>
+                   The XYZ and HPR offsets from the view direc-
+                   tion are shared.
+
+              <B>PFCHAN_NEARFAR</B>
+                   The near and far clip planes are shared.
+
+              <B>PFCHAN_SCENE</B>
+                   All channels display the same scene.
+
+              <B>PFCHAN_EARTHSKY</B>
+                   All channels display the same earth-sky model.
+
+              <B>PFCHAN_STRESS</B>
+                   All channels use the same stress filter param-
+                   eters.
+
+              <B>PFCHAN_LOD</B>
+                   All channels use the same LOD modifiers.
+
+              <B>PFCHAN_SWAPBUFFERS</B>
+                   All channels swap buffers at the same time,
+                   even when the channels are on multiple
+                   pfPipes.
+
+              <B>PFCHAN_SWAPBUFFERS_HW</B>
+                   All channels swap buffers at the same time.
+                   Under IrisGL the <B>GANGDRAW</B> feature of the
+                   <I>mswapbuffers</I> function, under OpenGL the
+                   <I>glxSwapBarrier</I> extension, is used to synchro-
+                   nize buffer swapping through hardware inter-
+                   locking.  When channels are distributed across
+                   more than one pipe, the <B>SwapReady</B> signal is to
+                   be connected between the pipes.  This signal
+                   can also be used to synchronize graphics
+                   pipelines across multiple machines.
+
+              <B>PFCHAN_STATS_DRAWMODE</B>
+                   All channels draw the same statistics graph.
+
+              <B>PFCHAN_APPFUNC</B>
+                   The application callback is invoked once for
+                   all channels sharing <B>PFCHAN_APPFUNC</B>.
+
+              <B>PFCHAN_CULLFUNC</B>
+                   All channels invoke the same channel cull
+                   callback.
+
+              <B>PFCHAN_DRAWFUNC</B>
+                   All channels invoke the same channel draw
+                   callback.
+
+              <B>PFCHAN_LPOINTFUNC</B>
+                   All channels invoke the same channel light
+                   points callback.
+
+              <B>PFCHAN_VIEWPORT</B>
+
+       Channel groups are useful for multichannel simulations
+       where many of the viewing parameters are the same across
+       pfChannels.  For example, a 3-channel simulation consist-
+       ing of left, middle, and right views typically shares the
+       near and far clipping planes.  With a channel group, the
+       clipping planes need only be set on a single pfChannel,
+       say the middle one, and all other pfChannels in the group
+       will acquire the same settings.
+
+       Example 1: Set up a single pipe, 3-channel simulation
+
+       left   = pfNewChan(<B>pfGetPipe(0)</B>);
+       middle = pfNewChan(<B>pfGetPipe(0)</B>);
+       right  = pfNewChan(<B>pfGetPipe(0)</B>);
+
+       /* Form channel group with middle as the "master" */
+       pfAttachChan(middle, left);
+       pfAttachChan(middle, right);
+
+       /* Set FOV of all channels */
+       pfMakeSimpleFrust(middle, 45.0f);
+       pfChanAutoAspect(middle, PFFRUST_CALC_VERT);
+
+       /* Set clipping planes of all channels */
+       pfChanNearFar(middle, 1.0f, 2000.0f);
+
+       pfSetVec3(hprOffsets, 0.0f, 0.0f, 0.0f);
+       pfSetVec3(xyzOffsets, 0.0f, 0.0f, 0.0f);
+
+       /*
+        * Set up viewport and viewing offsets.
+        * Note that these are not shared by default.
+        */
+       pfChanViewport(left, 0.0f, 1.0f/3.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = 45.0f;
+       pfChanViewOffsets(left, xyzOffsets, hprOffsets);
+
+       pfChanViewport(middle, 1.0f/3.0f, 2.0f/3.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = 0.0f;
+       pfChanViewOffsets(middle, xyzOffsets, hprOffsets);
+
+       pfChanViewport(right, 2.0f/3.0f, 1.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = -45.0f;
+       pfChanViewOffsets(right, xyzOffsets, hprOffsets);
+
+
+
+   <B>VIEWING</B> <B>FRUSTUM</B>
+       Many pfChannel frustum routines are borrowed from pfFrus-
+       tum. These routines have the identical function as the
+       pfFrustum routines but operate on the pfChannel's internal
+       viewing frustum. The routine correspondence is listed in
+       the following table.
+
+       center tab($); C | C L | L .  pfChannel routine$pfFrustum
+       routine _ pfMakeSimpleChan$pfMakeSimpleFrust pfMakePer-
+       spChan$pfMakePerspFrust pfMakeOrthoChan$pfMakeOrthoFrust
+       pfChanNearFar$pfFrustNearFar pfGetChanNearFar$pfGetFrustN-
+       pfChanContainsBox$pfFrustContainsBox pfChanContain-
+       sCyl$pfFrustContainsCyl The reader is referred to the
+       pfFrustum man page for details on the function descrip-
+       tions.
+
+       In addition to the pfFrustum routines, OpenGL Performer
+       provides the <B>pfChanFOV</B> and <B>pfChanAutoAspect</B> convenience
+       routines.
+
+       The <I>horiz</I> and <I>vert</I> arguments to <B>pfChanFOV</B> specify total
+       horizontal and vertical fields of view (FOV) in degrees.
+       If either angle is &lt;= 0.0 or &gt;= 180.0, OpenGL Performer
+       will automatically compute that field of view based on the
+       other specified field of view and the aspect ratio of the
+       pfChannel viewport.  If both angles are defaulted in this
+       way, OpenGL Performer will use its default of <I>horiz</I>=45.0
+       with <I>vert</I> matched to the aspect ratio of the pfChannel.
+       Note that the aspect ratio of a pfChannel is defined by
+       its fractional viewport as well as the pixel size of its
+       physical display window.
+
+       <B>pfChanFOV</B> constructs a on-axis frustum, one where the line
+       from the eyepoint passing through the center of the image
+       is perpendicular to the projection plane.
+       <B>pfMakeSimpleChan</B> also creates an on-axis frustum but both
+       horizontal and vertical fields of view are specified with
+       <I>fov</I>.
+
+       <B>pfGetChanFOV</B> copies the total horizontal and vertical
+       fields of view into <I>horiz</I> and <I>vert</I> respectively.  If an
+       angle is matched to the aspect ratio of the pfChannel,
+       then the computed angle is returned.
+
+       The <I>which</I> argument to <B>pfChanAutoAspect</B> specifies which FOV
+       extent to automatically match to the aspect ratio of
+       <I>chan</I>'s viewport.  <I>which</I> is a symbolic token and is one of:
+
+              <B>PFFRUST_CALC_NONE</B>
+                   Do not automatically modify field of view.
+
+              <B>PFFRUST_CALC_HORIZ</B>
+                   Automatically modify horizontal FOV to match
+                   channel aspect.
+
+              <B>PFFRUST_CALC_VERT</B>
+                   Automatically modify vertical FOV to match
+                   channel aspect.
+
+       Automatic aspect ratio matching is useful for situations
+       where the initial size of the display window is not known
+       or where the display window may change size during run-
+       time.  Aspect ratio matching guarantees that the image
+       will not be distorted in either horizontal or vertical
+       dimensions. <B>pfMakePerspChan</B> and <B>pfMakeOrthoChan</B> disable
+       automatic aspect ratio matching since it is assumed that
+       the viewing frustum aspect ratio is completely specified
+       by these commands.
+
+       <B>pfChanNearFar</B> specifies the near and far clip distances of
+
+       <B>pfGetChanBaseFrust</B> copies the base viewing frustum of <I>chan</I>
+       into <I>frust</I>.  The base viewing frustum has its eyepoint at
+       the origin and its viewing direction as the +Y axis.  The
+       base frustum of a pfChannel is transformed into world
+       coordinates by the viewing transformation (see
+       <B>pfChanView</B>).  <B>pfOrthoXformChan</B> transforms the base frustum
+       of <I>src</I> by <I>mat</I> and copies the result into the base frustum
+       of the <I>dst</I> pfChannel. <B>pfGetChanPtope</B> copies the trans-
+       formed base frustum into <I>dst</I>.
+
+       Example 1: Two equivalent ways of defining a typical view-
+       ing channel.
+
+       This method is the easiest and most common.
+
+       /* Set up a simple viewing frustum */
+       chan = pfNewChan(pipe0);
+
+       /*
+        * Set horizontal FOV to 45 degrees and automatically match
+        * vertical FOV to channel viewport.
+        */
+       pfChanFOV(chan, 45.0f, -1.0f);
+
+
+       Here's how to do the same thing using the basic primi-
+       tives.
+
+       /* Set up a simple viewing frustum */
+       chan = pfNewChan(pipe0);
+
+       /*
+        * Set horizontal FOV to 45 degrees and automatically match
+        * vertical FOV to channel viewport.
+        */
+       pfMakeSimpleChan(chan, 45.0f);
+       pfChanAutoAspect(chan, PFFRUST_CALC_VERT);
+
+
+       Example 2: Set up a 4 channel, 4 pipe video wall with
+       total horizontal and vertical FOVs of 90 degrees.
+
+       /*
+        * ul == upper left  ur == upper right
+        * ll == lower left  lr == lower right
+        */
+       llChan = pfNewChan(<B>pfGetPipe(0)</B>);
+       lrChan = pfNewChan(<B>pfGetPipe(1)</B>);
+       urChan = pfNewChan(<B>pfGetPipe(2)</B>);
+       ulChan = pfNewChan(<B>pfGetPipe(3)</B>);
+
+       /* Form channel group with urChan as the "master" */
+       pfAttachChan(urChan, llChan);
+       pfAttachChan(urChan, lrChan);
+       pfAttachChan(urChan, ulChan);
+
+       /*
+        * Share viewport but not field of view
+        * pfChannel viewport aspect ratio must be 1:1 or image will
+        * be distorted.
+        */
+       pfMakePerspChan(llChan, -1.0f, 0.0f, -1.0f, 0.0f);
+       pfMakePerspChan(lrChan,  0.0f, 1.0f, -1.0f, 0.0f);
+       pfMakePerspChan(urChan,  0.0f, 1.0f,  0.0f, 1.0f);
+       pfMakePerspChan(ulChan, -1.0f, 0.0f,  0.0f, 1.0f);
+
+       pfChanNearFar(urChan, 1.0f, 2000.0f);
+
+
+       Example 3: Set up a single pipe, 3-channel simulation.
+
+       left   = pfNewChan(<B>pfGetPipe(0)</B>);
+       middle = pfNewChan(<B>pfGetPipe(0)</B>);
+       right  = pfNewChan(<B>pfGetPipe(0)</B>);
+
+       /* Form channel group with middle as the "master" */
+       pfAttachChan(middle, left);
+       pfAttachChan(middle, right);
+
+       /* Set FOV of all channels */
+       pfMakeSimpleChan(middle, 45.0f);
+       pfChanAutoAspect(middle, PFFRUST_CALC_VERT);
+
+       /* Set clipping planes of all channels */
+       pfChanNearFar(middle, 1.0f, 2000.0f);
+
+       hprOffsets[PF_P] = 0.0f;
+       hprOffsets[PF_R] = 0.0f;
+       pfSetVec3(xyzOffsets, 0.0f, 0.0f, 0.0f);
+
+       /*
+        * Set up viewport and viewing offsets.
+        * Note that these are not shared by default.
+        */
+       pfChanViewport(left, 0.0f, 1.0f/3.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = 45.0f;
+       pfChanViewOffsets(left, hprOffsets, xyzOffsets);
+
+       pfChanViewport(middle, 1.0f/3.0f, 2.0f/3.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = 0.0f;
+       pfChanViewOffsets(middle, hprOffsets, xyzOffsets);
+
+       pfChanViewport(right, 2.0f/3.0f, 1.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = -45.0f;
+       pfChanViewOffsets(right, hprOffsets, xyzOffsets);
+
+
+       Example 4: Custom culling to pfChannel viewing frustum.
+
+       /*
+        * User-supplied cull callback (see <B>pfChanTravFunc</B>)
+        */
+       extern void
+       myCullFunc(pfChannel *chan, void *data)
+       {
+           pfBox *boundingBox = (pfBox*)data;
+
+       Normally, pfASD evaluates separate active meshes based on
+       each channel that traverses the node. It automatically
+       ensures that the meshes are consistantly connected between
+       channels. This is very useful for multiple channels that
+       panel a wall like shown above. If channels have very dif-
+       ferent view points, such as in a multi-player game, then
+       the application should define one pfASD node for each
+       channel, since the active mesh is going to be very differ-
+       ent from one channel to the other. This is especially
+       important if one channel is going to have a different
+       evaluation function or a different LODRange from another,
+       e.g. infra-rad channel and regular channel.  pfASD nodes
+       can share the same raw attribute data, such as pfASDFaces,
+       and pfASDVerts.
+
+       In some applications, one channel would like to display
+       the same geometry as another channel, e.g. a bird's eye
+       view of the terrain, then this API should be used to
+       define it.  <I>chan0</I> is the current channel, and <I>chan1</I> is the
+       channel that supplies the orginal active mesh. The API can
+       be called multiple times to define that <I>channel0</I> shares
+       active meshes from multiple channels.  Example: Define an
+       inset window that looks at the active geometry generated
+       by master channel traversal.
+
+           /* top down view of the active geometry in master Channel */
+           pfASDattachChan(ViewState-&gt;insetChannel, masterChan);
+
+
+       <B>pfASDdettachChan</B> detaches the channel from sharing the
+       active mesh from another channel.
+
+       <B>pfGetChanAutoAspect</B> returns the aspect ratio matching mode
+       of <I>chan</I>.
+
+       A pfChannel normally uses its viewing frustum for culling
+       its pfScene (<B>pfChanScene</B>).  However, a custom culling vol-
+       ume may be specified by <B>pfChanCullPtope</B>.  If non-NULL,
+       <I>ptope</I> identifies a pfPolytope which is used for scene
+       culling. A copy of <I>ptope</I>, internal to <I>chan</I>, is transformed
+       by <I>chan</I>'s viewing matrix before culling. If <I>ptope</I> is NULL,
+       <I>chan</I> will use its view frustum for culling. A pfPolytope
+       is a set of half spaces whose intersection defines a con-
+       vex volume. Culling performance will be proportional to
+       the number of facets in <I>ptope</I>.  <B>pfGetChanCullPtope</B> copies
+       the culling polytope of <I>chan</I> into <I>ptope</I>.  The <I>space</I> argu-
+       ment must be one of the constants PF_WORLDSPACE or PF_EYE-
+       SPACE; the culling polytope will be expressed in the
+       respective coordinate space.
+
+
+   <B>VIDEO</B> <B>CHANNELS</B>
+       The pfPipeVideoChannel associated with a channel is
+       returned by <B>pfGetChanPVChan</B>. In the indexed case, the
+       pfPipeVideoChannel index is set to <I>num</I> using
+       <B>pfChanPWinPVChanIndex</B> and returned by
+       <B>pfGetChanPWinPVChanIndex</B>.
+
+       With Dynamic Video Resolution, the actual rendering area
+       effect of video resizing in the same sense.  As an exam-
+       ple, a viewport whose lower-left corner is at the center
+       of the pfPipe (with coordinates 0.5, 0.5) would be changed
+       to an origin of (0.25, 0.25) with respect to the full
+       pfPipe window if the DVR settings were for scale factors
+       of 0.5 in both X and Y.  The actual rendering origin of a
+       pfChannel is available from <B>pfGetChanOutputOrigin</B> with the
+       returned values in the integers pointed to by <I>xo</I> and <I>yo</I>.
+       The size of a viewport also changes when DVR scaling is in
+       use, and the actual values are returned by
+       <B>pfGetChanOutputSize</B> in the integers pointed to by <I>xs</I> and
+       <I>ys</I>.
+
+       When Dynamic Video Resolution is used to alter the ren-
+       dered size of a pfChannel, a corresponding change should
+       be made to the width of points and lines, the two geometry
+       types that support a specific pixel width.  For example,
+       when a channel is scaled in size by on half, lines and
+       points must be drawn half as wide as well so that when the
+       final image is enlarged by the inverse scale factor, in
+       this case two, the lines and points will have the same
+       screen size.  <B>pfChanPixScale</B> sets the indicated channel's
+       pixel scale factor to <I>s</I>.  <B>pfGetChanPixScale</B> returns this
+       value for the channel.
+
+       Channels also have minimum and maximum pixel scale values,
+       that can be used to define an acceptable range of pixel
+       scale values. This can be used to keep lines and points
+       from getting too thin under the effects of extreme DVR
+       scaling.  <B>pfChanMinPixScale</B> sets the minimum allowable
+       pixel scale value for the channel, and
+       <B>pfGetChanMinPixScale</B> gets the value.  <B>pfChanMaxPixScale</B>
+       sets the maximum allowable pixel scale value for the chan-
+       nel, and <B>pfGetChanMaxPixScale</B> gets the value.
+
+
+
+   <B>CALLIGRAPHIC</B> <B>LIGHT</B> <B>POINTS</B>
+       If a LightPointBoard has been found and initialized before
+       pfConfig, each pfPipeVideoChannel is automatically setup
+       with a pfCalligraphic initialized with the pfPipeV-
+       ideoChannel screen as the Light Point Board number, and
+       the Video Channel Id as the output to use for calligraphic
+       light points. You may change this automatic behavior by
+       setting you own pfCalligraphic on the pfPipeVideoChannel
+       (see pfPVChanCallig).
+
+       It is also possible to specify a pfCalligraphic per chan-
+       nel using <B>pfChanCallig</B> and <B>pfGetChanCallig</B> get the value
+       that has been set.  <B>pfGetChanCurCallig</B> get the pfCalli-
+       graphic that is used for this pfChannel. If a pfCalli-
+       graphic has been set then this value is returned, other-
+       wise the pfCalligraphic set in the pfPipeVideoChannel is
+       returned.
+
+       The lightpoint board is connected to the SwapReady signal
+       to be synchronized with the swapBuffer of the graphic
+       pipe.  Usually, the SwapReady signal is enabled only when
+       more than one pipe is used by an application, in order to
+       default calligraphic light points are not enabled, the
+       returned value is therefore 0.
+
+
+   <B>PICKING</B>
+       <B>pfChanPick</B> is used for screen to world-space ray intersec-
+       tions on a pfChannel's scene.  This operation is often
+       referred to as picking.  Intersections will only occur
+       with parts of the database that are within the viewing
+       frustum, and that are enabled for picking intersections.
+       The return value of <B>pfChanPick</B> is the number of successful
+       intersections with the channel scene according to <I>mode</I>.
+
+       <I>picklist</I> is a user-supplied pointer.  Upon return, the
+       address of an array of pointers to pfHit objects is stored
+       there.  The pfHit objects come from an internally main-
+       tained pool and are reused on subsequent calls.  Hence,
+       the contents are only valid until the next invocation of
+       <B>pfChanPick</B> in the current process.  They should not be
+       deleted by the application.
+
+       The contents of the pfHit object are queried using
+       <B>pfQueryHit</B> and <B>pfMQueryHit</B>.  See the man pages for <B>pfHit</B>
+       and <B>pfNodeIsectSegs</B> for a description of the queries.
+
+       <I>mode</I> specifies the behavior of the traversal and type of
+       information that will be returned from the picking pro-
+       cess.
+
+       <I>mode</I> is a bitwise OR of tokens.  In addition to those
+       tokens that can be specified to <B>pfNodeIsectSegs</B> in the
+       <I>mode</I> field of the pfSegSet, the following values are also
+       allowed:
+
+
+              <B>PFPK_M_NEAREST</B>
+                   Return the picking intersection closest to the
+                   viewpoint.
+
+              <B>PFPK_M_ALL</B>
+                   Return all picking intersections.
+
+              <B>PFTRAV_LOD_CUR</B>
+                   When traversing pfLODs, select the child to
+                   traverse based on range in the specified chan-
+                   nel.
+
+       When <B>PFPK_M_ALL</B> is set, <I>picklist</I> will contain all of the
+       successful picking intersections in order of increasing
+       distance from the viewer eyepoint.  See the
+       <B>pfNodeIsectSegs</B> manual page for information on the <B>PFIS_</B>
+       intersection tokens.
+
+       <I>px</I>, <I>py</I> identify a 2-dimensional point in normalized chan-
+       nel screen coordinates in the range 0.0 to 1.0 (with the
+       lower left corner being (0.0, 0.0)), that corresponds to
+       the channel location to be used for picking.  This
+       2-dimensional point is used to create a ray from the
+       viewer eyepoint through the near clipping plane to inter-
+       argument must not specify the <B>PFTRAV_IS_PRIM</B> mode.
+
+       <B>pfNodePickSetup</B> enables the entire database tree under
+       <I>node</I> for picking intersections and should be called with a
+       pointer to the pfChannel's scene graph.  This effectively
+       calls <B>pfNodeTravMask</B> with <B>PFIS_SET_PICK</B>.  Selective pick-
+       ing can be done by calling <B>pfNodeTravMask</B>, setting the
+       traversal to <B>PFTRAV_ISECT</B> and including <B>PFIS_SET_PICK</B> in
+       the intersection mask for nodes that are to be enabled for
+       picking intersections.  The picking traversal will not
+       continue past any node that has not been enabled for pick-
+       ing intersections.  See the <B>pfNodeTravMask</B> manual page for
+       more information on intersection setup.
+
+       <B>pfChanNodeIsectSegs</B> is identical to <B>pfNodeIsectSegs</B> except
+       a pfChannel is provided for evaluating pfLODs during the
+       intersection traversal. In addition, <I>mat</I> specifies an ini-
+       tial transform, allowing intersection traversals to begin
+       at non-root nodes.  All line segments in <I>segSet</I> will be
+       transformed by <I>mat</I>.  <I>mat</I> may be NULL if no initial trans-
+       form is needed.
+
+
+   <B>EARTH</B> <B>AND</B> <B>SKY</B>
+       <B>pfChanScene</B> and <B>pfChanESky</B> set the pfScene and pfEarthSky
+       that <I>chan</I> will cull and draw.  <B>pfChanScene</B> increments the
+       reference count of <I>scene</I> so that <I>scene</I> must first be
+       removed from <I>chan</I> by <B>pfChanScene</B>(chan, NULL) before <I>scene</I>
+       can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetChanScene</B> and <B>pfGetChanESky</B> return the current
+       pfScene and pfEarthSky for <I>chan</I>.
+
+       Example 1: Setting a pfChannel's pfScene.
+
+       void
+       cullFunc(pfChannel *chan, void *data)
+       {
+           pfCull();
+       }
+
+       void
+       drawFunc(pfChannel *chan, void *data)
+       {
+           pfClearChan(chan);
+           pfDraw();
+       }
+
+       /* somewhere in application setup phase */
+        :
+       /* set channel's scene */
+       pfChanScene(chan, scene);
+
+       /* bind cull and draw process callbacks */
+       pfChanTravFunc(chan, PFTRAV_CULL, cullFunc);
+       pfChanTravFunc(chan, PFTRAV_DRAW, drawFunc);
+
+
+
+       within the scene graph. The pfGeoState state inheritance
+       mechanism is described in detail in the pfGeoState man
+       page.  Note that the channel pfGeoState is loaded before
+       any scene pfGeoState so that state elements in the scene
+       pfGeoState override those in the channel's pfGeoState.
+       <B>pfGetChanGState</B> returns the pfGeoState of <I>chan</I>.
+
+       <B>pfChanGStateTable</B> sets <I>chan</I>'s pfGeoState table to <I>gstable</I>.
+       If non-NULL, <I>gstable</I> is made the global pfGeoState table
+       with <B>pfApplyGStateTable</B> before <I>chan</I>'s <B>DRAW</B> callback is
+       invoked.  Any indexed pfGeoStates, either referenced by a
+       pfScene (<B>pfSceneGStateIndex</B>) or by scene pfGeoSets (-
+       <B>pfGSetGStateIndex</B>) will be accessed through <I>gstable</I>.
+       Indexed pfGeoStates are useful for efficiently managing a
+       single database with multiple appearances, e.g., a normal
+       vs.  an infrared view of a scene would utilize 2
+       pfGeoState tables, each referencing a different set of
+       pfGeoStates.
+
+
+   <B>STRESS</B> <B>PROCESSING</B> <B>AND</B> <B>LEVEL-OF-DETAIL</B>
+       OpenGL Performer attempts to maintain the fixed frame rate
+       set with <B>pfFrameRate</B> by manipulating levels-of-detail
+       (LODs) to reduce graphics load when rendering time
+       approaches a frame period.  At the end of each frame,
+       OpenGL Performer computes a load metric for each pfChannel
+       based on the length of time it took to render the pfChan-
+       nel.  Load is simply the actual rendering time divided by
+       the desired frame interval.
+
+       <B>pfChanLODState</B> specifies a global pfLODState to be used
+       for this channel.
+
+       <B>pfChanLODStateList</B> specifies a pfList of pfLODStates to be
+       indexed into by pfLODs that have specified indexes via
+       <B>pfLODLODStateIndex</B>.  (See <B>pfLOD</B> and <B>pfLODState</B>).
+
+       If stress processing is enabled, OpenGL Performer uses the
+       load metric and a user-defined stress filter to compute a
+       stress value which multiplies effective LOD ranges (see
+       <B>pfLOD</B>) for the next frame.  Stress &gt; 1.0 'pushes out' LOD
+       ranges so that coarser models are drawn and graphics load
+       is reduced.  Stress == 1.0 means the system is not in
+       stress and LODs are not modified.
+
+       <B>pfChanStressFilter</B> sets the stress filter used by <I>chan</I>.
+       <I>frac</I> is the fraction of a frame period <I>chan</I> is expected to
+       take to render.  <I>frac</I> should be 1.0 if only a single
+       pfChannel is drawn on a pfPipe and should be &gt; 0.0 and &lt;
+       1.0 for multichannel simulations.  <I>frac</I> allows the appli-
+       cation to apportion rendering time amongst multiple chan-
+       nels so that a channel drawing a complex scene may be
+       allocated more time than a channel drawing a simple one.
+       <B>pfGetChanStressFilter</B> returns the stress filter parameters
+       for <I>chan</I>.
+
+       <I>low</I> and <I>high</I> define a hysteresis band for system load.
+       When load is &gt;= <I>low</I> and &lt;= <I>high</I>, stress is held constant.
+       When load is &lt; <I>low</I> or &gt; <I>high</I>, OpenGL Performer will reduce
+           S[i] = <I>minimum</I>(S[i-1] + <I>scale</I>*load, <I>max</I>);
+       else
+       /* decrease stress when below <I>low</I> load level */
+       if (load &lt; <I>low</I>)
+           S[i] = <I>maximum</I>(S[i-1] - <I>scale</I>*load, 0.0f);
+       else
+       /* stress unchanged when between <I>low</I> and <I>high</I> load levels */
+           S[i] = S[i-1];
+
+
+       where S[i] == stress for frame i and load = time[i] *
+       frameRate / <I>frac</I>.  By default, <I>scale</I> = 0.0 and <I>max</I> = 1.0
+       so that stress is disabled.  Stress is clamped to the
+       range [1.0, <I>max</I>].
+
+       pfChannels in a channel group may share a stress filter (-
+       <B>PFCHAN_STRESS</B>), and LOD behavior (<B>PFCHAN_LOD</B>) (see
+       <B>pfAttachChan</B>).  It is useful for pfChannels which draw
+       into adjacent displays to share LOD behavior.  In this
+       case, the LOD multiplier used by all pfChannels in the
+       channel group is the maximum of each individual pfChannel.
+       This ensures that LOD's which straddle displays will
+       always be drawn at the same LOD on each display.
+
+       <B>pfGetChanLoad</B> will return the last computed load for <I>chan</I>.
+       The load value is defined as time * frameRate / <I>frac</I>.
+
+       The application may choose to not use the default OpenGL
+       Performer stress filter by calling <B>pfChanStress</B> to explic-
+       itly set the stress value.  Stress values set by
+       <B>pfChanStress</B> will override the default stress values com-
+       puted by the stress filter shown above.
+
+       <B>pfGetChanStress</B> returns the last computed stress value for
+       <I>chan</I>.  The individual stress value is returned regardless
+       of pfChannel attribute sharing (<B>pfChanShare</B>).
+
+
+   <B>CUSTOMIZING</B> <B>SCENE</B> <B>GRAPH</B> <B>TRAVERSAL</B>
+       A pfChannel directs two important traversals: cull and
+       draw.  In the cull traversal, the pfChannel defines the
+       viewing frustum that the database is culled to and also
+       defines other parameters that modify level-of-detail
+       behavior.  When drawing, the pfChannel defines the parame-
+       ters of the "camera" which views the scene.  In both
+       cases, a pfChannel traverses a pfScene which is attached
+       to the pfChannel via <B>pfChanScene</B>.  A pfScene is a hierar-
+       chy of pfNodes that defines the visual database.
+
+       <B>pfChanTravMode</B> sets the traversal mode of <I>chan</I>.  <I>trav</I>
+       specifies a traversal type and is either <B>PFTRAV_CULL</B>,
+       <B>PFTRAV_DRAW</B> or <B>PFTRAV_LPOINT</B>, for the culling, drawing and
+       light points traversal respectively.  <I>mode</I> specifies the
+       corresponding traversal mode.  The culling mode is a bit-
+       wise OR of:
+
+              <B>PFCULL_VIEW</B>
+                   When set, <B>PFCULL_VIEW</B> enables culling to the
+                   viewing frustum.  If not set, the entire
+                   When <B>PFCULL_SORT</B> is set, OpenGL Performer
+                   sorts the database into "bins" which are ren-
+                   dered in a user-specified order.  In addition,
+                   geometry within a bin may be sorted by graph-
+                   ics state like texture or by range for front-
+                   to-back or back-to-front rendering.  Unless
+                   the cull stage of the OpenGL Performer
+                   pipeline becomes the bottleneck or
+                   <B>PFMP_CULLoDRAW</B> mode is used, <B>PFCULL_SORT</B>
+                   should be set for optimal drawing performance.
+                   Further sorting details are described below.
+
+              <B>PFCULL_GSET</B>
+                   When <B>PFCULL_GSET</B> is set, OpenGL Performer
+                   culls individual pfGeoSets within pfGeodes.
+                   At the expense of some extra culling time,
+                   this can provide a significantly tighter cull
+                   both because of the finer granularity and
+                   because pfGeoSet culling uses bounding boxes
+                   rather than bounding spheres.  However, when
+                   traversing portions of the scene graph under a
+                   transformation (pfSCS or pfDCS), OpenGL Per-
+                   former reverts back to a cull which stops at
+                   the pfGeode level.
+
+              <B>PFCULL_IGNORE_LSOURCES</B>
+                   When <B>PFCULL_IGNORE_LSOURCES</B> is not set, OpenGL
+                   Performer will traverse all paths in the scene
+                   hierarchy which end at a pfLightSource node
+                   before proceeding with the normal cull traver-
+                   sal (see <B>pfLightSource</B>).  This is required for
+                   pfLightSources to illuminate the scene and
+                   will ensure that graphics hardware lighting is
+                   properly configured before the user's draw
+                   callback is invoked (see <B>pfChanTravFunc</B>).  If
+                   it is set, any pfLightSources in the pfScene
+                   will be ignored.
+
+                   The pfLightSource cull traversal obeys all
+                   traversal rules such as node callbacks,
+                   traversal masks, transformations (pfSCS and
+                   pfDCS nodes), and selectors (pfSwitch and
+                   pfLOD).
+
+              <B>PFCULL_PROGRAM</B>
+                   When <B>PFCULL_PROGRAM</B> is set a cull program
+                   attached to the channel is executed for each
+                   pfGeoSet during the cull traversal. See
+                   pfCullProgram for more details.
+
+       For drawing, <I>mode</I> is either <B>PFDRAW_OFF</B> or <B>PFDRAW_ON</B>.
+       <B>PFDRAW_OFF</B> essentially turns off <I>chan</I>.  No culling or
+       drawing traversal will take place.  Drawing is enabled by
+       default.
+
+       When the optional light points process is used, light
+       points preprocessing and drawing can be disable for a par-
+       ticular channel giving <B>PFDRAW_OFF</B> for <I>mode</I>. Creating a
+       light points process enable the the preprocessing for
+       use projected texture-type lighting. See the pfLightSource
+       man page for more details.
+
+       By default, culling to the viewing frustum, culling to
+       pfGeoSet bounding boxes, pfLightSource culling, and sort-
+       ing is enabled: (<B>PFCULL_VIEW</B> | <B>PFCULL_GSET</B> | <B>PFCULL_SORT</B>)
+       For convenience, this default bitmask is provided by the
+       <B>PFCULL_ALL</B> token.
+
+       <B>pfChanTravMask</B> sets <I>chan</I>'s drawing mask and is used in
+       conjunction with <B>pfNodeTravMask</B> for selective culling and
+       drawing of scene graphs on a per-pfChannel basis.  During
+       the traversal, the bitwise AND of the traversal mask and
+       the node mask is computed.  If the result is non-zero, the
+       node is culled or drawn as usual.  If off (zero), the
+       behavior is as follows depending on <I>trav</I>:
+
+              <B>PFTRAV_CULL</B>
+                   Node is not culled and is considered to be
+                   entirely within the viewing frustum.  The cull
+                   traversal traverses the node and its children
+                   without any view culling.
+
+              <B>PFTRAV_DRAW</B>
+                   Node is completely ignored.  Both cull and
+                   draw traversals skip the node and its chil-
+                   dren. It is therefore ignored by the light
+                   points process.
+
+       Node traversal masks are set by <B>pfNodeTravMask</B>.  The
+       default pfNode and pfChannel masks are 0xffffffff so that
+       a pfChannel culls and draws all pfNodes.
+
+       <B>pfGetChanTravMask</B> returns the drawing traversal mask for
+       the specified pfChannel.  <I>trav</I> is either <B>PFTRAV_CULL</B> or
+       <B>PFTRAV_DRAW</B>.
+
+
+   <B>USING</B> <B>BINS</B>
+       As mentioned above, pfChannels can sort the database for
+       improved image quality and improved rendering performance.
+       Database sorting consists of two steps:
+
+              1.   Partition database into "bins" which are ren-
+                   dered in a particular order.
+
+              2.   Sort database within each bin by:
+
+              2a.  Graphics state, in which case there is no par-
+                   ticular rendering order or,
+
+              2b.  Range from the eyepoint in which case the
+                   database is rendered either front-to-back or
+                   back-to-front.
+
+       During the cull traversal, pfGeoSets are placed into the
+       appropriate bin according to their bin identifier that was
+       set by <B>pfGSetDrawBin</B>.  If the bin identifier is &gt;= 0, the
+       cull traversal will place that pfGeoSet into the bin with
+       attached pfGeoState.
+
+       OpenGL Performer provides 2 default bins:
+       <B>PFSORT_OPAQUE_BIN</B> and <B>PFSORT_TRANSP_BIN</B> for opaque and
+       transparent geometry respectively.  Transparent geometry
+       is that which uses <B>PFTR_BLEND_ALPHA</B> type of
+       <B>pfTransparency</B>. <B>PFTR_MS_ALPHA</B>-type transparency is consid-
+       ered to be opaque for purposes of binning.
+
+       In addition, if the light points process is enabled, a
+       special bin <B>PFSORT_LPSTATE_BIN</B> is created to sort out all
+       pfGeoSets that have a <B>pfLPointState</B> attached to their
+       pfGeoState.  This bin will not be given directly to the
+       draw process but instead will be preprocessed by pfL-
+       Point(). The result of the preprocessing is sent to the
+       draw process through an internal ring display list.
+
+       <B>pfGetChanFreeBin</B> returns the next available bin identifier
+       and should be used to avoid collisions with previously
+       selected bins and bins that are used internally by OpenGL
+       Performer. Note that a bin is considered unsused if no
+       call to <B>pfChanBinOrder</B> has been made.
+
+       Bins are often used to group geometry with certain charac-
+       teristics.  Sometimes it may be desirable for a pfGeoSet
+       to be in several bins.  For this purpose you can create a
+       subbin of two existing bins using function
+       <B>pfChanFindSubBin</B>. The parameters are the two parent bins
+       and an integer value indicating whether the subbin should
+       be created if it does not exist.  The function returns -1
+       if the bin does not exists (and it was not supposed to be
+       created) or if any of the parent bins do not exist.  If
+       you need to create a subbin of more than two bins call
+       this function several times.  For example, to create a
+       subbin of bin 5, 6, and 7, you call <B>pfChanFindSubBin</B> with
+       parameters 5 and 6.  Let us assume that subbin of bin 5
+       and 6 is bin 8. Then you call <B>pfChanFindSubBin</B> again, with
+       parameters 8 and 7 to obtain subbin of bins 5, 6, and 7.
+       It does not matter in what order you call it because all
+       subbins are directly linked to their parent root bins (and
+       vice versa), there is no tree hierarchy. See <B>pfCullProgram</B>
+       for an example of using subbins.
+
+       The method <B>pfChanFindBinParent</B> returns the first parent of
+       bin <I>bin</I> that is bigger than the value specified as the
+       second parameter. Thus by calling this method several
+       times (until it returns -1) you can determine all parents
+       of a bin.
+
+       Each root draw bin has a rendering order set by
+       <B>pfChanBinOrder</B>. If <I>order</I> is &lt; 0, then <I>bin</I> is not ordered
+       at all - pfGeoSets which belong to <I>bin</I> are not stored in
+       the bin but are rendered immediately.  If <I>order</I> is &gt;=0, it
+       defines the order in which the bin is rendered, 0 ==
+       first, 1 == second etc.  The order of subbins is deter-
+       mined by the <I>ChildOrderMask</I> of their parents. This mask
+       can be set by <B>pfChanBinChildOrderMask</B>.  When a subbin is
+       created the mask or all its parents is combined (using
+       binary OR)  as set as a rendering order of the subbin.
+       relative order of these bins is undefined. The order of
+       subbins cannot be changed.
+
+       The light point bin has a huge <B>PFSORT_LPSTATE_BIN_ORDER</B>
+       which is an indicative value telling that the result of
+       the preprocessing will be drawn after every other geome-
+       try.  Modifying the order of this bin has no effect on
+       that behavior.
+
+       Normally, <B>pfDraw</B> renders all root bins in the appropriate
+       order.  If a bin has subbins, objects that are not in any
+       subbin of the bin are rendered first, followed by objects
+       of each subbin.
+
+       To avoid drawing subbins multiple times (for each of its
+       parents) it is recommended to set a flag
+       <B>PFBIN_DONT_DRAW_BY_DEFAULT</B> for those root bins that share
+       subbins with the default opaque or transparent bin. The
+       bin flags can be set using <B>pfChanBinFlags</B>.
+
+       Individual bins, including subbins, may be rendered with
+       <B>pfDrawBin</B> when called in the pfChannel's draw callback
+       (see <B>pfChanTravFunc</B>).  <B>-1</B> is a special argument to
+       <B>pfDrawBin</B> that lets you render the default sceneDis-
+       playList that contains all the objects that did not fall
+       in any defined bin. Note that this default sceneDis-
+       playList exists only in <B>PFMP_CULL_DL_DRAW</B> multiprocessing
+       mode.  In case of drawing a subbin, all subbins that have
+       the same parents as a given subbin will be drawn. For
+       example, consider root bins 5, 6, and 7 and subbins 8
+       (child of 5 and 6) and 9 (child of 5, 6, and 7). When
+       <B>pfDrawBin</B> is called with bin 8, bin 9 will be rendered as
+       well.
+
+       <B>pfChanBinSort</B> defines how pfGeoSets are sorted within a
+       bin. <I>sortType</I> is a symbolic token which identifies the
+       sorting method for <I>bin</I>:
+
+
+              <B>PFSORT_NO_SORT</B>
+                   Do not sort the bin. <I>sortOrders</I> is ignored.
+
+              <B>PFSORT_FRONT_TO_BACK</B>
+                   Sort the pfGeoSets in the bin in increasing
+                   range from the eyepoint. Range is computed as
+                   the distance from the pfChannel eyepoint to
+                   the center of the pfGeoSet's bounding box.
+                   <I>sortOrders</I> is ignored.
+
+              <B>PFSORT_BACK_TO_FRONT</B>
+                   Sort the pfGeoSets in the bin in decreasing
+                   range from the eyepoint. Range is computed as
+                   the distance from the pfChannel eyepoint to
+                   the center of the pfGeoSet's bounding box.
+                   <I>sortOrders</I> is ignored.
+
+              <B>PFSORT_BY_STATE</B>
+                   Sort the pfGeoSets in the bin by graphics
+                   state. The pfGeoSets in <I>bin</I> are first sorted
+                   <B>PFSORT_END</B> token to end the list. The
+                   <B>PFSTATE_*</B> tokens define a sorting hierarchy.
+                   The elements in <I>sortOrders</I> are copied into the
+                   pfChannel data structure, so in this case it
+                   is acceptable to pass static or automatic data
+                   not allocated through <B>pfMalloc</B>.
+
+              <B>PFSORT_DRAW_ORDER</B>
+                   Sort the pfGeoSets in the bin directly by
+                   their draw order, in ascending number.
+
+                   By default, a new bin as a <B>PFSORT_NO_SORT</B> sort
+                   order.
+
+       Example 1: Sorting configuration example
+
+       int  sortOrders[PFSORT_MAX_KEYS], i = 0;
+
+       sortOrders[i++] = PFSORT_STATE_BGN;
+       sortOrders[i++] = PFSTATE_FOG;
+       sortOrders[i++] = PFSTATE_MATERIAL;
+       sortOrders[i++] = PFSTATE_TEXTURE;
+       sortOrders[i++] = PFSORT_STATE_END;
+       sortOrders[i++] = PFSORT_END;
+
+       pfChanBinSort(chan, PFSORT_OPAQUE_BIN, PFSORT_BY_STATE, sortOrders);
+       pfChanBinSort(chan, PFSORT_TRANSP_BIN, PFSORT_BACK_TO_FRONT, NULL);
+
+
+       The default sorting order for the <B>PFSORT_OPAQUE_BIN</B> bin is
+       by pfGeoState only and the default sorting order for the
+       <B>PFSORT_TRANSP_BIN</B> bin is <B>PFSORT_BACK_TO_FRONT</B>.
+
+       The light points bins sorting is <B>PFSORT_DRAW_ORDER</B>.
+
+       Sorting by state is limited to the scope of a transforma-
+       tion (pfDCS or pfSCS) or a node with draw callbacks, i.e.
+       - pfGeoSets affected by different transformations or draw
+       callbacks are not sorted together.  However, range sorting
+       spans both transformation and draw callback boundaries.
+       Thus a range-sorted scene graph with many transformations
+       and expensive draw callbacks may suffer reduced perfor-
+       mance due to an increased number of transformation and
+       draw callback changes.
+
+       If a bin has subbins pfGeoSets are ordered in each subbin
+       separately as are pfGeoSets that do not belong to any sub-
+       bin of the bin.  A subbin inherits ordering from a parent
+       with highest sort priority, set by <B>pfChanBinSortPriority</B>.
+       In case of the transparent bin, the order in which
+       pfGeoSets are drawn (back-to-front) is important to avoid
+       visible artifacts and subbins, even if their pfGeoSets
+       were ordered back-to-front, may break that order.  For
+       this purpose, you can mark selected bins as non-exclusive.
+       If a pfGeoSet belongs to a subbin of a non-exclusive bin
+       it is added both to the subbin and directly to the list of
+       pfGeoSets of the non-exclusive bin. Thus when pfGeoSets of
+       the non-exclusive bin are sorted they are all in one list.
+       Any root bin can be marked non-exclusive by setting flag
+       <B>PFBIN_CALLBACK_POST_DRAW</B>), and the callback itself. The
+       callback is a function that has only one parameter, a void
+       pointer that points to the user data. Each bin has one
+       user data pointer, shared between pre-draw and post-draw
+       callbacks. This pointer can be set using
+       <B>pfChanBinUserData</B>.  If the callbacks are costly it makes
+       sense to group subbins of a bin with costly callbacks
+       together. To achieve this make sure that you set a high
+       child order mask (see above) for the bin.
+
+       Subbins are heavily used by cull programs. A cull program
+       allows the user to specify a sequence of tests, performed
+       during cull traversal, to decide what bin a pfGeoSet
+       belongs to. More information can be found in man page for
+       <B>pfCullProgram</B>.
+
+
+   <B>VIEWPOINT</B> <B>AND</B> <B>CAMERA</B> <B>SPECIFICATION</B>
+       <B>pfChanView</B> specifies both the origin and direction of view
+       for a pfChannel.  <I>xyz</I> specifies the x,y,z position of the
+       viewpoint in world coordinates and <I>hpr</I> specifies the Euler
+       angles (heading, pitch, and roll) in degrees of the view-
+       ing direction relative to the nominal view (as defined
+       below).  The order of application of these angles is
+       ROTy(roll) * ROTx(pitch) * ROTz(heading) where ROTa(angle)
+       is a rotation matrix about world axis <I>a</I> of <I>angle</I> degrees.
+       In all cases a positive rotation is counterclockwise by
+       the right hand rule.  The nominal viewing coordinate sys-
+       tem is +Y = forward, +Z = up, +X = right.  For example, a
+       roll of 90 degrees and a heading of -90 degrees would
+       align the view direction with the +X world axis and the up
+       direction with the -Y world axis.
+
+       <B>pfChanViewMat</B> provides another means of specifying view
+       point and direction.  <I>mat</I> is a 4x4 homogeneous matrix
+       which defines the view coordinate system such that the
+       upper 3x3 submatrix defines the coordinate system axes and
+       the bottom vector defines the coordinate system origin.
+       OpenGL Performer defines the view direction to be along
+       the positive Y axis and the up direction to be the posi-
+       tive Z direction, e.g., the second row of <I>mat</I> defines the
+       viewing direction and the third row defines the up direc-
+       tion in world coordinates.  <I>mat</I> must be orthonormal or
+       results are undefined.
+
+       The actual viewing direction used for culling and drawing
+       is modified by the offsets specified by <B>pfChanViewOffsets</B>.
+       The argument <I>xyz</I> defines a translation from the nominal
+       eyepoint.  The Euler angles given in <I>hpr</I> define an addi-
+       tional rotation of the viewing direction from that speci-
+       fied by <B>pfChanView</B> and <B>pfChanViewMat</B>.  Although this has
+       similar functionality to <B>pfChanView</B>, it is specifically
+       useful for applications which render the same scene into
+       adjacent displays using multiple pfChannels.  Two examples
+       where one would use <B>pfChanViewOffsets</B> as well as
+       <B>pfChanView</B> are offset-eye stereo image viewing applica-
+       tions, and for video wall applications.
+
+       Example 1: Set up a single pipe, 3-channel simulation
+       pfAttachChan(middle, left);
+       pfAttachChan(middle, right);
+
+       /* Set FOV of all channels */
+       pfMakeSimpleChan(middle, 45.0f, 45.0f);
+       pfChanAutoAspect(middle, PFFRUST_CALC_VERT);
+
+       /* Set clipping planes of all channels */
+       pfChanNearFar(middle, 1.0f, 2000.0f);
+
+       hprOffsets[PF_P] = 0.0f;
+       hprOffsets[PF_R] = 0.0f;
+       pfSetVec3(xyzOffsets, 0.0f, 0.0f, 0.0f);
+
+       /*
+        * Set up viewport and viewing offsets.
+        * Note that these are not shared by default.
+        */
+       pfChanViewport(left, 0.0f, 1.0f/3.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = 45.0f;
+       pfChanViewOffsets(left, hprOffsets, xyzOffsets);
+
+       pfChanViewport(middle, 1.0f/3.0f, 2.0f/3.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = 0.0f;
+       pfChanViewOffsets(middle, hprOffsets, xyzOffsets);
+
+       pfChanViewport(right, 2.0f/3.0f, 1.0f, 0.0f, 1.0f);
+       hprOffsets[PF_H] = -45.0f;
+       pfChanViewOffsets(right, hprOffsets, xyzOffsets);
+
+
+       Both translation and rotational offsets are encoded in the
+       graphics library's ModelView matrix.  This ensures that
+       fogging is consistent across multiple, adjacent pfChan-
+       nels.  However, proper lighting requires a lighting model
+       which specifies a local viewer.  Otherwise, geometry which
+       spans multiple pfChannels will be lit differently on each
+       pfChannel.
+
+       Example 2: Local viewer lighting model
+
+
+       pfLightModel   *lm;
+
+       lm = pfNewLModel(arena);
+       pfLModelLocal(lm, 1);
+       pfApplyLModel(lm);
+
+
+       <B>pfGetChanView</B> copies the view point/direction into <I>xyz</I> and
+       <I>hpr</I>.
+
+       <B>pfGetChanViewMat</B> copies the viewing matrix (without view-
+       ing offsets) into <I>mat</I>.
+
+       <B>pfGetChanViewOffsets</B> copies the view positional and rota-
+       tional offsets into the indicated arrays (<I>xyz</I> and <I>hpr</I>).
+
+       <B>pfGetChanOffsetViewMat</B> copies the combined nominal and
+
+   <B>DRAWING</B> <B>FRAME</B> <B>STATISTICS</B>
+       OpenGL Performer keeps track of times spent, and opera-
+       tions done, in the application, cull, and draw stages of
+       the rendering pipeline and accumulates the data in a
+       pfFrameStats structure.  <B>pfGetChanFStats</B> is used to get
+       this pfFrameStats structure from the indicated channel.
+       <B>pfChanStatsMode</B> of the <B>PFCSTATS_DRAW</B> mode selects which of
+       the enabled statistics classes should be displayed in that
+       channel by <B>pfDrawChanStats</B> or <B>pfDrawFStats</B>.  The statis-
+       tics are enabled by <B>pfFStatsClass</B> and the <B>PFCSTATS_DRAW</B>
+       mode is only controlling the display of statistics that
+       are already enabled.
+
+
+       <B>pfDrawChanStats</B> or <B>pfDrawFStats</B> must be called during each
+       frame that a statistics display is desired and may be
+       called from any of OpenGL Performer's application, cull,
+       or draw processes.  This manual page give some pointers on
+       how to interpret the statistics to help in tuning your
+       database.  Refer to the OpenGL Performer Programming Guide
+       for more detailed information.
+
+       <B>pfChanStatsMode</B> selects which of the currently already
+       enabled statistics through <B>pfFStatsClass</B>, should be drawn.
+       It takes a pointer to a pfChannel, <I>chan</I>, and <I>mode</I>, which
+       is currently just <B>PFCSTATS_DRAW</B>, and the corresponding
+       value for <I>val</I>, which is a statistics class enabling bit-
+       mask.  The statistics classes displayed by <B>pfDrawChanStats</B>
+       or <B>pfDrawFStats</B> are those statistics classes that have
+       been enabled by <B>pfChanStatsMode</B> for display, and are also
+       enabled for collection. By default, all enabled statistics
+       are displayed.
+
+       At the top of the display is the actual frame rate being
+       achieved and the frame rate set by <B>pfFrameRate</B> and the
+       phase set by <B>pfPhase</B>.  If statistics collection of process
+       frame times has been disabled, then the actual frame rate
+       will not be known and "???" will be shown.  When the
+       graphics statistics class is enabled for collection, the
+       average number of pfGeoSets and triangles being displayed
+       is also shown on the top of the statistics display.  See
+       the <B>pfStatsClass</B> manual page for more information on
+       enabling statistics classes.
+
+       For the Process Frame Times Statistics class,
+       <B>pfDrawChanStats</B> displays the amount of time, on average,
+       spent by each process on a single frame, as well as the
+       number of frames that missed the goal, or extended beyond
+       the time for the specified goal frame rate.  When the
+       <B>PFFSTATS_PFTIMES_HIST</B> mode is enabled (on by default), a
+       timing diagram of previous frames is displayed.
+
+       Red vertical lines indicate video retrace intervals and
+       green ones indicate frame boundaries.  Horizontal bars
+       indicate the time taken by pipeline stages.  The three
+       different stages: APP, CULL, AND draw are separated verti-
+       cally and stages belonging to the same frame are the same
+       color.  Each stage of each frame is labeled with the name
+       of the stage and its offset from the current frame.  For
+       six pieces.  The frame starts where the colors change
+       right after a frame boundary line. Pick up where a new
+       color starts.  This will be inside pfFrame and is where
+       control is given back to the application.
+
+
+              o Post-pfFrame()
+                     The time spent in the application's main
+                     loop between the pfFrame() call and the
+                     pfSync() call (highest segment in applica-
+                     tion line, drawn as a thick, bright line).
+
+              o pfSync() clean and pfApp()
+                     The time spent cleaning the scene graph from
+                     application changes during pfSync(); drawn
+                     as mid-hight thick, bright line. This will
+                     also include the time for pfAppFrame() which
+                     is called from pfSync() if not already
+                     called for the current frame by the user.
+                     pfSequences are also evaluated as part of
+                     pfAppFrame().
+
+              o pfSync() sleep
+                     The time spent sleeping in pfSync() while
+                     waiting for the next field or frame boundary
+                     (depending on pfPhase and process model);
+                     the lowest point in the application line,
+                     drawn as a thin pale dotted line. Typically
+                     this wait is for when pfPhase is
+                     <B>PFPHASE_LOCK</B> or <B>PFPHASE_FLOAT</B>.  However,
+                     note that in single process with pfPhase of
+                     <B>PFPHASE_FREE_RUN</B>, there will be a sleep
+                     period to wait for the swapbuffer of the
+                     draw to complete before continuing with the
+                     application since any other graphics call
+                     would effective force such a sleep anyway
+                     and in a place where its timing effect could
+                     not be measured.
+
+              o Critical Section
+                     The time spent in the application code
+                     between calling pfSync() and calling
+                     pfFrame(); drawn as bright raised line. This
+                     is the critical path section and this line
+                     should be as small as possible or non-exis-
+                     tent.
+
+              o pfFrame() clean
+                     The time spent in pfFrame() cleaning the
+                     scene graph after any changes that might
+                     have been made in the previous subsegment,
+                     and then checking intersections; drawn as
+                     mid-hight thick bright line. This line
+                     should typically be very small or non-exis-
+                     tent as it is part of the critical path and
+                     implies database changes between pfSync()
+                     and pfFrame() which would be an expensive
+                     place to do such changes.
+
+                     returns and the user main application sec-
+                     tion (or post frame section) starts again.
+
+       The cull bar is divided into two pieces: first the time
+       spent getting updates from the application process
+       (slightly raised), and the time spent culling the scene
+       graph.
+
+       The draw timing bar is divided into potentially six
+       pieces:
+
+              o Pre-pfDraw()
+                     The time spent in the channel draw callback
+                     before the call to pfDraw() (a very short
+                     thick dark raised segment. This will include
+                     the time for your call to pfClearChan().
+                     However, under normal circumstances, this
+                     segment should barely be visible at all).
+                     Operations taking place during this time
+                     should only be latency-critical since they
+                     are holding off the draw for the current
+                     frame..
+
+              o pfDraw()
+                     The time spent by OpenGL Performer travers-
+                     ing the scene graph in pfDraw() (drawn as
+                     lowered bright thick segment). This should
+                     typically be the largest segment as in the
+                     draw line.
+
+              o Post-pfDraw()
+                     The time spent in the channel draw callback
+                     after pfDraw() (another short thick dark
+                     raised segment;). On InfiniteReality, if
+                     graphics pipeline timing statistics have
+                     been enabled by specifying
+                     <B>PFFSTATS_ENGFXPFTIMES</B> to <B>pfFStatsClass</B>, this
+                     line will include the time to finish the
+                     fill for this channel.  Otherwise, it only
+                     includes the time for the CPU to execute and
+                     send graphics commands and graphics pipeline
+                     processing from this channel could impact
+                     the timing of other channels.
+
+              o Raster LPoint Draw
+                     The time to rendering raster light points
+                     computed by a forked lpoint process. This is
+                     drawn as a very raised bright line and if it
+                     exists will be the highest point in the draw
+                     line.  The last channel drawn on the pipe
+                     will include the time for the graphics
+                     pipeline to finish its drawing. Even if you
+                     have no operations after pfDraw() in you
+                     draw callback, this line for the last chan-
+                     nel might look quite long, particularly if
+                     you are very fill-limited and do not have
+                     InfiniteReailty graphics pipeline statistics
+                     enabled.  It is possible for rendering calls
+                     issued in the previous section to fill up
+
+              o Draw Stats and Call Swapbuffers
+                     The time spent waiting for the graphics
+                     pipeline to finish drawing the current
+                     frame, draw the channel statistics (for all
+                     channels), and make the call to swap color
+                     buffers. This is drawn as apale dotted line.
+                     The hardware will complete the swapbuffers
+                     upon the following vertical field or frame
+                     line.
+
+       The draw timing bar is somewhat inaccurate because the
+       time stamps are taken from the host and do not reflect
+       when the graphics pipeline actually finished rendering.
+       Therefore, time for graphics work done in one part of the
+       draw might be counted in a following part when the graph-
+       ics pipeline FIFO filled up and caused the host to wait.
+       This means that some <B>pfDraw()</B> time could be counted in the
+       following user callback time, or in the time to draw the
+       statistics.  If graphics pipeline timing statistics are
+       enabled by specifying <B>PFFSTATS_ENGFXPFTIMES</B> to
+       <B>pfFStatsClass</B> (available on InfiniteReality graphics plat-
+       forms), the draw timing line will not have the above inac-
+       curacy as the end time will be generated by the graphics
+       pipeline when the channel is done drawing.
+
+
+       If the light process is used its timing bar is added. Like
+       the draw timing line, the lowest part represent the time
+       actually spent in <B>pfLPoint()</B> preprocessing the light
+       points; time spend in the user's call back routine is in
+       the darkened parts bedore and after. The rendering time to
+       draw the preprocessed light points is included in the draw
+       timing bar.
+
+       When fill statistics are enabled, the main channel will be
+       painted in colors ranging from blue to pink that indicate
+       per-pixel depth-complexity.  The brightest (pinkest) areas
+       are those pixels that have been written many times.  The
+       statistics displayed, in green, include average total
+       depth complexity (total number of pixel writes), as well
+       as the average, minimum, and maximum number of times a
+       given pixel is written.
+
+       When the Graphics Statistics class is enabled for collec-
+       tion and display, detailed statistics on numbers of primi-
+       tives, attributes, state changes, and matrix transforma-
+       tions are all displayed.  These statistics show what is
+       being drawn by the graphics pipeline.  When the
+       <B>PFSTATS_GFX_TSTRIP_LENGTHS</B> mode is enabled, a histogram of
+       triangle strip lengths showing the percentage of triangles
+       in the scene in strips of given lengths is also displayed.
+       For the strip length statistics, quads are counted as
+       strips of length two and independent triangles are counted
+       as strips of length one.  For graphics performance, it is
+       good to have much of the database as possible in triangle
+       strips, and making those triangle strips as long as possi-
+       ble.  On a system with RealityEngine graphics, pay special
+       attention to the numbers for texture loads and number of
+
+       The CPU statistics display will show some of the statis-
+       tics seen in <B>osview(1)</B>.  Graphics context switches occur
+       when there are multiple active graphics windows on the
+       same screen.  An application needing high fixed frame
+       rates should not be encurring graphics context switches.
+       Another useful indicator of graphics overload is the
+       <B>fifonowait</B> and <B>fifowait</B> numbers.  An excessive number of
+       times seen waiting on the graphics FIFO could indicate a
+       graphics bottleneck and fill statistics should be exam-
+       ined.  If there are an excessive number of process context
+       switches, then it might help performance to restrict the
+       draw process to a single processor and then isolate that
+       processor.  OpenGL Performer will not do this automati-
+       cally; however, there are utilities in the OpenGL Per-
+       former utility library, <B>libpfutil</B> (see <B>pfuLockCPU</B>), that
+       enable you to do this.  These utilities are demonstrated
+       in the OpenGL Performer Perfly sample application.  These
+       utilities use the IRIX REACT extensions via <B>sysmp(2)</B>.
+
+       When the Database Statistics class is enabled for collec-
+       tion and display, the number of displayed and evaluated
+       nodes for each node type is shown.  When the cull statis-
+       tics are displayed, a table showing the total number of
+       nodes and pfGeoSets traversed by the cull process, the
+       number of node bounding sphere and pfGeoSet bounding boxes
+       tested, and the total number of nodes, and pfGeoSets, (of
+       those traversed) that were trivially rejected as being
+       outside the viewing frustum, the number that were fully
+       inside the viewing frustum, and the number that inter-
+       sected the viewing frustum.  The database and culling
+       statistics together can show the efficiency of the
+       database hierarchy.  If many of the nodes in the database
+       are being traversed by the cull process when only a small
+       percentage are actually visible, then this indicates that
+       the database hierarchy is not spatially coherent.  If
+       there are many pfGeoSets in each pfGeode, and many
+       pfGeoSets are being rejected by the cull, then adding more
+       database hierarchy above current nodes may actually speed
+       up the culling traversal because cull tests on nodes would
+       be able to accept or reject large pieces of the database
+       without traversing lower nodes.  If the number of pfLOD
+       nodes evaluated is much more then the number that are
+       actually drawn, then adding LOD hierarchy might help to
+       reduce the total number of LOD range calculations, which
+       are fairly expensive.
+
+       If there are few nodes in the database relative to the
+       number of pfGeoSets and the cull is taking a small amount
+       of time but the draw is taking longer than desired, then
+       adding more nodes and using a database hierarchy that is
+       spatially coherent should improve the accuracy of the cull
+       and speed up the draw traversal.  If there are only a few
+       pfGeoSets per pfGeode and the cull is taking longer than
+       the draw in multiprocess mode, or is taking a significant
+       amount of time in a process shared with the draw, then it
+       might benefit to not cull down to the pfGeoSet level.
+       Refer to the <B>pfChanTravMode</B> reference page for information
+       on setting cull traversal modes.
+
+       If stress is active, the display shows a graph of the pre-
+       vious 3 seconds of stress which is drawn in white.  Stress
+       is drawn into the upper portion and is scaled to fit.
+
+       The <B>pfDrawChanStats</B> display is very useful for debugging
+       and profiling a particular application and also for visu-
+       alizing the behavior of differing multiprocessing modes
+       and pfPipe phases.
+
+       OpenGL Performer level-of-detail behavior is primarily
+       dependent on pfChannel viewing parameters such as view
+       position, field-of-view, and viewport pixel size.  OpenGL
+       Performer assumes that LODs are modeled for a canonical
+       FOV of 45 degrees and a viewport size of 1024 pixels.
+       OpenGL Performer computes an internal scale value for
+       pfChannels whose FOV or viewport size differ from these
+       defaults.  This scale value is used to modify LOD ranges
+       so that correct LOD behavior is maintained.  If your LODs
+       were not modeled with the above defaults you may use
+       <B>PFLOD_SCALE</B> (see below) to adjust the LOD ranges.
+
+       Other LOD modification parameters are set with
+       <B>pfChanLODAttr</B>.  <I>attr</I> is a symbolic token that specifies
+       which LOD parameter to set and is one of the following:
+
+              <B>PFLOD_SCALE</B>
+                   <I>val</I> multiplies the range computed between
+                   <I>chan</I>'s eyepoint and all pfLOD's drawn by <I>chan</I>.
+                   This is used to globally increase or decrease
+                   level of detail on a per-pfChannel basis.  The
+                   default LOD scale is 1.0. See the <B>pfLODState</B>
+                   and <B>pfLOD</B> man page for more details.
+
+              <B>PFLOD_FADE</B>
+                   <I>val</I> specifies the global fade scale used to
+                   fade between levels of detail.  Fade is
+                   enabled when <I>val</I> &gt; 0, and is disabled when <I>val</I>
+                   &lt;= 0.  Fade is disabled by default.  Note that
+                   when computing the actual "fade" or transition
+                   distances, this scale is multiplied by indi-
+                   vidual fade distance values that are specified
+                   via <B>pfLODTransition</B>.  Default pfLOD transition
+                   ranges are 1.0.  See the <B>pfLODState</B> and <B>pfLOD</B>
+                   man page for more details.
+
+                   Performer's LOD fading implementation requires
+                   hardware support for blending using a method
+                   other than alpha blending. On platforms with
+                   multisample support, Performer will use multi-
+                   sample blending for the fading. If there is no
+                   multisample support, Performer will use stip-
+                   ple patterns to do screen door blending. On
+                   platforms where multisample is not present and
+                   stipple patterns are expensive, Performer can
+                   not smoothly fade LOD's.
+
+              <B>PFLOD_STRESS_PIX_LIMIT</B>
+                   System stress (<B>pfChanStress</B>) will not affect
+                   disabled with a value of 0.0.
+
+       LOD fade is useful for avoiding distracting LOD switches.
+       When within the fade range, LODs are drawn semi-transpar-
+       ent so that adjacent LODs smoothly blend together.  Fade
+       determines the transparency of an two independent levels
+       of detail.  Here is an example for a pfLOD with 3 levels-
+       of-detail and fade range of 30 database units:
+
+                      Switch Range
+       0          100            250       350
+       |           |              |         |
+       |------------|====|====|-------------|====|====|-----|====|====|
+       |    ^      |   ^                   |             | ^
+            |          |                           |
+            |    20/80 LOD0/LOD1            ^           |
+          100% LOD0                    |       40% LOD2
+                           50/50 LOD1/LOD2
+
+       === indicates where fading is active.
+
+
+       Fade transparency is complementary so that fading the same
+       LOD child with (fade) and (1.0 - fade) will generate a
+       fully opaque image.  As an example, a fade of 0.7 will
+       cover 70% of the screen area while a fade of (1.0 - fade)
+       = (1.0 - 0.7) = 0.3 will cover the remaining 30% of the
+       screen area.
+
+       OpenGL Performer ensures that LODs whose switch range is
+       &lt;= 0.0 do not fade in and also clamps the user-specified
+       fade range to half the distance between LOD switches.  For
+       example, if a pfLOD is specified with switch ranges 0.0,
+       100.0, 400.0 and the fade range is 80.0, the result will
+       be:
+
+       Example 2: Fade clamping
+
+         Range                           LOD(s) drawn
+       ----------          -----------------------------------
+         0 -&gt;  50              100% LOD0
+        50 -&gt; 100              100% -&gt; 50% LOD0 +   0% -&gt;  50% LOD1
+       100 -&gt; 180               50% -&gt;  0% LOD0 +  50% -&gt; 100% LOD1
+       180 -&gt; 320                                         100% LOD1
+       320 -&gt; 400                                 100% -&gt;  50% LOD1
+       400 -&gt; 480                                  50% -&gt;   0% LOD1
+
+
+       Use fade with discretion since it increases rendering time
+       because two LODs instead of one are drawn when range is
+       within the fade interval.
+
+       <B>pfGetChanLODAttr</B> returns the value of the LOD modification
+       parameter specified by <I>attr</I>.
+
+       OpenGL Performer computes a stress value based on graphics
+       load (<B>pfChanStress</B>) to modify LODs.  Specifically, when
+       the system approaches overload, simpler LODs are drawn in
+       order to reduce graphics load.  However, in some situa-
+       limit is disabled.
+
+       <B>PFLOD_SCALE</B> is a global scale that is useful for debugging
+       and for adapting LODs modeled at one FOV and viewport size
+       to the canonical FOV and viewport size used by OpenGL Per-
+       former.  A <I>val</I> of 0.0 will cause only the highest LODs are
+       displayed, since the effective distance will be uniformly
+       scaled to 0.0.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       All pfChannels on a pfPipe are rendered into a single
+       graphics window so that they can share hardware resources
+       such as textures.  Additionally, each channel is rendered
+       in succession rather than in parallel to avoid costly
+       graphics context switching.
+
+       For best performance, channel buffers allocated by
+       <B>pfAllocChanData</B> should be as small as possible and
+       <B>pfPassChanData</B> should be called only when necessary to
+       reduce copying overhead.
+
+       When configured as a process separate from the draw, the
+       cull callback should not invoke OpenGL graphics calls
+       since only the draw process is attached to a graphics con-
+       text.  However, the display listable libpr commands
+       invoked in the cull callback will be correctly added to
+       the current OpenGL Performer libpr display list being
+       built for later processing by the draw process. Light
+       points process should never invoke graphics calls as it is
+       separate from the draw process.
+
+       Callbacks should not modify the OpenGL Performer database
+       but may use <B>pfGet</B> routines to inquire information as
+       desired.
+
+       Draw callbacks should not attempt to perform framebuffer
+       swapping operations directly since OpenGL Performer must
+       control this to handle frame and channel synchronization.
+       If user control of buffer swapping is required, register a
+       <B>pfPipeSwapFunc</B> callback to cause the named user written
+       function to be used by OpenGL Performer for swapping
+       buffers.
+
+       Sorting back-to-front is required for accurate rendering
+       of <B>PFTR_BLEND_ALPHA</B> surfaces. The ordering mechanism
+       described above provides range sorting on a per-pfGeoSet,
+       not a per-triangle basis so some anomalies may be apparent
+       when rendering transparent surfaces.  These anomalies may
+       be reduced by rejecting back-facing polygons (see
+       <B>pfCullFace</B> and <B>PFSTATE_CULLFACE</B>).
+
+       The OpenGL Performer world coordinate system is +X = East,
+       +Y = North, +Z = Up and viewing coordinate system is +X =
+       Right, +Y = Forward, +Z = Up.  Note that this is not the
+       same as the OpenGL default coordinate system which uses +X
+       = Right, +Y = Up, +Z = Out of the screen.  OpenGL Per-
+       former internally manages the transformation required to
+       go from a 'Z-up' world to a 'Y-up' world.
+
+
+       Fade-based level of detail transition is supported only on
+       RealityEngine systems and then only when multisampling is
+       enabled.
+
+       Octane2 VPro provides a way to improve precision of param-
+       eter interpolation across primitives (especially those
+       primitives which are large in screen space). For this pur-
+       pose, Performer running on an Octane2 uses a special pur-
+       pose cull program which is applied in cull traversal to
+       detect such primitives (see <B>pfCullProgram</B> for more infor-
+       mation about cull programs).  If your application is cull
+       limited, you can disable this default behavior by setting
+       environment variable <B>GL_VERTEX_PRECLIP</B>.  Your cull will be
+       faster, but your draw will be slower (unless you disable
+       the detection).  The possible values of the environment
+       variable are <B>NICEST</B> (detects all primitives), <B>FASTEST</B>
+       (faster detection), or <B>DISABLED</B> (no detection).
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Intersections, and thus picking, with lines and points is
+       not yet implemented.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfConfigPWin, pfAddChan, pfInsertChan, pfMoveChan, pfRe-
+       moveChan, pfPipeSwapFunc, pfNodeIsectSegs, pfLoadGState,
+       pfNodeBSphere, pfNodeTravMask, pfStatsClass, pfStatsClass-
+       Mode, pfConfig, pfCullFace, pfCullProgram, pfDispList,
+       pfEarthSky, pfESkyFog, pfObject, pfFrame, pfFrameRate,
+       pfFrustum, pfGetSemaArena, pfLightSource, pfLOD, pfMultip-
+       ipe, pfMultiprocess, pfPolytope, pfPhase, pfScene, pfGet-
+       SemaArena, pfTransparency, pfuLockCPU
+
+
+
+                                                   pfChannel(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

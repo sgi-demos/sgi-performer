@@ -1,0 +1,236 @@
+
+Performer 3.0
+
+libpfv - picker samples
+-----------------------
+
+The sample programs contained in this directory illustrate basic
+usage of the pfvPicker, pfvInteractor and pfvSelector API.
+
+
+sample01:
+
+Usage example: ./sample01 esprit.flt truck.pfb tux.pfb
+
+This basic example demonstrates the ALLOW_HLITE mode of the pfvPicker 
+class, and shows how to extend the pfvInteractor class in order to
+easily highlight the object with current mouse focus.
+Note that one interactor (of type myInteractor) is created and linked
+to each model in scene.
+
+
+
+sample02:
+
+Usage example: ./sample02 esprit.flt truck.pfb tux.pfb
+
+this example is like the previous one, but myInteractor requests 
+'INTERACT' state when left mouse button is clicked on highlighted object.
+Interacion is shown by a different highlight color (green), and is
+retained until left button is released (irrespective of mouse position).
+Note that highlighting a second object (while a first object is
+interacting) is not allowed.
+
+
+
+sample03:
+
+Usage example: ./sample03 esprit.flt truck.pfb tux.pfb
+
+this is like the previous example, but interaction will actually
+cause highlighted object to vary in scale. left button will make
+object larger, right button will make it smaller.
+
+
+
+sample04:
+
+Usage example: ./sample04 esprit.flt truck.pfb tux.pfb
+
+This demonstrates the use of the SPECIAL_FOCUS mode, which is an
+alternative to the ALLOW_HLITE mode.
+In this mode, picker does not isect scene on each frame to determine
+who has current focus; instead, it will isect scene only on frames
+in which an event (kbd or mouse btn only) has been generated.
+Picker will call the specialFocus on the interactor with current
+focus, allowing it to respond to event.
+In this example, myInteractor reacts to left and mouse button-down
+events by entering INTERACT state, and scaling highlighted object,
+as in the previous example.
+
+
+
+sample05:
+
+Usage example: ./sample05 esprit.flt truck.pfb tux.pfb
+
+This example shows how to extend the pfvSelector class in order to be
+able to SELECT portions of the scene graph.
+Here, a selector of type mySelector is created and linked to each
+model in scene. When the left mouse button is clicked on an object,
+the associated selector will request and obtain SELECT state,
+and show selection with a blue highlight.
+At most one object can be selected at any time.
+Also, if left or right mouse button are pressed on selected object,
+mySelector will enter 'MANIP' state (shown with a lighter highlight
+color) and change selected object's size.
+
+
+
+sample06:
+
+Usage example: ./sample06 esprit.flt truck.pfb tux.pfb
+
+This example is very much like the previous one, but uses the
+ALLOW_HLITE state instead of SPECIAL_FOCUS.
+It shows how it is possible to have one object selected and a
+second object highlighted at once. 
+As in previous example, first click selects an object, then second
+click causes selected object to vary in size.
+
+
+
+sample07:
+
+Usage example: ./sample07 esprit.flt truck.pfb tux.pfb
+
+This example implements multiple selection, by allowing others selectors
+to join selection as slaves (to the master selector, which was the first
+one to be selected). 
+Hold down the shift key to add an object to (or remove from) current selection. 
+In this example, when manipulating a multiple selection, the master selector 
+will also scale geometry belonging to slave selectors.
+When in MANIP mode (growing or shrinking selected objects), master selector
+is visible as it is the only one that changes highlight color to light blue.
+Note that when master selector is deselected from a multiple selection,
+selection is handed over to first slave in master's list. 
+
+
+
+sample08:
+
+Usage example: ./sample08 esprit.flt truck.pfb tux.pfb
+
+A more complex version of the previous example, in which selected objects
+can be translated and rotated as well as scaled.
+Left or right click to select. Shift-click to add to ,or remove from 
+current selection. Then left click again on any selected object for forward
+motion (right click for backwards motion), hold left-ctrl and click mouse 
+btns to rotate, hold right-ctrl and click mouse btns to scale.
+Note: when translating multiple objects, all selected objects will move
+in the direction dictated by the master selector. 
+
+
+
+sample09:
+
+eg. Usage: ./sample09 esprit.flt tv.tvset tux.pfb
+
+This example demonstrates the creation of a television-set model, by reading
+a set of parameters from an xml file (using the pfvXmlNode class from libpfxml),
+then creating all geometry through API calls.
+Parameters include various sizes and proportions, and a list of texture
+images which will correspond to a tv channel each.
+pfvInteractors (of type tvbtnInteractor) are linked to the geometry 
+representing each button (one for each channel, plus an on-off button), and 
+allow channel (ie texture) to be set by left-clicking on the various tv-buttons.
+In addition, television set can be loaded with other models, and can be
+selected and manipulated (also in multile selections) just like in the previous
+example.
+
+
+
+sample10, sample11, sample12:
+
+Usage example: ./sample10 esprit.flt truck.pfb tux.pfb
+
+These examples are very similar to each other, and differ from all previous 
+ones in that only one slector is created an linked to the top node of the
+scene (instead of having one selector linked to the root of each model in scene).
+All three samples implement selection at the pfGeode level.
+
+This is closer to the openInventor paradigm, where a single selector is placed
+at the top of the scene graph. 
+
+sample10 implements the SINGLE selection policy: at most one geode can be selected 
+at any time. left click on an object to select, left click on the background to
+deselect.
+
+sample11 implements the TOGGLE selection policy: left clicking on an object will
+add it to selection if not already selected, else will remove it from selection.
+
+sample12 implements the SHIFT selection policy: left click on an object to clear
+current selection and select the picked object. left click on the background to
+clear selection. Shift-left-click on an object to add it to (or remove it from)
+current selection.
+
+
+
+sample13:
+
+eg. Usage: ./sample13 esprit.flt tv.tvset tux.pfb
+
+This example is almost identical to sample09 (the tvset example), but it 
+includes the use of the navigation class myNavigator.
+It is an example of how mouse input can be shared by navigation and 
+interaction, with minimal conflict.
+Special care has been put in ensuring that interactors and selectors only
+respond to left or right clicks if no other mouse buttons are down. At the 
+same time, navigator module ignores all left or right clicks, unless more 
+than one mouse button is down.
+
+Navigation works as follows:
+
+Hold left and right mouse buttons to strafe sideways or move vertically.
+Hold middle mouse button to change heading and pitch, and to carry on moving
+at current speed. Left clicking while holding middle button down will accellerate;
+Right clicking while holding middle button down will slow down (and eventually
+move backwards).
+Hold all three mouse buttons down together to go back to default position.
+Note that navgation parameters such as max speed, accell rate, reset position, etc are read from an xml file using the pfvXmlNode class from libpfxml.
+
+
+
+sample14:
+
+Usage example: ./sample14 esprit.flt truck.pfb tux.pfb
+
+his example shows how pfvPicker and pfvInteractors can be used to implement
+overlay GUI-like widgets.
+
+It is based on sample08, ie multiple objects can be selected for translation,
+rotation or scaling, but adds to it the use of the myNavigator class.
+
+Also, three instances of a class called slider are created, and set up to
+control one component (red, green, blue) of the background color.
+
+Each slider reads a bunch of paramters from an xml file (yet another example 
+of usage of the libpfxml API), then creates a pfGeode with two quads, 
+representing a slider. And adds it to a pfDCS. On each frame, slider updates
+the matrix on the pfDCS so that slider is positioned on the near plane (or
+rather just inside the viewing frustum), and appears to be in a fixed position
+on the screen. [note this would not work very well in a multichannel application].
+
+pfvInteractors of type sliderInteractor is linked to the geode representing
+each slider, so mouse interaction with the sliders is handled by picker as they
+were regular 3d geometry (which indeed they are).
+sliderInteractors will request INTERACT state when user left clicks on them,
+and will update slider geometry based on mouse x position on every frame until
+mouse is released. A callback function set up in main() allows slider values
+to be linked to changes in background color.
+
+Note also, that interacting with sliders does not cause selected objects to
+deselect, as picker will allow a second interactor to enter INTERACT state
+while a selector is currently active (which in this example corresponds to
+one or more objects being highlighted in blue).
+
+
+
+sample15:
+
+Usage example: ./sample15 esprit.flt truck.pfb tux.pfb
+
+This example implements a very simple interactor that waits for a mouse-click
+over any object in the scene, then prints out information on the picked
+geoset by calling the function pfPrint(..).
+

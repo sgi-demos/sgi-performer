@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<TITLE>pfvInputMngrCallback</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvInputMngrCallback</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvInputMngrCallback(3pf)               pfvInputMngrCallback(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvInputMngrCallback</B>  -  Bind  User-Callback-functions  to
+       specific keyboard keys.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvInput.h&gt;
+
+       void       <B>pfvInputMngrCallback::enable</B>();
+
+       void       <B>pfvInputMngrCallback::disable</B>();
+
+       int        <B>pfvInputMngrCallback::getEnabled</B>();
+
+       uint64_t   <B>pfvInputMngrCallback::getViewMask</B>();
+
+       void       <B>pfvInputMngrCallback::setViewMask</B>(uint64_t mask);
+
+       char*      <B>pfvInputMngrCallback::getEventMask</B>();
+
+       void       <B>pfvInputMngrCallback::setEventMask</B>(char* str);
+
+       int        <B>pfvInputMngrCallback::bindKeys</B>(char*keys);
+
+       int        <B>pfvInputMngrCallback::pfvInputMngrCallback::unbindKeys</B>(char*keys);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvInputMngrCallback class allows user callbacks to be
+       registered  and  associated with specific key presses over
+       one or more views.
+
+       pfvInputMngrCallback  objects  should   not   be   created
+       directly  through  their constructor (which is protected).
+       Instead, pfvInputMngrCallback objects  should  be  created
+       through  the  pfvInputMngr::addCallback  method.  (see man
+       page for pfvInputMngr).
+
+       <B>pfvInputMngrCallback::enable</B>                           and
+       <B>pfvInputMngrCallback::disable</B>  allow  user  to  enable and
+       disable a callback without deleting  it.   The  associated
+       user-callback  will only be called if pfvInputMngrCallback
+       is enabled.
+
+       <B>pfvInputMngrCallback::getEnabled</B> returns 1 if  pfvInputMn-
+       grCallback is currently enabled, 0 otherwise.
+
+       <B>pfvInputMngrCallback::getViewMask</B> returns the 64-bit view-
+       Mask associated with pfvInputMngrCallback.
+
+       <B>pfvInputMngrCallback::setViewMask</B> sets the 64-bit viewMask
+       associated  with  pfvInputMngrCallback to mask. If mask is
+       non-zero, only key-presses over views included in viewMask
+       will cause user-callback to be called.
+
+       <B>pfvInputMngrCallback::getEventMask</B>  returns  a zero-termi-
+       nated sorted string  in which  each  character  is  a  key
+       in pfvInput.h, indicating which key-presses  should  cause
+       user-callback  to  be called.  Note that str does not need
+       to be sorted, and duplicate enties found in  str  will  be
+       ignored.
+
+       <B>pfvInputMngrCallback::bindKeys</B>  adds  the  keys encoded in
+       the zero-terminated string str  to  the  list  of  strings
+       associated  with pfvInputMngrCallback.  Note that str does
+       not need to be sorted, and duplicate enties found  in  str
+       will be ignored.
+
+       <B>pfvInputMngrCallback::unbindKeys</B>  removes the keys encoded
+       in the zero-terminated string str from the list of strings
+       associated  with pfvInputMngrCallback.  Note that str does
+       not need to be sorted, and duplicate enties found  in  str
+       will be ignored.
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvXml,  pfvInputMngr, pfvDisplayMngr, pfvViewer, pfvView,
+       pfuGetEventStream
+
+
+
+                                        pfvInputMngrCallback(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

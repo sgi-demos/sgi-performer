@@ -1,0 +1,224 @@
+<HTML>
+<HEAD>
+<TITLE>pfvmLogo</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvmLogo</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvmLogo(3pf)                                       pfvmLogo(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvmLogo</B> - Logo module for pfvViewer
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfvm/pfvmLogo.h&gt;
+
+
+       <B>pfvmLogo::pfvmLogo</B>(pfvXmlNode* xml=NULL);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class <B>pfvmLogo</B> is derived from the
+       parent class <B>pfvModule</B>, so each of these member  functions
+       of  class  <B>pfvModule</B> are also directly usable with objects
+       of class <B>pfvmLogo</B>.  This is also true for ancestor classes
+       of class <B>pfvModule</B>.
+
+       int            <B>pfvModule::getScope</B>();
+       int            <B>pfvModule::getScopeIndex</B>();
+       pfvObject*     <B>pfvModule::getScopeTarget</B>();
+       void           <B>pfvModule::bindCallback</B>(int which);
+       void           <B>pfvModule::unbindCallback</B>(int which);
+       int            <B>pfvModule::getCBMask</B>();
+       virtual void   <B>pfvModule::preConfig</B>();
+       virtual void   <B>pfvModule::postConfig</B>();
+       virtual void   <B>pfvModule::enterView</B>(pfvView*v);
+       virtual void   <B>pfvModule::exitView</B>(pfvView*v);
+       virtual void   <B>pfvModule::enterWorld</B>();
+       virtual void   <B>pfvModule::exitWorld</B>();
+       virtual void   <B>pfvModule::sync</B>();
+       virtual void   <B>pfvModule::frame</B>();
+       virtual void   <B>pfvModule::preCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::preDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::overlay</B>(pfvDispChan*chan);
+       int            <B>pfvModule::bindKeys</B>(char*keys);
+       int            <B>pfvModule::unbindKeys</B>(char*keys)
+       char*          <B>pfvModule::getEventMask</B>()
+       void           <B>pfvModule::setEventMask</B>(char* str);
+       virtual int    <B>pfvModule::handleEvent</B>(int evType,
+                        char key);
+       uint64_t       <B>pfvModule::getViewMask</B>();
+
+
+       Since the class <B>pfvModule</B> is itself derived from the  par-
+       ent class <B>pfvobject</B>, objects of class <B>pfvmLogo</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfvobject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfvmLogo</B> can also be used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfvmLogo  is  a  module for displaying one or more overlay
+       images in pfvViewer applications.
+
+       Currently, pfvmLogo can only  be  configured  through  XML
+       tokens.  A number of &lt;logo&gt; tags can be defined, each cor-
+       responding to an independent overlay image, as illustrated
+       below:
+
+
+       ========
+       <B>XML</B> <B>tags</B>
+       ========
+
+
+
+           &lt;module&gt;
+               &lt;class&gt;pfvmLogo&lt;/class&gt;
+               &lt;data&gt;
+                   &lt;logo&gt;
+                       ...
+                       parameters
+                       ...
+                   &lt;/logo&gt;
+
+           &lt;/module&gt;
+
+
+       where <B>parameters</B> is one or more of the following:
+
+       <B>&lt;TexName&gt;</B>string<B>&lt;/TexName&gt;</B> where <B>string</B> is the name of the
+       file containing the texture image that will be displayed
+       in overlay.
+
+       <B>&lt;Pos&gt;</B>float,float,float,float<B>&lt;/Pos&gt;</B> takes four floats rep-
+       resenting the position in which logo will be rendered
+       (left, right, bottom and top respectively).  By default
+       the range is 0 to 1.
+
+       <B>&lt;TexCoords&gt;</B>float,float,float,float<B>&lt;/TexCoords&gt;</B> takes four
+       floats representing the region of the texture image that
+       will be rendered (left, right, bottom and top respec-
+       tively). By default the range is 0 to 1, causing the whole
+       image to be rendered.  See man glTexCoord2f for more info.
+
+       <B>&lt;Color&gt;</B>float,float,float,float<B>&lt;/Color&gt;</B> Takes four floats
+       representing r,g,b,a respectively.  This color modulates
+       the color of the image.  See man glColor4f for more info.
+
+
+       Example:
+           &lt;module&gt;
+               &lt;class&gt;pfvmLogo&lt;/class&gt;
+               &lt;data&gt;
+                   &lt;logo&gt;
+                       &lt;!-- specify the file --&gt;
+                       &lt;TexName&gt;/usr/share/Performer/data/perfbann.rgb&lt;/TexName&gt;
+
+                       &lt;!-- cut out the picture on the right side of the logo --&gt;
+                       &lt;TexCoords&gt;0.0,0.7,0.0,1.0&lt;/TexCoords&gt;
+
+                       &lt;!-- position in the upper right --&gt;
+                       &lt;Pos&gt;0.4,1.0.0.8,1.0&lt;/Pos&gt;
+
+                       &lt;!-- make it half translucent--&gt;
+                       &lt;Color&gt;1.0,1.0,1.0,0.5&lt;/Color&gt;
+                   &lt;/logo&gt;
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+
+       =======
+       <B>Scoping</B>
+       =======
+
+       A pfvmLogo module can be scoped globally, to a single
+       view, or to a single world.
+
+       If scoped globally, pfvmLogo module will render its over-
+       lay image(s) on all channels.
+
+       If scoped to a view, pfvmLogo module will render its over-
+       lay image(s) only on channels belonging to its target-
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The source code for the pfvmLogo Module is provided and
+       can be found in /usr/share/Per-
+       former/src/pguide/libpfv/viewer/modules/pfvmLogo
+
+       For examples of pfvViewer XML configuration files, look at
+       the sample .pfv files in /usr/share/Performer/config.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvModule, pfvViewer, pfvXml
+
+
+
+                                                    pfvmLogo(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

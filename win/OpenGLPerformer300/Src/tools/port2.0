@@ -1,0 +1,23 @@
+#!/bin/csh
+# port2.0 - a shell script to aid in porting 1.2 Performer code to 2.0
+# 
+# This script takes a list of files on the command line and passes
+# each of them through the porting sed script.  The resulting file
+# is diffed and left as filename.pf2.0 if it differs.
+# The original file is left unchanged.
+#
+set where = $0
+set where = $where:h
+if ( "$where" == "$0" ) then
+	set where = .
+endif
+foreach i ( $* ) 
+	sed -f $where/port2.0.sed < $i | m4 $where/port2.0.m4 - > $i.pf2.0
+	diff $i $i.pf2.0 > /dev/null
+	if ( $status == 1 ) then
+		echo updating $i for Performer 2.0 in $i.pf2.0
+	else
+		echo no changes made to $i 
+		rm -f $i.pf2.0
+	endif
+end

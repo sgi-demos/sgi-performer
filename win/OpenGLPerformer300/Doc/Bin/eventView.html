@@ -1,0 +1,262 @@
+<HTML>
+<HEAD>
+<TITLE>eventView</TITLE>
+</HEAD>
+<BODY>
+<H1>eventView</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+eventView(1pf)                                     eventView(1pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>eventView,</B>  <B>evpp,</B>  <B>evanalyzer,</B>  <B>evhist,</B> <B>evgraph,</B> <B>evmerge</B> -
+       OpenGL Performer real-time event generator/viewer.
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>evpp</B> [ options ] infile.def
+
+       <B>evanalyzer</B> infile.timefile
+
+       <B>evhist</B> infile.timefile event_name_1 [s|e event_name_2 s|e]
+
+       <B>evgraph</B> infile.timefile event_name info_name
+
+       <B>evmerge</B> infile1.timefile infile2.timefile
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       This page describes tools for adding and viewing real-time
+       events in a Performer program. In describes the  following
+       programs:
+
+              <B>evpp</B> -
+                   An  Event  Pre-Processor. This program takes a
+                   description of user events and generates  a  C
+                   program adding the new events into an applica-
+                   tion programs.
+
+              <B>evanalyzer</B> -
+                   A viewing program for captured events.
+
+              <B>evhist</B> -
+                   A display program for generating histograms of
+                   event durations. Usually activated from within
+                   <B>evanalyzer</B>.
+
+              <B>evgraph</B> -
+                   A display program for  plotting  functions  of
+                   event information slots.
+
+              <B>evmerge</B> -
+                   A utility program for merging event files.
+
+
+
+   <B>evpp</B> <B>-</B> <B>Event</B> <B>Pre-Processor.</B>
+       <B>evpp</B>  is  a  pre-processor  for  adding  user-events to an
+       OpenGL Performer program. It takes an text file describing
+       a  set of new event types. It produces a C source file and
+       a C include file. Compiling and linking the new  C  source
+       file in your program enables recording the newly generated
+       events.
+
+       Here's an example of an <B>evpp</B> input file:
+
+
+       file "out.timefile";
+
+       malloc "pfSharedMalloc";
+
+       group "my_APP"     0x000001;
+       group "my_Cull_CB" 0x000002;
+
+       group "my_APP"
+               {
+               event "my_pfFrame";
+               event "my_pfSync";
+               };
+
+       group "my_Cull_CB"
+               {
+                       event "my_Cull_Group_CB"
+                               {
+                                       size 5;
+                               };
+
+                       event "my_Cull_DCS_CB"
+                               {
+                                       size 5;
+                               };
+               };
+
+       event "myCB"
+               {
+                       info "myInfo"
+                       {
+                               type int;
+                               name "myInfoName";
+                       };
+               }
+
+
+
+       The above file defines two groups of events. Each group
+       contains two events.  In the second group (my_Cull_CB),
+       each event is an array of five events. This is useful for
+       generating the same event types from different processes.
+       In this case, each CULL process will generate events on
+       callbacks to pfGroups and pfDCS.  The above file also
+       defines an event called <I>myCB</I> which doesn't belong to any
+       group. This event contains a single information slot of
+       type integer on it.
+
+       The <I>file</I> directive specifies the output file name. If the
+       character <B>?</B>  is used instead of a file name, the generated
+       macros <B>EVENT_WRITE</B> and <B>EVENT_WRITE_ALL</B> will require a file
+       name as a parameter.
+
+       The <I>max</I><B>_</B><I>events</I> directive specifies the maximum number of
+       events that will be allocated and captured.
+
+       The <I>c</I><B>_</B><I>file</I> and <I>h</I><B>_</B><I>file</I> directives specify the file names
+       for the source code files that <B>evpp</B> generates.
+
+       The <I>active</I> directive may be <I>true</I> or <I>false</I>. It determines
+       whether <B>evpp</B> will generate empty macros. This is useful
+       The <I>malloc</I> directive allows defining an alternative memory
+       allocation for internal eventView use. If using anything
+       other than "pfSharedMalloc" as the <I>malloc</I> value, the
+       application must supply a function receiving an int and
+       returning a void* pointer to newly allocated memory.
+       pfSharedMalloc is a built in function that allocates mem-
+       ory off the Performer shared arena.
+
+       When defining a group of events, one must first define a
+       group mask. The <I>group</I> directive accept a group name and a
+       mask. Masks may overlap. This is useful for defining hier-
+       archies of groups.
+
+       An <I>event</I> directive is used for defining single events.
+       They may be inside or outside the definition of a group.
+       And event should have a name, and may have a size and
+       information slots. In the example above, an event of size
+       5 is effectively an array of five independent events. This
+       is useful for creating per-pipe events.
+
+
+
+   <B>evpp</B> <B>command</B> <B>line</B> <B>options</B>
+              -h   Print usage string.
+
+              -c   Compile generated files. This option can make
+                   Makefiles simpler.
+
+              -n   Set all the events in the input file to inac-
+                   tive. The macros generated for all events will
+                   be empty. This flag use useful when trying to
+                   disable the instrumentation of a source file
+                   without removing the macros.
+
+
+
+   <B>evanalyzer</B> <B>-</B> <B>a</B> <B>graphic</B> <B>event</B> <B>display</B> <B>program.</B>
+       <B>evanalyzer</B> generates a graphic display of captures events.
+       Each line in its display contains events of a single type.
+       The horizontal axis of the display denotes the time.
+
+       An event starts at a vertical bar from the bottom of the
+       event line to its middle, continues horizontally and ends
+       as a vertical bar from the middle of the event line to its
+       top.
+
+
+       <B>evanalyzer</B> <B>keyboard/mouse</B> <B>controls</B>
+
+              Up/Down arrows -
+                   Change the zoom factor of the display.
+
+              Right/Left arrows -
+                   Shift display window across the captured data.
+
+              Left Mouse Button -
+                   Pick an event start/end. Clicking on one event
+                   start/end and releasing on another, prints the
+                   time difference between the two on the top of
+                   If the mouse is on an event line and the event
+                   has information fields, allow toggling their
+                   display.  If the mouse is not on an event
+                   line, toggle events displayed or groups dis-
+                   played.
+
+              <B>h</B> key -
+                   Bring up a histogram program (<B>evhist</B>) and run
+                   it on the currently selected event.
+
+              <B>f</B> key -
+                   If the event line under the mouse has informa-
+                   tion slots, ask to pick a slot.  Bring up a
+                   function plot program (<B>evgraph</B>) and run it on
+                   the selected information slot on the current
+                   event.  <B>ESC</B> - Exits <B>evanalyzer</B>.
+
+
+       <B>evhist</B> <B>keyboard</B> <B>controls.</B>
+
+       Moving the mouse across the window prints how many samples
+       are on the histogram bar under the mouse and what time
+       value it represents.
+
+
+              Up/Down arrows -
+                   Change the resolution of the histogram.
+
+              Right/Left arrows -
+                   Change the percentage of samples on both
+                   extremes of the histogram that we ignore (Dis-
+                   played as <I>garbage</I> on the top of the display).
+
+              <B>ESC</B> -
+                   Exits <B>evhist</B>.
+
+
+   <B>evgraph</B> <B>-</B> <B>plot</B> <B>event</B> <B>info.</B>
+       <B>evgraph</B> is a display program for plotting the information
+       slot of a given event type. It is usually activated by
+       <B>evanalyzer</B>.
+
+       <B>evgraph</B> <B>keyboard/mouse</B> <B>controls</B>
+
+
+              Up/Down arrows -
+                   Change the resolution of the plot.
+
+              Right/Left arrows -
+                   Translate plot horizontally.
+
+              Middle mouse button -
+                   Drag plot horizontally.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       EventView was originally written by Ran Yakir from BVR
+       Systems.
+
+                                                   eventView(1pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

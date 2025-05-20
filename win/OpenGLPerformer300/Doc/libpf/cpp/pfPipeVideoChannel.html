@@ -1,0 +1,502 @@
+<HTML>
+<HEAD>
+<TITLE>pfPipeVideoChannel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfPipeVideoChannel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfPipeVideoChannel(3pf)                   pfPipeVideoChannel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfPipeVideoChannel</B>  -  Multiprocessed video channel hookup
+       for pfPipes, pfWindows, and pfChannels
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfPipeVideoChannel.h&gt;
+
+                      <B>pfPipeVideoChannel::pfPipeVideoChannel</B>(pfPipe *pipe);
+
+       pfType *       <B>pfPipeVideoChannel::getClassType</B>(void);
+
+       void           <B>pfPipeVideoChannel::setAreaScale</B>(float s);
+
+       void           <B>pfPipeVideoChannel::setCallig</B>(pfCalligraphic* callig);
+
+       void           <B>pfPipeVideoChannel::setDVRMode</B>(int index);
+
+       void           <B>pfPipeVideoChannel::setFullRect</B>(void);
+
+       void           <B>pfPipeVideoChannel::setId</B>(int index);
+
+       void           <B>pfPipeVideoChannel::setMode</B>(int mode,
+                        int val);
+
+       void           <B>pfPipeVideoChannel::setOutputOrigin</B>(int xo,
+                        int yo);
+
+       void           <B>pfPipeVideoChannel::setOutputSize</B>(int xs,
+                        int ys);
+
+       void           <B>pfPipeVideoChannel::setScale</B>(float xs,
+                        float ys);
+
+       void           <B>pfPipeVideoChannel::setStress</B>(float s);
+
+       void           <B>pfPipeVideoChannel::setStressFilter</B>(float *frameFrac,
+                        float *lowLoad,        float *highLoad,
+                        float *pipeLoadScale,   float *stressS-
+                        cale, float *maxStress);
+
+       void           <B>pfPipeVideoChannel::setWSWindow</B>(pfWSWindow wsWin);
+
+       float          <B>pfPipeVideoChannel::getAreaScale</B>(void);
+
+       pfCalligraphic*
+                      <B>pfPipeVideoChannel::getCallig</B>(void);
+
+       int            <B>pfPipeVideoChannel::getDVRMode</B>(void);
+
+       int            <B>pfPipeVideoChannel::getId</B>(void);
+
+       float          <B>pfPipeVideoChannel::getLoad</B>(void);
+
+       void           <B>pfPipeVideoChannel::getMinDecScale</B>(float *xs,
+                        float *ys);
+
+       void           <B>pfPipeVideoChannel::getMinScale</B>(float *xs,
+                        float *ys);
+
+       void           <B>pfPipeVideoChannel::getMaxDecScale</B>(float *xs,
+                        float *ys);
+
+       void           <B>pfPipeVideoChannel::getMaxIncScale</B>(float *xs,
+                        float *ys);
+
+       void           <B>pfPipeVideoChannel::getMaxScale</B>(float *xs,
+                        float *ys);
+
+       int            <B>pfPipeVideoChannel::getMode</B>(int _mode);
+
+       void           <B>pfPipeVideoChannel::getOutputOrigin</B>(int *xo,
+                        int *yo);
+
+       void           <B>pfPipeVideoChannel::getOutputSize</B>(int *xs,
+                        int *ys);
+
+       pfPipe *       <B>pfPipeVideoChannel::getPipe</B>(void);
+
+       pfPipeWindow * <B>pfPipeVideoChannel::getPWin</B>(void);
+
+       int            <B>pfPipeVideoChannel::getPWinIndex</B>(void);
+
+       void           <B>pfPipeVideoChannel::getScale</B>(float *xs,
+                        float *ys);
+
+       float          <B>pfPipeVideoChannel::getStress</B>(void);
+
+       void           <B>pfPipeVideoChannel::getStressFilter</B>(float *frameFrac,
+                        float *lowLoad,        float *highLoad,
+                        float *pipeLoadScale,   float *stressS-
+                        cale, float *maxStress);
+
+       void           <B>pfPipeVideoChannel::getSize</B>(int *xs,
+                        int *ys);
+
+       int            <B>pfPipeVideoChannel::getScreen</B>(void);
+
+       void           <B>pfPipeVideoChannel::getScreenOutputOrigin</B>(int *xo,
+                        int *yo);
+
+       pfWSVideoChannelInfo
+                      <B>pfPipeVideoChannel::getPVChanInfo</B>(void);
+
+       pfWSWindow     <B>pfPipeVideoChannel::getWSWindow</B>(void);
+
+       void           <B>pfPipeVideoChannel::apply</B>(void);
+
+       void           <B>pfPipeVideoChannel::bind</B>(void);
+
+       void           <B>pfPipeVideoChannel::unbind</B>(void);
+
+       void           <B>pfPipeVideoChannel::select</B>(void);
+
+       int            <B>pfPipeVideoChannel::isBound</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfPipeVideoChannel</B> is derived
+       from the parent class <B>pfObject</B>, so each of these member
+       functions of class <B>pfObject</B> are also directly usable with
+       objects of class <B>pfPipeVideoChannel</B>.  This is also true
+       for ancestor classes of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfPipeVideoChannel</B> can
+       also be used with these functions designed for objects of
+       class <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which, uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfPipeVideoChannel</B> capability is used to direct the
+       output of pfChannels to different video outputs. A
+       pfPipeVideoChannel is created from a pfPipe and can only
+       be used to manage video channels on the graphics pipeline
+       managed by the parent pfPipe. pfPipeVideoChannels are
+       attached to pfPipeWindows that cover their output area.  A
+       pfPipeVideoChannel belongs to one pfPipeWindow at a time
+       and a pfPipeWindow may manage multiple pfPipeVideoChan-
+       nels.
+
+       pfPipeVideoChannels are similar to pfVideoChannels but are
+       tracked/maintained by libpf and are used by libpf to
+       direct final rendering output of pfChannels within a
+       pfPipeWindow.  Because of their similarity, many of the
+       center tab($); C | C L | L .  pfPipeVideoChannel rou-
+       tine$pfVideoChannels routine _ pfPVChanAreaS-
+       cale$pfVChanAreaScale pfPVChanFullRect$pfVChanFullRect
+       pfPVChanId$pfVChanId pfPVChanMinScale$pfVChanMinScale
+       pfPVChanMaxScale$pfVChanMaxScale pfPVChanOutputOri-
+       gin$pfVChanOutputOrigin pfPVChanOutputSize$pfVChanOutput-
+       Size pfPVChanScale$pfVChanScale pfPVChanWSWindow$pfVChan-
+       WSWindow pfGetPVChanAreaScale$pfGetVChanAreaScale pfGet-
+       PVChanId$pfGetVChanId pfGetPVChanMaxScale$pfGetVChanMaxS-
+       cale pfGetPVChanMinDeltas$pfGetVChanMinDeltas pfGetPVChan-
+       MinScale$pfGetVChanMinScale pfGetPVChanMode$pfGetVChanMode
+       pfGetPVChanOrigin$pfGetVChanOrigin pfGetPVChanOutputOri-
+       gin$pfGetVChanOutputOrigin pfGetPVChanOutput-
+       Size$pfGetVChanOutputSize pfGetPVChanScale$pfGetVChanScale
+       pfGetPVChanSize$pfGetVChanSize pfGetPVChan-
+       Screen$pfGetVChanScreen pfGetPVChanScreenOutputOri-
+       gin$pfGetVChanScreenOutputOrigin pfGetPVChanInfo$pfGet-
+       PVChanInfo pfGetPVChanWSWindow$pfGetVChanWSWindow pfAp-
+       plyPVChan$pfApplyVChan pfBindPVChan$pfBindVChan pfUnbind-
+       PVChan$pfUnbindVChan pfIsPVChanBound$pfIsVChanBound pfIs-
+       PVChanActive$pfIsVChanActive pfPVChanMode$pfVChanMode pfS-
+       electPVChan$pfSelectVChan
+
+
+       <B>new</B> <B>pfPipeVideoChannel</B> creates and returns a handle to a
+       pfPipeVideoChannel.  pfPipeVideoChannels are always allo-
+       cated from shared memory and cannot be created statically,
+       on the stack or in arrays.
+
+       <B>pfPipeVideoChannel::getClassType</B> returns the <B>pfType</B>* for
+       the class <B>pfPipeVideoChannel</B>.  The <B>pfType</B>* returned by
+       <B>pfPipeVideoChannel::getClassType</B> is the same as the
+       <B>pfType</B>* returned by invoking the virtual function <B>getType</B>
+       on any instance of class <B>pfPipeVideoChannel</B>.  Because
+       OpenGL Performer allows subclassing of built-in types,
+       when decisions are made based on the type of an object, it
+       is usually better to use  the member function <B>isOfType</B> to
+       test if an object is of a type derived from a Performer
+       type rather than to test for strict equality of the
+       <B>pfType</B>*'s.
+
+       <B>pfPipeVideoChannel::setId</B> selects the hardware output
+       video channel for the pfPipeVideoChannel to use.  The out-
+       put video channel of a pfPipeVideoChannel can be queried
+       with <B>pfPipeVideoChannel::getId</B>.  Care should be taken with
+       hard-coding this number because these numbers are not
+       guaranteed to start at 0 or be sequential and have differ-
+       ent meanings on different hardware platforms.  pfPipeWin-
+       dows by default will assign their pfPipeVideoChannels to
+       available hardware video channels.  Note that a video
+       channel Id is relative to a screen and information about a
+       video channel cannot be known until the screen is known,
+       either by having it set explicitly on the parent pfPipe
+       with <B>pfPipe::setScreen</B> or pfPipeWindow  with
+       <B>pfPipeWindow::setScreen</B> or having the pfPipeWindow opened
+       and thus the screen being set implicitly.
+
+       <B>pfPipeVideoChannel::setMode</B> sets a given mode to <I>val</I> where
+       <I>mode</I> may be one of the following:
+                     For resizing for load management, the
+                     default swapbuffers boundary is usually
+                     appropriate. Allowing changes to the origin
+                     and size take effect on the following field
+                     boundary allows the panning of video output
+                     from the visible color buffer asynchronous
+                     to drawing and so should be used in conjunc-
+                     tion with the <B>PFVCHAN_AUTO_APPLY</B> mode and
+                     doing a <B>select</B> on the pfPipeVideoChannel.
+
+              <B>PFVCHAN_AUTO_APPLY</B>
+                     accepts a boolean value indicating if
+                     changes to <I>pvchan</I> should be applied automat-
+                     ically, as opposed to waiting for an
+                     explicit call to <B>apply</B>.  The changes are not
+                     applied by the set routines because those
+                     routines may be called from an asynchronous
+                     process.  On InfiniteReality changes to the
+                     video channel must be applied by the draw
+                     process so these are applied automatically
+                     by the DRAW process. The
+                     <B>pfPipeVideoChannel::select</B> for <I>pvchan</I> is
+                     done automatically by its pfPipe.  Only one
+                     pfPipeVideoChannel can be actively
+                     <B>PFVCHAN_AUTO_APPLY</B> at a time for a single
+                     pfPipe.
+       <B>pfPipeVideoChannel::getMode</B> will return the value of the
+       specified <I>mode</I> for <I>pvchan</I>.
+
+       <B>pfPipeVideoChannel::setDVRMode</B> sets the dynamic video
+       resizing mode to that specified by <I>mode</I> which may be one
+       of:
+
+              <B>PFPVC_DVR_OFF</B>
+                     to disable dynamic video resizing, the
+                     default.
+
+              <B>PFPVC_DVR_MANUAL</B>
+                     to allow the manual specification of video
+                     channel resizing through routines like
+                     <B>pfPipeVideoChannel::setOutputSize</B>,
+                     <B>pfPipeVideoChannel::setAreaScale</B>, and
+                     <B>pfPipeVideoChannel::setScale</B>.
+
+              <B>PFPVC_DVR_AUTO</B>
+                     allows the automatic dynamic resizing of
+                     video channels based on the current load and
+                     stress filter of the pfPipeVideoChannel.
+                     Dynamic resizing of pfPipeVideoChannel will
+                     only be done when a stress filter has been
+                     specified with
+                     <B>pfPipeVideoChannel::setStressFilter</B> that
+                     includes a non-zero stress scale value.
+
+       <B>pfPipeVideoChannel::setMaxDecScale</B> sets the maximum X and
+       Y decrement scaling that can happen in a single step of
+       automatic dynamic video resizing. A scale value of (-1)
+       removes the upper bound on decremental scales and is the
+       default.
+       <B>pfPipeVideoChannel::setMinDecScale</B> sets the minimum X and
+       Y decrement scaling that can happen in a single step of
+       automatic dynamic video resizing.  The default value is
+       0.0.
+
+       <B>pfPipeVideoChannel::setMinIncScale</B> sets the minimum X and
+       Y increment scaling that can happen in a single step of
+       automatic dynamic video resizing.  The default value is
+       0.0.
+
+       <B>pfPipeVideoChannel::setStress</B> sets the stress of the
+       pfPipeVideoChannel for the current frame.  This call
+       should be made in the application process after pfSync and
+       before pfFrame to affect the next immediate draw process
+       frame.
+
+       <B>pfPipeVideoChannel::setStressFilter</B> sets the parameters
+       for computing stress, when not explicitly set for the cur-
+       rent frame by <B>pfPipeVideoChannel::setStress</B>, for the
+       pfPipeVideoChannel.  <I>frac</I> is the fraction of a frame
+       period the pfPipeVideoChannel is expected to take to ren-
+       der.  <I>frac</I> should be 1.0 if only a single pfPipeVideoChan-
+       nel is drawn on a pfPipe and should be &gt; 0.0 and &lt; 1.0
+       when using multiple active pfPipeVideoChannels.  <I>frac</I>
+       allows the application to apportion rendering time amongst
+       multiple video channels so that a channel rendering com-
+       plex scenes may be allocated more time than a channel ren-
+       dering simple ones.  <B>pfPipeVideoChannel::getStressFilter</B>
+       returns the stress filter parameters for the pfPipeV-
+       ideoChannel.  If <I>stressScale</I> is non-zero, stress is com-
+       puted for the pfPipeVideoChannel every frame.  <I>low</I> and
+       <I>high</I> define a hysteresis band for system load.  When load
+       is &gt;= <I>low</I> and &lt;= <I>high</I>, stress is held constant.  When load
+       is &lt; <I>low</I> or &gt; <I>high</I>, OpenGL Performer will reduce or
+       increase stress respectively by dynamically resizing the
+       output area of the pfPipeVideoChannel until load stabi-
+       lizes within the hysteresis band.  <I>low</I> should be &lt;= <I>high</I>
+       and they both should be positive.  If <I>pipeLoadScale</I> is
+       non-zero, the load of the pfPipe of the pfPipeVideoChannel
+       will be considered in computing stress.  pfPipeVideoChan-
+       nel stress is computed using the following algorithm:
+
+           pfPipeVideoChannel *pvchan;
+           ......
+           float vcLoad = pfGetPVChanLoad(pvchan);
+           float pipeLoad = pfGetPipeLoad(pvchan);
+           float stressLevel = pfGetPVChanStress(pvchan);
+           float areaScale;
+
+           /* consider pipe load for stress */
+           if (pipeLoad &gt; vcLoad)
+            vcLoad += pipeLoadScale*(pipeLoad - vcLoad);
+           else if (pipeLoad &lt; vcLoad)
+            vcLoad -= pipeLoadScale*(vcLoad - pipeLoad);
+
+
+           /* scale by frac of proper draw time relative to 1 sec. */
+           if (vcLoad &gt; 0.0f)
+           {
+            else
+            {
+                stressLevel = 1.0f;
+                return;
+            }
+           }
+           else
+            areaScale = 1.0f;
+
+           pfPVChanAreaScale(pvchan, areaScale);
+
+       The resulting computed scale value is then compared
+       against the limits on minimum and maximum overall scale
+       values for the pfPipeVideoChannel, as well as the limits
+       on minimum and maximum incremental and decremental scaling
+       steps permitted in a single step.
+
+       <B>pfPipeVideoChannel::getLoad</B> will return the last computed
+       load for the pfPipeVideoChannel.  The load value is
+       defined as time * frameRate / <I>frac</I>, where time is the sum
+       of the rendering times of the pfChannels drawing to the
+       pfPipeVideoChannel.
+
+       <B>pfPipeVideoChannel::getMaxDecScale</B> returns the X and Y
+       upper bounds on scaling decrements for the pfPipeV-
+       ideoChannel in <I>x</I> and <I>y</I>.
+
+       <B>pfPipeVideoChannel::getMaxIncScale</B> returns the X and Y
+       upper bounds on scaling increments for the pfPipeV-
+       ideoChannel in <I>x</I> and <I>y</I>.
+
+       <B>pfPipeVideoChannel::getMinDecScale</B> returns the X and Y
+       lower bounds on scaling decrements for the pfPipeV-
+       ideoChannel in <I>x</I> and <I>y</I>.
+
+       <B>pfPipeVideoChannel::getMinIncScale</B> returns the X and Y
+       lower bounds on scaling increments for the pfPipeV-
+       ideoChannel in <I>x</I> and <I>y</I>.
+
+       <B>pfPipeVideoChannel::getPipe</B> returns the parent pfPipe of
+       the pfPipeVideoChannel.  <B>pfPipeVideoChannel::getPWin</B>
+       returns the pfPipeWindow of the pfPipeVideoChannel.
+       <B>pfChannel::getPWinIndex</B> can be used to get the position of
+       a channel in its pfPipeWindow list.  A return value of
+       (-1) indicates that the pfPipeVideoChannel is not assigned
+       to a pfPipeWindow.  pfPipeVideoChannels can be added or
+       moved to other pfPipeWindows via list style API on
+       pfPipeWindows. See the pfPipeWindow man page for more
+       information.
+
+       Example 1: How to set up a pfChannel, pfPipeVideoChannel,
+       and pfPipeWindow
+
+           pfPipe *pipe = <B>pfGetPipe(0)</B>;
+           pfChannel *chan = pfNewChan(pipe);
+           pfPipeWindow *pwin = pfNewPWin(pipe);
+           pfPipeVideoChannel pvchan = pfNewPVChan(pipe);
+           int index;
+
+           /* assign the pfPipeVideoChannel to the pfPipeWindow */
+           index = pfPWinAddPVChan(pwin, pvchan);
+           /* assign the pfChannel to the video channel via its pfPipeWindow */
+           pfChanPWinPVChanIndex(chan, index);
+
+
+       <B>pfPipeVideoChannel::select</B> makes <I>pvchan</I> the current
+       pfPipeVideoChannel in the process to have
+       <B>PFVCHAN_AUTO_APPLY</B> changes applied in the current process.
+       This is done automatically in the DRAW process for
+       pfPipeVideoChannels that have <B>PFVCHAN_AUTO_APPLY</B> enabled.
+       The pfVideoChannel contained withint the pfPipeVideoChan-
+       nel will be selected. <B>pfGetCurVChan</B> will return a pointer
+       to the current pfVideoChannel.
+
+       <B>pfPipeVideoChannel::apply</B> will cause outstanding changes
+       to <I>pvchan</I> to be immediately applied to the selected hard-
+       ware video channel.  On InfiniteReality, changes to the
+       video output origin and size should be done in the DRAW
+       process and so OpenGL Performer automatically does an
+       apply, if necessary, automatically at the start of the
+       frame.  The changes will then effect the video scan-out of
+       that immediate frame.  Changes made in the APP process
+       between <B>pfSync</B> and <B>pfFrame</B> will affect the next immediate
+       DRAW process.
+
+       <B>pfPipeVideoChannel::setCallig</B> let you set the <I>callig</I> to
+       use for calligraphic lights points.
+       <B>pfPipeVideoChannel::getCallig</B> returns the pfCalligraphic
+       in use. Please see the CALLIGRAPHIC section of pfChannel
+       for more information.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfPipeVideoChannel functionality is not currently sup-
+       ported under Linux.
+
+       An XSGIvc video channel may only be bound to a single win-
+       dow at a time on the system.  Only  a single pfPipeV-
+       ideoChannel may bind a hardware video channel.
+
+       On InfiniteReality, changes to video channel origin and
+       size require an active graphics context and so should be
+       made in the DRAW to avoid a graphics context change which
+       can be expensive.
+
+       See the sample program /usr/share/Per-
+       former/src/pguide/libpr/C/queryvchan.c for an example of
+       how to query general video channel attributes.  See the
+       sample program /usr/share/Per-
+       former/src/pguide/libpf/C/pvchan.c for an example of basic
+       pfPipeVideoChannel setup.  See the sample program
+       /usr/share/Performer/src/pguide/libpr/C/vchan.c for a
+       basic resizing example using pfVideoChannels.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfGetNumScreenVChans, pfChannel, pfPipe,
+       pfPipeWindow, pfVideoChannel, XSGIvc, glXSGIvcQueryChan-
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

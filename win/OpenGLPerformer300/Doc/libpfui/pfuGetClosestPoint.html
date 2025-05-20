@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>pfuGetClosestPoint</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuGetClosestPoint</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuGetClosestPoint(3pf)                   pfuGetClosestPoint(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuGetClosestPoint</B>  -  Find closest point in a scene graph
+       to a given point.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       extern int   <B>pfuGetClosestPoint</B>(pfNode *node,  float eyex,
+                      float eyey,    float eyez,   const pfTex-
+                      ture *tex,    int travmode,     float *x,
+                      float *y,  float *z,  float *s, float *t,
+                      float *r);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuGetClosestPoint</B> traverses a scene graph looking for the
+       closest  point  (on any primitive decomposable into trian-
+       gles) to the point given by <I>eyex</I>, <I>eyey</I>,  <I>eyez</I>,  using  the
+       <B>pfuTraverser</B>  mode given by <I>travmode</I>.  If the argument <I>tex</I>
+       is not <B>NULL</B>, the traversal will be restricted to triangles
+       that are textured by the pfTexture pointed to by <I>tex</I>.
+
+       On  success, the function returns 1 and vertex coordinates
+       of the closest point are returned in *<I>x</I>, *<I>y</I>, *<I>z</I>,   and  if
+       <I>tex</I>  is  not  <B>NULL</B>, the texture coordinates of the closest
+       point will be returned in *<I>r</I>, *<I>s</I>, *<I>t</I>.  On  failure  (there
+       are  no triangles, or, if <I>tex</I> != <B>NULL</B>, there are no trian-
+       gles textured by <I>tex</I>) <B>pfuGetClosestPoint</B> returns 0.
+
+       See the source code  for  the  sample  ".closest"  pseudo-
+       loader  in /usr/share/Performer/src/lib/libpfdb/libpfclos-
+       est for an example of usage.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code  and  documentation
+       are  provided  as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The implementation assumes that all coordinate scaling  in
+       <B>pfSCS</B>  and <B>pfDCS</B> nodes in the scene are uniform, i.e. that
+       the scale factor is the same in all three coordinate  axis
+       directions.   If this is not the case, the answer returned
+       will be valid coordinates (and texture coordinates)  of  a
+       point  on a triangle, but it may not be the actual closest
+       point.
+
+       In  the  case  of  degenerate  triangles  the  coordinates
+       returned may not be on or close to an object at all.
+
+       Point and line primitives are not traversed.
+
+       Interaction  with  automatic texture coordinate generation
+       is very limited.  Only  PFTG_OBJECT_LINEAR  is  supported,
+
+
+                                          pfuGetClosestPoint(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

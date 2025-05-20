@@ -1,0 +1,556 @@
+<HTML>
+<HEAD>
+<TITLE>pfLightSource</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLightSource</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLightSource(3pf)                             pfLightSource(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfLightSource</B>  -  Create  pfLightSource,  specify pfLight-
+       Source properties.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfLightSource.h&gt;
+
+                         <B>pfLightSource::pfLightSource</B>();
+
+       static pfType *   <B>pfLightSource::getClassType</B>(void);
+
+       void              <B>pfLightSource::setAmbient</B>(float r,
+                           float g, float b);
+
+       void              <B>pfLightSource::getAmbient</B>(float* r,
+                           float* g, float* b);
+
+       void              <B>pfLightSource::setColor</B>(int which,
+                           float r, float g, float b);
+
+       void              <B>pfLightSource::getColor</B>(int which,
+                           float* r, float* g, float* b);
+
+       void              <B>pfLightSource::setAtten</B>(float constant,
+                           float linear, float quadratic);
+
+       void              <B>pfLightSource::getAtten</B>(float *constant,
+                           float *linear, float *quadratic);
+
+       void              <B>pfLightSource::setSpotDir</B>(float x,
+                           float y, float z);
+
+       void              <B>pfLightSource::getSpotDir</B>(float* x,
+                           float* y, float* z);
+
+       void              <B>pfLightSource::setSpotCone</B>(float f1,
+                           float f2);
+
+       void              <B>pfLightSource::getSpotCone</B>(float* f1,
+                           float* f2);
+
+       void              <B>pfLightSource::setPos</B>(float x,  float y,
+                           float z, float w);
+
+       void              <B>pfLightSource::getPos</B>(float* x,
+                           float* y, float* z, float* w);
+
+       void              <B>pfLightSource::on</B>(void);
+
+       void              <B>pfLightSource::off</B>(void);
+
+       int               <B>pfLightSource::isOn</B>(void);
+
+       void              <B>pfLightSource::setMode</B>(int mode,
+                           int val);
+
+       void              <B>pfLightSource::setAttr</B>(int attr,
+                           void *obj);
+
+       void*             <B>pfLightSource::getAttr</B>(int attr);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfLightSource</B> is derived from
+       the parent class <B>pfNode</B>, so each of these member functions
+       of  class  <B>pfNode</B> are also directly usable with objects of
+       class <B>pfLightSource</B>.   This  is  also  true  for  ancestor
+       classes of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class <B>pfObject</B>, objects of class <B>pfLightSource</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfLightSource is a pfNode which can illuminate  geometry
+       in  a pfScene. In addition, pfLightSource supports a tech-
+       nique known as "projected texturing"  which  can  simulate
+       high  quality, real time spotlights and shadows on certain
+       graphics hardware.
+
+       <B>new</B> <B>pfLightSource</B>  creates  and  returns  a  handle  to  a
+       pfLightSource.   Like  other  pfNodes,  pfLightSources are
+       always allocated from shared memory and cannot be  created
+       statically,  on  the  stack  or in arrays.  pfLightSources
+       should be deleted using <B>pfDelete</B> rather  than  the  delete
+       operator.
+
+       <B>pfLightSource::getClassType</B>  returns  the  <B>pfType</B>* for the
+       class   <B>pfLightSource</B>.    The    <B>pfType</B>*    returned    by
+       <B>pfLightSource::getClassType</B>  is  the  same  as the <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>  on  any
+       instance of class <B>pfLightSource</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an  object
+       is  of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       Most pfLightSource routines are borrowed from pfLight (but
+       not  inherited):    <B>setAmbient,</B> <B>getAmbient,</B> <B>setColor,</B> <B>get-</B>
+       <B>Color,</B> <B>setAtten,</B> <B>getAtten,</B>  <B>setPos,</B>  <B>getPos,</B>  <B>setSpotCone,</B>
+       <B>getSpotCone,</B>  <B>setSpotDir,</B>  <B>getSpotDir,</B> <B>on,</B> <B>off,</B> <B>isOn.</B>  The
+       reader is referred to the pfLight man page for details  on
+       the routine description.
+
+       When  enabled by <B>pfLightSource::on</B>, a pfLightSource influ-
+       ences all geometry that is in the same pfScene  if  it  is
+       not culled during the cull traversal.  Its position in the
+       hierarchy does  not  affect  its  area  of  influence.   A
+       pfLightSource is enabled by default and is explicitly dis-
+       abled with <B>pfLightSource::off</B>.
+       different from the ordinary cull traversal except that the
+       traversal  order  is path-directed rather than an in-order
+       traversal.  Specifically, all switches  (pfSwitch,  pfLOD,
+       pfSequence) and transformations (pfSCS, pfDCS) will affect
+       the traversal.  Note that  nodes  that  lie  on  paths  to
+       pfLightSource  nodes  will  be  traversed  multiple times;
+       specifically,   any   cull   or    draw    callbacks    (-
+       <B>pfNode::setTravFuncs</B>) will be invoked multiple times.
+
+       pfLightSources  are  culled to the viewing frustum only if
+       they have been assigned  a  non-null  bounding  volume  (-
+       <B>pfNode::setBound</B>).  If a pfLightSource has a null bounding
+       volume (radius &lt; 0) then it is not culled and  has  global
+       effect  over  its pfScene.  By default pfLightSources have
+       null bounding volumes.  After the pfLightSource  traversal
+       comes  the  database  traversal  which  (usually) visually
+       culls the current pfScene and ignores pfLightSources.
+
+       A pfLightSource inherits the current  transformation  from
+       any  pfSCSes  and pfDCSes above it in the hierarchy.  This
+       matrix transforms the light source's position  and  direc-
+       tion  depending  on  the  light's  type,  i.e.- if it is a
+       local, infinite, or spotlight.
+
+       All hardware lights corresponding to pfLightSources  in  a
+       pfScene will be properly configured before the pfChannel's
+       draw callback  is  invoked  (see  <B>pfChannel::setTravFunc</B>).
+       Consequently,  all geometry rendered in the pfChannel draw
+       callback  will  be  illuminated  by  the  pfScene's  light
+       sources.   However,  any  draw  callback  assigned  to the
+       pfLightSource node by <B>pfNode::setTravFuncs</B> will be invoked
+       before the pfChannel draw callback is invoked so that any-
+       thing drawn in the node callback will be obscured  if  the
+       channel viewport is cleared (see <B>pfClearChan</B>).  Example 1:
+       Adding a pfLightSource to a pfScene.
+
+       sun = new pfLightSource;
+
+       /* Set slightly yellow color */
+       sun-&gt;setColor(PFLT_DIFFUSE, 1.0f, 1.0f, .8f);
+
+       /* Set a high ambient level */
+       sun-&gt;setColor(PFLT_AMBIENT, .4f, .4f, .3f);
+
+       /* Time of day is high noon */
+       sun-&gt;setPos(0.0f, 1.0f, 0.0f, 0.0f);
+
+       scene-&gt;addChild(sun);
+
+
+       A pfLightSource supports 3 different lighting mechanisms
+       as listed in the following table:
+
+       center tab($) ; c | c | c | c | c | c .  Lighting$Nor-
+       mals$Texture$Effects Are$Shadows$Extra Draw
+       Method$Used$Required$Per-?$$Pass(es) _ pfLight$Yes$No$Ver-
+       tex$No$None PROJTEX$No$Yes$Pixel$No$+(0-1)
+       SHADOW$No$Auto$Pixel$Yes$+(0-2)
+
+       boundary is computed on a per-pixel, rather than a per-
+       vertex basis as it is with pfLight.  However, PROJTEX
+       lighting does not take surface normals into account,
+       requires hardware texture mapping for decent performance,
+       and requires that textured geometry be rendered twice,
+       once with their normal texture and once with the projected
+       texture. SHADOW lighting is similar to PROJTEX but adds
+       shadows at the cost of an additional rendering pass.  In
+       this case a special texture map, called a shadow map, is
+       automatically generated by the pfLightSource and then pro-
+       jected onto the scene.  Typically, pfLight-type lighting
+       is used in conjunction with PROJTEX or SHADOW so that
+       lighting is a function of both per-pixel projected textur-
+       ing and per-vertex surface curvature.
+
+       Two different algorithms are implemented in performer. One
+       for IrisGL, with shadows only on RE2, unchanged since 2.0
+       release. One for OpenGL, with shadows only on IR, intro-
+       duced in 2.2 release. The main difference between those 2
+       algorithms is that the IrisGL algorithm requires an alpha
+       plane if more than one multipass light is used, the OpenGL
+       algorithm use only color planes.
+
+       The IrisGL algorithm is: - draw a pass will all lights on.
+       Using the textures in the database - Blend all the PROJTEX
+       and SHADOW in the alpha plane, using texgen - Multiply the
+       results
+
+       Because this algorithm uses alpha, it can only take
+       account of the intensity of the SHADOW/PROJTEX, and merge
+       all colors together in a first pass.  This is why 2 PROJ-
+       TEX with different colors will result in 2 PROJTEX with
+       one merged color.  The last pass is done at the same time
+       as the last PROJTEX/SHADOW pass, at no additional cost.
+
+       If the database is non texture, the first pass can be done
+       at the same time as the first PROJTEX/SHADOW pass. So a
+       non textured database, with one PROJTEX/SHADOW is done in
+       a single pass.
+
+       There is no distinction between PROJTEX and SHADOW in the
+       second pass, all intensities are multiplied together.
+
+       The OpenGL algorithm is: - draw a pass with all non PROJ-
+       TEX/SHADOW pfLightSources - Additive Blend all the PROJTEX
+       - Multiplicative Blend all the SHADOW - Draw the scene
+       with its own textures and multiply on each RGB component
+       with the previous result There is one more pass with the
+       OpenGL algorith (the first), if non PROJTEX/SHADOW
+       pfLightSources are in the Scene.
+
+       SHADOW and PROJTEX lighting are separately enabled and
+       disabled with the <B>PFLS_SHADOW_ENABLE</B> and
+       <B>PFLS_PROJTEX_ENABLE</B> tokens to <B>pfLightSource::setMode</B>. <I>val</I>
+       should be either <B>PF_ON</B> or <B>PF_OFF</B>.  When either is enabled,
+       pfChannels rendering the pfLightSource's scene automati-
+       cally enter "multipass mode" since multiple renderings of
+       the scene are usually required.
+
+       properly cleared. If using a pfEarthSky to clear the view-
+       port, you can specify the ambient alpha with
+       <B>pfEarthSky::setColor</B>. Global ambient is not required and
+       does have some extra cost. It is not particularly useful
+       for PROJTEX lighting since ambient intensity can be easily
+       incorporated in the projected texture (instead of black,
+       just use gray outside the spotlight) but is useful for
+       SHADOWS which otherwise would be completely black.  With
+       OpenGL, this bit has no effect, and the Shadow intensity
+       is given by the PFLS_INTENSITY value of the light source,
+       0 is a full dark shadow.
+
+       By default, emissive surfaces (including light points) are
+       attenuated by PROJTEX and SHADOW lighting which is not
+       correct since emissive surfaces should shine even if in
+       shadow or outside the cone of a projected spotlight.  If a
+       scene has emissive surfaces, set the <B>PFMPASS_EMISSIVE_PASS</B>
+       bit in the <B>PFTRAV_MULTIPASS</B> mode and the emissive surfaces
+       will be properly rendered. Note that the emissive render-
+       ing pass is not a full pass - rather it is a pass of only
+       the emissive surfaces.
+
+       In situations where the scene is entirely non-textured,
+       <B>PFMPASS_NONTEX_SCENE</B> can be specified as part of the
+       <B>PFTRAV_MULTIPASS</B> traversal mode of a pfChannel. In this
+       case a complete rendering pass is eliminated.
+
+       PROJTEX lighting requires that a pfTexture be specified
+       with the <B>PFLS_PROJ_TEX</B> token to <B>pfLightSource::setAttr</B>.
+       <I>obj</I> should be an intensity-alpha (2-component) pfTexture*
+       with identical intensity and alpha components if using
+       IrisGL. With OpenGL, the alpha component of the projected
+       texture will modify the transparency of the objects in the
+       scene. If this is not desired, the alpha component of the
+       texture should be zeroed.
+
+       With OpenGL, the textures may also be a full color 4-com-
+       ponent texture. With IrisGL, a color texture can be used
+       if this is the only pfLightSource in the scene using PROJ-
+       TEX lighting.
+
+       SHADOW lighting does not require a pfTexture, rather one
+       is automatically created and configured by the pfLight-
+       Source.  The size of the texture(shadow) map may be speci-
+       fied with the <B>PFLS_SHADOW_SIZE</B> token to
+       <B>pfLightSource::setVal</B>. <I>val</I> is then the square size of the
+       texture map.  The size of the shadow map greatly influ-
+       ences the quality and performance of SHADOW lighting.
+       Large shadow map sizes increase quality but decrease per-
+       formance. The default shadow map size is 256.  SHADOW
+       lighting requires that the viewport of each pfChannel
+       which renders the pfLightSource's scene be at least as big
+       as the shadow map. Otherwise, shadows will be clipped and
+       visual anomalies will occur.
+
+       Both SHADOW and PROJTEX lighting require that a pfFrustum
+       be specified with the <B>PFLS_PROJ_FRUSTUM</B> token to
+       <B>pfLightSource::setAttr</B>.  <I>obj</I> defines the projection of the
+       texture (shadow) map and should be a nominal, i.e., non-
+       rendered from the point of view of the pfLightSource to
+       produce a shadow map. By default, pfChannels automatically
+       do this for each SHADOW pfLightSource in their scene.
+       However, a new shadow map is only required if the pfLight-
+       Source or objects in the scene change. In the special case
+       where the pfLightSource and scene are totally static
+       (e.g., the sun illuminating a sleepy town), the shadow map
+       need not be recomputed. In this case
+       <B>lsource.setMode(PFLS_FREEZE_SHADOWS,</B> <B>PF_ON)</B> will disable
+       the automatic recomputation of the shadow map, increasing
+       performance.
+
+       For best results, SHADOW lighting requires that the scene
+       be slightly displaced in depth when rendering the shadow
+       map. This reduces artifacts such as "self-shadowing". The
+       <B>PFLS_SHADOW_DISPLACE_SCALE</B> and <B>PFLS_SHADOW_DISPLACE_OFFSET</B>
+       tokens to <B>pfLightSource::setVal</B> specify displacement val-
+       ues. The default values are respectively: for IrisGL 1.0
+       and 256.0 for OpenGL 1.0 and .0019 but experimentation is
+       required for best results (both values should be posi-
+       tive).
+
+       For pfLightSources which are near the eye, a pfFog can be
+       used to simulate range-attenuation of the light. Range-
+       attenuation is enabled with the <B>PFLS_FOG_ENABLE</B> token to
+       <B>pfLightSource::setMode</B> and by specifying a pfFog with the
+       <B>PFLS_PROJ_FOG</B> token to <B>pfLightSource::setAttr</B>.  The pfFog
+       color should be the ambient color of the projected tex-
+       ture.  Only a single range-attenuated projected pfLight-
+       Source is supported for a given pfChannel.
+
+       With IrisGL A pfLightSource's intensity is set with the
+       <B>PFLS_INTENSITY</B> token to <B>pfLightSource::setVal</B>. <I>val</I> simply
+       scales the color(s) of all 3 lighting types: pfLight, PRO-
+       JTEX, SHADOW.  A scene containing multiple, full-intensity
+       pfLightSources can be easily saturated so setting pfLight-
+       Source intensities is a simple way to "normalize" lighting
+       within a scene. For example, when using 3 pfLightSources
+       to illuminate a scene, an intensity of .33 would be rea-
+       sonable.
+
+       With OpenGL, the <B>PFLS_INTENSITY</B> has effect only for shad-
+       ows to set the intensity inside the shadow. The amount of
+       light is given directly by the <B>PFLT_DIFFUSE</B> value, that is
+       a full RGB triplet, so every light/shadow can be colored.
+
+       Example 2: Range-attenuated, projected texture lighting
+       for landing light
+
+
+       pfLightSource  *spot;
+       pfTexture *spotTex;
+       pfFrustum *spotFrust;
+       pfFog          *spotFog;
+       pfDCS          *spotDCS;
+       pfChannel *chan;
+       pfEarthSky     *esky;
+
+       // Create and load 2-component spotlight
+
+       // Create and configure range-attenuation fog model
+       spotFog = new pfFog;
+       spotFog-&gt;setColor(0.1f, 0.1f, 0.1f);
+       spotFog-&gt;setRange(0.0f, 100.0f);
+
+       // Create and configure projected texture light source
+       spot = new pfLightSource;
+       spot-&gt;setAttr(PFLS_PROJ_TEX, spotTex);
+       spot-&gt;setAttr(PFLS_PROJ_FRUST, spotFrust);
+       spot-&gt;setAttr(PFLS_PROJ_FOG, spotFog);
+       spot-&gt;setMode(PFLS_PROJTEX_ENABLE, 1);
+
+       // Set spotDCS to viewing matrix to move light around with eye
+       spotDCS = new pfDCS;
+       spotDCS-&gt;addChild(spot);
+       scene-&gt;addChild(spotDCS);
+
+       // Enable emissive pass since scene has emissive surfaces
+       chan-&gt;setTravMode(PFTRAV_MULTIPASS, PFMPASS_EMISSIVE_PASS);
+
+
+
+       Example 3: Multiple, shadow-casting, colored pfLight-
+       Sources
+
+
+       pfLightSource  *shad0, *shad1;
+       pfDCS          *shadDCS0, *shadDCS1;
+       pfFrustum *shadFrust;
+       pfChannel *chan;
+       pfEarthSky     *esky;
+
+       // Create and configure shadow frustum
+       shadFrust = new pfFrustum;
+       shadFrust-&gt;makeSimple(60.0f);
+       shadFrust-&gt;setNearFar(1.0f, 100.0f);
+
+       // Create and configure shadow casting light sources
+       shad0 = new pfLightSource;
+       shad0-&gt;setMode(PFLS_SHADOW_ENABLE, 1);
+       shad0-&gt;setAttr(PFLS_PROJ_FRUST, shadFrust);
+       shad0-&gt;setColor(PFLT_DIFFUSE, 1.0f, 0.0f, 0.0f);
+       shad0-&gt;setVal(PFLS_INTENSITY, .5f);
+
+       shad1 = new pfLightSource;
+       shad1-&gt;setMode(PFLS_SHADOW_ENABLE, 1);
+       shad1-&gt;setAttr(PFLS_PROJ_FRUST, shadFrust);
+       shad1-&gt;setColor(PFLT_DIFFUSE, 0.0f, 0.0f, 1.0f);
+       shad1-&gt;setVal(PFLS_INTENSITY, .5f);
+
+       // Set DCSes to move lights around
+       shadDCS0 = new pfDCS;
+       shadDCS0-&gt;addChild(shad0);
+       scene-&gt;addChild(shadDCS0);
+
+       shadDCS1 = new pfDCS;
+       shadDCS1-&gt;addChild(shad1);
+       scene-&gt;addChild(shadDCS1);
+
+       To respect the limited number of active light sources
+       allowed by graphics library implementations, OpenGL Per-
+       former supports at most <B>PF_MAX_LIGHTS</B> active light
+       sources.
+
+       If you want light sources to affect only portions of the
+       scene, then set one or more pfLights on the pfGeoStates
+       which are attached to the pfGeoSets that you wish to illu-
+       minate (see <B>pfGeoState::setAttr</B> and <B>PFSTATE_LIGHTS</B> for
+       further details).
+
+       Shadows are supported by InfinityReality only when using
+       OpenGL.
+
+       PROJTEX and SHADOW lighting require local lighting for
+       proper effects (<B>pfLightModel::setLocal</B>).
+
+       SHADOW lighting on RealityEngine requires the depth buffer
+       to be configured with 32 bits (<B>zbsize()</B>). Note that it is
+       legal to have multisample buffers allocated in addition,
+       the only requirement is that the non-multisampled depth
+       buffer be 32 bits. Also note that on RealityEngine, a
+       32-bit depth buffer requires 12-bit color. An alpha plane
+       is also required for multiple PROJTEX/SHADOW light
+       sources.
+
+       SHADOW lighting on InfiniteReality works fine will all
+       frame buffer configurations, including multisample.
+
+       Shadows and projected textures are not clipped or properly
+       computed behind the pfLightSource. Instead, geometry
+       behind the pfLightSource will be textured randomly. The
+       only workaround is to ensure that all geometry behind the
+       pfLightSource is not visible to the pfChannel.
+
+       Local lighting results in improper shading of flat-shaded
+       triangle and line strips (<B>PFGS_FLAT_TRISTRIPS</B>,
+       <B>PFGS_LINE_TRISTRIPS</B>) which often manifests itself as
+       "faceting" of planar polygons.  The only solution is
+       either to use infinite lighting or not use FLAT primi-
+       tives.  Note that when using the OpenGL Performer triangle
+       meshing routine, <B>pfdMeshGSet</B>, the construction of non-FLAT
+       strips is easily enforced with
+       <B>pfdMesherMode(PFDMESH_LOCAL_LIGHTING,</B> <B>1)</B>.
+
+       Multipass techniques are not compatible with stencil layer
+       mode, the mode is forced to PFGL_DECAL_DISPLACE.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfNode, pfSCS, pfDCS, pfGeoSet, pfGeoState,
+       pfLight, pfDelete
+
+
+
+                                               pfLightSource(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

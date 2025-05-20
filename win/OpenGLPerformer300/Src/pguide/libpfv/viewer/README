@@ -1,0 +1,236 @@
+
+Performer 3.0
+
+libpfv - viewer samples
+-----------------------
+
+The sample programs contained in this directory illustrate the use
+of the pfvViewer class, and other libpfv classes.
+
+
+
+sample01:
+
+Usage example: ./sample01 esprit.flt
+
+This example simply creates a pfvViewer, configures it through
+pfvViewer::config, then obtains a pointer to the pfScene created
+by viewer, and adds a lightsource and a model loaded from file.
+Then it computes the bounding box of the scene, and positions eye
+in a comfortable viewing position, before running pfvViewer for
+20 seconds.
+
+
+
+sample02:
+
+Usage example: ./sample02 esprit.flt
+
+A simpler version of the first sample. Here, nodes are added to the
+viewer through pfvViewer::addNode instead of having to obtain a pointer
+to the pfScene. Also, method pfvViewer::autoPos is called in order to
+position eye at a comfortable distance from scene geometry.
+
+
+
+sample03:
+
+Usage example: ./sample03 esprit.flt truck.pfb tux.pfb
+
+This example will accept a list of filenames as commandline arguments.
+After creating the pfvViewer, but before configuring it, sample
+defines a pfvWorld and a pfvView for each model to be loaded, and
+directs each view to the corresponding world.
+After configuring viewer, sample loads the list of models, and 
+attaches each loaded file to the corresponding world. It also positions
+each view at a comfortable position, depending on the extent of each 
+scene by calling pfvView::autoPos.
+
+
+
+sample04:
+
+Usage example: ./sample04 esprit.flt truck.pfb tux.pfb
+
+This example will also accept a list of filenames as commandline 
+arguments. It will create a pfvWorld for each model, but only a
+single pfvView. After configuring the viewer, loading the models and
+attaching each to its corresponding pfvWorld, this sample enters a
+loop, and switches view from one pfvWorld to the next every 3 seconds.
+Note that in order to be able to do this from main, inidividual frames
+are triggered through pfvViewer::frame, instead of simply calling 
+pfvViewer::run, as in previous examples.
+Note also that in order to reset the eye position every time view is
+switched to another world, this example makes an extra call to 
+pfvViewer::frame, just after switching world through method
+pfvView::setTargetWorld, and before resetting eye position through
+pfvView::autoPos. This is necessary since setTargetWorld does not
+have immediate effect, but is cached by viewer until the following call
+to pfvViewer::frame.
+
+
+
+sample05:
+
+Usage example: ./sample05 esprit.flt
+
+This example's main function is essentially identical to sample02, but 
+it additionally shows how to include your custom moduls in pfvViewer
+applications. 
+Before configuring the pfvViewer, this sample creates two custom modules
+(a navigation module and a picking/manipulation module), and adds them
+to viewer through pfvViewer::addModule.
+The navigation module allows user to navigate the 3d scene using mouse
+and keyboard input, while the picker module allows portions of the scene
+to be selected and manipulated through mouse and keyboard input.
+
+
+
+sample06:
+
+Usage example: ./sample06 esprit.flt truck.pfb tux.pfb
+
+This example extends sample03 through the use of custom modules.
+For each filename, sample creates a pfvView and a pfvWorld, plus a
+navigator module and a picker module. Note that the two module are
+directed to their respective views through their own API methods:
+setViewIndex (note that this method is implemented independently by
+both classes and is NOT a method of the base class pfvModule).
+A better approach for directing the action of a module to a single
+pfvView (or a single pfvWorld) is through Module Scoping.. see man page
+for pfvViewer::addModule.
+
+
+
+sample07:
+
+Usage example: ./sample07 esprit.flt truck.pfb tux.pfb
+
+This sample differs very slightly from the previous.
+The differences were an attempt to implement Cut, Copy and Paste
+functionalities within the myPicker Module.. unfortuanately, I had to 
+abandon this very early on, for lack of time, so this sample may as well 
+be ignored.
+
+
+
+sample08:
+
+Usage example: ./sample08 esprit.flt truck.pfb tux.pfb
+
+This example is somewhat similar to sample04, since a single view and
+multiple worlds are created. The difference is that here we switch worlds
+in response to a keypress, instead of every 3 seconds as in sample04.
+This is done through the implementation of a custom module which binds a 
+key callback to keys F1 and ESCAPE.
+When ESCAPE key is pressed, module terminates the application, when the
+F1 key is pressed, module will simply raise a flag. The application will
+query the value of this flag on every frame, and when it is set, view will
+be directed to the following world in viewer's world list.
+
+
+
+sample09:
+
+Usage example: ./sample09 esprit.flt truck.pfb tux.pfb
+
+This example is really just a test for module scoping and module key
+callbacks. The example loads multiple files, and creates a pfvWorld for
+each loaded model, plus two views (in two separate pipewindows).
+Several instances of a custom module (called myModule) are also created: 
+one  for each pfvWorld and one for each of the two views. The myModule 
+modules are scoped to their corresponding world or view through 
+pfvViewer::addModule.
+The behavior of these custom modules is extremely simple: whenever a key
+down event is passed on to them by the viewer, they print out which key it
+is. If ESCAPE key is pressed, application is terminated.
+Both views are initially directed to world 0, and every 3 seconds, both 
+are switched to the next world, and so on.
+By pressing the F1 key over either pipewindow and observing the output from
+the modules' handleEvents callbacks, it can be observed that events generated 
+over a view are only passed on to module scoped to that view and to module 
+scoped to whatever world that view is currently viewing. All other modules
+are not informed of keypress.
+
+
+
+sample10:
+
+Usage example: ./sample10 esprit.flt truck.pfb tux.pfb
+
+This example also just tests input callback binding. The example loads
+multiple files, and creates a world and a view for each loaded model. It also
+creates mltiple instances of a custom navigation module (called myNavigator), 
+and scopes each instance to a view, when adding them to viewer. 
+The myNavigator modules all respond to key 'R' (and 'r') by resetting position
+on their view.  The viewer automatically scopes each navigator input-callback
+to the correct view, so only the appropriate navigator receives the key event, 
+depending over which view the mouse is when key is pressed.
+
+
+
+sample11:
+
+Usage example: ./sample11 esprit.flt truck.pfb tux.pfb
+
+This example illustrates how a pfvViewer application can load and use 
+precompiled modules, without the need to include the required libraries in
+the application link line.
+The example loads multiple models, creates a world and a view for each one,
+and also loads multiple instances of pfvmNavigator and pfvmPicker modules, 
+scoping one of each to each pfvView.
+Note that this examples shows two slightly different ways of loading modules:
+For the pfvmNavigator modules, example first calls pfvModule::setLoadPath to 
+specify the location in which the module library will be found, then calls
+pfvModule::load specifying only the module's class name. The actual name of
+the module library file will be automatically derived from class name, and
+library will be searched for in provided path. 
+For the pfvmPicker modules, this example calls pfvModule::setLoadPath with
+an incomplete (partial) path to the modules' libraries, and then calls
+pfvModule::load specifying both the class name and the library name.
+Search path and library name are such that if library name is appended to
+search path, a full path to the library is generated, allowing viewer to
+locate the library and load the module.
+
+
+
+sample12:
+
+Usage example: ./sample12 viewer.xml
+
+This example just tests the pfvViewer constructor that takes a filename
+as argument. Here, the first command line argument must refer to an XML
+configuration file for the viewer to parse.. Note that a pfvViewer
+application can be fully configured through an XML file.
+Additionally, this example also creates a light source and loads the
+"esprit.flt" model, and adds both (light and model) to the first scene 
+created by viewer.
+
+
+
+sample13:
+
+Usage example: ./sample13 /usr/share/Performer/config/trackball.pfv
+
+This example shows how a pfvViewer program can first configure itself
+through parsing an XML file, and then add its own hard-coded modules
+to whatever configuration was specified in the file.
+This sample accepts a filename as an argument, passes filename to the
+pfvViewer constructor, then creates and configures a pfvmLogo module
+for each view that was created (note, if no view was explicitely created
+by the XML file settings, a view is created by main).
+
+Note that this sample program does not have to link against the pfvmLogo
+libraries, as the pfvmLogo dso (dll on WIN32) is loaded by pfvViewer at
+runtime (see man pages for pfvViewer and pfvModule for more details).
+
+Note also that this sample configures its pfvmLogo modules by creating
+small hierarchies of pfvXmlNodes, and configuring them as required by
+the specification of the pfvmLogo module. It then hands them over to the
+pfvmLogo modules through the setXmlField method; This way, the pfvmLogo 
+modules will receive its data in exactly the same format as they would
+had these modules been configured through the XML file.
+
+You may try running this example with any of the .pfv files included
+in the /usr/share/Performer/config directory (%PFROOT%\Config on WIN32).
+

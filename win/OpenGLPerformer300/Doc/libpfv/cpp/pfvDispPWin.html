@@ -1,0 +1,319 @@
+<HTML>
+<HEAD>
+<TITLE>pfvDispPWin</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvDispPWin</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvDispPWin(3pf)                                 pfvDispPWin(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvDispPWin</B>  -  Configure one or more pipe-windows through
+       an XML file or API calls.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvDisplay.h&gt;
+
+       virtual int            <B>pfvDispPWin::config</B>();
+
+       pfPipeWindow*          <B>pfvDispPWin::getHandle</B>();
+
+       pfvDispPipe*           <B>pfvDispPWin::getPipe</B>();
+
+       virtual
+                              pfvDispChan*   <B>pfvDispPWin::createChan</B>(pfvXmlNode* xml);
+
+       int                    <B>pfvDispPWin::getNumChans</B>();
+
+       pfvDispChan*           <B>pfvDispPWin::getChan</B>(int i);
+
+       virtual
+                              void           <B>pfvDispPWin::setTitle</B>(char* _title);
+
+       char*                  <B>pfvDispPWin::getTitle</B>();
+
+       virtual void           <B>pfvDispPWin::setFullScreen</B>(int v);
+
+       int                    <B>pfvDispPWin::getFullScreen</B>();
+
+       virtual void           <B>pfvDispPWin::setOrigin</B>(int x,
+                                int y);
+
+       void                   <B>pfvDispPWin::getOrigin</B>( int* x,
+                                int* y );
+
+       virtual void           <B>pfvDispPWin::setSize</B>( int w,
+                                int h );
+
+       void                   <B>pfvDispPWin::getSize</B>( int*w,
+                                int*h );
+
+       void                   <B>pfvDispPWin::updateOrigSize</B>();
+
+       virtual void           <B>pfvDispPWin::setBorder</B>(int b);
+
+       int                    <B>pfvDispPWin::getBorder</B>();
+
+       virtual void           <B>pfvDispPWin::setVisualId</B>(int id);
+
+       int                    <B>pfvDispPWin::getVisualId</B>();
+
+       virtual
+                              void           <B>pfvDispPWin::setFBConfigAttrs</B>( int* attr );
+
+       virtual int*           <B>pfvDispPWin::getFBConfigAttrs</B>();
+       parent  class <B>pfvObject</B>, so each of these member functions
+       of class <B>pfvObject</B> are also directly usable  with  objects
+       of  class  <B>pfvDispPWin</B>.   This  is  also true for ancestor
+       classes of class <B>pfvObject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       Since the class <B>pfvObject</B> is itself derived from the  par-
+       ent  class <B>pfObject</B>, objects of class <B>pfvDispPWin</B> can also
+       be used with these functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfvDispPWin</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfvDispPWin</B> class is essentially a libpfv wrapper  for
+       the  libpf  pfPipeWindow  class.  It  allows  a PipeWindow
+       object to be configured through an XML file or through API
+       calls.   A  <B>pfvDispPWin</B> cannot be created through its con-
+       structor (which is protected). Instead, it has to be  cre-
+       configured.    After    creating     the     pfPipeWindow,
+       <B>pfvDispPWin::config</B>  will  set its title, origin, size and
+       decorations. Lastly, all channels in pwins chan-list  will
+       automatically  be  configured from this method.  Note that
+       <B>pfvDispPWin::config</B> is automatically  called  from  method
+       <B>pfvDispPipe::config</B>  called on pwin's parent-pipe. This in
+       turn  is  automatically  called  by  method   pfvDisplayM-
+       ngr::config,  so <B>pfvDispPWin::config</B> should not usually be
+       called by application code.
+
+       <B>pfvDispPWin::getHandle</B> returns a handle to the  pfPipeWin-
+       dow  object  associated  with  pfvDispPWin.  This  must be
+       called after pfvDispPWin::config or it will return NULL.
+
+       <B>pfvDispPWin::getPipe</B>  returns  a  handle  to  the   parent
+       pfvDispPipe  for  this pfvDispPWin. This is guaranteed not
+       to be NULL as the only way  to  create  a  pfvDispPWin  is
+       through a method on its parent pipe.
+
+       <B>pfvDispPWin::createChan</B>  creates  a new pfvDispChan object
+       on this pipewindow, and returns a handle to it. Note  that
+       newly  created  channel will be added to both pwin's chan-
+       list and to Display Manager's global chan-list. The  index
+       associated  with chan will be its position in Display Man-
+       ager's global chan-list.
+
+       <B>pfvDispPWin::getNumChans</B> returns the  number  of  channels
+       currently in pwin's chan-list.
+
+       <B>pfvDispPWin::getChan</B>  returns  a handle to the ith channel
+       in pwin's chan-list, if i is a valid  index;  NULL  other-
+       wise.
+
+       <B>pfvDispPWin::setTitle</B> sets the title of the pipe window to
+       _title. Must be called before <B>pfvDispPWin::config</B>.
+
+       <B>pfvDispPWin::getTitle</B> returns the string last passed as an
+       argument to <B>pfvDispPWin::setTitle</B>, or NULL if no title was
+       set on pwin.
+
+       <B>pfvDispPWin::setFullScreen</B> determines whether pwin  should
+       occupy  the whole screen. If so, values of origin and size
+       provided      through      <B>pfvDispPWin::setOrigin</B>      and
+       <B>pfvDispPWin::setSize</B>  will  be  ignored.  Must  be  called
+       before <B>pfvDispPWin::config</B>.
+
+       <B>pfvDispPWin::getFullScreen</B> returns whether or not pwin has
+       been  set  to  be  a  full-screen  window  through  method
+       <B>pfvDispPWin::setFullScreen</B>.
+
+       <B>pfvDispPWin::setOrigin</B> sets origin of pwin to the provided
+       x,y values. x and y are integer values and represent pixel
+       offsets from the lower-left corner of screen.
+
+       <B>pfvDispPWin::getOrigin</B> returns the current origin of pwin.
+
+       <B>pfvDispPWin::setSize</B> sets the size of the pipe window to w
+       and h. w and h are integer  values  and  represent  window
+       size in pixels.
+       returned        by        <B>pfvDispPWin::getOrigin</B>       and
+       <B>pfvDispPWin::getSize</B> need to be reliable at  run-time,  as
+       user  could  resize  or move window without libpfv knowing
+       about it.
+
+       <B>pfvDispPWin::setBorder</B> determines whether pwin should have
+       a  border  or  not.   This  method should be called before
+       <B>pfvDispPWin::configure</B>.
+
+       <B>pfvDispPWin::getBorder</B> returns whether pwin has been  con-
+       figured to have a border or not.
+
+       <B>pfvDispPWin::setVisualId</B>  allows  you  to directly set the
+       OpenGL X visual id to be used in configuring the resulting
+       OpenGL/X  window.  See  man  page  for  pfPipeWindow. This
+       method should be called before <B>pfvDispPWin::configure</B>.
+
+       <B>pfvDispPWin::getVisualId</B> returns the visual  id  last  set
+       through  <B>pfvDispPWin::setVisualId</B>,  0  if no visual id was
+       set.
+
+       <B>pfvDispPWin::setFBConfigAttrs</B>  provides  a  window  system
+       independent  list  of  attribute tokens, attr, to describe
+       the desired framebuffer configuration of the Pipe  Window.
+       See  man  pages  for  pfWindow::setFBConfigAttrs  and pfu-
+       ChooseFBConfig.
+
+       <B>pfvDispPWin::getFBConfigAttrs</B> returns  a  pointer  to  the
+       array       of       tokens       passed       on       to
+       <B>pfvDispPWin::setFBConfigAttrs</B>. By default the  first  ele-
+       ment of this array is equal to 0.
+
+       <B>pfvDispPWin::setManaged</B>  determines whether pwin should be
+       directly managed by the Display Manager, or  whether  pwin
+       is  intended  to  be redirected to an external GUI Toolkit
+       window (eg: Motif or GTK). By default, all pwins are  man-
+       aged,  meaning that Display Manager will create and manage
+       window and drawable for it.
+
+       <B>pfvDispPWin::getManaged</B> returns whether pwin has been con-
+       figured to be managed by Display Manager (the default), or
+       is intended to be redirected to an  external  GUI  Toolkit
+       (such as Motif or GTK).
+
+
+       <B>XML</B> <B>FILE</B> <B>CONFIGURATION</B>
+
+       A  pfDispPWin  object can be fully configured using an xml
+       tag by passing an XmlNode to <B>pfvDispPipe::createPWin</B>.   If
+       a  &lt;pwin&gt;  tag  is found inside a pipe tag &lt;pipe&gt; the pipe
+       will autimatically create a new  pwin  by  parsing  &lt;pwin&gt;
+       tag.
+
+       The list of valid tags inside &lt;pwin&gt; is:
+
+
+              <B>&lt;name&gt;</B>        a  string  that should uniquely iden-
+                            tify pwin
+
+                            pwin's size
+
+              <B>&lt;border&gt;</B>      a  boolean  specifying  whether  pwin
+                            should have a border or not
+
+              <B>&lt;title&gt;</B>       sets the title of the pipe window
+
+              <B>&lt;visualId&gt;</B>    an  int,  specifying  the  OpenGL   X
+                            visual id for this pwin
+
+              <B>&lt;fbConfig&gt;</B>    describing  the  desired  framebuffer
+                            configuration. This tag  should  con-
+                            tain  a  number  of  child tags, each
+                            corresponding   to   a   frame-buffer
+                            attribute  token which will be passed
+                            on to method pfuChooseFBConfig during
+                            configuration  of  pipe  window.  The
+                            following is a list of  all  accepted
+                            tags,  and their corresponding frame-
+                            buffer configuration tokens (see  man
+                            pfWindow::setFBConfigAttrs):
+
+
+                              &lt;rgba&gt;          -&gt;  PFFB_RGBA
+                              &lt;doubleBuffer&gt;  -&gt;  PFFB_DOUBLEBUFFER
+                              &lt;red&gt;           -&gt;  PFFB_RED_SIZE
+                              &lt;green&gt;         -&gt;  PFFB_GREEN_SIZE
+                              &lt;blue&gt;          -&gt;  PFFB_BLUE_SIZE
+                              &lt;alpha&gt;         -&gt;  PFFB_ALPHA_SIZE
+                              &lt;depth&gt;         -&gt;  PFFB_DEPTH_SIZE
+                              &lt;stencil&gt;       -&gt;  PFFB_STENCIL_SIZE
+                              &lt;accum_red&gt;     -&gt;  PFFB_ACCUM_RED_SIZE
+                              &lt;accum_green&gt;   -&gt;  PFFB_ACCUM_GREEN_SIZE
+                              &lt;accum_blue&gt;    -&gt;  PFFB_ACCUM_BLUE_SIZE
+                              &lt;accum_alpha&gt;   -&gt;  PFFB_ACCUM_ALPHA_SIZE
+                              &lt;sample_bufs&gt;   -&gt;  PFFB_SAMPLE_BUFFER
+                              &lt;samples&gt;       -&gt;  PFFB_SAMPLES
+
+
+              <B>&lt;managed&gt;</B>     A boolean determining whether pwin
+                            should be directly managed by the
+                            Display Manager (defaut is 1).
+
+              <B>&lt;chan&gt;</B>        creates a new pfvDispChan object on
+                            this pipewindow. See man page for
+                            pfvDispChan for details.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvXml, pfvDisplayMngr, pfvViewer, pfvDispPipe, pfvDis-
+       pChan, pfPipeWindow, pfuChooseFBConfig
+
+
+
+                                                 pfvDispPWin(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

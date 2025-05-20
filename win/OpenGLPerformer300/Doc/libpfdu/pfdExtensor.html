@@ -1,0 +1,135 @@
+<HTML>
+<HEAD>
+<TITLE>pfdExtensor</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdExtensor</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdExtensor(3pf)                                 pfdExtensor(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdAddState,</B>  <B>pfdStateCallback,</B>  <B>pfdGetStateCallback,</B> <B>pfd-</B>
+       <B>GetStateToken,</B>   <B>pfdGetUniqueStateToken,</B>   <B>pfdNewExtensor,</B>
+       <B>pfdNewExtensorType,</B>    <B>pfdCompareExtensor,</B>   <B>pfdCompareEx-</B>
+       <B>traStates,</B> <B>pfdCopyExtraStates,</B>  <B>pfdGetExtensor,</B>  <B>pfdGetEx-</B>
+       <B>tensorType,</B>  <B>pfdUniqifyData</B>  - Flexible callback extension
+       mechanism
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       int                  <B>pfdAddState</B>(void *name,    long data-
+                              Size,             void (*initial-
+                              ize)(void *data),    void (*dele-
+                              tor)(void *data),      int (*com-
+                              pare)(void *data1,  void *data2),
+                              long (*copy)(void *dst,
+                              void *src), int token);
+
+       void                 <B>pfdStateCallback</B>(int stateToken,
+                              int whichCBack,   pfNodeTravFunc-
+                              Type callback);
+
+       pfNodeTravFuncType   <B>pfdGetStateCallback</B>(int stateToken,
+                              int which);
+
+       int                  <B>pfdGetStateToken</B>(void *name);
+
+       int                  <B>pfdGetUniqueStateToken</B>(void);
+
+       pfdExtensor *        <B>pfdNewExtensor</B>(int which);
+
+       pfdExtensorType *    <B>pfdNewExtensorType</B>(int token);
+
+       int                  <B>pfdCompareExtensor</B>(void *a, void *b);
+
+       int                  <B>pfdCompareExtraStates</B>(void *lista,
+                              void *listb);
+
+       void                 <B>pfdCopyExtraStates</B>(pfList *dst,
+                              pfList *src);
+
+       pfdExtensor *        <B>pfdGetExtensor</B>(int token);
+
+       pfdExtensorType *    <B>pfdGetExtensorType</B>(int token);
+
+       void *               <B>pfdUniqifyData</B>(pfList *dataList,
+                              const void *data,  long dataSize,
+                              void *(*newData)(long),
+                              int (*compare)(void *,   void *),
+                              long (*copy)(void *,     void *),
+                              int *compareResult);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       /* Define minimal Extensor as state in the builder */
+                          long (*copy)(void *dst, void *src),
+                          int token);
+
+       /* Extend Extensor Definition through callbacks listed above */
+       /* Specify function callbacks for an Extensor */
+       extern void pfdStateCallback(int stateToken, int whichCBack, pfNodeTravFuncType callback);
+       extern pfNodeTravFuncType pfdGetStateCallback(int stateToken, int which);
+
+       /* Look up the builder state token to use for a registered name */
+       extern int pfdGetStateToken(void *name);
+
+       /* Get the next Unique State token that can be used as a valid */
+       /* token for user state in the builder */
+       extern int pfdGetUniqueStateToken(void);
+
+       /* Create Generic Extensors and Extensor Definitions */
+       /* Note the builder creates these automatically based on user */
+       /* definition of extensors through pfdAddState and appropriately */
+       /* creates instances of an Extensor based on the current user state */
+       extern pfdExtensor* pfdNewExtensor(int which);
+       extern pfdExtensorType* pfdNewExtensorType(int token);
+
+       /* Needed to share Extensors and do internal extensor caching */
+       extern int pfdCompareExtensor(void *a, void *b);
+
+       /* Compare a list of Extensors */
+       extern int pfdCompareExtraStates(void *lista, void *listb);
+       extern void pfdCopyExtraStates(pfList *dst, pfList *src);
+
+       /* Find an instance of an Extensor in the Builder's current User State */
+       extern pfdExtensor* pfdGetExtensor(int token);
+
+       /* Find a Extensor Definitions in the Builder */
+       extern pfdExtensorType* pfdGetExtensorType(int token);
+
+       /* Share Arbitrary data */
+       extern void *pfdUniqifyData(pfList *dataList, const void *data,
+            long dataSize, void *(*newData)(long),
+            int (*compare)(void *,void *),
+            long (*copy)(void *, void *),
+            int *compareResult);
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+                                                 pfdExtensor(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

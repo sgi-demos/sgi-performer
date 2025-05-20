@@ -1,0 +1,267 @@
+<HTML>
+<HEAD>
+<TITLE>pfString</TITLE>
+</HEAD>
+<BODY>
+<H1>pfString</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfString(3pf)                                       pfString(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfString</B> - String facility using pfFont
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfString.h&gt;
+
+                         <B>pfString::pfString</B>();
+
+       pfType*           <B>pfString::getClassType</B>(void);
+
+       void              <B>pfString::setMat</B>(const pfMatrix *mat);
+
+       void              <B>pfString::getMat</B>(pfMatrix &amp;at);
+
+       void              <B>pfString::setMode</B>(int mode, int val);
+
+       int               <B>pfString::getMode</B>(int mode);
+
+       void              <B>pfString::setFont</B>(pfFont* font);
+
+       pfFont*           <B>pfString::getFont</B>(void);
+
+       void              <B>pfString::setString</B>(const char* cstr);
+
+       const char*       <B>pfString::getString</B>(void);
+
+       void              <B>pfString::setBBox</B>(pfBox *newBBox);
+
+       const pfBox*      <B>pfString::getBBox</B>(void);
+
+       void              <B>pfString::setSpacingScale</B>(float horiz,
+                           float vert, float depth);
+
+       void              <B>pfString::getSpacingScale</B>(float *horiz,
+                           float *vert, float *depth);
+
+       void              <B>pfString::setColor</B>(float r,     float g,
+                           float b, float a);
+
+       void              <B>pfString::getColor</B>(float *r,   float *g,
+                           float *b, float *a);
+
+       const pfGeoSet*   <B>pfString::getCharGSet</B>(void);
+
+       const pfVec3*     <B>pfString::getCharPos</B>(void);
+
+       size_t            <B>pfString::getStringLength</B>(void);
+
+       void              <B>pfString::setGState</B>(pfGeoState* gstate);
+
+       pfGeoState*       <B>pfString::getGState</B>(void);
+
+       void              <B>pfString::draw</B>(void);
+
+       void              <B>pfString::flatten</B>(void);
+                           pfHit **hits[]);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfString</B> is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfString</B>.  This is also true for ancestor classes of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfString</B> can also be used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>string</I>  identifies a pointer to a pfString
+
+       <I>font</I>    identifies a pointer to a pfFont
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>new</B>(arena)  allocates a pfString from the specified memory
+       arena, or from the process heap if  <I>arena</I>  is  NULL.   <B>new</B>
+       allocates  a  pfString  from the default memory arena (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfStrings cannot
+       be  created  statically,  automatically on the stack or in
+       arrays.  pfStrings should be deleted with <B>pfDelete</B>  rather
+       than the delete operator.
+       object,  it  is usually better to use  the member function
+       <B>isOfType</B> to test if an object is of a type derived from  a
+       Performer  type rather than to test for strict equality of
+       the <B>pfType</B>*'s.
+
+       <B>pfString::setMat</B> sets the transformation  matrix  for  the
+       pfString  to <I>mat</I> or to the identity matrix if <I>mat</I> is NULL.
+       Call <B>pfString::getMat</B> to retrieve the matrix.
+
+       Use <B>pfString::setMode</B> and <B>pfString::getMode</B> to set and get
+       modes  of the pfString.  Use the <B>PFSTR_JUSTIFY</B> mode to set
+       the justification of the string to one of the following:
+
+
+              <B>PFSTR_FIRST</B> or <B>PFSTR_LEFT</B>
+                   Set the string to be left-justified; the first
+                   character  will be immediately to the right of
+                   the origin.
+
+              <B>PFSTR_MIDDLE</B> or <B>PFSTR_CENTER</B>
+                   Set the string  to  be  center-justified;  the
+                   string will be centered at the origin.
+
+              <B>PFSTR_LAST</B> or <B>PFSTR_RIGHT</B>
+                   Set the string to be right-justified; the last
+                   character will be immediately to the  left  of
+                   the origin.
+
+       Use  the <B>PFSTR_CHAR_SIZE</B> to specify the size, in bytes, of
+       each character in the string. <I>val</I> is  one  of  <B>PFSTR_CHAR</B>,
+       <B>PFSTR_SHORT</B>, <B>PFSTR_INT</B> indicating that character sizes are
+       sizeof(char), sizeof(short), and sizeof(int) respectively.
+
+       Call <B>pfString::getBBox</B> to retrieve the bounding box around
+       the pfString as if it were drawn using the assigned justi-
+       fication, drawing style, font, and character string.  Call
+       <B>pfString::setBBox</B> to set this bounding box explicitly.
+
+       <B>pfString::setSpacingScale</B>  and   <B>pfString::getSpacingScale</B>
+       set  and get the spacing scales of the pfString.  Normally
+       after rendering a character,  the  rendering  position  is
+       translated in x, y, and z by the character's spacing which
+       is supplied by the pfFont associated  with  the  pfString.
+       This  spacing  is  scaled  by  the  supplied scale factors
+       enabling  greater/lesser  distances  between   characters.
+       Also,  when  the  <B>PFSTR_AUTO_SPACING</B>  mode is enabled, the
+       spacing scales can be used to change the direction of  the
+       rendered string, for example, spacing scales of (0, -1, 0)
+       will render the string vertically, suitable  for  labeling
+       the vertical axis of a 2D graph.
+
+       of  the  steps used when drawing each succeeding character
+       from the pfString. The default spacing scales are all  1.0
+       An  interesting example is horizontal scale 0 and vertical
+       scale -1, in which case the string is drawn downward  like
+       a neon sign outside a downtown bar and grill.
+
+       <B>pfString::setGState</B>  and  <B>pfString::getGState</B>  set and get
+       the <B>pfGeoState</B> attached to the pfString.  If no <B>pfGeoState</B>
+       the length  of  a  <B>pfString</B>'s  current  character  string.
+       <B>pfString::setColor</B>  and  <B>pfString::getColor</B>  get  and  set
+       <I>string's</I> color.
+
+       <B>pfString::getCharGSet</B> returns a pointer to the GeoSet cur-
+       rently  being used to draw the character at place <I>index</I> in
+       the  pfString's  string.   <B>pfString::getCharPos</B>   likewise
+       returns  a  pointer  to  a pfVec3 that specifies the exact
+       location relative to the current transform where the char-
+       acter in position <I>index</I> in the string array will be drawn.
+       Both of the above functions will return NULL if  <I>index</I>  is
+       greater than or equal to the pfString's length - which may
+       be obtained through <B>pfString::getStringLength</B>.
+
+       Call <B>pfString::draw</B> to draw the string, including applying
+       the <B>pfGeoState</B> if available, the color, and the texture if
+       this is a <B>PFSTR_TEXTURED</B> string.
+
+       A <B>pfString</B> is normally composed of a <B>pfGeoSet</B> per  charac-
+       ter  in the string.  Call <B>pfString::flatten</B> to flatten the
+       character spacings into the individual GeoSets.   A  flat-
+       tened  primitive  is  faster,  but flattening has overhead
+       which should be avoided if the  string  will  be  changing
+       quickly,  e.g.  in every frame.  <B>pfString::flatten</B> Must be
+       called every time you change the contents  of  the  string
+       geometry; e.g. after calling <B>pfString::setString</B>.
+
+       <B>pfString::setIsectMask</B>  enables intersections and sets the
+       intersection mask for the pfString.  <I>mask</I> is a 32-bit mask
+       used  to determine whether a particular pfString should be
+       examined during a particular intersection request.  A non-
+       zero  bit-wise AND of the pfString's mask with the mask of
+       the intersection request (<B>pfString::isect</B>) indicates  that
+       the  pfString  should  be tested.  The default mask is all
+       1's, i.e.  0xffffffff.
+
+       <B>pfString::getIsectMask</B> returns the  intersection  mask  of
+       the specified pfString.
+
+       <B>pfString::isect</B>   tests   for   intersection  between  the
+       pfString the pfString and the group of line segments spec-
+       ified  in <I>string</I>.  This is done by testing against each of
+       the pfGeoSets in the pfString.   The  resulting  intersec-
+       tions  (if any) are returned in <I>hits</I>.  The return value of
+       <B>pfString::isect</B> is the number of segments that intersected
+       the pfString.  See <B>pfGSetIsectSegs</B> for intersection infor-
+       mation returned from tests against  the  geometric  primi-
+       tives inside pfGeoSets.
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       See <B>pfText</B> for sample code demonstrating <B>pfString</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFont, pfDelete, pfGeoSet, pfText
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

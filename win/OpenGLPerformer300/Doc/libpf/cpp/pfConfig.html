@@ -1,0 +1,857 @@
+<HTML>
+<HEAD>
+<TITLE>pfConfig</TITLE>
+</HEAD>
+<BODY>
+<H1>pfConfig</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfConfig(3pf)                                       pfConfig(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMultipipe,</B>  <B>pfGetMultipipe,</B>  <B>pfMultithread,</B>  <B>pfGetMulti-</B>
+       <B>thread,</B> <B>pfMultiprocess,</B> <B>pfGetMultiprocess,</B>  <B>pfMultithread-</B>
+       <B>Parami,</B>    <B>pfGetMultithreadParami,</B>    <B>pfMultithreadParamf,</B>
+       <B>pfGetMultithreadParamf,</B>  <B>pfMultithreadParam,</B>   <B>pfGetMulti-</B>
+       <B>threadParam,</B>   <B>pfGetMPBitmask,</B>   <B>pfConfig,</B>   <B>pfIsConfiged,</B>
+       <B>pfGetPID,</B>  <B>pfGetPIDName,</B>  <B>pfCreateProcessFunc,</B>   <B>pfGetCre-</B>
+       <B>ateProcessFunc,</B>   <B>pfProcessMiscCPU,</B>   <B>pfGetProcessMiscCPU,</B>
+       <B>pfPrintProcessState,</B>  <B>pfGetPipe,</B>  <B>pfInitPipe,</B>  <B>pfGetStage,</B>
+       <B>pfGetStageName,</B>  <B>pfStageConfigFunc,</B>  <B>pfGetStageConfigFunc,</B>
+       <B>pfConfigStage,</B> <B>pfHyperpipe,</B>  <B>pfGetHyperpipe,</B>  <B>pfGetPipeHy-</B>
+       <B>perId,</B>  <B>pfProcessPriorityUpgrade,</B>  <B>pfGetProcessPriorityUp-</B>
+       <B>grade,</B> <B>pfProcessHighestPriority,</B> <B>pfGetProcessHighestPrior-</B>
+       <B>ity</B>  -  Configure  process and pipeline models, get pfPipe
+       handle and process ID.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       int                       <B>pfMultipipe</B>(int num);
+
+       int                       <B>pfGetMultipipe</B>(void);
+
+       int                       <B>pfMultithread</B>(int pipe,
+                                   uint stage, int nprocs);
+
+       int                       <B>pfGetMultithread</B>(int pipe,
+                                   uint stage);
+
+       int                       <B>pfMultiprocess</B>(int mode);
+
+       int                       <B>pfGetMultiprocess</B>(void);
+
+       int                       <B>pfMultithreadParami</B>(int pipe,
+                                   int param,
+                                   unsigned int value);
+
+       int                       <B>pfGetMultithreadParami</B>(int pipe,
+                                   int param);
+
+       int                       <B>pfMultithreadParamf</B>(int pipe,
+                                   int param, float value);
+
+       float                     <B>pfGetMultithreadParamf</B>(int pipe,
+                                   int param);
+
+       int                       <B>pfMultithreadParam</B>(int pipe,
+                                   int param, void *value);
+
+       void *                    <B>pfGetMultithreadParam</B>(int pipe,
+                                   int param);
+
+       int                       <B>pfGetMPBitmask</B>(void);
+
+       int                       <B>pfConfig</B>(void);
+       void                      <B>pfCreateProcessFunc</B>(pfCreateProcessFuncType func);
+
+       pfCreateProcessFuncType   <B>pfGetCreateProcessFunc</B>(void);
+
+       void                      <B>pfProcessMiscCPU</B>(int cpu);
+
+       int                       <B>pfGetProcessMiscCPU</B>(void);
+
+       void                      <B>pfPrintProcessState</B>(FILE *fp);
+
+       pfPipe *                  <B>pfGetPipe</B>(int pipe);
+
+       int                       <B>pfInitPipe</B>(pfPipe *pipe,
+                                   pfPipeFuncType configFunc);
+
+       uint                      <B>pfGetStage</B>(pid_t pid,
+                                   int *pipe);
+
+       const char *              <B>pfGetStageName</B>(int pipe,
+                                   uint stage);
+
+       void                      <B>pfStageConfigFunc</B>(int pipe,
+                                   uint stageMask, pfStageFunc-
+                                   Type configFunc);
+
+       pfStageFuncType           <B>pfGetStageConfigFunc</B>(int pipe,
+                                   uint stageMask);
+
+       void                      <B>pfConfigStage</B>(int pipe,
+                                   uint stageMask);
+
+       void                      <B>pfHyperpipe</B>(int n);
+
+       int                       <B>pfGetHyperpipe</B>(pfPipe *pipe);
+
+       int                       <B>pfGetPipeHyperId</B>(const pfPipe *pipe);
+
+       void                      <B>pfProcessPriorityUpgrade</B>(int state);
+
+       int                       <B>pfGetProcessPriorityUpgrade</B>();
+
+       void                      <B>pfProcessHighestPriority</B>(int pri);
+
+       int                       <B>pfGetProcessHighestPriority</B>();
+
+
+                                 typedef void (*pfCreateProcessFuncType)(int _pipe, uint _stage, pid_t _pid);
+                                 typedef void (*pfStageFuncType)(int pipe, uint stage);
+                                 typedef pfGeoSet *(*pfSidekickFunc)(pfGeoSet *gset, pfDispListOptimizer *op, void *userData);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       An OpenGL Performer application renders images using one
+       or more pfPipes.  A pfPipe is a software rendering
+       pipeline that traverses, culls, and draws one or more
+       pfChannels into a single graphics context. The software
+       rendering pipeline is composed of three functional <I>stages</I>:
+
+              <B>APP</B>                 Application processing
+
+       In addition, OpenGL Performer has a separate intersection
+       stage which can operate either synchronously or asyn-
+       chronously with the rendering pipeline (see <B>pfIsectFunc</B>).
+
+       All stages may be combined into a single process or split
+       into multiple processes for enhanced performance on multi-
+       processing systems.  <B>pfMultiprocess</B> controls the parti-
+       tioning of functional stages into processes. <I>mode</I> is a
+       bitwise OR of the following tokens:
+
+              <B>PFMP_FORK_ISECT</B>
+              <B>PFMP_FORK_CULL</B>
+              <B>PFMP_FORK_DRAW</B>
+              <B>PFMP_FORK_LPOINT</B>
+              <B>PFMP_FORK_DBASE</B>
+              <B>PFMP_FORK_COMPUTE</B>
+              <B>PFMP_FORK_CULL_SIDEKICK</B>
+              <B>PFMP_CULLoDRAW</B>
+              <B>PFMP_CULL_DL_DRAW</B>
+
+
+       These tokens specify which stages to fork into separate
+       processes and what multiprocessing communication mechanism
+       to use between the cull and draw processes.
+
+       The process from which all other processes are spawned is
+       known as the application process, or <B>APP</B>. This process is
+       the one that invokes <B>pfConfig</B> and controls the rendering
+       and intersection pipelines through <B>pfFrame</B>.
+
+       User code in the intersection, database, cull, and draw
+       processes are "triggered" by calling <B>pfFrame</B>. <B>pfFrame</B>
+       causes OpenGL Performer to invoke the user callbacks asso-
+       ciated with each process. These callbacks are established
+       by <B>pfIsectFunc</B>, <B>pfDBaseFunc</B>, <B>pfChanTravFunc</B> respectively.
+       See <B>pfFrame</B> for more details.
+
+       In addition to the cull and draw process, an optional
+       light points process can be used to discharged the draw
+       process to do the intensive computation involved by the
+       <B>pfLPointState</B> attached to the lights points pfGeoSet.
+       This process is usefull when a lot of raster computation
+       can be done on a separate processor than the draw proces-
+       sor, and will become mandatory when using the forthcoming
+       calligraphic light points.
+
+       The cull process will put all geoset with a pfLPointState
+       attached to in a dedicated bin. The light points process
+       will preprocess this bin in parallel with the draw process
+       drawing the other bins. The light points process uses an
+       internal ring display list to communicate the result of
+       the preprocessing to the draw, which will therefore draw
+       all light points at the end. See <B>pfChannel</B> for more
+       details.
+
+       Each pfPipe has a <B>CULL</B> and <B>DRAW</B> stage which may be config-
+       ured as either one or two processes. The <B>ISECT</B>, <B>DBASE</B>, and
+       <B>COMPUTE</B> stages are independent of any pfPipe and may run
+       in the same process as the application process or as sepa-
+       For additional performance gains when a pfPipe contains
+       multiple pfChannels, the <B>CULL</B> stage may be further paral-
+       lelized on a per-pfChannel basis.  When the <I>stage</I> argument
+       to <B>pfMultithread</B> is <B>PFPROC_CULL</B>, the <B>CULL</B> stage of the
+       <I>pipe</I>th rendering pipeline is split into <I>nprocs</I> <B>fork</B>ed pro-
+       cesses each of which operates singly on a pfChannel. Thus
+       this extra parallelization is only effective when both
+       <I>nprocs</I> and the number of pfChannels on <I>pipe</I> are greater
+       than 1.  <I>nprocs</I> need not be equal to the number of pfChan-
+       nels.  Currently, <B>pfMultithread</B> only accepts a <I>stage</I> argu-
+       ment of <B>PFPROC_CULL</B>, returns 1 on success and -1 other-
+       wise.  The <B>CULL</B> is not automatically multithreaded if
+       <B>PFMP_DEFAULT</B> is specified as the <B>pfMultiprocess</B> mode.
+
+       The <B>LPOINT</B> stage can also be multithreaded, using the same
+       scheme as for the cull process.
+
+       When multithreading the <B>CULL</B>, care must be taken to avoid
+       data collisions in user callback functions. In particular,
+       pfChannel and pfNode CULL callbacks (<B>pfChanTravFunc</B>,
+       <B>pfNodeTravFuncs</B>) may be invoked in parallel.
+
+       A set of helper processes named <B>CULL_SIDEKICK</B> may be added
+       alongside the <B>CULL</B> process.  These helper processes tra-
+       verse the display list that the <B>CULL</B> process produces.
+       They perform optimizations on each pfGeoSet on the display
+       list.  You can only add <B>CULL_SIDEKICK</B> processes when both
+       <B>CULL</B> and <B>DRAW</B> are forked. Each <B>CULL</B> process may have one
+       or more <B>CULL_SIDEKICK</B> processes serving it.  <B>CULL_SIDEKICK</B>
+       processes don't add latency to the rendering pipeline.
+       They run at the same frame number as their master <B>CULL</B>
+       process. They wait for <B>CULL</B> to add pfGeoSets to the dis-
+       play list and process them as they appear. <B>CULL_SIDEKICK</B>s
+       may not finish processing all the pfGeoSets on a display
+       list. Their job is to remove unnecessary geometry from the
+       display list. Any removed geometry helps the <B>DRAW</B> process
+       draw less geometry and achieve better frame rates.
+
+       Use <B>pfMultithread</B> in order to specify the number of
+       <B>CULL_SIDEKICK</B>s for each <B>CULL</B> process. Use
+       <B>PFPROC_CULL_SIDEKICK</B> as the <I>stage</I> parameter. Use the rest
+       of the parameters as in <B>CULL</B> threads.  You can control the
+       behavior of <B>CULL_SIDEKICK</B> processes using the functions
+       <B>pfMultithreadParamf</B> and <B>pfMultithreadParami</B>.
+
+       <B>pfMultithreadParami</B> sets integer parameters to the
+       <B>CULL_SIDEKICK</B> processes.  <I>pipe</I> is pipe number of the mas-
+       ter <B>CULL</B> process. <I>param</I> can be any of the following:
+
+
+              <B>PFSK_POLICY</B>
+                   Sets the synchronization policy between a <B>CULL</B>
+                   process and its <B>CULL_SIDEKICK</B> helpers.
+
+                   <B>PFSK_CULL_DONE</B> makes <B>CULL_SIDEKICK</B>s finish
+                   their frame as soon as their master <B>CULL</B> pro-
+                   cess finishes its frame. In this mode,
+                   <B>CULL_SIDEKICK</B>s don't always complete process-
+                   ing all the display list that their <B>CULL</B> mas-
+                   by <B>pfMultithreadParamf</B>. The default value is 1
+                   millisecond.
+
+                   <B>PFSK_SIDEKICK_DONE</B> makes <B>CULL_SIDEKICK</B>s com-
+                   plete processing the <B>CULL</B> display list com-
+                   pletely. In this mode, the <B>CULL</B> process may
+                   slow down while waiting for <B>CULL_SIDEKICK</B>s to
+                   complete and the application may miss frames.
+
+                   The default policy is <B>PFSK_CULL_DONE</B>.
+
+
+              <B>PFSK_OPTIMIZATION</B>
+                   Set the type of per-pfGeoSet optimization that
+                   the <B>CULL_SIDEKICK</B> traversal performer. <I>value</I>
+                   should a bitwise OR of the masks:
+                   <B>PFSK_BACKFACE_CULL</B> and <B>PFSK_FRUSTUM_CULL</B>.
+                   <B>PFSK_BACKFACE_CULL</B> makes <B>CULL_SIDEKICK</B>s test
+                   each of the polygons in a pfGeoSet and remove
+                   backfacing ones.  <B>PFSK_FRUSTUM_CULL</B> makes
+                   <B>CULL_SIDEKICK</B>s frustum-test each of the poly-
+                   gons in a pfGeoSet and remove invisible ones.
+                   The default optimization mask is
+                   <B>(PFSK_FRUSTUM_CULL|PFSK_BACKFACE_CULL)</B>.
+
+       <B>pfMultithreadParami</B> sets floating point parameters to the
+       <B>CULL_SIDEKICK</B> processes.  <I>pipe</I> defines the pipe number for
+       the master <B>CULL</B> process.  <I>param</I> can be any of the follow-
+       ing:
+
+
+              <B>PFSK_SAFETY_MARGIN</B> Sets a floating number of mil-
+              liseconds. When a
+                   <B>CULL_SIDEKICK</B>s runs with <B>PFSK_POLICY</B> ==
+                   <B>PFSK_CULL_FRAME_DONE</B>, you can set a margin
+                   before the end of the frame where
+                   <B>CULL_SIDEKICK</B> stop processing. This is a
+                   safety measure. If <B>CULL_SIDEKICK</B> doesn't com-
+                   plete early enough, it can make <B>CULL</B> miss its
+                   frame. The default value is 1.0 millisecond.
+
+       <B>pfMultithreadParam</B> sets void* parameters to the
+       <B>CULL_SIDEKICK</B> processes.  <I>pipe</I> defines the pipe number for
+       the master <B>CULL</B> process.  <I>param</I> can be any of the follow-
+       ing:
+
+
+              <B>PFSK_USER_FUNC</B> Sets a user function for the
+              <B>CULL_SIDEKICK</B> process.
+                   The <B>CULL_SIDEKICK</B> process invokes this func-
+                   tion for every pfGeoSet it encounters. A user
+                   function should be of type <B>pfSidekickFunc</B>.
+                   For more information about this option, see
+                   man <B>pfDispListOptimizer</B>.
+
+              <B>PFSK_USER_FUNC_DATA</B>  Sets user-data for the func-
+              tion specified by
+                   the <B>PFSK_USER_FUNC</B> parameter above.
+
+       <B>pfGetMultithread</B> returns the number of processes in the
+       processing stage identified by <I>stage</I> on the <I>pipe</I>th render-
+       ing pipeline.  Currently, <B>pfGetMultithread</B> only accepts a
+       <I>stage</I> argument of <B>PFPROC_CULL</B>, <B>PFPROC_CULL_SIDEKICK</B> or
+       <B>PFPROC_LPOINT</B> and returns -1 otherwise.
+
+       Thus, the number of processes an application uses is
+       dependent on:
+
+              1.   The multiprocessing modes set by
+                   <B>pfMultiprocess</B> and <B>pfMultithread</B>.
+
+              2.   The number of rendering pipelines set by
+                   <B>pfMultipipe</B>.
+
+              3.   The number of user-spawned processes.
+
+       The following table indicates the number of processes that
+       are implied by each multiprocessing mode combination as a
+       function of the number of OpenGL Performer pfPipes speci-
+       fied.
+
+       center tab($) ; c | c | c | c .
+       FORK_ISECT$FORK_CULL$FORK_DRAW$# Processes _ No$No$No$1
+       No$No$Yes$2 No$Yes$No$1 + numPipes No$Yes$Yes$1 +
+       2*numPipes _ Yes$No$No$2 Yes$No$Yes$3 Yes$Yes$No$2 +
+       numPipes Yes$Yes$Yes$2 + 2*numPipes
+
+       Here is an example configuration which would be used to
+       generate a high-performance stereo display using two
+       pfPipes, each associated with a hardware graphics
+       pipeline. In this situation the output of one pipeline
+       will be displayed for the viewer's left eye, and the other
+       will go to the right eye. Here, multithreading the <B>CULL</B> is
+       of no use since each pfChannel is handled by its own
+       pfPipe.
+
+       Example 1: Two pfPipe stereo configuration
+
+       /* configure two hardware pipelines */
+       <B>pfMultipipe(2)</B>;
+
+       /* operate processing tasks in parallel */
+       pfMultiprocess(PFMP_FORK_CULL | PFMP_FORK_DRAW | PFMP_FORK_ISECT);
+
+
+       The processing mode configured by this example looks like:
+
+
+                   CULL ---&gt; DRAW         left eye
+                  /
+                 /
+               APP
+              /  \
+             /    \
+           ISECT   CULL ---&gt; DRAW         right eye
+
+
+       Example 2: One pfPipe stereo configuration using multi-
+
+
+       The processing mode configured by this example looks like:
+
+                     CULL       left eye
+                      /    \
+               APP-----      ---------&gt; DRAW
+              /        \    /
+             /          CULL         right eye
+           ISECT
+
+
+       <B>PFMP_CULL_DL_DRAW</B> and <B>PFMP_CULLoDRAW</B> specify how the cull
+       and draw stages should communicate.
+
+       If <B>PFMP_CULL_DL_DRAW</B> is set the cull stage will build up
+       an OpenGL Performer display list (pfDispList) which con-
+       tains the entire frame's worth of data. The draw stage
+       then traverses this pfDispList when <B>pfDraw</B> is called and
+       sends commands to the graphics hardware.  When the cull
+       and draw stages are different processes (<B>PFMP_FORK_DRAW</B>)
+       this mode is always enabled. However, when the cull and
+       draw stages are the same process, the display list con-
+       struction may add some overhead.  If, in this case,
+       <B>PFMP_CULL_DL_DRAW</B> is not specified, the cull stage will be
+       delayed until <B>pfDraw</B> is called. <B>pfDraw</B> will then cull and
+       draw the scene in immediate mode and not use a pfDispList.
+
+       <B>PFMP_CULL_DL_DRAW</B> is disabled by default but should be
+       used for applications which use multipass rendering tech-
+       niques that require multiple calls to <B>pfDraw</B>.
+
+       The 'o' in <B>PFMP_CULLoDRAW</B> is short for 'overlap' and when
+       this bit is set, the multiprocessed cull and draw stages
+       of the same frame will be overlapped.  The cull process
+       (the producer) writes to a FIFO (implemented as a ring
+       buffer) while the draw process (the consumer) simultane-
+       ously reads commands from the ring buffer.
+
+       The main benefit of this configuration is that latency
+       will be reduced a full frame time over the pipelined (non-
+       overlapped) case. A disadvantage is that the draw process
+       may suffer from reduced throughput if the cull process
+       cannot keep up. This condition is exacerbated when the
+       cull sorts the database by draw bin or by graphics state.
+       In each case, the cull retains the database in internal
+       data structures and does not add drawing commands to the
+       display list until the cull is completed. Consequently, to
+       get the best throughput from <B>PFMP_CULLoDRAW</B>, database mode
+       sorting and ordering should be disabled.
+
+       Example 3: Reasonable sorting setup for <B>PFMP_CULLoDRAW</B>
+
+
+
+       pfMultiprocess(PFMP_APP_CULL_DRAW | PFMP_CULLoDRAW);
+
+       /* Draw opaque geometry immediately into CULLoDRAW's pfDispList
+        * Transparent geometry is still saved and drawn after opaque. */
+
+       <B>PFMP_CULLoDRAW</B> is ignored if the cull and draw stages are
+       in the same process.
+
+       The optional light points process uses the Display List
+       mechanism as an essential way of communication between the
+       cull and the draw. Therefore, it is compulsory to use
+       <B>PFMP_CULL_DL_DRAW</B> with <B>PFMP_FORK_LPOINT</B>.  <B>pfConfig</B> will
+       automatically replace <B>PFMP_CULLoDRAW</B> token if used in con-
+       junction with light points process.
+
+       For convenience, other tokens are provided for common mul-
+       tiprocessing modes:
+
+              <B>PFMP_APPCULLDRAW</B>
+                   All stages are combined into a single process.
+                   A pfDispList is not used. <B>pfDraw</B> both culls
+                   and renders the scene.
+
+              <B>PFMP_APPCULL_DL_DRAW</B>
+                   All stages are combined into a single process.
+                   A pfDispList is built by <B>pfCull</B> and rendered
+                   by <B>pfDraw</B>.
+
+              <B>PFMP_APP_CULLDRAW</B>
+                   The cull and draw stages are combined in a
+                   process that is separate from the application
+                   process.  A pfDispList is not used. <B>pfDraw</B>
+                   both culls and renders the scene.  Equivalent
+                   to (<B>PFMP_FORK_CULL</B>).
+
+              <B>PFMP_APP_CULL_DL_DRAW</B>
+                   The cull and draw stages are combined in a
+                   process that is separate from the application
+                   process. A pfDispList is built by <B>pfCull</B> and
+                   rendered by <B>pfDraw</B>.  Equivalent to (-
+                   <B>PFMP_FORK_CULL</B> | <B>PFMP_CULL_DL_DRAW</B>).
+
+              <B>PFMP_APPCULL_DRAW</B>
+                   The application and cull stages are combined
+                   in a process that is separate from the draw
+                   process.  Equivalent to (<B>PFMP_FORK_DRAW</B>).
+
+              <B>PFMP_APPCULLoDRAW</B>
+                   The application and cull stages are combined
+                   in a process that is separate from, but over-
+                   laps, the draw process.  Equivalent to (-
+                   <B>PFMP_FORK_DRAW</B> | <B>PFMP_CULLoDRAW</B>).
+
+              <B>PFMP_APP_CULL_DRAW</B>
+                   The application, cull, and draw stages are
+                   each separate processes.  Equivalent to (-
+                   <B>PFMP_FORK_CULL</B> | <B>PFMP_FORK_DRAW</B>).
+
+              <B>PFMP_APP_CULLoDRAW</B>
+                   The application, cull, and draw stages are
+                   each separate processes and the cull and draw
+                   process are overlapped.  Equivalent to (-
+                   <B>PFMP_FORK_CULL</B> | <B>PFMP_FORK_DRAW</B> |
+                   <B>pfMultiprocess</B> is not called. <B>PFMP_DEFAULT</B>
+                   will attempt to use as many available proces-
+                   sors as possible except the <B>CULL</B> will not be
+                   automatically multithreaded.
+
+       Example 4: Configuration with a light point process
+
+
+       /* operate all processing tasks in parallel */
+       pfMultiprocess(PFMP_APP_CULL_DRAW | PFMP_FORK_LPOINT | PFMP_CULL_DL_DRAW);
+
+
+
+       The processing mode configured by this example looks like:
+
+
+
+               APP----- CULL -------&gt;[ DRAW    ..]  (draws light points at the end)
+              /                              /
+             /                -----&gt; LPOINT /   (preprocess light points in parallel to draw)
+           ISECT
+
+
+
+
+       By default OpenGL Performer uses a single pfPipe.  If mul-
+       tiple rendering pipelines are required (in most cases this
+       will be for machines with multiple hardware pipelines),
+       use <B>pfMultipipe</B> to specify the number of pfPipes that are
+       created by <B>pfConfig</B>. Multipipe operation absolutely
+       requires that all participating hardware pipelines be gen-
+       locked. Otherwise reduced throughput and increased latency
+       will result.
+
+       The multiprocessing mode set by <B>pfMultiprocess</B> is used for
+       all rendering pipelines. However, OpenGL Performer never
+       multi-threads the application process although the appli-
+       cation may choose to do so. If the application itself mul-
+       tiprocesses, all OpenGL Performer calls must be made from
+       the process which calls <B>pfConfig</B> or results are undefined.
+       When using multiple pipelines, the cull stage must be
+       forked (<B>PFMP_FORK_CULL</B>). If not, OpenGL Performer defaults
+       to <B>PFMP_APP_CULL_DRAW</B>.
+
+       <B>pfMultiprocess</B>, <B>pfMultithread</B>, and <B>pfMultipipe</B> must be
+       called after <B>pfInit</B> but before <B>pfConfig</B>. <B>pfConfig</B> config-
+       ures OpenGL Performer according to the required number of
+       pipelines and multiprocessing modes, forks the appropriate
+       number of OpenGL Performer processes and returns control
+       to the single-threaded application. <B>pfConfig</B> should be
+       called only once between <B>pfInit</B> and <B>pfExit</B>.  <B>pfConfig</B>
+       returns a value of 1 if successful and -1 if an error is
+       detected.
+
+       <B>pfIsConfiged</B> returns a value of 1 if <B>pfConfig</B> has been
+       successfully called and a value of 0 otherwise.
+
+
+       OpenGL Performer uses <B>fork</B> to split off processes and will
+
+       In particular, care must be taken when the <B>DBASE</B> stage is
+       configured as a separate process. Although deletion
+       requests (<B>pfDelete</B>) may be made in any process, <B>DBASE</B>
+       frees all the memory so if <B>DBASE</B> is forked it can only
+       free memory that was allocated out of OpenGL Performer's
+       shared memory arena (<B>pfGetSharedArena</B>) or from some other
+       memory arena that is visible to the <B>DBASE</B> process. Conse-
+       quently it is safest to allocate all objects from a shared
+       memory arena when using a forked <B>DBASE</B> process.
+
+       In addition to forking processes, <B>pfConfig</B> initializes the
+       number of pfFluxBuffer and pfCycleBuffer copies (-
+       <B>pfFluxDefaultNumBuffers</B> and <B>pfCBufferConfig</B>) appropriate
+       for the multiprocessing mode.
+
+       <B>pfCreateProcessFunc</B> allows the specification of a callback
+       function that is called when Performer creates any process
+       (the <B>pfConfig</B> forked processes, the pfClock process, and
+       the sproced processes for managing pfQueues).  Users may
+       specify a master process manager with this mechanism for
+       placing processes on CPUs and assigning them priorities.
+       A sample such process manager is in libpfutil and is set
+       up with <B>pfuInitDefaultProcessManager</B> and is the process
+       manager used by perfly.  By default the pfClock and
+       pfQueue processes are placed on the miscellaneous CPU that
+       defaults to CPU 0 and no other management is done for the
+       other created processes.  <B>pfGetCreateProcessFunc</B> will
+       return the pointer to the current process manager function
+       which will be the internal default function if one has not
+       been set by the user.  <B>pfMiscCPU</B> will set the miscella-
+       neous CPU and <B>pfGetMiscCPU</B> will return the current
+       <B>pfMiscCPU</B> that defaults to CPU 0 if it has not been set.
+
+       After <B>pfConfig</B> is called, <B>pfGetPipe</B> should be used to get
+       handles to pfPipes for subsequent use in OpenGL Performer
+       routines.  <I>pipe</I> identifies a pipe and ranges from 0 to
+       numPipes - 1 where numPipes is the number of pipes speci-
+       fied in <B>pfMultipipe</B>.
+
+       After <B>pfConfig</B> spawns other processes, <B>pfGetPID</B> will
+       return the process id of a specific pipeline stage or -1
+       to indicate error.  <I>pipe</I> specifies which pipeline the
+       stage is in and ranges from 0 to numPipes - 1. <I>stage</I> is a
+       bitmask which identifies one or more stages in the multi-
+       processing pipeline and may consist of:
+
+       center tab($) ; C | C L | L .  Token$Stage Description _
+       <B>PFPROC_ISECT</B>$The intersection stage <B>PFPROC_DBASE</B>$The
+       database stage <B>PFPROC_COMPUTE</B>$The pfASD, pfEngine/pfFlux
+       and user compute stage <B>PFPROC_APP</B>$The application stage
+       <B>PFPROC_CULL</B>$The cull stage <B>PFPROC_DRAW</B>$The draw stage
+       <B>PFPROC_LPOINT</B>$The light points stage <B>PFPROC_CLOCK</B>$The
+       clock process
+
+       If <I>stage</I> identifies multiple stages, such as (<B>PFPROC_CULL</B>
+       <B>|</B> <B>PFPROC_DRAW</B>), then the process id will be returned only
+       if an exact match is made which in this example is only
+       possible if the multiprocessing mode is <B>PFMP_APP_CULLDRAW</B>.
+       id, <I>pid</I>, <B>pfGetStage</B> will return a bitmask which identifies
+       the stages that are performed by process <I>pid</I> and will copy
+       into <I>pipe</I> the number of the pipeline that <I>pid</I> is in if
+       <I>pipe</I> is not <B>NULL</B>. <B>pfGetStage</B> returns -1 if <I>pid</I> is not a
+       known OpenGL Performer process.
+
+       The stage bitmask used in <B>pfGetPID</B> and <B>pfGetStage</B> identi-
+       fies the thread number (<B>pfMultithread</B>) as well as the pro-
+       cessing stage(s). The thread ID is OR'ed into the upper
+       bits of the stage bitmask as follows:
+
+
+       threadId = (stage &amp; PFPROC_THREAD_MASK) &gt;&gt; PFPROC_THREAD_SHIFT;
+
+
+       The <B>PFPROC_THREAD1-7</B> tokens are provided as a convenience
+       (more than 8 threads are supported).
+
+       <B>pfGetPIDName</B> takes a process id <I>pid</I> and will return a
+       pointer to a string with a description of the processing
+       that includes stage, pid, and pipe.  <B>pfGetStageName</B> takes
+       a pfPipe number <I>pipe</I>and stage bit <I>stage</I> and will return
+       the string pointer with the full discription of the corre-
+       sponding process.
+
+       <B>pfPrintProcessState</B> will print to the opened file speci-
+       fied by <I>fp</I> the current list of Performer processes and
+       their descriptions.  If the file pointer <I>fp</I> is NULL, the
+       information will be printed using standard <I>pfNotify</I>.
+
+       <B>pfGetMultiprocess</B> returns the requested multiprocess mode.
+       <B>pfGetMPBitmask</B> returns the actual multiprocess mode bit-
+       mask in use which  might be different than the requested
+       mode if <B>PFMP_DEFAULT</B> was the requested mode or if single
+       process was requested with multipipe operation.
+       <B>pfGetMultipipe</B> returns the number of pfPipes configured.
+
+       After <B>pfConfig</B>, stage configuration callbacks may be spec-
+       ified with <B>pfStageConfigFunc</B> and triggered with
+       <B>pfConfigStage</B>. Configuration callbacks are typically used
+       for process initialization, e.g, assign non-degrading pri-
+       orities and locking processes to processors or downloading
+       textures in the <B>DRAW</B> stage callback.  The <I>stageMask</I> argu-
+       ment to <B>pfStageConfigFunc</B> is a bitmask which identifies
+       one or more OpenGL Performer stages (see <B>pfGetPID</B> above).
+       If &gt;= 0, the <I>pipe</I> argument to <B>pfStageConfigFunc</B> selects
+       stage(s) on a particular pfPipe ( <B>pfGetPipe</B>(<I>pipe</I>) ). If
+       <I>pipe</I> is &lt; 0 it selects stages of all pfPipes. Note that
+       <I>pipe</I> is ignored for the <B>PFPROC_ISECT</B>, <B>PFPROC_APP</B>, and
+       <B>PFPROC_DBASE</B> stages since they are not associated with any
+       pfPipe. <I>configFunc</I> is the callback function to be invoked
+       for the indicated stages. <B>pfGetStageConfigFunc</B> returns the
+       configuration function used for the stage identified by
+       <I>pipe</I> and <I>stageMask</I>.
+
+       <B>pfConfigStage</B> causes the callback functions to be invoked
+       for the identified stages at the start of processing the
+       current application frame. The current application frame
+       gets to the next stage at the next call to <B>pfFrame</B>.  <I>pipe</I>
+       void
+       configFunc(int pipe, uint stage)
+       {
+           /* Fix CULL processes to processor 1 and 3 */
+           if (stage == PFPROC_CULL)
+            sysmp(MP_MUSTRUN, 2*pipe+1);
+
+           /* Fix DRAW processes to processor 2 and 4 */
+           else if (stage == PFPROC_DRAW)
+            sysmp(MP_MUSTRUN, 2*pipe+2);
+       }
+
+       :
+
+       <B>pfMultipipe(2)</B>;
+       pfMultiprocess(PFMP_APP_CULL_DRAW);
+       pfConfig();
+
+       pfStageConfigFunc(-1, PFPROC_CULL|PFPROC_DRAW, configFunc);
+       pfConfigStage(-1, PFPROC_CULL|PFPROC_DRAW);
+
+       pfFrame();
+
+
+
+       <B>pfHyperpipe</B> supports the hyperpipe hardware feature of
+       VGXT/Skywriter and Onyx/RealityEngine2 research systems,
+       as well as Onyx/InfiniteReality and Onyx2/InfiniteReality
+       systems with the DPLEX option. <I>n</I> indicates the number of
+       pfPipes that should be configured together in hyperpipe
+       mode.  <B>pfHyperpipe</B> should be called once for each hyper-
+       pipe group in the system that is used by the application.
+
+       The first pfPipe in the new hyperpipe group will be the
+       lowest numbered pfPipe that is not currently assigned to
+       another hyperpipe group. This pfPipe is the master pfPipe.
+       The slave pfPipes are the next <I>n</I>-1 consecutive pfPipes.
+       The master pfPipe manages the pfPipeWindows and pfPipeV-
+       ideoChannels for the slave pfPipes. The application need
+       only create or change pfPipeWindows and pfPipeVideoChan-
+       nels on the master pfPipe.  Performer will ensure that
+       most attributes are propagated to the slave objects. Those
+       attributes that are graphics pipe specific (i.e., VisualID
+       or FBConfig) are not propagated, however.
+
+       Hyperpipes will run at a fraction of the system frame rate
+       as defined by <B>pfFrameRate</B>. For example, if the number of
+       pipes in the hyperpipe group is 2, then each pfPipe in the
+       hyperpipe group will run at half the system frame rate.
+       Their aggregate rate will be equal to the system frame
+       rate.
+
+       <B>pfGetHyperpipe</B> returns the total number of pfPipes in the
+       hyperpipe group in which the given <B>pfPipe</B> belongs.
+       <B>pfGetPipeHyperId</B> returns the position of the given <B>pfPipe</B>
+       in its hyperpipe group. The following example configures a
+       two-pipeline hyperpipe system. In this example, the hyper-
+       pipe group pipes are screens 1 and 2 of the X display :0.
+       This example also configures screen 0 as a single, non-
+
+       /* assign screens 1 and 2 to the hyperpipe pfPipes 0 and 1 */
+       pfPipeScreen(<B>pfGetPipe(0)</B>, 1);
+       pfPipeScreen(<B>pfGetPipe(1)</B>, 2);
+
+       /* assign screen 0 to the single pfPipe 2 */
+       pfPipeScreen(<B>pfGetPipe(2)</B>, 0);
+
+       /* create the pfPipeWindow and pfChannel for the hyperpipe */
+       pwin = pfNewPWin(<B>pfGetPipe(0)</B>);
+       /*
+        * config this pwin as needed
+        *
+        * if fbconfig or visualid must be assigned directly then get
+        * the pwin using:
+        *     pwin = pfGetPipePWin(<B>pfGetPipe(1)</B>, 0);
+        *
+        */
+
+       chan = pfNewChan(<B>pfGetPipe(0)</B>);
+       /*
+        * config the channel as needed
+        */
+
+
+       /* create the pfPipeWindow and pfChannel for the single pipe */
+       pwin = pfNewPWin(<B>pfGetPipe(2)</B>);
+       chan = pfNewChan(<B>pfGetPipe(2)</B>);
+
+
+       The hyperpipe group configuration can be queried directly
+       from GLX (see <B>glXQueryHyperpipeNetworkSGIX(3)</B> for more
+       information). This information can be used to map pfPipes
+       to physical screens.
+
+       During the execution frame of various Performer processes,
+       The <B>APP</B> process sometime waits for other processes. If
+       multiple Performer processes run on the same CPU, this
+       wait can cause a system slowdown. OpenGL Performer pro-
+       vides minimal control over process priorities in order to
+       avoid this slowdown.  This support is relevant only when
+       running in real-time priorities.  Performer supports tem-
+       porary changes to the priorities of the <B>CULL</B>, <B>ISECT</B>, <B>DBASE</B>
+       and <B>COMPUTE</B> processes: When the <B>APP</B> process has to wait on
+       another Performer process, it can temporarily increase its
+       priority to a fixed high priority.
+
+       <B>pfProcessPriorityUpgrade</B> turns priority-upgrading on or
+       off.  <B>pfGetProcessPriorityUpgrade</B> returns the current pri-
+       ority-upgrade mode.  By default, OpenGL Performer performs
+       no priority upgrades. Priority upgrading is necessary only
+       when running more than one Performer process on the same
+       CPU with different real-time priorities. If every Per-
+       former process is allocated a separate CPU, or when pro-
+       cesses sharing a CPU have the same priority, priority
+       upgrading isn't necessary.  If Performer fails to change a
+       process priority once, it turns priority-upgrading off.
+       This can happen when not running as super-user.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Multiprocessing (forked CULL, DRAW, X Input, LPOINT,
+       DBASE, COMPUTE, etc.) is not supported in the single pro-
+       cessor version of OpenGL Performer for Linux.  Only
+       PFMP_APPCULLDRAW mode is available.
+
+       In practice, user callbacks in the intersection process
+       call only <B>pfNodeIsectSegs</B> and user callbacks in the
+       database process uses the pfBuffer mechanism to asyn-
+       chronously create and delete scene graphs to implement
+       database paging.
+
+       If <B>PFMP_DEFAULT</B> is not used, it is up to the application
+       to tailor the number of OpenGL Performer processes to the
+       number of processors.  Care must be taken to avoid thrash-
+       ing, starvation, and deadlock.
+
+       If <B>pfIsectFunc</B> is called before <B>pfConfig</B> and the multipro-
+       cessing mode is <B>PFMP_DEFAULT</B>, then <B>pfConfig</B> will fork the
+       intersection process if there are enough processors. Oth-
+       erwise, you must explicitly fork the intersection process
+       by setting the <B>PFMP_FORK_ISECT</B> bit in the argument passed
+       to <B>pfMultiprocess</B>.
+
+       When using <B>PFMP_CULLoDRAW</B>, multipass algorithms (e.g. -
+       landing lights on InfiniteReality and RealityEngine) which
+       call <B>pfDraw</B> more than once per frame will not work.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       If <B>PFMP_CULLoDRAW</B> is used, modifications to pfChannel
+       passthrough data (see <B>pfPassChanData</B>) made by the cull
+       callback will not be passed along to the draw callback.
+       However, modifications made by the application process
+       will still make it to both cull and draw callbacks.
+
+       <B>PFMP_CULLoDRAW</B> usually has no effect when OpenGL Performer
+       is in the free-running frame rate control mode specified
+       by <B>pfPhase(PFPHASE_FREE_RUN)</B>. Instead, use <B>PFPHASE_FLOAT</B>
+       or <B>PFPHASE_LOCK</B>.
+
+       When in <B>PFMP_CULLoDRAW</B> mode, the draw time recorded by
+       OpenGL Performer statistics does not include the time the
+       draw process spends waiting for the cull process to begin
+       filling the ring buffer.
+
+       <B>OBSOLETE</B>
+
+       <B>pfInitPipe</B> is an obsolete routine for initializing the
+       graphics subsystem for a pfPipe. A callback function <I>con-</I>
+       <I>figFunc</I> could be provided for initializing <I>pipe</I> in the
+       draw process and was used for opening windows in the draw
+       process for the pfPipe.  This function has been obsoleted
+       by the pfPipeWindow primitive which can be used to config-
+       ure windows in either or both the application process and
+       draw process, and by <B>pfConfigStage</B> which provides a mecha-
+       nism for initializing any OpenGL Performer process or
+       pfPipe stage.  See the <B>pfPipeWindow</B> man page for more
+       information on creating and opening OpenGL Performer win-
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

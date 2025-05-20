@@ -1,0 +1,297 @@
+<HTML>
+<HEAD>
+<TITLE>pfShadow</TITLE>
+</HEAD>
+<BODY>
+<H1>pfShadow</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfShadow(3pf)                                       pfShadow(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewShadow,</B>   <B>pfShadowNumCasters,</B>  <B>pfGetShadowNumCasters,</B>
+       <B>pfShadowShadowCaster,</B>  <B>pfShadowAdjustCasterCenter,</B>  <B>pfGet-</B>
+       <B>ShadowShadowCaster,</B> <B>pfGetShadowShadowCasterMatrix,</B> <B>pfShad-</B>
+       <B>owNumSources,</B>  <B>pfGetShadowNumSources,</B>   <B>pfShadowSourcePos,</B>
+       <B>pfGetShadowSourcePos,</B>   <B>pfShadowLight,</B>   <B>pfGetShadowLight,</B>
+       <B>pfShadowAmbientFactor,</B> <B>pfGetShadowAmbientFactor,</B> <B>pfShadow-</B>
+       <B>TextureBlendFunc,</B>  <B>pfShadowAddChannel,</B> <B>pfShadowUpdateView,</B>
+       <B>pfShadowUpdateCaster,</B> <B>pfShadowApply,</B> <B>pfShadowDraw,</B> <B>pfShad-</B>
+       <B>owFlags,</B>  <B>pfGetShadowFlags,</B>  <B>pfShadowVal,</B>  <B>pfGetShadowVal,</B>
+       <B>pfGetShadowDirData</B> - Controls rendering of  shadows  under
+       selected objects.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfShadow*    <B>pfNewShadow</B>(void);
+
+       void         <B>pfShadowNumCasters</B>(pfShadow* _shadow,
+                      int index);
+
+       int          <B>pfGetShadowNumCasters</B>(pfShadow* _shadow);
+
+       void         <B>pfShadowShadowCaster</B>(pfShadow* _shadow,
+                      int index, pfNode *caster, PFMATRIX mat);
+
+       void         <B>pfShadowAdjustCasterCenter</B>(pfShadow* _shadow,
+                      int index, pfVec3 *trans);
+
+       pfNode*      <B>pfGetShadowShadowCaster</B>(pfShadow* _shadow,
+                      int index);
+
+       pfMatrix*    <B>pfGetShadowShadowCasterMatrix</B>(pfShadow* _shadow,
+                      int index);
+
+       void         <B>pfShadowNumSources</B>(pfShadow* _shadow,
+                      int num);
+
+       int          <B>pfGetShadowNumSources</B>(pfShadow* _shadow);
+
+       void         <B>pfShadowSourcePos</B>(pfShadow* _shadow,
+                      int index,   float x,  float y,  float z,
+                      float w);
+
+       void         <B>pfGetShadowSourcePos</B>(pfShadow* _shadow,
+                      int index,  float *x, float *y, float *z,
+                      float *w);
+
+       void         <B>pfShadowLight</B>(pfShadow* _shadow,   int index,
+                      pfLight *light);
+
+       pfLight*     <B>pfGetShadowLight</B>(pfShadow* _shadow,
+                      int index);
+
+       void         <B>pfShadowAmbientFactor</B>(pfShadow* _shadow,
+
+       void         <B>pfShadowAddChannel</B>(pfShadow* _shadow, pfChan-
+                      nel *channel);
+
+       void         <B>pfShadowUpdateView</B>(pfShadow* _shadow);
+
+       void         <B>pfShadowUpdateCaster</B>(pfShadow* _shadow,
+                      int index, PFMATRIX mat);
+
+       void         <B>pfShadowApply</B>(pfShadow* _shadow);
+
+       void         <B>pfShadowDraw</B>(pfShadow* _shadow,       pfChan-
+                      nel *chan);
+
+       void         <B>pfShadowFlags</B>(pfShadow* _shadow,   int which,
+                      int value);
+
+       int          <B>pfGetShadowFlags</B>(const pfShadow* _shadow,
+                      int which);
+
+       void         <B>pfShadowVal</B>(pfShadow* _shadow,    int caster,
+                      int light, int which, float  val);
+
+       float        <B>pfGetShadowVal</B>(pfShadow* _shadow, int caster,
+                      int light, int which);
+
+       pfDirData*   <B>pfGetShadowDirData</B>(pfShadow* _shadow,
+                      int caster, int light);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class <B>pfShadow</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfShadow</B>.  Casting an object of class <B>pfShadow</B> to an
+       object  of  class <B>pfObject</B> is taken care of automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfShadow</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfShadow is used to control rendering of  shadows  under
+       selected  objects.  The  user can specify a set of objects
+       and a set of light sources.   The  class  takes  over  the
+       drawing  and  renders  shadows  for  each combination of a
+       shadow caster and a light source. Shadows are rendered  by
+       projecting  the objects as seen from the light source into
+       a texture and projecting the  texture  onto  a  scene.  To
+       avoid  computing the texture for each frame, a set of tex-
+       tures is precomputed at the first  frame,  then  for  each
+       frame  the  best  representative  is  chosen and warped to
+       approximate the correct shadow.
+
+       A pfShadow is not part of the scene graph, it  is  created
+       separately  by  the application process.  Once created the
+       user can specify the number of shadow casters  by  calling
+       <B>pfShadowNumCasters</B>   and   then   set  each  caster  using
+       <B>pfShadowShadowCasters</B>.  Each shadow caster is specified by
+       a  scene  graph node and a matrix that contains the trans-
+       formation of the node with  respect  to  the  scene  graph
+       root.   Shadow casters are indexed from 0 to the number of
+       casters minus 1.  Similarly, the number of  light  sources
+       is  set by function <B>pfShadowNumSources</B>.  A light source is
+       defined   by   its   position   or   direction,   set   by
+       <B>pfShadowSourcePos</B> or <B>pfShadowLight</B>.  The class initializa-
+       tion is completed by calling <B>pfShadowApply</B>.
+
+       A pfShadow needs information about the current  eye  posi-
+       tion  and  view  direction.  Since this information is not
+       directly accessible in a draw process it is  necessary  to
+       call <B>pfShadowAddChannel</B> for each channel (at the beginning
+       of the application).  Whenever the view changes the appli-
+       cation  process  has  to call <B>pfShadowUpdateView</B>.  Even if
+       the view does not change, this function has to  be  called
+       at least once in a single process mode or as many times as
+       the number of buffers in a pfFlux  in  MP  mode.   Without
+       updating the view the shadow is not rendered correctly.
+
+       Example:
+
+       pfShadow *shd = pfNewShadow();
+
+       pfShadowNumCasters(shd, 2);
+       pfShadowShadowCaster(shd, 0, node1, matrix1);
+       pfShadowShadowCaster(shd, 1, node2, matrix2);
+
+       pfShadowNumSources(shd, 1);
+       pfShadowSourcePos(shd, 0, x1, y1, z1, w1);
+
+       pfShadowAddChannel(channel);
+
+       ADDITIONAL PARAMETERS
+
+       As the caster is projected into a shadow texture the cen-
+       ter of the projection corresponds with the center of the
+       bounding box of the caster's node. When the shadow texture
+       is skewed to approximate shadows from slightly different
+       direction its is best if the center of the projection cor-
+       responds with the center of the object. The bounding box
+       center may not coincide with the center of the object (in
+       case of some long protruding parts) and function
+       <B>pfShadowAdjustCasterCenter</B> can be used to shift the bound-
+       ing box center towards the object center.
+
+       The shadow texture is used to darken the scene pixels when
+       the texture texel is set to 1. The amount by which the
+       scene pixel is darkened can be set by
+       <B>pfShadowAmbientFactor</B>.  The default value is 0.6
+
+       For each combination shadow caster-light source it is pos-
+       sible to specify how many shadow textures are used, what
+       their sizes are, and the set of directions, for which the
+       textures are precomputed.  The number of textures and
+       their size can be set by <B>pfShadowVal</B>, where the first
+       parameter is PFSHD_PARAM_TEXTURE_SIZE or
+       PFSHD_PARAM_NUM_TEXTURES.  The set of directions can be
+       controlled by getting the pointer to the corresponding
+       pfDirData (a class that stores data associated with a set
+       of directions), using <B>pfGetShadowDirData</B>.  Then you can
+       either select the default mode (see below) or specify the
+       directions directly. See class pfDirData for more details.
+       By default there is one texture of size 512x512 and the
+       direction corresponds to the light direction (or a vector
+       from a point light source to the object center). If there
+       are more textures, the original light direction is rotated
+       around a horizontal direction, assuming that the object
+       will mostly keep its horizontal position (for example a
+       helicopter or a plane).
+
+
+       RENDERING
+
+       The user has to call the draw function provided by the
+       class <B>pfShadowDraw</B> otherwise shadows are not rendered.
+       Before the first frame is rendered all required shadow
+       textures are precomputed. A warning is printed if the win-
+       dow size is smaller than the texture dimensions. Make sure
+       that the window is not obscured, otherwise the textures
+       would not be correct.
+
+       By default only the closest shadow texture is selected for
+       any direction and it is skewed so that it approximates the
+       correct shadow. Optionally, a flag PFSHD_BLEND_TEXTURES
+       can be set using <B>pfShadowFlags</B>. In this case two closest
+       textures are selected and blended together, resulting in
+       smoother transitions.  Also, instead of a linear blend
+       between the textures, the user can define a blend func-
+       tion, mapping values 0-1 to interval 0-1. The blend func-
+       tion can be set using <B>pfShadowTextureBlendFunc</B>.
+       to find one or two closest representatives.
+
+       A visual with an alpha channel has to be selected for the
+       rendering to work.  See sample code in perf/sam-
+       ples/pguide/libpf/C++/shadowsNew.C for an example of how
+       to get a visual with an alpha channel.
+
+       LIMITATIONS
+
+       Since pfShadow is using its own draw function you cannot
+       use it together with pfVolFog.
+
+       pfShadow is using cull programs to cull out geometry that
+       is not affected by the shadow to make the multi-pass draw-
+       ing more efficient. At present, though, the cull program
+       used by pfShadow class overwrites any other cull program
+       specified by the user. Note: make sure that you do not
+       overwrite TravMode in your application by setting it to
+       PFCULL_ALL, the mode is set by pfShadow when <B>pfShadowApply</B>
+       is called.
+
+       When projecting a caster into a shadow texture, <B>pfSwitch</B>
+       children are selected according to switch value. In case
+       of <B>pfLOD</B> the finest level is chosen. Also, <B>pfSequences</B> are
+       ignored, which can be useful in case of helicopter rotors,
+       for example.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfObject, pfDirData, pfTexture, pfCullProgram
+
+
+
+                                                    pfShadow(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,318 @@
+/*
+ * Copyright 1995, Silicon Graphics, Inc.
+ * ALL RIGHTS RESERVED
+ *
+ * This source code ("Source Code") was originally derived from a
+ * code base owned by Silicon Graphics, Inc. ("SGI")
+ * 
+ * LICENSE: SGI grants the user ("Licensee") permission to reproduce,
+ * distribute, and create derivative works from this Source Code,
+ * provided that: (1) the user reproduces this entire notice within
+ * both source and binary format redistributions and any accompanying
+ * materials such as documentation in printed or electronic format;
+ * (2) the Source Code is not to be used, or ported or modified for
+ * use, except in conjunction with OpenGL Performer; and (3) the
+ * names of Silicon Graphics, Inc.  and SGI may not be used in any
+ * advertising or publicity relating to the Source Code without the
+ * prior written permission of SGI.  No further license or permission
+ * may be inferred or deemed or construed to exist with regard to the
+ * Source Code or the code base of which it forms a part. All rights
+ * not expressly granted are reserved.
+ * 
+ * This Source Code is provided to Licensee AS IS, without any
+ * warranty of any kind, either express, implied, or statutory,
+ * including, but not limited to, any warranty that the Source Code
+ * will conform to specifications, any implied warranties of
+ * merchantability, fitness for a particular purpose, and freedom
+ * from infringement, and any warranty that the documentation will
+ * conform to the program, or any warranty that the Source Code will
+ * be error free.
+ * 
+ * IN NO EVENT WILL SGI BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT
+ * LIMITED TO DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
+ * ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THE
+ * SOURCE CODE, WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT OR
+ * OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM,
+ * OR AROSE OUT OF USE OR RESULTS FROM USE OF, OR LACK OF ABILITY TO
+ * USE, THE SOURCE CODE.
+ * 
+ * Contact information:  Silicon Graphics, Inc., 
+ * 1600 Amphitheatre Pkwy, Mountain View, CA  94043, 
+ * or:  http://www.sgi.com
+ *
+ * multipipe.c: simple Performer program to demonstrate use of 
+ *              multiple pfPipe's.  based on simple.c
+ *
+ * $Revision: 1.35 $ $Date: 2000/10/06 21:26:36 $ 
+ *
+ */
+
+#include <stdlib.h>
+#include <Performer/pf.h>
+#include <Performer/pfdu.h>
+
+
+static NumScreens=1;
+static NumPipes=3;
+static int ProcSplit = PFMP_DEFAULT;
+static int GangSwap = 0;
+static int PipeStats = 0;
+char ProgName[PF_MAXSTRING];
+
+static void ConfigPipeDraw(int pipe, uint stage);
+static void OpenPipeWin(pfPipeWindow *pw);
+
+/*
+ *	Usage() -- print usage advice and exit. This
+ *      procedure is executed in the application process.
+ */
+static void
+Usage (void)
+{
+    pfNotify(PFNFY_FATAL, PFNFY_USAGE, "Usage: multipipe file.ext ...\n");
+    exit(1);
+}
+
+
+/*
+*	docmdline() -- use getopt to get command-line arguments, 
+*	executed at the start of the application process.
+*/
+
+static int
+docmdline(int argc, char *argv[])
+{
+    int	    opt;
+
+    strcpy(ProgName, argv[0]);
+    
+    /* process command-line arguments */
+    while ((opt = getopt(argc, argv, "gs:mp:?")) != -1)
+    {
+	switch (opt)
+	{
+	case 'g': 
+	    GangSwap = 1;
+	    break;
+	case 's': 
+	    PipeStats = 100;
+	    break;
+	case 'S': 
+	    PipeStats = atoi(optarg);
+	    break;
+	case 'm':
+	case 'p':
+	    ProcSplit = atoi(optarg);
+	    break;
+	}
+    }
+    return optind;
+}
+
+int
+main (int argc, char *argv[])
+{
+    float       t = 0.0f;
+    pfScene     *scene;
+    pfPipe      *pipe[4];
+    pfChannel   *chan[4];
+    pfNode	*root;
+    pfSphere	bsphere;
+    int		loop;
+    int		arg, found;
+
+    if (argc < 2)
+	Usage();
+	
+    arg = docmdline(argc, argv);
+
+    /* Initialize Performer */
+    pfInit();	
+
+    /* specify the number of pfPipes */
+    /* Configure and open GL windows */
+    if ((NumScreens = ScreenCount(pfGetCurWSConnection())) > 1)
+    {
+	NumPipes = NumScreens;
+    }
+
+    pfMultipipe (NumPipes);
+
+    /* Use default multiprocessing mode based on number of
+     * processors.
+     */
+    pfMultiprocess(ProcSplit);
+
+    /* Load all loader DSO's before pfConfig() forks */
+    for (found = arg; found < argc; found++)
+	pfdInitConverter(argv[found]);
+
+    /* Configure multiprocessing mode and start parallel
+     * processes.
+     */
+    pfConfig();			
+
+    /* Append to PFPATH additional standard directories where 
+     * geometry and textures exist 
+     */
+    if (!(getenv("PFPATH")))
+        pfFilePath(
+                   "."
+                   ":./data"
+                   ":../data"
+                   ":../../data"
+                   ":/usr/share/Performer/data"
+                   );
+
+    /* Attach loaded file to a pfScene. */
+    scene = pfNewScene();
+    /* Read a single file, of any known type. */
+    for (found = 0; arg < argc; arg++)
+    {
+	if ((root = pfdLoadFile(argv[arg])) != NULL)
+	{
+	    pfAddChild(scene, root);
+	    found++;
+	}
+    }
+
+    /* determine extent of scene's geometry */
+    pfGetNodeBSphere (scene, &bsphere);
+
+    /* Create a pfLightSource and attach it to scene. */
+    pfAddChild(scene, pfNewLSource());
+
+    for (loop=0; loop < NumPipes; loop++)
+    {
+	pfPipeWindow *pw;
+	char str[PF_MAXSTRING];
+	
+	pipe[loop] = pfGetPipe(loop);
+	pfPipeScreen(pipe[loop], loop);
+	pw = pfNewPWin(pipe[loop]);
+	pfPWinType(pw, PFPWIN_TYPE_X);
+	sprintf(str, "OpenGL Performer - Pipe %d", loop);
+	pfPWinName(pw, str);
+	if (NumScreens > 1)
+	{
+	    pfPWinOriginSize(pw, 0, 0, 300, 300);
+	} else
+	    pfPWinOriginSize(pw, (loop&0x1)*315, ((loop&0x2)>>1)*340, 300, 300);
+	
+	pfPWinConfigFunc(pw, OpenPipeWin);
+	pfConfigPWin(pw);
+	    
+    }
+    	
+
+    /* set up optional DRAW pipe stage config callback */
+    pfStageConfigFunc(-1 /* selects all pipes */, 
+			PFPROC_DRAW /* stage bitmask */, 
+			ConfigPipeDraw);
+    pfConfigStage(-1, PFPROC_DRAW);
+
+    /* Create and configure pfChannels - by default, channels are
+     * placed in the first window on their pipe
+     */
+    for (loop=0; loop < NumPipes; loop++)
+    {
+	chan[loop] = pfNewChan(pipe[loop]);	
+	if (!loop)
+	{
+	    pfChanScene(chan[loop], scene);
+	    pfChanFOV(chan[loop], 45.0f, 0.0f);
+	    pfChanNearFar(chan[loop], 1.0f, 10.0f * bsphere.radius);
+	    pfChanShare(chan[loop], PFCHAN_FOV | PFCHAN_SCENE 
+		| (GangSwap * PFCHAN_SWAPBUFFERS_HW));
+	}
+	else
+	    pfAttachChan(chan[0], chan[loop]);
+    }
+
+    /* Simulate for twenty seconds. */
+    while (1)
+    {
+	float      s, c;
+	pfCoord	   view;
+
+	/* Go to sleep until next frame time. */
+	pfSync();		
+
+	/* Compute new view position. */
+	t = pfGetTime();
+	pfSinCos(45.0f*t, &s, &c);
+	pfSetVec3(view.hpr, 45.0f*t, -10.0f, 0);
+	pfSetVec3(view.xyz, 2.0f * bsphere.radius * s, 
+		-2.0f * bsphere.radius *c, 
+		 0.5f * bsphere.radius);
+
+	for (loop=0; loop < NumPipes; loop++)
+		pfChanView(chan[loop], view.xyz, view.hpr);
+
+	/* Initiate cull/draw for this frame. */
+	pfFrame();		
+	
+	if (PipeStats)
+	    pfuManageMPipeStats(PipeStats, NumPipes);
+    }
+
+    /* Terminate parallel processes and exit. */
+    pfExit();
+
+    return 0;
+}
+
+
+/* ConfigPipeDraw() --
+ * Application state for the draw process can be initialized
+ * here. This is also a good place to do real-time
+ * configuration for the drawing process, if there is one.
+ * There is no graphics state or pfState at this point so no
+ * rendering calls or pfApply*() calls can be made.
+ */
+
+static void
+ConfigPipeDraw(int pipe, uint stage)
+{
+    pfPipe *p = pfGetPipe(pipe);
+    int x, y;
+
+    pfNotify(PFNFY_NOTICE, PFNFY_PRINT, 
+	"Initializing stage 0x%x of pipe %d on screen %d, connection \"%s\"", 
+		stage, pipe,
+		pfGetPipeScreen(p),
+		pfGetPipeWSConnectionName(p));
+    pfGetPipeSize(p, &x, &y);
+    pfNotify(PFNFY_NOTICE, PFNFY_PRINT, "Pipe %d size: %dx%d", pipe, x,y);
+}
+
+/*
+ *	OpenPipeWin() -- create a GL window: set up the
+ *      window system, OpenGL, and OpenGL Performer. This
+ *      procedure is executed for each window in the draw process 
+ *	for that pfPipe.
+ */
+
+static void
+OpenPipeWin(pfPipeWindow *pw)
+{
+    pfPipe *p;
+    pfLight *Sun;
+
+    p = pfGetPWinPipe(pw);
+    
+    /* open the window on the specified screen. By default,
+     * if a screen has not yet been set and we are in multipipe mode,
+     * a window of pfPipeID i will now open on screen i
+     */
+    pfOpenPWin(pw);
+    pfNotify(PFNFY_NOTICE, PFNFY_PRINT, 
+	"PipeWin of Pipe %d opened on screen %d", 
+	pfGetId(p), pfGetPipeScreen(p));
+
+    /* create a light source in the "south-west" (QIII) */
+    Sun = pfNewLight(NULL);
+    pfLightPos(Sun, -0.3f, -0.3f, 1.0f, 0.0f);
+}
+

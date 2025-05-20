@@ -1,0 +1,172 @@
+<HTML>
+<HEAD>
+<TITLE>pfTexLOD</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTexLOD</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTexLOD(3pf)                                       pfTexLOD(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfTexLOD,</B> <B>pfGetCurTLOD</B> - A texture level of detail control
+       structure.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfTexture.h&gt;
+
+                    <B>pfTexLOD::pfTexLOD</B>();
+
+       pfType *     <B>pfTexLOD::getClassType</B>(void);
+
+       void         <B>pfTexLOD::setRange</B>(float min, float max);
+
+       void         <B>pfTexLOD::getRange</B>(float *min, float *max);
+
+       void         <B>pfTexLOD::setBias</B>(float biasS,   float biasT,
+                      float biasR);
+
+       void         <B>pfTexLOD::getBias</B>(float *biasS, float *biasT,
+                      float *biasR);
+
+       void         <B>pfTexLOD::apply</B>(void);
+
+       pfTexLOD *   <B>pfGetCurTLOD</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfTexLOD</B> is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfTexLOD</B>.  This is also true for ancestor classes of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfTexLOD</B> can also be used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>new</B>(arena)  allocates a pfTexLOD from the specified memory
+       arena, or from the heap if <I>arena</I> is NULL.  <B>new</B> allocates a
+       pfTexLOD    from    the    default   memory   arena   (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfTexLODs cannot
+       be  created  statically,  automatically on the stack or in
+       arrays.  pfTexLODs should be deleted with <B>pfDelete</B>  rather
+       than  the  delete  operator.   Texture LOD control is only
+       supported under  OpenGL  operation  that  the  texture_lod
+       extensions.   See  the or OpenGL <B>glIntro(3g)</B> for a list of
+       supported extensions and their descriptions.
+
+       <B>pfTexLOD::getClassType</B> returns the <B>pfType</B>* for  the  class
+       <B>pfTexLOD</B>.   The <B>pfType</B>* returned by <B>pfTexLOD::getClassType</B>
+       is the same as the <B>pfType</B>* returned by invoking  the  vir-
+       tual  function  <B>getType</B> on any instance of class <B>pfTexLOD</B>.
+       Because OpenGL Performer allows  subclassing  of  built-in
+       types,  when  decisions  are  made based on the type of an
+       object, it is usually better to use  the  member  function
+       <B>isOfType</B>  to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality  of
+       the <B>pfType</B>*'s.
+
+
+       <B>pfTexLOD::apply</B> makes the pfTexLOD the texture LOD control
+       parameters. When texturing is  enabled,  the  texture  LOD
+       parameters  set  <I>tlod</I>  will be applied to the current tex-
+       ture.  Texture LOD parameters set directly on a  pfTexture
+       will  take  priority over those set in any pfTexLOD.  Only
+       one pfTexLOD may be active at a time although many may  be
+       defined.   Modifications to the pfTexLOD, such as changing
+       the range, will not have effect until  <B>pfTexLOD::apply</B>  is
+       called.
+
+       The  texture  LOD  state  element  is  identified  by  the
+       <B>PFSTATE_TEXLOD</B>    token.     Use    this    token     with
+       <B>pfGeoState::setAttr</B>  to set a texture LOD configuration on
+       a pfGeoState and with <B>pfOverride</B>  to  override  subsequent
+       texture LOD.
+
+       A pfTexLOD will only take affect if texture LOD control is
+       currently enabled.  Texture LOD  control  can  be  enabled
+       directly  via  pfEnable  using  the  <B>PFEN_TEXLOD</B> token and
+       enable on a pfGeoState with the <B>PFSTATE_ENTEXLOD</B> token and
+       the boolean value to <B>pfGeoState::setMode</B>.
+
+       <B>pfTexLOD::setRange</B>  will set the current texture lod range
+       to use only levels <I>min</I> through <I>max</I> where <I>min</I> is the  high-
+       est  resolution  level  and  <I>max</I>  is the lowest resolution
+       MIPmap.  This can be used in conjunction with texture pag-
+       ing  to  limit access of level of a texture that have cur-
+       rently been loaded.  Because the  min/max  limits  can  be
+       LOD range.  Either of the arguments min,max may be NULL in
+       which case it will be ignored.
+
+       <B>pfTexLOD::setBias</B> will set s, t, and r bias values for the
+       texture level of detail computation to  be  <I>biasS</I>,  <I>biasT</I>,
+       and  <I>biasR</I>,  respectively.   These bias values can be used
+       to compensate for asymmetric minification of  a  MIPmapped
+       texture; to force blurring of a texture to simulate motion
+       blur and depth of field, or  to  force  a  texture  to  be
+       sharper.   This  functionality  uses  the texture_lod_bias
+       extension of OpenGL and the exact use of these bias values
+       is  explained  in the <B>glIntro</B> man page.  <B>pfTexLOD::getBias</B>
+       will  return  the  LOD  bias.   Any   of   the   arguments
+       biasS,biasT,biasR  may  be  NULL  in which case it will be
+       ignored.
+
+       <B>pfGetCurTLOD</B>  will  return  the  most   recently   applied
+       pfTexLOD  as applied through a pfGeoState, or <B>pfApplyTLOD</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfEnable, pfGeoState, pfObject, pfS-
+       tate, pfTexture, glIntro, glTexImage2D.
+
+
+
+                                                    pfTexLOD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

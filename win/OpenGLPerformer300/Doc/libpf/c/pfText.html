@@ -1,0 +1,226 @@
+<HTML>
+<HEAD>
+<TITLE>pfText</TITLE>
+</HEAD>
+<BODY>
+<H1>pfText</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfText(3pf)                                           pfText(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewText,</B>    <B>pfGetTextClassType,</B>    <B>pfAddString,</B>    <B>pfRe-</B>
+       <B>moveString,</B> <B>pfInsertString,</B> <B>pfReplaceString,</B>  <B>pfGetString,</B>
+       <B>pfGetNumStrings</B>  -  Create,  modify,  and  query a 3D text
+       node.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfText *     <B>pfNewText</B>(void);
+
+       pfType *     <B>pfGetTextClassType</B>(void);
+
+       int          <B>pfAddString</B>(pfText* text, pfString* string);
+
+       int          <B>pfRemoveString</B>(pfText* text, pfString* str);
+
+       int          <B>pfInsertString</B>(pfText* text,       int index,
+                      pfString* str);
+
+       int          <B>pfReplaceString</B>(pfText* text,  pfString* old,
+                      pfString* new);
+
+       pfString *   <B>pfGetString</B>(const pfText* text, int index);
+
+       int          <B>pfGetNumStrings</B>(const pfString* string);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfText</B> is derived from the par-
+       ent  class  <B>pfNode</B>,  so  each of these member functions of
+       class <B>pfNode</B> are also  directly  usable  with  objects  of
+       class  <B>pfText</B>.   Casting  an  object of class <B>pfText</B> to an
+       object of class <B>pfNode</B> is  taken  care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfText</B> can also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfText</B> can also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>text</I>    identifies a pfText.
+
+       <I>string</I>  identifies a pfString.
+
+
+       The bounding volume of a pfText is  that  which  surrounds
+       all  its pfStrings.  Unless the bounding volume is consid-
+       ered static (see  <B>pfNodeBSphere</B>),  OpenGL  Performer  will
+       compute  a  new volume when the list of pfStrings is modi-
+       fied by  <B>pfAddString</B>,  <B>pfRemoveString</B>,  <B>pfInsertString</B>  or
+       <B>pfReplaceString</B>.   If the bounding box of a child pfString
+       changes, call <B>pfNodeBSphere</B> to tell  OpenGL  Performer  to
+       update the bounding volume of the pfText.
+
+       <B>pfNewText</B>  creates and returns a handle to a pfText.  Like
+       other pfNodes, pfTexts are always  allocated  from  shared
+       memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetTextClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfText</B>.  The <B>pfType</B>* returned by <B>pfGetTextClassType</B> is the
+       same  as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on any
+       instance of class <B>pfText</B>.  Because OpenGL Performer allows
+       subclassing  of  built-in  types,  when decisions are made
+       based on the type of an object, it is  usually  better  to
+       use  <B>pfIsOfType</B>  to test if an object is of a type derived
+       from a Performer type  rather  than  to  test  for  strict
+       equality of the <B>pfType</B>*'s.
+
+       <B>pfAddString</B>   appends   <I>str</I>   to   <I>text</I>'s  pfString  list.
+       <B>pfRemoveString</B> removes <I>str</I> from the list  and  shifts  the
+       list  down  over the vacant spot.  For example, if <I>str</I> had
+       index 0, then index 1 becomes index  0,  index  2  becomes
+       index  1 and so on.  <B>pfRemoveString</B> returns a 1 if <I>str</I> was
+       actually removed and 0 if it was not found  in  the  list.
+       <B>pfAddString</B> and <B>pfRemoveString</B> will cause OpenGL Performer
+       to recompute new bounding volumes for <I>text</I>  unless  it  is
+       configured to use static bounding volumes.
+
+       <B>pfInsertString</B>  will  insert  <I>str</I> before the pfString with
+       index  <I>index</I>.   <I>index</I>  must  be  within  the  range  0  to
+       <B>pfGetNumStrings</B>(<I>text</I>).   <B>pfReplaceString</B> replaces <I>old</I> with
+       <I>new</I> and returns 1 if the operation was successful or 0  if
+       <I>old</I>  was  not  found  in  the  list.   <B>pfInsertString</B>  and
+       <B>pfReplaceString</B> will cause OpenGL Performer  to  recompute
+       new  bounding  volumes for <I>text</I> unless it is configured to
+       use static bounding volumes.
+
+       <B>pfGetNumStrings</B> returns the number of pfStrings  in  <I>text</I>.
+       <B>pfGetString</B>  returns  a  handle to the pfString with index
+       <I>index</I> or <B>NULL</B> if the index is out of range.
+
+       Here is a sample code snippet  demonstrating  how  to  use
+       pfText,  pfFont,  and  pfString  to add 3D text to a scene
+       graph:
+
+
+       /* Initialize Performer and create pfScene "scene" */
+
+       /* Get shared memory arena */
+       arena = pfGetSharedArena();
+
+       /* Append standard directories to Performer search path, PFPATH */
+       pfFilePath(".:/usr/share/Performer/data");
+           pfStringMode(str, PFSTR_DRAWSTYLE, PFSTR_EXTRUDED);
+           pfStringMode(str, PFSTR_JUSTIFY, PFSTR_MIDDLE);
+           pfStringColor(str, 1.0f, 0.0f, 0.8f, 1.0f);
+           pfStringString(str, "Welcome to OpenGL Performer");
+           pfFlattenString(str);
+           pfAddString(text, str);
+       }
+       else
+       {
+           pfNotify(PFNFY_WARN,PFNFY_PRINT,"Couldn't find font file.");
+           <B>exit(0)</B>;
+       }
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfNode, pfNodeTravFuncs, pfString, pfFont,
+       pfDelete
+
+
+
+                                                      pfText(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

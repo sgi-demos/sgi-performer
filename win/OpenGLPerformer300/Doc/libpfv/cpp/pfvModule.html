@@ -1,0 +1,404 @@
+<HTML>
+<HEAD>
+<TITLE>pfvModule</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvModule</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvModule(3pf)                                     pfvModule(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvModule</B>  - Base Class for Modular Extension in pfvViewer
+       Applications.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvViewer.h&gt;
+
+       static pfvModule*   <B>pfvModule::load</B>(char*className,
+                             char* dsoName=NULL,       pfvXmlN-
+                             ode*xml=NULL);
+
+       static pfvModule*   <B>pfvModule::load</B>(char*className,
+                             pfvXmlNode*xml,        char* dsoN-
+                             ame=NULL);
+
+       static char*        <B>pfvModule::getLoadPath</B>();
+
+       static void         <B>pfvModule::setLoadPath</B>(char*path);
+
+       int                 <B>pfvModule::getScope</B>();
+
+       int                 <B>pfvModule::getScopeIndex</B>();
+
+       pfvObject*          <B>pfvModule::getScopeTarget</B>();
+
+       void                <B>pfvModule::bindCallback</B>(int which);
+
+       void                <B>pfvModule::unbindCallback</B>(int which);
+
+       int                 <B>pfvModule::getCBMask</B>();
+
+       virtual void        <B>pfvModule::preConfig</B>();
+
+       virtual void        <B>pfvModule::postConfig</B>();
+
+       virtual void        <B>pfvModule::enterView</B>(pfvView*v);
+
+       virtual void        <B>pfvModule::exitView</B>(pfvView*v);
+
+       virtual void        <B>pfvModule::enterWorld</B>();
+
+       virtual void        <B>pfvModule::exitWorld</B>();
+
+       virtual void        <B>pfvModule::sync</B>();
+
+       virtual void        <B>pfvModule::frame</B>();
+
+       virtual void        <B>pfvModule::preCull</B>(pfvDispChan*chan);
+
+       virtual void        <B>pfvModule::postCull</B>(pfvDispChan*chan);
+
+       virtual void        <B>pfvModule::preDraw</B>(pfvDispChan*chan);
+
+       virtual void        <B>pfvModule::postDraw</B>(pfvDispChan*chan);
+
+
+       void                <B>pfvModule::setEventMask</B>(char* str);
+
+       virtual int         <B>pfvModule::handleEvent</B>(int evType,
+                             char key);
+
+       uint64_t            <B>pfvModule::getViewMask</B>();
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfvModule</B> is derived from the
+       parent class <B>pfvobject</B>, so each of these member  functions
+       of  class  <B>pfvobject</B> are also directly usable with objects
+       of class  <B>pfvModule</B>.   This  is  also  true  for  ancestor
+       classes of class <B>pfvobject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       Since  the class <B>pfvobject</B> is itself derived from the par-
+       ent class <B>pfObject</B>, objects of class <B>pfvModule</B> can also be
+       used  with  these  functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class  <B>pfvModule</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       pfvModule  allows  derived  classes  to register callbacks
+       with the pfvViewer, and through these a range of different
+       features/functionalities can be implemented.  Furthermore,
+       when creating applications with multiple worlds or  multi-
+       ple  views,  the  action  of  individual  modules  can  be
+       restricted to only affect a single world or a single view.
+       This is referred to as Module Scoping.
+
+       <B>pfvModule::load(char*className,</B>  <B>char*</B>  <B>dsoName,</B>  <B>pfvXmlN-</B>
+       <B>ode*xml)</B>  and   <B>pfvModule::load(char*className,</B>   <B>pfvXmlN-</B>
+       <B>ode*xml,</B>  <B>char*</B> <B>dsoName)</B> will attempt to load a new module
+       and add it to viewer's module-list.  A ClassName  must  be
+       provided.  A dsoName (eg: libfoo.so) may also be provided,
+       otherwise dsoName will  be  derived  from  className  like
+       this:  sprintf(dsoName,"lib%s.%s",  className,  ext ), ext
+       being equal to "so" on IRIX and LINUX,  and  to  "dll"  on
+       WIN32.  The  viewer  will  look  for  a  library  with the
+       required  name,  trying  the  provided  name  first,  then
+       prepending  all  paths  listed in the environment variable
+       PFV_MODULE_PATH,  then  prepending  all   paths   provided
+       through  pfvModule::setLoadPath (or through XML configura-
+       tion file). Finally,  libraries  will  be  looked  for  in
+       libpfv  standard  location:  ($PFROOT)/usr/lib/libpfv/3.0.
+       The module will be loaded through a C function  that  must
+       be defined in the module library. The name of this C func-
+       tion is derived by prepending 'pfvLoadModule_' to the mod-
+       ule's  className,  For  examples  of pfvModule implementa-
+       tions, look at the code and Makefiles for the sample  pfvm
+       modules                 in                 /usr/share/Per-
+       former/src/pguide/libpfv/viewer/modules/.
+
+       <B>pfvModule::setLoadPath()</B> specifies one or more search path
+       locations.  These locations are directories to be searched
+       for module libraries by method <B>pfvModule::load</B>. Note  that
+       search  path  specified  through  the environment variable
+       PFV_MODULE_PATH take precedence over the path specified by
+       <B>pfvModule::setLoadPath()</B>.
+
+       <B>pfvModule::getLoadPath()</B>  returns  the current search path
+       for  module  libraries,  as  set  by  the  last  call   to
+       <B>pfvModule::setLoadPath()</B>.
+
+       <B>pfvModule::getScope()</B>  will  return  an integer indicating
+       how   module   is   scoped.     Possible    values    are:
+       PFV_SCOPE_GLOBAL (module is scoped globally, the default),
+       PFV_SCOPE_VIEW (module is scoped to  a  single  view),  or
+       PFV_SCOPE_WORLD  (module  is scoped to a single world). If
+       module has not yet been attached  to  the  viewer  through
+       method <B>pfvViewer::addModule</B>, this method will return 0.
+
+       If  module  is scoped to a world, <B>pfvModule::getScopeIndex</B>
+       will return the index of target  world.  If  a  module  is
+       scoped to a view, <B>pfvModule::getScopeIndex</B> will return the
+       index of target view. If module has not yet been  attached
+       to  the  viewer through method <B>pfvViewer::addModule</B>, or if
+       module is globally scoped, this method will return -1.
+
+       If     module     is     scoped      to      a      world,
+       <B>pfvModule::getScopeTarget()</B>  will  return a pointer to the
+       callback   functions   that  will  be  dispatched  by  the
+       pfvViewer from a number of entry points  in  various  pro-
+       cesses throughout the life of the application.
+
+       <B>pfvModule::bindCallback()</B>  adds  the  callback  associated
+       with index 'which' to the list  of  active  callbacks  for
+       this module.
+
+       <B>pfvModule::unbindCallback()</B>  removes  the callback associ-
+       ated with index 'which' from the list of active  callbacks
+       for this module.
+
+       The following callbacks may be bound by a module:
+
+
+        PFV_CB_PRECONFIG
+        PFV_CB_POSTCONFIG
+        PFV_CB_SYNC
+        PFV_CB_FRAME
+        PFV_CB_PRECULL
+        FV_CB_POSTCULL
+        PFV_CB_PREDRAW
+        PFV_CB_POSTDRAW
+        PFV_CB_OVERLAY
+        PFV_CB_ENTER_VIEW
+        PFV_CB_EXIT_VIEW
+        PFV_CB_ENTER_WORLD
+        PFV_CB_EXIT_WORLD
+
+
+
+       <B>pfvModule::getCBMask()</B> returns a 64-bit mask indicating
+       which callbacks are currently bound to module. Each call-
+       back is associated with a bit in mask.  For example, call-
+       back PFV_CB_PRECULL corresponds to bit (1&lt;&lt;PFV_CB_PRECULL)
+
+       If a module has bound its PFV_CB_PRECONFIG callback, the
+       <B>pfvModule::preConfig()</B> method will be called by the
+       pfvViewer in the APP process, from within pfvViewer::con-
+       fig method, just before calling pfDisplayMngr::preConfig()
+       and pfConfig().
+
+       If a module has bound its PFV_CB_POSTCONFIG callback, the
+       <B>pfvModule::postConfig()</B> method will be called by the
+       pfvViewer in the APP process, from within pfvViewer::con-
+       fig method, after calling pfConfig().
+
+       If a module is scoped to a pfvWorld and has bound its
+       PFV_CB_ENTER_VIEW callback, the <B>pfvModule::enterView()</B>
+       method will be called by the pfvViewer in the APP process
+       from within pfvViewer::frame, to indicate that module's
+       target world will be viewed by a new view on next frame.
+       A world-scoped module may receive more than one call to
+       this method on a particular frame if more than one view
+       are directed to target world on same frame.  Note that a
+       handle to the pfvView being entered is passed as an argu-
+       ment to <B>pfvModule::enterView()</B>.
+
+       If a module is scoped to a pfvWorld and has bound its
+       frame.  Note that a handle to the pfvView being exited is
+       passed as an argument to <B>pfvModule::exitView()</B>.
+
+       If a module is scoped to a pfvView and has bound its
+       PFV_CB_ENTER_WORLD callback, the <B>pfvModule::enterWorld()</B>
+       method will be called by the pfvViewer in the APP process
+       from within pfvViewer::frame, to indicate that module's
+       target view will be viewing a new pfvWorld on next frame.
+       No more than one call to this method may be received by
+       any view-scoped module on any one frame.
+
+       If a module is scoped to a pfvView and has bound its
+       PFV_CB_EXIT_WORLD callback, the <B>pfvModule::exitWorld()</B>
+       method will be called by the pfvViewer in the APP process
+       from within pfvViewer::frame, to indicate that module's
+       target view will no longer be viewing a certain pfvWorld
+       on next frame. No more than one call to this method may be
+       received by any view-scoped module on any one frame.
+
+       If a module has bound its PFV_CB_SYNC callback, the
+       <B>pfvModule::sync()</B> method will be called by the pfvViewer
+       in the APP process from within pfvViewer::sync.  Note that
+       if pfvViewer::sync is not called directly by the applica-
+       tion, it will automatically be called by pfvViewer::frame
+       on each frame.  SYNC callbacks should only be used for
+       latency critical tasks (such as for example updating
+       tracking device input). See man page for pfSync for more
+       info.  Note that SYNC callbacks (as with other run-time
+       module callbacks) will not be dispatched for modules which
+       are scoped to a pfvWorld that is not being viewed by any
+       visible view.
+
+       If a module has bound its PFV_CB_FRAME callback, the
+       <B>pfvModule::frame()</B> method will be called by the pfvViewer
+       in the APP process from within pfvViewer::frame, after all
+       EXIT* and ENTER* callbacks have been dispatched.  FRAME
+       callbacks is where most run-time processing is expected to
+       be carried out.  Note that FRAME callbacks (as with other
+       run-time module callbacks) will not be dispatched for mod-
+       ules which are scoped to a pfvWorld that is not being
+       viewed by any visible view.
+
+       If a module has bound its PFV_CB_PRECULL callback, the
+       <B>pfvModule::preCull()</B> method will be called by the
+       pfvViewer in a CULL process just before calling pfCull()
+       for a channel.
+
+       If a module has bound its PFV_CB_POSTCULL callback, the
+       <B>pfvModule::postCull()</B> method will be called by the
+       pfvViewer in a CULL process just after calling pfCull()
+       for a channel.
+
+       Globally scoped modules will receive PRECULL and POSTCULL
+       callbacks from all channels in pfvViewer's channel-list.
+       View-scoped modules will receive PRECULL and POSTCULL
+       callbacks from all channels in target-view channel list,
+       but not from channels belonging to other views.  World-
+       scoped modules will receive PRECULL and POSTCULL callbacks
+       from all channels belonging to any view which is currently
+       If a module has bound its PFV_CB_POSTDRAW callback, the
+       <B>pfvModule::postDraw()</B> method will be called by the
+       pfvViewer in a DRAW process just after calling pfDraw()
+       for a channel.
+
+       Globally scoped modules will receive PREDRAW and POSTDRAW
+       callbacks from all channels in pfvViewer's channel-list.
+       View-scoped modules will receive PREDRAW and POSTDRAW
+       callbacks from all channels in target-view channel list,
+       but not from channels belonging to other views.  World-
+       scoped modules will receive PREDRAW and POSTDRAW callbacks
+       from all channels belonging to any view which is currently
+       viewing target-world.
+
+
+       After rendering 3D scene and dispatching POSTDRAW call-
+       backs, the pfvViewer will set up an orthogonal frustum
+       suitable for 2D overlay rendering, and will dispatch OVER-
+       LAY callbacks for modules which have bound their
+       PFV_CB_OVERLAY callback.  As with other CULL and DRAW
+       callbacks, the <B>pfvModule::overlay()</B> method will be called
+       depending on module scope.  Globally scoped modules will
+       receive OVERLAY callbacks from all channels in pfvViewer's
+       channel-list.  View-scoped modules will receive OVERLAY
+       callbacks from all channels in target-view channel list,
+       but not from channels belonging to other views.  World-
+       scoped modules will receive OVERLAY callbacks from all
+       channels belonging to any view which is currently viewing
+       target-world.
+
+       Note that in order to coordinate 2D rendering over multi-
+       channel views, each channel may be assigned a 2d interval
+       (referred to as the channel's view-range, see man page for
+       pfvDispChan::setViewRange). Before dispatching OVERLAY
+       callbacks for a channel, pfvViewer will setup ortho pro-
+       jection such that channel's view-range will map exactly to
+       channel's viewport.
+
+       Modules can also register a keyboard-input callback to
+       respond to key down events. Any combination of keys can be
+       declared active for each module through the following
+       methods:
+
+       <B>pfvModule::bindKeys()</B> will add all characters contained in
+       the keys string to the list of active keys held for mod-
+       ule. (see man page for pfvInputMngrCallback)
+
+       <B>pfvModule::unbindKeys()</B> will remove all characters con-
+       tained in the keys string from the list of active keys
+       held for module.
+
+       <B>pfvModule::getEventMask()</B> will return a pointer to a
+       string containing all currently keys for module. Note that
+       returned string is guaranteed to be sorted, and to have no
+       duplications.
+
+       <B>pfvModule::setEventMask()</B> will set the list of active keys
+       for a module.  Note that provided string will be sorted
+       and multiple references will be eliminated automatically.
+
+       A module is said to be associated with a view, if bit cor-
+       responding to view is set in the mask value returned by
+       <B>pfvModule::getViewMask()</B>.  The bit corresponding to any
+       pfvView v is given by 1&lt;&lt;(v-&gt;getIndex()).
+
+       Globally scoped modules are associated with all views
+       throughout the lifetime of the application. View-scoped
+       modules are only associated with their target-view, while
+       World-scoped modules will be associated with all views
+       that are currently viewing target-world.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvInputMngr, pfvInputMngrCallback, pfvViewer, pfvView,
+       pfvmDrawStyle, pfvmEarthSky, pfvmLoader, pfvmLogo, pfvm-
+       Navigator, pfvmPicker, pfvmSnapshot, pfvmTrackball, pfvm-
+       WorldSwitcher
+
+
+
+                                                   pfvModule(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

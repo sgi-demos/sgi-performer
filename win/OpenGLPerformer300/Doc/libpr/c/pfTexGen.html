@@ -1,0 +1,245 @@
+<HTML>
+<HEAD>
+<TITLE>pfTexGen</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTexGen</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTexGen(3pf)                                       pfTexGen(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewTGen,</B>  <B>pfGetTGenClassType,</B> <B>pfTGenMode,</B> <B>pfGetTGenMode,</B>
+       <B>pfTGenPlane,</B> <B>pfGetTGenPlane,</B> <B>pfTGenPoint,</B>  <B>pfGetTGenPoint,</B>
+       <B>pfApplyTGen,</B>  <B>pfGetCurTGen</B> - Create, modify and query tex-
+       ture coordinate generator
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfTexGen *   <B>pfNewTGen</B>(void *arena);
+
+       pfType *     <B>pfGetTGenClassType</B>(void);
+
+       void         <B>pfTGenMode</B>(pfTexGen *tgen,      int texCoord,
+                      int mode);
+
+       int          <B>pfGetTGenMode</B>(const pfTexGen *tgen,  int tex-
+                      Coord);
+
+       void         <B>pfTGenPlane</B>(pfTexGen *tgen,     int texCoord,
+                      float x, float y, float z, float d);
+
+       void         <B>pfGetTGenPlane</B>(pfTexGen *tgen,  int texCoord,
+                      float* x, float* y, float* z, float* d);
+
+       void         <B>pfTGenPoint</B>(pfTexGen *tgen,     int texCoord,
+                      float x,   float y,   float z,  float dx,
+                      float dy, float dz);
+
+       void         <B>pfGetTGenPoint</B>(pfTexGen *tgen,  int texCoord,
+                      float* x, float* y, float* z);
+
+       void         <B>pfApplyTGen</B>(pfTexGen *tgen);
+
+       pfTexGen*    <B>pfGetCurTGen</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class <B>pfTexGen</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfTexGen</B>.  Casting an object of class <B>pfTexGen</B> to an
+       object  of  class <B>pfObject</B> is taken care of automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>tgen</I>      identifies a pfTexGen
+
+       <I>texCoord</I>  identifies a texture coordinate and is one of:
+
+                 <B>PF_S</B>, <B>PF_T</B>, <B>PF_R</B>, <B>PF_Q</B>
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfTexGen</B> capability is used to automatically  generate
+       texture  coordinates  for  geometry, typically for special
+       effects like projected texture,  reflection  mapping,  and
+       for  light  points (<B>pfLPointState</B>).  <B>pfNewTGen</B> creates and
+       returns a handle to a pfTexGen.  <I>arena</I> specifies a  malloc
+       arena  out  of which the pfTexGen is allocated or <B>NULL</B> for
+       allocation off the process heap.  pfTexGens can be deleted
+       with <B>pfDelete</B>.
+
+       <B>pfGetTGenClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfTexGen</B>.  The <B>pfType</B>* returned by  <B>pfGetTGenClassType</B>  is
+       the  same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfTexGen</B>.  Because OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  <B>pfIsOfType</B>  to  test  if  an  object is of a type
+       derived from a Performer type  rather  than  to  test  for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfTGenMode</B>  sets the mode of <I>tgen</I> corresponding to texture
+       coordinate <I>texCoord</I> to <I>mode</I>. <I>mode</I> must be one of the  fol-
+       lowing:
+
+
+              <B>PFTG_OFF</B>
+                     Disables texture coordinate generation
+
+              <B>PFTG_OBJECT_LINEAR</B>
+                     Generate texture coordinate as distance from
+                     plane in object space.
+
+              <B>PFTG_EYE_LINEAR_IDENT</B>
+                     Generate texture coordinate as distance from
+                     plane in eye space. The plane is not  trans-
+                     formed  by  the  inverse  of  the  ModelView
+                     matrix.
+
+              <B>PFTG_SPHERE_MAP</B>
+                     Generate texture  coordinate  based  on  the
+                     view  vector reflected about the vertex nor-
+                     mal in eye space.
+
+              <B>PFTG_OBJECT_DISTANCE_TO_LINE</B>
+                     Coordinate will be the  distance  in  object
+                     space  from  the  vertex to a line specified
+                     with a point and  direction  vector  through
+                     <B>pfTGenPoint</B>.
+
+              <B>PFTG_EYE_DISTANCE_TO_LINE</B>
+                     Coordinate will be the distance in eye space
+                     from  the  eye  to  a  line  specified  with
+                     <B>pfTGenPoint</B> through the vertex.
+
+       See  the  OpenGL  <B>glTexGen(3g)</B>  man  page for the specific
+       mathematics of the texture coordinate generation modes.
+
+       The default texture generation mode for all texture  coor-
+       dinates  is  <B>PFTG_OFF</B>.  <B>pfGetTGenMode</B>  returns the mode of
+       <I>tgen</I>.
+
+       <B>pfTGenPlane</B> sets the plane equation  used  for  generating
+       coordinates  for  texture coordinate <I>texCoord</I> to <I>a</I>X + <I>b</I>Y +
+       <I>c</I>Z + <I>d</I> = 0. This plane equation is used when  <I>tgen</I>'s  mode
+       is      <B>PFTG_EYE_LINEAR</B>,     <B>PFTG_EYE_LINEAR_IDENT</B>,     or
+       <B>PFTG_OBJECT_LINEAR</B>  but  is  ignored  when  its  mode   is
+       <B>PFTG_SPHERE_MAP</B>. The default plane equations are:
+
+              <B>PF_S</B>: (1, 0, 0, 0)
+
+              <B>PF_T</B>: (0, 1, 0, 0)
+
+              <B>PF_R</B>: (0, 0, 1, 0)
+
+              <B>PF_Q</B>: (0, 0, 0, 1)
+
+       <B>pfGetTGenPlane</B>  will  return the plane equation parameters
+       for texture coordinate <I>texCoord</I> of <I>tgen</I> in  <I>x</I>,  <I>y</I>,  <I>z</I>,  <I>d</I>.
+       (If  any  of  those  arguments  are  NULL,  they  will  be
+       ignored.)
+
+       <B>pfTGenPoint</B> sets a point and possible direction vector for
+       use  with  point  and  line based texture generation func-
+       tions.  <B>pfGetTGenPoint</B> will return the point of <I>tgen</I> in <I>x</I>,
+       <I>y</I>, <I>z</I>.
+
+       <B>pfApplyTGen</B> configures the graphics hardware with the tex-
+       ture  coordinate  generating  parameters  encapsulated  by
+       <I>tgen</I>.   Only  the most recently applied pfTexGen is active
+       although any number of pfTexGen definitions  may  be  cre-
+       ated.   Texture  coordinate  generation must be enabled (-
+       set  the  pfTexGen  attribute  of  a  pfGeoState  and with
+       <B>pfOverride</B> to override subsequent pfTexGen changes:
+
+       Example 1:
+
+       /* Set up pfGeoState */
+       pfGStateMode(gstate, PFSTATE_ENTEXGEN, PF_ON);
+       pfGStateAttr(gstate, PFSTATE_TEXGEN, pfNewTGen(arena));
+
+       /* Attach gstate to gset */
+       pfGSetGState(gset, gstate);
+
+       /* Draw pfGeoSet whose texture coordinates are generated */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       /* Override so that all geometry is affected by 'tgen' */
+       pfEnable(PFEN_TEXGEN);
+       pfApplyTGen(tgen);
+       pfOverride(PFSTATE_TEXGEN | PFSTATE_ENTEXGEN, PF_ON);
+
+
+       <B>pfApplyTGen</B> is a display-listable command.  If a pfDis-
+       pList has been opened by <B>pfOpenDList</B>, <B>pfApplyTGen</B> will not
+       have immediate effect but will be captured by the pfDis-
+       pList and will only have effect when that pfDispList is
+       later drawn with <B>pfDrawDList</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfGeoState, pfLPointState, pfMemory,
+       pfObject, pfOverride, texgen, glTexGen.
+
+
+
+                                                    pfTexGen(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

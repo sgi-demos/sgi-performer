@@ -1,0 +1,829 @@
+<HTML>
+<HEAD>
+<TITLE>pfNode</TITLE>
+</HEAD>
+<BODY>
+<H1>pfNode</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfNode(3pf)                                           pfNode(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNode</B>  - Set and get pfNode parents and bounding spheres.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfNode.h&gt;
+
+       static pfType *   <B>pfNode::getClassType</B>(void);
+
+       pfGroup *         <B>pfNode::getParent</B>(int i);
+
+       int               <B>pfNode::getNumParents</B>(void);
+
+       void              <B>pfNode::setBound</B>(pfSphere *bsph,
+                           int mode);
+
+       int               <B>pfNode::getBound</B>(pfSphere *bsph);
+
+       pfNode*           <B>pfNode::clone</B>(int mode);
+
+       pfNode*           <B>pfNode::bufferClone</B>(int mode,
+                           pfBuffer *buf);
+
+       int               <B>pfNode::flatten</B>(int mode);
+
+       int               <B>pfNode::setName</B>(const char *name);
+
+       const char *      <B>pfNode::getName</B>(void);
+
+       pfNode*           <B>pfNode::find</B>(const char *pathName,
+                           pfType *type);
+
+       pfNode*           <B>pfNode::lookup</B>(const char *name,
+                           pfType* type);
+
+       int               <B>pfNode::isect</B>(pfSegSet *segSet,
+                           pfHit **hits[]);
+
+       void              <B>pfNode::setTravMask</B>(int which,
+                           uint mask, int setMode, int bitOp);
+
+       uint              <B>pfNode::getTravMask</B>(int which);
+
+       void              <B>pfNode::setTravFuncs</B>(int which,  pfNode-
+                           TravFuncType pre,    pfNodeTravFunc-
+                           Type post);
+
+       void              <B>pfNode::getTravFuncs</B>(int which,  pfNode-
+                           TravFuncType *pre,   pfNodeTravFunc-
+                           Type *post);
+
+       void              <B>pfNode::setTravData</B>(int which,
+                           void *data);
+
+       void *            <B>pfNode::getTravData</B>(int which);
+
+
+       typedef struct _pfSegSet
+
+       {
+
+           int         mode;
+
+           void *      userData;
+
+           pfSeg       segs[PFIS_MAX_SEGS];
+
+           uint        activeMask;
+
+           uint        isectMask;
+
+           void *      bound;
+
+           int           <B>(*discFunc)</B>(pfHit*);
+
+       } pfSegSet;
+
+       typedef
+                         int       <B>(*pfNodeTravFuncType)</B>(pfTraverser *trav,
+                           void *userData);
+
+
+
+       <B>PARENT</B> <B>CLASS</B> <B>FUNCTIONS</B>
+
+
+
+       The OpenGL Performer class <B>pfNode</B> is derived from
+       the parent class <B>pfObject</B>, so each of these member
+       functions of class <B>pfObject</B> are also directly
+       usable with objects of class <B>pfNode</B>.  This is also
+       true for ancestor classes of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t,
+                 void *arena);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot,
+                 void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj,
+                 int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the
+       parent class <B>pfMemory</B>, objects of class <B>pfNode</B> can
+       also be used with these functions designed for
+       objects of class <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>which</I>  identifies the traversal: <B>PFTRAV_ISECT</B>,
+              <B>PFTRAV_APP</B>, <B>PFTRAV_CULL</B> or <B>PFTRAV_DRAW</B>,
+              denoting the intersection, application,
+              cull, and draw processing stages respec-
+              tively.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfNode is an abstract type.  OpenGL Performer
+       does not provide any means to explicitly create a
+       pfNode.  Rather, the pfNode routines operate on the
+       common aspects of other OpenGL Performer node
+       types.
+
+       The complete list of OpenGL Performer nodes (all
+       derived from pfNode) is:
+
+              <B>pfBillboard</B>
+
+              <B>pfDCS</B>
+
+              <B>pfGeode</B>
+
+              <B>pfGroup</B>
+
+              <B>pfLayer</B>
+
+              <B>pfLightPoint</B>
+
+              <B>pfLightSource</B>
+
+              <B>pfLOD</B>
+
+              <B>pfMorph</B>
+
+              <B>pfPartition</B>
+
+              <B>pfScene</B>
+
+              <B>pfSCS</B>
+
+              <B>pfSequence</B>
+
+              <B>pfSwitch</B>
+
+              <B>pfText</B>
+
+       and callback data.
+
+       <B>pfNode::getClassType</B> returns the <B>pfType</B>* for the
+       class <B>pfNode</B>.  The <B>pfType</B>* returned by
+       <B>pfNode::getClassType</B> is the same as the <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>
+       on any instance of class <B>pfNode</B>.  Because OpenGL
+       Performer allows subclassing of built-in types,
+       when decisions are made based on the type of an
+       object, it is usually better to use  the member
+       function <B>isOfType</B> to test if an object is of a type
+       derived from a Performer type rather than to test
+       for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfNode::getNumParents</B> returns the number of parents
+       the pfNode has in the scene graph.  A node may have
+       multiple parents because it was explicitly added to
+       multiple parents with <B>pfGroup::addChild</B>. In such
+       cases it said to be 'instanced'.  Also, leaf geome-
+       try nodes such as pfGeodes, pfLightPoints, and
+       pfBillboards, may have multiple parents as a result
+       of a <B>pfNode::clone</B>.  <B>pfNode::getParent</B> returns the
+       <I>i</I>th parent of the pfNode or <B>NULL</B> if <I>i</I> is out of the
+       range 0 to <B>pfNode::getNumParents</B> - 1.
+
+       <B>pfNode::setBound</B> sets the bounding volume of the
+       pfNode.  Each pfNode has an associated bounding
+       volume used for culling and intersection testing
+       and a bounding mode, either static or dynamic.  By
+       definition, the bounding volume of a node encloses
+       all the geometry parented by node, which means that
+       the node and all its children fit within the node's
+       bounding volume.
+
+       Only a subset of the pfNode types actually contain
+       geometry.  These are known as "leaf nodes" in
+       OpenGL Performer. They are:
+              <B>pfBillboard</B>
+              <B>pfGeode</B>
+              <B>pfLightPoint</B>
+
+       These and other nodes may indirectly contain geome-
+       try through user-supplied function callbacks set by
+       <B>pfNode::setTravFuncs</B>.
+
+       Normally OpenGL Performer automatically computes
+       bounding volumes but provides routines to explic-
+       itly set bounding volumes.  This is useful for pfN-
+       odes which draw custom geometry through node call-
+       backs (<B>pfNode::setTravFuncs</B>).
+
+       The <I>bsph</I> argument to <B>pfNode::setBound</B> is the bound-
+       ing sphere of the pfNode.  If the <I>bsph</I> is <B>NULL</B>,
+       OpenGL Performer will compute the bounding sphere
+       of the pfNode.
+
+       The <I>mode</I> argument to <B>pfNode::setBound</B> specifies
+       whether or not the bounding volume for the pfNode
+       should be recomputed when an attribute of the pfN-
+       changes.  Changes in pfSwitches, pfLODs and pfSe-
+       quences do not affect bounds above them in the
+       scene graph.
+
+       <B>pfNode::getBound</B> returns the current bounding mode
+       and copies into <I>bsph</I> a pfSphere which encloses the
+       pfNode and its children The return value is the
+       bounding mode which is either <B>PFBOUND_DYNAMIC</B> or
+       <B>PFBOUND_STATIC</B> indicating whether or not the bound-
+       ing volume is updated automatically when its chil-
+       dren change.
+
+       OpenGL Performer supports two methods of node
+       instancing.  The first method is to simply add a
+       node to more than one parent using
+       <B>pfGroup::addChild</B> or <B>pfGroup::replaceChild</B> (see
+       pfGroup).  In this case the graph rooted by the
+       instanced node is shared by all its parents.  This
+       type of instancing is called <I>shared</I> instancing.
+
+       <B>pfNode::clone</B> provides instancing which shares
+       geometry but not variable state like transforma-
+       tions (pfDCS) and switches (pfSwitch).
+       <B>pfNode::clone</B> copies the entire scene graph from
+       the pfNode down to, but not including, leaf geome-
+       try nodes such as pfGeodes, pfBillboards and
+       pfLightPoints.  These leaf nodes are instanced by
+       reference in the cloned scene graph.  <B>pfNode::clone</B>
+       returns the root pfNode of the cloned graph or <B>NULL</B>
+       to indicate error.  This type of instancing is
+       called <I>common</I> <I>geometry</I> instancing.  An attempt to
+       clone a leaf geometry node simply returns the han-
+       dle to that node.
+
+       Cloning is recommended for instances of dynamic and
+       articulated models.  For example: Shared instances
+       of a model with pfDCSes in its hierarchy will share
+       the pfDCSes as well as the geometry.  This means
+       that all instances will have the exact same articu-
+       lation.  However, a common geometry instance will
+       share only geometry and as a result of the cloning
+       process will have its own pfDCSes allowing manipu-
+       lation independently of any other instances.  This
+       example creates a cloned instance:
+
+       if ((clone = carModel-&gt;<B>clone(0)</B>) != NULL)
+           carDCS_3-&gt;addChild(clone);
+
+
+       The <I>mode</I> argument to <B>pfNode::clone</B> is reserved for
+       future extensions and must be 0 in this release of
+       OpenGL Performer.
+
+       When cloning, if the global copy function (-
+       <B>pfObject::setCopyFunc</B>) is <B>NULL</B>, user data pointers
+       (<B>pfObject::setUserData</B>) are copied to each new node
+       and the reference counts of pfMemory-derived user
+       data are incremented. If <B>pfObject::setCopyFunc</B> is
+       not <B>NULL</B>, it will be invoked with the destination
+       subtree. The clone of the pfNode and its subtree is
+       placed in the current buffer set by
+       <B>pfBuffer::select</B>. See the pfBuffer man page for
+       more details.
+
+       <B>pfNode::flatten</B> is a database pre-processing step
+       which 'flattens' the transformation hierarchy of
+       the scene graph rooted by the pfNode.  Coordinates
+       and normals contained in leaf geometry nodes such
+       as pfGeodes, pfBillboards and pfLightPoints are
+       transformed by any inherited static transformations
+       (pfSCS).  <B>pfNode::flatten</B> automatically clones any
+       pfNode or pfGeoSet that is multiply referenced.
+       Specifically, if the pfNode has multiple parents,
+       <I>node</I> and its entire subtree will be cloned. If a
+       pfDCS is encountered, <B>pfNode::flatten</B> inserts a
+       pfSCS in between the pfDCS and its parent.
+
+       Flattening can substantially improve performance,
+       especially when pfSCSes are being used to instance
+       a relatively small amount of geometry since the
+       cost of the transformation approaches the cost of
+       drawing the geometry.  However, it can also
+       increase the size of the database since it copies
+       instanced nodes and geometry.  Flattening is highly
+       recommended for pfBillboards. Flattening also
+       increases the ability of OpenGL Performer to sort
+       the database by mode (see <B>pfChannel::setBinSort</B>),
+       often a major performance enhancement, since sort-
+       ing does not cross transformation boundaries.
+
+       <B>pfNode::flatten</B> does not remove pfSCSes from the
+       hierarchy; instead it sets their transformations to
+       the identity matrix.  For improved traversal per-
+       formance, these flattened pfSCS nodes should be
+       removed from the hierarchy.
+
+       The <I>mode</I> argument to pfFlatten is currently ignored
+       and should be 0.
+
+       All OpenGL Performer database nodes may be assigned
+       a character string name.  Individual node names
+       need not be unique but to access a node with a non-
+       unique name, an unambiguous pathname to the node
+       must be given.  The pathname doesn't need to be a
+       full path.  All that's required is enough to dis-
+       tinguish the node from others with the same name.
+
+       <B>pfNode::setName</B> sets the name of the pfNode to the
+       string <I>name</I>.  If the name is unique a 1 will be
+       returned and if the name is not unique, a 0 will be
+       returned. Node names are kept in a global table
+       which is used for resolving the first path compo-
+       nent of a path name by <B>pfNode::lookup</B>. In this
+       case, unambiguous resolution is only possible if
+       the first path component is unique. <B>pfNode::getName</B>
+       returns the name of the node or NULL if the name
+       has not been set.
+
+       <B>pfNode::find</B> is equivalent to <B>pfMemory::isOfType</B>,
+       not <B>pfMemory::isExactType</B>, e.g. searching for a
+       pfGroup includes derived classes such as pfSwitch.
+
+       The string <I>pathName</I> can be either a name or a
+       '/'-separated pathname.  If the name contains no
+       '/' characters, it is assumed to be unique and the
+       global name table is searched.  If <I>pathName</I> con-
+       tains '/' characters, it is assumed to be a path.
+       Paths are searched by first finding the node corre-
+       sponding to the first component of the path in a
+       global name table. The find routine then traverses
+       the subtree rooted at that node, searching for the
+       rest of the path. The first node encountered during
+       the search traversal which matches <I>pathName</I> is
+       returned.
+
+       Example 1:
+
+
+       pfNode    *newhouse, *newdoor;
+       pfDCS     *door;
+
+       /* Create "house" model with named subparts including "door" */
+
+       /* Create a new instance of "house" */
+       newhouse = house-&gt;<B>clone(0)</B>;
+
+       /* Give cloned house a new name */
+       newhouse-&gt;setName("newhouse");
+
+       /* Find the door part of the new house */
+       door = (pfDCS*) newhouse-&gt;find("door", pfDCS::getClassType());
+
+
+       <B>pfNode::isect</B> intersects a group of line segments
+       with a scene or portion thereof.  The intersection
+       operation traverses the scene graph, testing a
+       group of segments against bounding geometry and
+       eventually model geometry within pfGeoSets.
+
+       <B>pfNode::isect</B> returns the number of segments which
+       intersected something.  <I>hits</I> is an empty array sup-
+       plied by the user through which results are
+       returned.  The array must have an entry for each
+       segment in <I>segSet</I>.  Upon return, <I>hits</I>[i][0] is a
+       pfHit* which gives the intersection result for the
+       <I>i</I>th segment in <I>segSet</I>.  The pfHit objects come from
+       an internally maintained pool and are reused on
+       subsequent requests.  Hence, the contents are only
+       valid until the next invocation of <B>pfGSetIsectSegs</B>
+       in the current process.  They should not be freed
+       by the application.
+
+       <I>segSet</I> is a pfSegSet structure specifying the
+       intersection request.  In the structure, <I>segs</I> is an
+       array of line segments to be intersected against
+       the pfGeoSet.  <I>activeMask</I> is a bit vector specify-
+       ing which segments in the pfSegSet are to be active
+
+              <B>PFTRAV_IS_PRIM</B>
+                   Intersect with quads or triangle geome-
+                   try.
+
+              <B>PFTRAV_IS_GSET</B>
+                   Intersect with pfGeoSet bounding boxes.
+
+              <B>PFTRAV_IS_GEODE</B>
+                   Intersect with pfGeode bounding sphere.
+
+              <B>PFTRAV_IS_NORM</B>
+                   Return normals in the pfHit structure.
+
+              <B>PFTRAV_IS_CULL_BACK</B>
+                   Ignore back-facing polygons.
+
+              <B>PFTRAV_IS_CULL_FRONT</B>
+                   Ignore front-facing polygons.
+
+              <B>PFTRAV_IS_PATH</B>
+                   Retain traversal path information.
+
+              <B>PFTRAV_IS_NO_PART</B>
+                   Do not use partitions for intersec-
+                   tions.
+
+       For several types of pfGroups, the traversal of
+       children can be controlled for the traversal.
+
+       For pfSwitches, the default is to traverse only the
+       child or children specified by the current switch
+       value.  This can be changed OR-ing one of the fol-
+       lowing into the <I>mode</I> argument.
+
+              <B>PFTRAV_SW_ALL</B>
+                   Traverse all children of pfSwitches.
+
+              <B>PFTRAV_SW_NONE</B>
+                   Don't traverse any children of
+                   pfSwitches.
+
+       For pfSequences, the default is to traverse only
+       the current child in the sequence.  This can be
+       changed OR-ing one of the following into the <I>mode</I>
+       argument.
+              <B>PFTRAV_SEQ_ALL</B> Intersect with all children
+              of pfSequences.
+
+              <B>PFTRAV_SEQ_NONE</B>
+                     Intersect with no children of pfSe-
+                     quences.
+
+       For pfLODs, the default is to traverse only the
+       child that would be active at range 0.  This can be
+       changed OR-ing one of the following into the <I>mode</I>
+       argument.  Also, see <B>pfChannel::isect</B> for child
+       selection based on range.
+              <B>PFTRAV_LOD_ALL</B> Intersect with all children
+
+       children.  This can be changed OR-ing one of the
+       following into the <I>mode</I> argument.
+              <B>PFTRAV_LAYER_NONE</B> Intersect with no children
+              of pfLayers (default is all).
+
+              <B>PFTRAV_LAYER_BASE</B>
+                     Intersect with no children of pfLay-
+                     ers (default is all).
+
+              <B>PFTRAV_LAYER_DECAL</B>
+                     Intersect with no children of pfLay-
+                     ers (default is all).
+
+       The bit fields <B>PFTRAV_IS_PRIM</B>, <B>PFTRAV_IS_GSET</B>, and
+       <B>PFTRAV_IS_GEODE</B> indicate the level at which inter-
+       sections should be evaluated and discriminator
+       callbacks, if any, invoked.  If none of these three
+       fields are specified, no intersection testing is
+       done.
+
+       In the pfSegSet, <I>isectMask</I> is another bit vector
+       which directs the intersection traversal.  At each
+       stage of the intersection operation, the mask is
+       bit-wise AND-ed with the mask of the pfNode or
+       pfGeoSet.  If the mask is non-zero the intersection
+       continues with the next object, either a pfNode
+       within a pfGroup or a primitive within a pfGeoSet.
+       The mask of a pfNode is set using
+       <B>pfNode::setTravMask</B> and that of a pfGeoSet by
+       <B>pfGeoSet::setIsectMask</B>.  The mask can be used to
+       distinguish parts of the scene graph which might
+       respond differently to vision or collision.  For
+       example, as a wall would stop a truck but shrubbery
+       would not.
+
+       The <I>bound</I> field in a pfSegSet is an optional user-
+       provided bounding volume around the set of seg-
+       ments.  Currently, the only supported volume is a
+       cylinder.  To use a bounding cylinder, perform a
+       bitwise OR of <B>PFTRAV_IS_BCYL</B> into the <B>mode</B> field of
+       the pfSegSet and assign the pointer to the bounding
+       volume to the <B>bound</B> field.
+
+       <B>pfCylinder::around</B> will construct a cylinder around
+       the segments.  When a bounding volume is supplied,
+       the intersection traversal may use the cylinder to
+       improve performance.  The largest improvement is
+       for groups of at least several segments which are
+       closely grouped segments.  Placing a bounding
+       cylinder around small groups or widely dispersed
+       segments can decrease performance.
+
+       The <I>userData</I> pointer allows an application to asso-
+       ciate other data with the pfSegSet.  Upon return
+       and in discriminator callbacks, the pfSegSet's
+       <I>userData</I> pointer can be obtained from the returned
+       pfHit with <B>pfObject::getUserData</B>.
+
+       <I>discFunc</I> is a user supplied callback function which
+       specified in <I>mode</I>.  Thus, the segment is clipped by
+       each successful intersection so that the intersec-
+       tion point nearest the starting point of the seg-
+       ment is returned upon completion.
+
+       If a discriminator callback is specified, whenever
+       an intersection occurs, the <I>discFunc</I> callback is
+       invoked with a pfHit structure containing informa-
+       tion about the intersection.  The discriminator may
+       then return a value which indicates whether and how
+       the intersection should continue. The continuation
+       selectors are <B>PFTRAV_CONT</B>, <B>PFTRAV_PRUNE</B>, and
+       <B>PFTRAV_TERM</B>.
+
+              <B>PFTRAV_CONT</B>
+                   Indicates that the traversal should
+                   continue traversing the pfGeoSets
+                   beneath a pfGeode.  The discriminator
+                   function can examine information about
+                   candidate intersections and judge their
+                   validity and control the continuation
+                   of the traversal with its return value.
+
+              <B>PFTRAV_PRUNE</B>
+                   Indicates the traversal should return
+                   from the current level of the search
+                   and continue.  If returned on a
+                   pfGeoSet primitive or bounding box
+                   test, <B>PFTRAV_PRUNE</B> stops further test-
+                   ing of the line segment against that
+                   pfGeoSet.  If returned on the test
+                   against a pfGeode bounding volume, the
+                   pfGeode is not traversed for that line
+                   segment.
+
+              <B>PFTRAV_TERM</B>
+                   Indicates that the search should termi-
+                   nate for this segment of the pfSegSet.
+                   To have <B>PFTRAV_TERM</B> or <B>PFTRAV_PRUNE</B>
+                   apply to all segments,
+                   <B>PFTRAV_IS_ALL_SEGS</B> can be OR-ed into
+                   the discriminator return value.  This
+                   causes the entire traversal to be ter-
+                   minated or pruned.
+
+       The callback may OR other bitfields into the status
+       return value:
+
+              <B>PFTRAV_IS_IGNORE</B>
+                   Indicates that the current intersection
+                   should be ignored, otherwise the inter-
+                   section is taken as valid.
+
+              <B>PFTRAV_IS_CLIP_START</B>
+                   Indicates for pruned and continued
+                   traversals that before proceeding the
+                   segment should be clipped to start at
+                   the current intersection point.
+
+       the discriminator returned <B>PFTRAV_CONT</B> |
+       <B>PFTRAV_IS_CLIP_END</B>, so that the intersection near-
+       est the start of the segment will be returned.
+
+       In addition to the discriminator callback, pre- and
+       post- intersection callbacks are available for each
+       node.  These behave identically to the pre- and
+       post-callbacks for the cull traversal and can be
+       used to prune, continue or terminate the traversal
+       at any node.
+
+       Both <B>pfNode::isect</B> and the discriminator callback
+       return information about an intersection in a pfHit
+       object which can be examined using the <B>pfHit::query</B>
+       and <B>pfHit::mQuery</B> <B>calls</B>.  The information includes
+       the intersection point, current matrix transforma-
+       tion, scene graph, and path.  See the man page for
+       pfHit for further details.
+
+       In multiprocess applications, <B>pfNode::isect</B> should
+       be called from the APP process or from the ISECT
+       process (in the callback specified by <B>pfIsectFunc</B>).
+       When called in the APP process, <B>pfNode::isect</B>
+       should be called after <B>pfFrame</B> and before <B>pfSync</B>
+       for best system throughput.
+
+       <B>pfNode::setTravMask</B> sets the traversal masks of
+       <I>node</I> which are used to control traversal during the
+       intersection, cull, and draw traversals.  If the
+       bitwise AND of the node's mask for that traversal
+       type and the mask for the current traversal is
+       zero, the traversal is disabled at that node.  By
+       default, the node masks are all 1's.  Traverser
+       masks are set by <B>pfNode::isect</B>/<B>pfChanNodeIsectSegs</B>
+       for the intersection traversal and
+       <B>pfChannel::setTravMask</B> for the CULL and DRAW
+       traversals.  <B>pfNode::getTravMask</B> returns the speci-
+       fied traversal mask for the node.
+
+       Bits in the <I>setMode</I> argument indicate whether the
+       set operation should be carried out for just the
+       specified pfNode (<B>PFTRAV_SELF</B>), just its descen-
+       dents (<B>PFTRAV_DESCEND</B>) or both itself and descen-
+       dents.  The descendent traversal goes down into
+       pfGeoSets.
+
+       The <I>bitOp</I> argument is one of <B>PF_AND</B>, <B>PF_OR</B>, or
+       <B>PF_SET</B> and indicates whether the new mask should be
+       AND-ed with the old mask, OR-ed with the old mask
+       or set outright, respectively.
+
+       Efficient intersections require that information be
+       cached for each pfGeoSet to be intersected with.
+       To create this cache, <B>PFTRAV_IS_CACHE</B> should be OR-
+       ed into the <I>setMode</I> when first setting the inter-
+       section mask.  Because of the computation involved,
+       the cache is best created at setup time.  Subse-
+       quent changes to the masks themselves do not
+       require <B>PFTRAV_IS_CACHE</B> to be specified.  However,
+       is <B>PFTRAV_ISECT</B>.
+
+       <B>pfNode::setTravFuncs</B> specify the user supplied
+       functions which are to be invoked during the
+       traversal indicated by <I>which</I>.  For each traversal,
+       there is a <I>pre</I> and <I>post</I> traversal callback.  <I>pre</I> is
+       invoked before <I>node</I> and its children are processed
+       while <I>post</I> is invoked after.  The pre- and post-
+       methodology supports save and restore or push and
+       pop programming constructs.  Node callbacks are
+       passed pointers to the user supplied traversal data
+       pointer for that node and a pfTraverser which
+       defines the current traversal state.
+       <B>pfNode::getTravFuncs</B> copies the pfNode's pre and
+       post callbacks of traversal type <I>which</I> into <I>pre</I> and
+       <I>post</I> respectively.
+
+       The <I>data</I> argument to <B>pfNode::setTravData</B> is the
+       pointer which is passed to the traversal callbacks
+       indicated by <I>which</I>.  Both pre- and post-callbacks
+       will be passed <I>data</I> in addition to a pfTraverser*.
+       When multiprocessing, <I>data</I> should point to memory
+       in a shared arena.  <B>pfNode::getTravData</B> returns the
+       current data pointer for the specified traversal.
+
+       <B>setTravMode</B> is used to set additional mode informa-
+       tion to control traversals.  Currently the <B>which</B>
+       argument must be <B>PFTRAV_CONT</B> and the <B>mode</B> argument
+       must be <B>PFN_CULL_SORT</B>; the possible choices for the
+       <B>value</B> argument are:
+
+              <B>PFN_CULL_SORT_UNCONTAINED</B>
+                   This is the default value.  It means
+                   that pre- and post-CULL traversal funcs
+                   on a node do not prevent the contents
+                   of the node from being interleaved with
+                   the contents of other nodes during CULL
+                   sorting.  This means that (surprise!)
+                   the contents of the node are not neces-
+                   sarily bracketed by the graphics calls
+                   made in the pre- and post-CULL node
+                   trav funcs.  This behavior is for the
+                   benefit of CULL funcs whose purpose is
+                   to return a cull result but that don't
+                   make any graphics calls.  (Note that in
+                   contrast, pre- and post-DRAW funcs on a
+                   node are guaranteed to bracket the con-
+                   tents of the node, and therefore they
+                   prevent the interleaving of the con-
+                   tents of the node with the contents of
+                   other nodes.)
+
+              <B>PFN_CULL_SORT_CONTAINED</B>
+                   This is the opposite of
+                   <B>PFN_CULL_SORT_UNCONTAINED</B>; setting this
+                   value guarantees the following:
+                   1. Display list items produced by the
+                   pre-node CULL func will get placed in
+                   the display list before the contents of
+                   3. No part of the scene graph other
+                   than this node (including its children
+                   and DRAW funcs) will be placed in the
+                   display list between the items produced
+                   by the pre-node CULL func and the items
+                   produced by the post-node CULL func.
+                   <B>PFN_CULL_SORT_CONTAINED</B> is typically
+                   used in applications such as virtual
+                   clip texturing in which the pre-cull
+                   function calls display-listable func-
+                   tions (such as
+                   <B>pfClipTexture::applyVirtualParams</B>)
+                   which are intended to affect the con-
+                   tents of the node and its children, and
+                   no other part of the scene graph.
+                   Turning off CULL sorting altogether
+                   using <B>pfChannel::setTravMode</B> is another
+                   way to accomplish this effect, but that
+                   is usually overkill and can result in
+                   greatly decreased performance, as can
+                   setting DRAW trav funcs on the node to
+                   accomplish the <B>PFN_CULL_SORT_CONTAINED</B>
+                   effect.
+
+       <B>getTravMode</B> returns the current value of the given
+       <B>mode</B> for the given traversal type <B>which</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       When instanced geometry is flattened, the copy cre-
+       ated by <B>pfNode::flatten</B> shares pfGeoSet attribute
+       arrays with the original when possible.  This means
+       that the newly flattened pfGeoSet may share some
+       arrays (e.g. color array), but not other arrays
+       (e.g. the vertex array) with the original.
+
+       The post-cull callback is a good place to implement
+       custom level-of-detail mechanisms.
+
+       Currently, nodes use spheres as the default bound-
+       ing volume.  This may change in a future release.
+       <B>libpfutil</B> contains sample code for computing the
+       bounding box for a subgraph of the scene.
+
+       It's an interesting fact that although a node's
+       bounding volume completely contains the geometry of
+       the nodes that it parents, it may well <I>not</I> com-
+       pletely contain the bounding volumes of those same
+       nodes.  Do you understand when this situation would
+       occur?
+
+       Finding a node by name can be expensive, particu-
+       larly for path based searches.  These functions are
+       primarily intended to get handles to nodes which
+       are loaded from disk and should be used sparingly
+       at simulation time.
+
+       In OpenGL Performer releases since 2.0,
+       <B>pfNode::lookup</B> replaces a number of functions from
+       (i.e. a node having two or more parents within the
+       graph), the new graph will contain multiple copies
+       of the instanced node rather than duplicating the
+       connectivity of the original graph.
+
+       <B>pfNode::flatten</B> transforms the vertex arrays of
+       non-instanced geometry in place.  If a pfGeoSet
+       belongs to multiple pfGeodes or a vertex array is
+       shared between pfGeoSets the array is still flat-
+       tened in place.
+
+       It is not possible to get multiple intersection
+       results per segment without a discriminator call-
+       back.
+
+       Bounding cylinders do not work when non-orthonormal
+       transformations are present in the pfDCS and pfSCS
+       nodes of a scene graph.
+
+       The path returned by <B>pfGetTravPath</B> is valid only
+       when invoked from a cull callback.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfCylinder, pfGroup, pfHit, pfNode, pfBuffer, pfOb-
+       ject, pfChannel, pfGeoSet, pfBillboard, pfDCS,
+       pfFrame, pfGeode, pfIsectFunc, pfLightPoint,
+       pfScene, pfSCS, pfSeg, pfGSetIsectSegs, pfSync,
+       pfTraverser
+
+
+
+                                                      pfNode(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,182 @@
+<HTML>
+<HEAD>
+<TITLE>simplify</TITLE>
+</HEAD>
+<BODY>
+<H1>simplify</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+simplify(1pf)                                       simplify(1pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>simplify</B> - Interactive OpenGL Performer tool for simplify-
+       ing geometry.  a simplification of a complex  object  that
+       contains the original object.
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>simplify</B> [ perfly options ] infile outfile [ options ]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Program  <B>simplify</B>  is  an interactive tool that is used to
+       simplify a complex object.  It  has  two  main  functions.
+       First,  it  can  create  a  regular  simplification of the
+       object, in which the constraints are  that  the  resulting
+       geometry  does not cross the inner and outer boundary at a
+       certain distance from the original surface. In  this  case
+       all vertex parameters, such us the normal or texture coor-
+       dinates, are preserved. Simplified version of  the  object
+       can  be used to create an pfLOD node (see the man page for
+       pfLOD).
+
+       Second, the program <B>simplify</B> can  create  a  proxy  of  an
+       object.  A proxy is a simplified version of the object and
+       it has a property that the original object is fully inside
+       the  proxy.   This property is important because the proxy
+       is used in image based rendering where  the  images  of  a
+       complex objects from various directions are projected onto
+       the proxy. This way it is possible to render a  very  com-
+       plex object using a simplified version (a proxy) and store
+       the surface detail, including the associated lighting,  in
+       multiple  textures.   See the man page for <B>makeProxyImages</B>
+       to get more information about the process  of  making  the
+       textures that are projected on the proxy.
+
+       The  program <B>simplify</B> is based on perfly and it shares all
+       its command line parameters and key commands (see man page
+       for  perfly).  When executing the program <B>simplify</B> you can
+       specify the perfly-like  command  line  parameters  first,
+       then  you  enter  the  file name of the object you want to
+       simplify and the output file name. Optionally you can  add
+       additional command line parameters specific to the simpli-
+       fication algorithm.  You can get the list of those parame-
+       ters by running simplify with no option or option -h.
+
+       When you start the program <B>simplify</B> the menu is similar to
+       the one of perfly. There is an additional pane of  buttons
+       and sliders, called simplify pane, that can be enabled and
+       disabled using the <B>Simplify</B> <B>pane</B> button. The first  button
+       of  the simplify pane controls whether to select the algo-
+       rithm for making proxy (the default) or the regular object
+       simplification algorithm.
+
+
+       <B>MAKING</B> <B>PROXY</B> <B>OF</B> <B>AN</B> <B>OBJECT</B>
+
+       The  algorithm  for  computing  the  proxy  has two steps.
+
+       There  are two possible ways of creatin the outer boundary
+       and the initial proxy. By default, a marching cubes  algo-
+       rithm  is  used  to create an isosurface at a certain dis-
+       tance from the original object. The  isosurface  is  later
+       moved  to the distance of the outer boundary (slider <B>Outer</B>
+       <B>boundary</B>) and a copy of the isosurface  is  moved  to  the
+       distance  of  the initial proxy (slider <B>Initial</B> <B>distance</B>).
+       The distances are specified as a percentage of the  object
+       diameter  (more  precisely,  the  diameter of the object's
+       bounding sphere).
+
+       The marching cubes algorithm has the  following  controls.
+       In  the  menu  it is possible to set the grid size at each
+       axis and the distance of the isosurface  from  the  object
+       (slider  <B>Iso</B> <B>distance</B>).  The finer the grid the longer the
+       algorithm takes and the more complex the initial proxy is.
+       On  the  other  hand,  too  coarse grid may result in many
+       details being missed.  Note that even  when  the  marching
+       cubes  algorithm is not applied the grid is used to accel-
+       erate the intersection test of the simplified  proxy  with
+       the  boundary surfaces thus it is not recomended to reduce
+       the grid resolution too much.
+
+       In general, the algorithm does not work very well  if  the
+       desired  isosurface  distance is too small compared to the
+       size of a grid voxel.  That is why it is possible to spec-
+       ify  the  isosurface  distance  separately  from the outer
+       boundary distance and the initial proxy distance. Often it
+       is  possible  to  specify  the  isosurface  distance large
+       enough that the isosurface does not miss any part  of  the
+       object  and then move it closer as needed. It is also pos-
+       sible to preview the isosurface  by  pressing  button  <B>Get</B>
+       <B>isosurface</B>.  Note  that the button <B>Show</B> <B>boundary</B> has to be
+       depressed.
+
+       When button <B>Do</B> <B>marching</B> <B>cubes</B> is not  pressed,  the  outer
+       boundary  and  the initial proxy are created by displacing
+       the original surface  along  its  normals.  This  approach
+       works  better in case the distances are very small. Unfor-
+       tunately, some areas of the object may not be  simplified.
+       For  example, if two parts of the object are touching dis-
+       placing along the normals will create a  self-intersecting
+       boundary  that  will not allow any room for simplification
+       in the area of intersection.
+
+       After pressing the button <B>Run</B> <B>simplify</B> <B>proxy</B> the simplifi-
+       cation  algorithm  starts  by moving the isosurface or the
+       original surface to create the outer boundary and the ini-
+       tial  proxy.   The initial proxy is simplified by removing
+       vertices and edges as long as the surface  is  within  the
+       surfaces defined by the object and the outer boundary.  At
+       the end the vertices of the proxy are moved  as  close  to
+       the original object as possible and the resulting proxy is
+       stored in a file.
+
+       The simplification algorithm  can  be  stopped  or  paused
+       using  <B>Stop</B>  <B>simplify</B>  or <B>Pause</B> button, respectively. When
+       the algorithm is paused it is possible to output the  cur-
+       very similar to the controls for the algorithm for  making
+       proxy.   The algorithm is using two boundary surfaces, the
+       outer boundary and the inner  boundary.  If  the  marching
+       cubes  algorithm  is  selected  the  distance  of the both
+       boundaries from the original surface is the same (in abso-
+       lute  value)  and  it is controlled by the slider <B>Iso</B> <B>dis-</B>
+       <B>tance</B>.  Similarly as in the case of  making  a  proxy  the
+       isosuface can be previewed by pressing the button <B>Get</B> <B>iso-</B>
+       <B>surface</B>.  If the <B>Do</B> <B>marching</B> <B>cubes</B> button is  not  pressed
+       the  boundaries are created by moving the original surface
+       along its normals to distances specified  by  the  sliders
+       <B>Outer</B>  <B>boundary</B> and <B>Inner</B> <B>boundary</B>. Note that the distance
+       for the inner boundary is specified as a negative  number.
+
+       The  algorithm  is started by pressing the button <B>Run</B> <B>sim-</B>
+       <B>plify</B>.  The computation can be paused or stopped using the
+       <B>Pause</B> or <B>Stop</B> <B>implify</B> button, respectively. When the algo-
+       rithm is paused it is possible to  save  the  intermediate
+       result  by  pressing the button <B>Save</B> <B>mesh</B> or to toggle the
+       visibility of the boundary by  pressing  the  button  <B>Show</B>
+       <B>boundary</B>.  After  the  simplification  is finished you can
+       display the original object by pressing the button <B>Restore</B>
+       <B>object</B>.   You  can restart the algorithm without restoring
+       the original object.
+
+       As you may realize this algorithm could be used to  create
+       an  object  proxy  if  the marching cubes algorithm is not
+       used and the inner distance is set to zero. The result may
+       be  different,  though, because the algorithm is trying to
+       preserve   seams   between   pfGeoSets   with    different
+       pfGeoStates, which is not necessary for the proxy.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>performer</B>, <B>pfIBRtexture</B>, <B>pfIBRnode</B>, <B>makeProxyImages</B>
+
+
+
+                                                    simplify(1pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,346 @@
+<HTML>
+<HEAD>
+<TITLE>pfMatrix</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMatrix</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMatrix(3pf)                                       pfMatrix(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMakeIdentMat,</B> <B>pfMakeTransMat,</B> <B>pfMakeScaleMat,</B> <B>pfMakeRot-</B>
+       <B>Mat,</B>  <B>pfMakeQuatMat,</B>  <B>pfMakeEulerMat,</B>  <B>pfMakeVecRotVecMat,</B>
+       <B>pfMakeCoordMat,</B>   <B>pfGetMatType,</B>  <B>pfGetOrthoMatQuat,</B>  <B>pfGe-</B>
+       <B>tOrthoMatCoord,</B>   <B>pfSetMat,</B>   <B>pfSetMatRowVec3,</B>    <B>pfGetMa-</B>
+       <B>tRowVec3,</B>  <B>pfSetMatColVec3,</B>  <B>pfGetMatColVec3,</B> <B>pfSetMatRow,</B>
+       <B>pfGetMatRow,</B> <B>pfSetMatCol,</B>  <B>pfGetMatCol,</B>  <B>pfCopyMat,</B>  <B>pfAd-</B>
+       <B>dMat,</B>  <B>pfSubMat,</B>  <B>pfScaleMat,</B>  <B>pfTransposeMat,</B>  <B>pfMultMat,</B>
+       <B>pfPreMultMat,</B> <B>pfPostMultMat,</B>  <B>pfPreTransMat,</B>  <B>pfPostTrans-</B>
+       <B>Mat,</B>     <B>pfPreRotMat,</B>     <B>pfPostRotMat,</B>     <B>pfPreScaleMat,</B>
+       <B>pfPostScaleMat,</B> <B>pfInvertFullMat,</B> <B>pfInvertAffMat,</B>  <B>pfInver-</B>
+       <B>tOrthoMat,</B>  <B>pfInvertOrthoNMat,</B>  <B>pfInvertIdentMat,</B> <B>pfEqual-</B>
+       <B>Mat,</B> <B>pfAlmostEqualMat</B> - Set and operate on 4x4 matrices.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfMakeIdentMat</B>(pfMatrix dst);
+
+       void   <B>pfMakeTransMat</B>(pfMatrix dst,   float x,    float y,
+                float z);
+
+       void   <B>pfMakeScaleMat</B>(pfMatrix dst,    float x,   float y,
+                float z);
+
+       void   <B>pfMakeRotMat</B>(pfMatrix dst, float degrees,  float x,
+                float y, float z);
+
+       void   <B>pfMakeQuatMat</B>(pfMatrix m, const pfQuat q);
+
+       void   <B>pfMakeEulerMat</B>(pfMatrix dst,    float h,   float p,
+                float r);
+
+       void   <B>pfMakeVecRotVecMat</B>(pfMatrix dst,   const pfVec3 v1,
+                const pfVec3 v2);
+
+       void   <B>pfMakeCoordMat</B>(pfMatrix dst, const pfCoord *c);
+
+       int    <B>pfGetMatType</B>(const pfMatrix mat);
+
+       void   <B>pfGetOrthoMatQuat</B>(const pfMatrix m, pfQuat dst);
+
+       void   <B>pfGetOrthoMatCoord</B>(pfMatrix m, pfCoord* dst);
+
+       void   <B>pfSetMat</B>(const float *m);
+
+       void   <B>pfSetMatRowVec3</B>(pfMatrix dst,              int row,
+                const pfVec3 v);
+
+       void   <B>pfGetMatRowVec3</B>(const pfMatrix m,          int row,
+                pfVec3 dst);
+
+       void   <B>pfSetMatColVec3</B>(pfMatrix dst,              int col,
+                const pfVec3 v);
+
+                float *y, float *z, float *w);
+
+       void   <B>pfSetMatCol</B>(pfMatrix dst,     int col,     float x,
+                float y, float z, float w);
+
+       void   <B>pfGetMatCol</B>(const pfMatrix m,  int col,   float *x,
+                float *y, float *z, float *w);
+
+       void   <B>pfCopyMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfAddMat</B>(pfMatrix dst,           const pfMatrix m1,
+                const pfMatrix m2);
+
+       void   <B>pfSubMat</B>(pfMatrix dst,           const pfMatrix m1,
+                const pfMatrix m2);
+
+       void   <B>pfScaleMat</B>(pfMatrix dst, float s, pfMatrix m);
+
+       void   <B>pfTransposeMat</B>(pfMatrix dst, pfMatrix m);
+
+       void   <B>pfMultMat</B>(pfMatrix dst,          const pfMatrix m1,
+                const pfMatrix m2);
+
+       void   <B>pfPreMultMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfPostMultMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfPreTransMat</B>(pfMatrix dst,    float x,    float y,
+                float z, pfMatrix m);
+
+       void   <B>pfPostTransMat</B>(pfMatrix dst,      const pfMatrix m,
+                float x, float y, float z);
+
+       void   <B>pfPreRotMat</B>(pfMatrix dst,  float degrees,  float x,
+                float y, float z, pfMatrix m);
+
+       void   <B>pfPostRotMat</B>(pfMatrix dst,      const pfMatrix mat,
+                float degrees, float x, float y, float z, );
+
+       void   <B>pfPreScaleMat</B>(pfMatrix dst,    float x,    float y,
+                float z, pfMatrix m);
+
+       void   <B>pfPostScaleMat</B>(pfMatrix dst,      const pfMatrix m,
+                float x, float y, float z);
+
+       int    <B>pfInvertFullMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfInvertAffMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfInvertOrthoMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfInvertOrthoNMat</B>(pfMatrix dst, const pfMatrix m);
+
+       int    <B>pfInvertIdentMat</B>(pfMatrix dst, const pfMatrix m);
+
+       void   <B>pfEqualMat</B>(const pfMatrix m1, const pfMatrix m2);
+
+       void   <B>pfAlmostEqualMat</B>(const pfMatrix m1,     const pfMa-
+                trix m2, float tol);
+
+              typedef float pfMatrix[4][4];
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Routines for pfMatrix, a 4X4 matrix.
+
+
+       <B>pfMakeIdentMat</B> sets <I>dst</I> to the identity matrix.
+       <B>PFMAKE_IDENT_MAT</B> is an equivalent macro.
+
+       The following routines create transformation matrices
+       based on multiplying a row vector by a matrix on the
+       right, i.e. the vector v transformed by m is v * m.   Many
+       actions will go considerably faster if the last column is
+       (0,0,0,1).
+
+       <B>pfMakeTransMat</B> sets <I>dst</I> to the matrix which translates by
+       (<I>x</I>, <I>y</I>, <I>z</I>).  Equivalent macro: <B>PFMAKE_TRANS_MAT</B>.
+
+       <B>pfMakeScaleMat</B> sets <I>dst</I> to the matrix which scales by <I>x</I> in
+       the X direction, by <I>y</I> in the Y direction and by <I>z</I> in the Z
+       direction.  Equivalent macro: <B>PFMAKE_SCALE_MAT</B>
+
+       <B>pfMakeRotMat</B> sets <I>dst</I> to the matrix which rotates by
+       <I>degrees</I> about the axis denoted by the unit vector (<I>x</I>, <I>y</I>,
+       <I>z</I>).  If (<I>x</I>, <I>y</I>, <I>z</I>) is not normalized, results are unde-
+       fined.
+
+       <B>pfMakeQuatMat</B> builds a rotation matrix <I>m</I> that expresses
+       the rotation defined by the quaternion <I>q</I>.
+
+       <B>pfMakeEulerMat</B> sets <I>dst</I> to a rotation matrix composed of
+       the Euler angles <I>h</I>, <I>p</I>, <I>r</I>: <I>h</I> specifies heading, the rota-
+       tion about the Z axis; <I>p</I> specifies pitch, the rotation
+       about the X axis; and, <I>r</I> specifies roll, rotation about
+       the Y axis.  The matrix created is <I>dst</I> = R*P*H, where R is
+       the roll transform, P is the pitch transform and H is the
+       heading transform.  All rotations follow the right hand
+       rule.  The convention is natural for a model in which +Y
+       is "forward," +Z is "up" and +X is "right".  This routine
+       uses <B>pfSinCos</B> which is faster than the libm counterpart,
+       but has less resolution (see <B>pfSinCos</B>).
+
+       <B>pfMakeVecRotVecMat</B> sets <I>dst</I> to the rotation matrix which
+       rotates the vector <I>v1</I> onto <I>v2</I>, i.e. <I>v2</I> = <I>v1</I> * <I>dst</I>.  <I>v2</I>
+       must be normalized.  The rotation axis is always chosen to
+       be perpendicular to both <I>v0</I> and <I>v1</I> so that the rotation
+       angle is as small as possible.  Note that the result is
+       ambiguous only when <I>v0</I> == -<I>v1</I>; in this case the rotation
+       axis is chosen to be an arbitrary vector perpendicular to
+       <I>v0</I> and <I>v1</I>.
+
+       <B>pfMakeCoordMat</B> sets <I>dst</I> to the matrix which rotates by the
+       Euler transform specified by <I>c</I>-&gt;hpr and translates by
+       <I>c</I>-&gt;xyz, i.e. <I>dst</I> = R*P*H*T, where R is the roll transform,
+       P is the pitch transform and H is the heading transform,
+       and T is the translation transform.
+
+
+       <B>pfDCSMatType</B> allows the specification of information about
+       the type of transformation the matrix represents.  This
+       information allows Performer to speed up some operations.
+       The matrix type is specified as the OR of
+
+              PFMAT_TRANS:
+                   matrix includes a translational component in
+                   the 4th row.
+
+              PFMAT_ROT:
+                   matrix includes a rotational component in the
+                   left upper 3X3 submatrix.
+
+              PFMAT_SCALE:
+                   matrix includes a uniform scale in the left
+                   upper 3X3 submatrix.
+
+              PFMAT_NONORTHO:
+                   matrix includes a non-uniform scale in the
+                   left upper 3X3 submatrix.
+
+              PFMAT_PROJ:
+                   matrix includes projections.
+
+              PFMAT_HOM_SCALE:
+                   mat[4][4] != 1.
+
+              PFMAT_MIRROR:
+                   matrix includes mirroring transformation that
+                   switches between right handed and left handed
+                   coordinate systems.
+
+       <B>pfGetMatType</B> computes the type of matrix.  This informa-
+       tion can be useful if a matrix is to be used repeatedly,
+       e.g. to transform many objects, but is somewhat time con-
+       suming to compute.
+
+       <B>pfSetMatRow</B>.  <I>dst</I>[<I>row</I>][0] = <I>x</I>, <I>dst</I>[<I>row</I>][1] = <I>y</I>,
+       <I>dst</I>[<I>row</I>][2] = <I>z</I>, <I>dst</I>[<I>row</I>][3] = <I>w</I>.  Use the arguments to
+       set row <I>row</I> of <I>dst</I>.  <I>row</I> must be 0, 1, 2, or 3.  Equiva-
+       lent macro: <B>PFSET_MAT_ROW</B>.
+
+       <B>pfGetMatRow</B>.  <I>*x</I> = <I>dst</I>[<I>row</I>][0], <I>*y</I> = <I>dst</I>[<I>row</I>][1], <I>*z</I> =
+       <I>dst</I>[<I>row</I>][2], <I>*w</I> = <I>dst</I>[<I>row</I>][3].  Get the arguments to row
+       <I>row</I> of <I>dst</I>.  <I>row</I> must be 0, 1, 2, or 3.  Equivalent macro:
+       <B>PFGET_MAT_ROW</B>.
+
+       <B>pfSetMatCol</B>.  <I>dst</I>[0][<I>col</I>] = <I>x</I>, <I>dst</I>[1][<I>col</I>] = <I>y</I>,
+       <I>dst</I>[2][<I>col</I>] = <I>z</I>, <I>dst</I>[3][<I>col</I>] = <I>w</I>.  Use the arguments to
+       set col <I>col</I> of <I>dst</I>.  <I>col</I> must be 0, 1, 2, or 3.  Equiva-
+       lent macro: <B>PFSET_MAT_COL</B>.
+
+       <B>pfGetMatCol</B>.  <I>*x</I> = <I>dst</I>[0][<I>col</I>], <I>*y</I> = <I>dst</I>[1][<I>col</I>], <I>*z</I> =
+       <I>dst</I>[2][<I>col</I>], <I>*w</I> = <I>dst</I>[3][<I>col</I>].  Get the arguments to col
+       <I>col</I> of <I>dst</I>.  <I>col</I> must be 0, 1, 2, or 3.  Equivalent macro:
+       <B>PFGET_MAT_COL</B>.
+
+       <B>pfSetMatRowVec3</B>.  <I>dst</I>[<I>row</I>][i] = <I>v</I>[i], i = 0, 1, 2.  Set
+       <B>pfSetMatColVec3</B>.  <I>dst</I>[i][<I>col</I>] = <I>v</I>[i], i = 0, 1, 2.  Set
+       column <I>col</I> of <I>dst</I> to the vector <I>v</I>.  <I>col</I> must be 0, 1, 2,
+       or 3.  Equivalent macro: <B>PFSET_MAT_COLVEC3</B>.
+
+       <B>pfGetMatColVec3</B>.  <I>dst</I>[i] = <I>m</I>[i][<I>col</I>], i = 0, 1, 2.  Return
+       column <I>col</I> of <I>m</I> in <I>dst</I>.  <I>col</I> must be 0, 1, 2, or 3.
+       Equivalent macro: <B>PFGET_MAT_COLVEC3</B>.
+
+       <B>pfSetMat</B>.  <I>dst</I>[i][j] = <I>m</I>[i*4+j], 0 &lt;= i,j &lt;= 3.
+
+       <B>pfCopyMat</B>: <I>dst</I> = <I>m</I>.  Copies <I>m</I> into <I>dst</I>.  Equivalent macro:
+       <B>PFCOPY_MAT</B>
+
+       <B>pfPreTransMat</B>: <I>dst</I> = T(<I>x</I>,<I>y</I>,<I>z</I>) * <I>m</I>, where T(<I>x</I>,<I>y</I>,<I>z</I>) is the
+       matrix which translates by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfPostTransMat</B>: <I>dst</I> = <I>m</I> * T(<I>x</I>,<I>y</I>,<I>z</I>), where T(<I>x</I>,<I>y</I>,<I>z</I>) is the
+       matrix which translates by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfPreRotMat</B>: <I>dst</I> = R(<I>degrees</I>, <I>x</I>,<I>y</I>,<I>z</I>) * <I>m</I>, where
+       R(<I>degrees</I>,<I>x</I>,<I>y</I>,<I>z</I>) is the matrix which rotates by <I>degrees</I>
+       about the axis (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfPostRotMat</B>: <I>dst</I> = <I>m</I> * R(<I>degrees</I>, <I>x</I>,<I>y</I>,<I>z</I>), where
+       R(<I>degrees</I>,<I>x</I>,<I>y</I>,<I>z</I>) is the matrix which rotates by <I>degrees</I>
+       about the axis (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfPreScaleMat</B>: <I>dst</I> = S(<I>x</I>,<I>y</I>,<I>z</I>) * <I>m</I>, where S(<I>x</I>,<I>y</I>,<I>z</I>) is the
+       matrix which scales by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfPostScaleMat</B>: <I>dst</I> = <I>m</I> * S(<I>x</I>,<I>y</I>,<I>z</I>), where S(<I>x</I>,<I>y</I>,<I>z</I>) is the
+       matrix which scales by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfAddMat</B>: <I>dst</I> = <I>m1</I> + <I>m2</I>.  Sets <I>dst</I> to the sum of <I>m1</I> and
+       <I>m2</I>.
+
+       <B>pfSubMat</B>: <I>dst</I> = <I>m1</I> - <I>m2</I>.  Sets <I>dst</I> to the difference of <I>m1</I>
+       and <I>m2</I>.
+
+       <B>pfScaleMat</B>: <I>dst</I> = <I>s</I> * <I>m</I>.  Sets <I>dst</I> to the product of the
+       scalar <I>s</I> and the matrix <I>m</I>.  This multiplies the full 4X4
+       matrix and is not a 3D geometric scale.
+
+       <B>pfTransposeMat</B>: <I>dst</I> = Transpose(<I>m</I>).  Sets <I>dst</I> to the
+       transpose of <I>m</I>.
+
+       <B>pfMultMat</B>: <I>dst</I> = <I>m1</I> * <I>m2</I>.  Sets <I>dst</I> to the product of <I>m1</I>
+       and <I>m2</I>.
+
+       <B>pfPostMultMat</B>: <I>dst</I> = <I>dst</I> *<I>m</I>.  Postmultiplies <I>dst</I> by <I>m</I>.
+
+       <B>pfPreMultMat</B>: <I>dst</I> = <I>m</I> * <I>dst</I>.  Premultiplies <I>dst</I> by <I>m</I>.
+
+       <B>pfInvertFullMat</B>, <B>pfInvertAffMat</B>, <B>pfInvertOrthoMat</B>,
+       <B>pfInvertOrthoNMat</B>, and <B>pfInvertIdentMat</B>, set <I>dst</I> to the
+       inverse of <I>m</I> for general, affine, orthogonal, orthonormal
+       and identity matrices respectively.  They are listed here
+       in order of decreasing generality and increasing speed.
+       If the matrix <I>m</I> is not of the type specified in the rou-
+
+       <B>pfAlmostEqualMat</B>(m1, m2, tol).  Tests for approximate ele-
+       ment-by-element equality of two matrices <I>m1</I> and <I>m2</I>.  It
+       returns FALSE or TRUE depending on whether the absolute
+       value of the difference between each pair of elements is
+       less than the tolerance <I>tol</I>.  Macro equivalent:
+       <B>PFALMOST_EQUAL_MAT</B>.
+
+
+       Routines can accept the same matrix as source, destina-
+       tion, or as a repeated operand.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Some of these routines use pfSinCos and pfSqrt, which are
+       faster but have less resolution than the libm counter-
+       parts.  (See <B>pfSinCos</B>)
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfSinCos, pfSqrt, pfVec3, pfVec4
+
+
+
+                                                    pfMatrix(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>
+<TITLE>pfEventView</TITLE>
+</HEAD>
+<BODY>
+<H1>pfEventView</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfEventView(3pf)                                 pfEventView(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfInitializeEvents,</B>   <B>pfEventSampleOn,</B>   <B>pfEventSampleOff,</B>
+       <B>pfWriteEvents,</B> <B>pfResetEvents</B> -  Accumulate  internal  Per-
+       former timing events.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void   <B>pfInitializeEvents</B>(void);
+
+       void   <B>pfEventSampleOn</B>(void);
+
+       void   <B>pfEventSampleOff</B>(void);
+
+       void   <B>pfWriteEvents</B>(char *filename);
+
+       void   <B>pfResetEvents</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL Performer is instrumented to generate internal tim-
+       ing events and write them into  a  file  upon  application
+       program  request.  Each event has a start time a nd an end
+       time. Together they bind the execution of important  parts
+       of  a Performer frame in the various Perforfmer processes.
+
+       The captured event durations are similar to the  durations
+       presented  in  <B>pfFrameStats</B>. However, <B>EventView</B> events can
+       be written to a file and analyzed offline - after the exe-
+       cution  of a Performer program completes.  In addition, an
+       application program can design its private set  of  events
+       and  can  merge them into the same output file as the Per-
+       former internal events.
+
+       OpenGL  Performer  supplies  an  analysis  program  called
+       <B>evanalyzer</B>  for  generating  a graphic display of the cap-
+       tured events.
+
+       <B>pfInitializeEvents</B>  initializes  the  internal   Performer
+       event  capture  mechanism.  An  application must call this
+       function before calling <B>pfConfig</B> in  order  to  initialize
+       the event-capture data structures. All other event capture
+       functions should be called after <B>pfInitializeEvents</B>.
+
+       <B>pfEventSampleOn</B> starts event capturing. Immediately  after
+       this  function  is  called, all Performer generated timing
+       events will be logged for future saving into a file.  Per-
+       former  will  log  a  limited  number of events (currently
+       10000 events). No events will be logged after  this  limit
+       is reached.
+
+       <B>pfEventSampleOff</B>  stops event capturing. No events will be
+       logged after this call.
+
+       <B>pfWriteEvents</B> writes out the currently logged events  into
+       a  disk  file  <I>filename</I>.  The  written events can be later
+       The simplest way to use pfEventView is to  use  only  Per-
+       former-internal events.  In this case, an application pro-
+       gram may look like:
+
+
+       main()
+       {
+           pfInit();
+
+           // Initialize event capture.
+           pfInitializeEvents();
+
+           pfConfig();
+
+           // Create window &amp; scene graph.
+           ....
+
+           // Start event capture
+           pfEventSampleOn();
+
+           for (i = 0 ; i &lt; numFrames ; i ++)
+           {
+               pfSync();
+               pfFrame();
+           }
+
+           // Stop event capture.
+           pfEventSampleOff();
+
+           // Write to file.
+           pfWriteEvents("events.timefile");
+       }
+
+
+       After the program completes, one can analyze the generated
+       events using the command: <I>evanalyzer</I> <I>events.timefile</I>.
+
+
+   <B>Sample</B> <B>use</B> <B>of</B> <B>pfEventView:</B>
+   <B>A</B> <B>more</B> <B>complex</B> <B>case.</B>
+       In a more complex case, an application has some private
+       events that it wishes to add to the captured event file.
+       We achieve this in two stages:
+
+       <B>Stage</B> <B>I:</B>
+       We define application private events in a file. The fol-
+       lowing example defines a single event named <I>myDrawCB</I> and
+       assigns a single information slot of type integer for this
+       event.
+
+
+       file "myEvents.timefile";
+       max_events 10000;
+       c_file "myEvents.c";
+       h_file "myEvents.h";
+
+       active true;
+
+       conditional_sampling true;
+                name "Something" ;
+                type int ;
+                };
+           };
+
+
+       Running <B>evpp</B> on above file creates the two files
+       <I>myEvents.c</I> and <I>myEvents.h</I>. The application should compile
+       and link with the newly generated file <I>myEvents.c</I>. The
+       file <I>myEvents.h</I> contains macros that the application uses
+       for controling event capture.
+
+       <B>Stage</B> <B>II:</B>
+       In the application code below, we generate an event of
+       type myDrawCB in a DRAW callback of some node in the scene
+       graph. Every time we generate an event, we assign a value
+       to its information slot:
+
+
+
+       int pre_draw_cb(pfTraverser *trav, void *userData)
+       {
+           int        someValue;
+
+           // Mark the start of private event MyDrawCB.
+           EVENT_START_MYDRAWCB;
+
+           // Assign value to the information field of this event.
+           EVENT_MYDRAWCB_INFO_CB_Info (someValue);
+
+           ... Run callback code.
+
+           // Mark the end of private event MyDrawCB.
+           EVENT_END_MYDRAWCB;
+       }
+
+       main()
+       {
+           pfGeode *geode;
+
+           pfInit();
+
+           // Initialize Performer-internal event capture.
+           pfInitializeEvents();
+
+           // Initialize application-private event capture.
+           EVENT_INIT;
+
+           pfConfig();
+
+           // Create window &amp; scene graph.
+           ....
+
+           // Setup DRAW callback on a node.
+           pfNodeTravFuncs(geode, PFTRAV_DRAW, pre_draw_cb, NULL);
+
+           // Start event capture on all initialized event sets (Performer-internal
+           // and application-private).
+           EVENT_SAMPLE_ALL_ON;
+           // Stop event capture on all initialized event sets..
+           EVENT_SAMPLE_ALL_OFF;
+
+           // Write all captured events from all initialized sets to a file.
+           // Since we named a file in the evpp input file,
+           // we need not specify it here.
+           EVENT_WRITE_ALL;
+       }
+
+
+
+       As in the first example, after the program completes, one
+       can analyze the generated events using the command: <I>evana-</I>
+       <I>lyzer</I> <I>myEvents.timefile</I>. This time the file contains Per-
+       former-internal and application-private (myDrawCB) events.
+       Clicking the right-hand mouse button on the line marked
+       myDrawCB can toggle the display of the information field
+       on this event.
+
+       Note that we didn't have to start/stop sampling of Per-
+       former-internal events.  The macros <B>EVENT_SAMPLE_ALL_ON</B>
+       and <B>EVENT_SAMPLE_ALL_OFF</B> start and stop sampling for all
+       currently initialized event sets.
+
+       The manual page for <B>evpp</B> contains more information about
+       generating application-private event types.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       EventView was originally written by Ran Yakir from BVR
+       Systems.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>evpp</B>, <B>evhist</B>, <B>evanalyzer</B>
+
+
+
+                                                 pfEventView(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

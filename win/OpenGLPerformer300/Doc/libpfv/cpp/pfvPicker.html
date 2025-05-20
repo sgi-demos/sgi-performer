@@ -1,0 +1,304 @@
+<HTML>
+<HEAD>
+<TITLE>pfvPicker</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvPicker</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvPicker(3pf)                                     pfvPicker(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvPicker</B> - Coordinate user-interaction with 3D scene ele-
+       ments
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvPicker.h&gt;
+
+       int              <B>pfvPicker::getState</B>();
+
+       static void      <B>pfvPicker::printState</B>(char*t, int s);
+
+       pfScene*         <B>pfvPicker::getScene</B>();
+
+       void             <B>pfvPicker::setScene</B>( pfScene* _scene );
+
+       pfChannel*       <B>pfvPicker::getChannel</B>();
+
+       void             <B>pfvPicker::setChannel</B>(pfChannel*_chan);
+
+       int              <B>pfvPicker::setNodeDataSlot</B>(int slot_index);
+
+       int              <B>pfvPicker::setNodeDataSlot</B>(char* slot_name);
+
+       int              <B>pfvPicker::getNodeDataSlot</B>();
+
+       virtual void     <B>pfvPicker::update</B>();
+
+       pfvInteractor*   <B>pfvPicker::pick</B>();
+
+       virtual int      <B>pfvPicker::computeIsectSeg</B>();
+
+       void             <B>pfvPicker::getPickResults</B>(pfvInteractor** ia);
+
+       void             <B>pfvPicker::getPickResults</B>(pfNode** node);
+
+       pfHit **         <B>pfvPicker::getPickList</B>();
+
+       pfvSelector*     <B>pfvPicker::getDefaultSelector</B>();
+
+       pfvSelector*     <B>pfvPicker::setDefaultSelector</B>(pfvSelector* s);
+
+       pfvSelector*     <B>pfvPicker::getCurSelector</B>();
+
+       pfvInteractor*   <B>pfvPicker::getCurInteractor</B>();
+
+       virtual
+                        int      <B>pfvPicker::grantRequest</B>(pfvPickerRequest* req,
+                          int event=0);
+
+       virtual int      <B>pfvPicker::setState</B>(int s,      pfvSelec-
+                          tor*sel, pfvInteractor* ia);
+
+       virtual int      <B>pfvPicker::collectEvents</B>();
+
+       pfList*          <B>pfvPicker::getEventList</B>();
+
+       <B>pfvPicker::getState()</B> returns the current state of picker.
+       Returned  value  is a bitmask. The following bits could be
+       set:
+
+       PFPICKER_ALLOW_HLITE indicates that hliting  is  currently
+       ON.  ie, the picker will determine which scene element has
+       current focus by carrying out intersection tests on  every
+       frame. The pfvInteractor associated with the picked geome-
+       try will be given a chance to accept hlite state.
+
+       PFPICKER_FOCUS_EVENT indicates that hliting  is  currently
+       OFF,  and  picker will not carry out intersection tests on
+       each frame unless events have  been  generated,  in  which
+       case an intersection test will determine which geometry is
+       currently in focus, and events will be sent to the  pfvIn-
+       teractor associated with such geometry.
+
+       PFPICKER_HLITE  indicates  that some pfvInteractor is cur-
+       rently detaining hlited status. A handle to this pfvInter-
+       actor      can      be     obtained     through     method
+       <B>pfvPicker::getCurInteractor()</B>.
+
+       PFPICKER_INTERACT indicates  that  some  pfvInteractor  is
+       currently  carrying out interaction. A handle to this pfv-
+       Interactor    can    be    obtained     through     method
+       <B>pfvPicker::getCurInteractor()</B>.
+
+       PFPICKER_SELECT  indicates  that  some pfvSelector is cur-
+       rently managing object selection. A handle to this  pfvSe-
+       lector      can     be     obtained     through     method
+       <B>pfvPicker::getCurSelector()</B>.
+
+       PFPICKER_MANIP that some pfvSelector is currently carrying
+       out  interaction while managing object selection. A handle
+       to  this  pfvSelector  can  be  obtained  through   method
+       <B>pfvPicker::getCurSelector()</B>.
+
+       <B>pfvPicker::printState()</B> prints out a list of tokens repre-
+       senting current picker state and may be  used  for  debug-
+       ging.
+
+       <B>pfvPicker::getScene()</B>  returns  a  handle  to  the pfScene
+       associated with picker.
+
+       <B>pfvPicker::setScene()</B> associates a pfScene to picker. This
+       is  the scene that will be traversed by picker in order to
+       determine which scene elements and corresponding pfvInter-
+       actors have current focus.
+
+       <B>pfvPicker::getChannel()</B>  returns a handle to the pfChannel
+       associated with picker.
+
+       <B>pfvPicker::setChannel()</B>  associates  pfChannel  _chan   to
+       picker.   Note  that  pfScene  associated with picker will
+       automatically be  updated  to  be  equal  to  the  pfScene
+       returned by _chan-&gt;getScene.
+
+       <B>pfvPicker::setNodeDataSlot(int</B>    <B>slot_index)</B>   associates
+       picker  with userslot with name slot_name. This means that
+       when a pfNode is  found  to  be  under  current  focus,  a
+       pointer  to  pfvInteractor  will  be  looked for at node's
+       userslot with name  slot_name  (see  man  page  for  pfOb-
+       ject::getNamedUserDataSlot).  Note  that this method looks
+       up and stores the slot index associated with slotname.  If
+       a slot name with such name does not exist, it will be cre-
+       ated by this call.
+
+       <B>pfvPicker::getNodeDataSlot()</B> returns the slot index  asso-
+       ciated  with  picker.  If  no  data slot has been assigned
+       through <B>pfvPicker::setNodeDataSlot</B>,  this  method  returns
+       -1.
+
+       <B>pfvPicker::update</B>  instructs  picker to carry out its per-
+       frame   functionality.   If   picker's   state    includes
+       PFPICKER_ALLOW_HLITE,  picker  will  start  by determining
+       which pfNode has current focus, and will dispatch endHlite
+       and  startHlite callbacks to pfvInteractors falling out of
+       and into focus respectively.
+
+       Note that if picker's state also includes PFPICKER_SELECT,
+       current selector will be asked to grant permissions before
+       other pfvInteractors will be offered  the  opportunity  to
+       hlite. This is done through method pfvSelector::getPermis-
+       sions. (see man page for pfvSelector).
+
+       After dealing with hlite updates, picker will examine  the
+       list  of  events  that  have been collected since the last
+       call to <B>pfvPicker::update</B>.  Events are  collected  through
+       the virtual method pfvPicker::collectEvents, thus the type
+       of events collected by picker depends on the actual picker
+       implementation. (see man pages for pfvMousePicker and pfv-
+       InputMngrPicker for two  examples  of  picker  implementa-
+       tions).   If  no  events have been collected, a NULL event
+       will be added to event list.
+
+       The list of collected events is  then  examined,  and  for
+       each event, picker will do the following:
+
+       if  picker  state includes PFPICKER_MANIP, event is passed
+       on to current selector through pfvSelector::updateManip,
+
+       else if picker state includes PFPICKER_INTERACT, event  is
+       passed   on  to  current  interactor  through  pfvInterac-
+       tor::updateInteraction.
+
+       else if picker state  includes  PFPICKER_HLITE,  event  is
+       passed   on  to  current  interactor  through  pfvInterac-
+       tor::updateHlite.
+
+       else if picker state includes PFPICKER_FOCUS_EVENT, picker
+       will isect the scene to determine if some geometry is cur-
+       rently under focus, and will look for a pointer to  pfvIn-
+       teractor  in  pfNodes'  user slots.  If a pfvInteractor is
+       found, event will be passed on to it  through  pfvInterac-
+       tor::specialFocus.
+
+       Note  that NULL events (inserted by picker on frames where
+
+       <B>pfvPicker::pick()</B> causes a 3d segment into the 3d scene to
+       be  computed, and an intersection test carried out between
+       that segment and 3d geometry contained in  scene.  The  3d
+       segment  that  will  be tested for intersection depends on
+       the actual picker implementation. Both pfvMousePicker  and
+       pfvInputMngrPicker  will  compute  isect  segment based on
+       current mouse position. Other pickers could be implemented
+       which compute their isect segment based on the position of
+       a tracked input device, such as a space wand, for example.
+
+       <B>pfvPicker::computeIsectSeg()</B>  is  the  virtual method that
+       picker will call in order to compute the 3D  segment  that
+       will  be  used  for  scene  intersection. Aaplication code
+       should never need to call this method directly.
+
+       <B>pfvPicker::getPickResults(pfvInteractor**</B> <B>ia)</B> will copy  a
+       pointer to the pfvInteractor assigned to the geometry that
+       was picked by the last  call  to  pfvPicker::pick.  If  no
+       geometry  was picked, or if no pfvInteractors were associ-
+       ated with picked geometry, this method returns NULL.
+
+       <B>pfvPicker::getPickResults(pfNode**</B>  <B>node)</B>  will   copy   a
+       pointer  to the pfNode that was picked by the last call to
+       pfvPicker::pick. If no geometry was  picked,  this  method
+       returns NULL.
+
+       <B>pfvPicker::getPickList()</B>  returns a pointer to an array of
+       pfHit  pointers,  each  pointing  to  a  pfHit  record  as
+       returned  by  picker's intersection test. If multiple hits
+       are returned, the first element of the returned array will
+       point  to  the  pfHit  record corresponding to the nearest
+       intersection point.
+
+       Note that in current implementation of pfvPicker only  one
+       pick  result  is  returned  as  the  first  element of the
+       returned array.
+
+       The following example shows how to obtain a pointer to the
+       pfGeoSet picked by picker's isect traversal:
+
+
+           pfvPicker* picker;
+           ...
+           p-&gt;pick();
+           pfHits**hits = p-&gt;getPickedList();
+           pfGeoSet* gset;
+           if(hits[0])
+               hits[0]-&gt;query(PFQHIT_GSET,&amp;gset);
+
+
+       <B>pfvPicker::setDefaultSelector()</B> sets the default selector
+       for picker.  If a default selector has been set, picker
+       will automatically make it the current selector whenever
+       state would otherwise have no current selector.
+
+       <B>pfvPicker::getDefaultSelector()</B> returns a pointer to
+       picker's default selector, if one has been set through
+       <B>pfvPicker::setDefaultSelector()</B>, or NULL otherwise.
+       PFPICKER_INTERACT, else it will return NULL.
+
+       <B>pfvPicker::setState()</B> requests a state change for picker.
+       Parameter s indicates the desired new state. If state s
+       implies that a current interactor or current selector
+       should be known to picker, the sel and ia arguments will
+       be used to provide pointers to the desired current selec-
+       tor and interactor. Note that this method may trigger
+       interactor and/or selector callbacks to be called by
+       picker in order to inform them of the state change.
+
+       <B>pfvPicker::grantRequest</B> is an alternative method for
+       requesting a new state for picker. The argument is a
+       pointer to a pfvPickerRequest structure which contains
+       three members: an integer indicating desired new state, a
+       pointer to pfvInteractor and one to pfvSelector indicating
+       the desired current interactor and/or selector.
+
+       <B>pfvPicker::collectEvents()</B> is the virtual method that
+       picker will call in order to produce a list of all events
+       generated since last frame.  Aaplication code should never
+       need to call this method directly.
+
+       <B>pfvPicker::getEventList()</B> can be called to obtain a
+       pointer to a list of all the events collected by the last
+       call to <B>pfvPicker::collectEvents()</B>.
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       For examples of uses of the pfvPicker API, look at the
+       sample code in /usr/share/Per-
+       former/src/pguide/libpfv/picker and the README file con-
+       tained in that directory.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvInputMngr, pfvMousePicker, pfvInputMngrPicker, pfvIn-
+       teractor, pfvSelector
+
+
+
+                                                   pfvPicker(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

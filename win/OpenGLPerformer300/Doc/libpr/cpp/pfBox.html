@@ -1,0 +1,183 @@
+<HTML>
+<HEAD>
+<TITLE>pfBox</TITLE>
+</HEAD>
+<BODY>
+<H1>pfBox</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfBox(3pf)                                             pfBox(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfBox</B> - Operate on axis-aligned bounding boxes
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoMath.h&gt;
+
+       void*   <B>pfBox::operator</B> <B>new</B>(size_t);
+
+       void*   <B>pfBox::operator</B> <B>new</B>(size_t, void *arena);
+
+               <B>pfBox::pfBox</B>();
+
+               <B>pfBox</B>(const pfVec3&amp; _min, const pfVec3&amp; _max);
+
+       void    <B>pfBox::makeEmpty</B>(void);
+
+       void    <B>pfBox::extendBy</B>(const pfVec3 &amp;pt);
+
+       void    <B>pfBox::extendBy</B>(const pfBox *box);
+
+       void    <B>pfBox::around</B>(const pfVec3 *pts, int npt);
+
+       void    <B>pfBox::around</B>(const pfBox **boxes, int nbox);
+
+       void    <B>pfBox::around</B>(const pfSphere **sphs, int nsph);
+
+       void    <B>pfBox::around</B>(const pfCylinder **cyls, int ncyl);
+
+       int     <B>pfBox::contains</B>(const pfVec3 &amp;pt);
+
+       int     <B>pfBox::contains</B>(const pfBox *box2);
+
+       int     <B>pfBox::contains</B>(const pfSphere *sphere);
+
+       int     <B>pfBox::isect</B>(const pfSeg* seg,          float* d1,
+                 float* d2);
+
+       void    <B>pfBox::xform</B>(const pfBox *box,         const pfMa-
+                 trix &amp;xform);
+
+
+               struct pfBox
+               {
+                   pfVec3      min;
+                   pfVec3      max;
+               };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfBox is an axis-aligned box which can be used for
+       intersection tests and for maintaining bounding informa-
+       tion about geometry.  A box represents the axis-aligned
+       hexahedral volume: (x, y, z) where min[0] &lt;= x &lt;= max[0],
+       min[1] &lt;= y &lt;= max[1] and min[2] &lt;= z &lt;= max[2].  pfBox is
+       a public struct whose data members <I>min</I> and <I>max</I> may be
+       heap if <I>arena</I> is NULL.  <B>new</B> allocates a pfBox from the
+       default memory arena (see <B>pfGetSharedArena</B>).  pfBoxes can
+       also be created automatically on the stack or statically.
+       pfBoxes allocated with <B>new</B> can be deleted with <B>delete</B> or
+       <B>pfDelete</B>.
+
+       <B>pfBox::makeEmpty</B> sets the pfBox to appear empty to extend
+       operations.
+
+       <B>pfBox::extendBy</B> extends the size of the pfBox to include
+       the point <I>pt</I>.
+
+       <B>pfBox::extendBy</B> extends the size of the pfBox to include
+       the box <I>box</I>.
+
+       The variations of the member function <B>pfBox::around</B> set
+       the pfBox to be an axis-aligned box encompassing the given
+       primitives.  <I>npt</I>, <I>nbox</I>, <I>ncyls</I> and <I>nsph</I> are the number of
+       points, boxes, and spheres in the respective primitive
+       lists.
+
+       <B>pfBox::contains(const</B> <B>pfVec3,</B> <B>...)</B> returns <B>TRUE</B> or <B>FALSE</B>
+       depending on whether the point <I>pt</I> is in the interior of
+       the specified box.
+
+       The return value from <B>pfBox::contains(const</B> <B>pfBox*,</B> <B>...)</B>
+       is the OR of one or more bit fields.  The returned value
+       may be:
+
+              <B>PFIS_FALSE</B>:
+                   The intersection of the  box argument and the
+                   box is empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+                   The intersection of the  box argument and the
+                   box is definitely non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+                   The  box argument is non-empty and lies
+                   entirely inside the  box.
+
+       The return value from <B>pfBox::contains(const</B> <B>pfSphere*)</B> is
+       the OR of one or more bit fields.  The returned value may
+       be:
+
+              <B>PFIS_FALSE</B>:
+                   The intersection of the box and the sphere is
+                   empty, or the box is empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+                   The intersection of the box and the sphere is
+                   non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+                   The sphere lies entirely inside the box, or
+                   the sphere is empty.
+
+       <B>pfBox::isect</B> intersect the line segment <I>seg</I> with the vol-
+       ume of an axis-aligned pfBox.  The possible return values
+                   interior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_END_IN</B>:
+                   The ending point of <I>seg</I> lies in the interior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B> |
+              <B>PFIS_START_IN</B> | <B>PFIS_END_IN</B>:
+                   Both end points of <I>seg</I> lie in the interior.
+
+       If <I>d1</I> and <I>d2</I> are non-NULL, on return from <B>pfBox::isect</B>
+       they contain the starting and ending positions of the line
+       segment (0 &lt;= d1 &lt;= d2 &lt;= seg-&gt;length) intersected with
+       the specified volume.
+
+       <B>pfBox::xform</B> sets the pfBox to a box which contains <I>box</I> as
+       transformed by the matrix <I>xform</I>, i.e. a box around (<I>box</I> *
+       <I>xform</I>).  Because transformed boxes must be axis-aligned,
+       most rotations cause the box to grow, and the transforma-
+       tion is not reversed by the inverse rotation.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The bit fields returned by the contains functions are
+       structured so that bitwise AND-ing the results of sequen-
+       tial tests can be used to compute composite results, e.g.
+       testing exclusion against a number of half spaces.
+
+       Because pfBoxes are axially aligned, they tend to grow
+       when transformed.  Hence, they are best for static geome-
+       try or other cases in which the bounding geometry does not
+       need to be transformed.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfSeg, pfSphere
+
+
+
+                                                       pfBox(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

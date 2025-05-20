@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<TITLE>pfVec2</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVec2</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVec2(3pf)                                           pfVec2(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfAddScaledVec2,</B>  <B>pfAddVec2,</B>  <B>pfAlmostEqualVec2,</B> <B>pfCombin-</B>
+       <B>eVec2,</B> <B>pfCopyVec2,</B> <B>pfDistancePt2,</B> <B>pfDotVec2,</B>  <B>pfEqualVec2,</B>
+       <B>pfLengthVec2,</B>  <B>pfNegateVec2,</B> <B>pfNormalizeVec2,</B> <B>pfScaleVec2,</B>
+       <B>pfSetVec2,</B> <B>pfSqrDistancePt2,</B> <B>pfSubVec2</B> - Set  and  operate
+       on 2-component vectors
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       #include &lt;Performer/prmath.h&gt;
+
+       void    <B>pfAddScaledVec2</B>(pfVec2 dst,       const pfVec2 v1,
+                 float s, const pfVec2 v2);
+
+       void    <B>pfAddVec2</B>(pfVec2 dst,             const pfVec2 v1,
+                 const pfVec2 v2);
+
+       int     <B>pfAlmostEqualVec2</B>(const pfVec2 v1,
+                 const pfVec2 v2, float tol);
+
+       void    <B>pfCombineVec2</B>(pfVec2 dst,                float s1,
+                 const pfVec2 v1, float s2, const pfVec2 v2);
+
+       void    <B>pfCopyVec2</B>(pfVec2 dst, const pfVec2 v);
+
+       float   <B>pfDistancePt2</B>(const pfVec2 pt1, const pfVec2 pt2);
+
+       float   <B>pfDotVec2</B>(const pfVec2 v1, const pfVec2 v2);
+
+       int     <B>pfEqualVec2</B>(const pfVec2 v1, const pfVec2 v2);
+
+       float   <B>pfLengthVec2</B>(const pfVec2 v);
+
+       void    <B>pfNegateVec2</B>(pfVec2 dst, const pfVec2 v);
+
+       float   <B>pfNormalizeVec2</B>(pfVec2 v);
+
+       void    <B>pfScaleVec2</B>(pfVec2 dst, float s, const pfVec2 v);
+
+       void    <B>pfSetVec2</B>(pfVec2 dst, float x, float y);
+
+       float   <B>pfSqrDistancePt2</B>(const pfVec2 pt1,
+                 const pfVec2 pt2);
+
+       void    <B>pfSubVec2</B>(pfVec2 dst,             const pfVec2 v1,
+                 const pfVec2 v2);
+
+
+               typedef float pfVec2[2];
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Math functions for 2-component vectors.  Most of these
+       routines have macro equivalents.
+
+       <B>pfNegateVec2</B>(dst, v): <I>dst</I> = -<I>v</I>.  Macro equivalent is
+       <B>PFNEGATE_VEC2</B>.
+
+       <B>pfAddVec2</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> + <I>v2</I>.  Sets <I>dst</I> to the
+       sum of vectors <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFADD_VEC2</B>.
+
+       <B>pfSubVec2</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> - <I>v2</I>.  Sets <I>dst</I> to the
+       difference of <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFSUB_VEC2</B>.
+
+       <B>pfAddScaledVec2</B>(dst, v1, s, v2): <I>dst</I> = <I>v1</I> + <I>s</I> * <I>v2</I>.  Sets
+       <I>dst</I> to the vector <I>v1</I> plus the vector <I>v2</I> scaled by <I>s</I>.
+       Macro equivalent is  <B>PFADD_SCALED_VEC2</B>.
+
+       <B>pfScaleVec2</B>(dst, s, v): <I>dst</I> = <I>s</I> * <I>v1</I>.  Sets <I>dst</I> to the
+       vector <I>v</I> scaled by <I>s</I>.  Macro equivalent is  <B>PFSCALE_VEC2</B>.
+
+       <B>pfCombineVec2</B>(dst, s1, v1, s2, v2): <I>dst</I> = <I>s1</I> * <I>v1</I> + <I>s2</I> *
+       <I>v2</I>.  Sets <I>dst</I> to be the linear combination of <I>v1</I> and <I>v2</I>
+       with scales <I>s1</I> and <I>s2</I>, respectively.  Macro equivalent:
+       <B>PFCOMBINE_VEC2</B>.
+
+       <B>pfNormalizeVec2</B>(v):  <I>v</I> = <I>v</I> / length(<I>v</I>).  Normalizes the
+       vector <I>v</I> to have unit length and returns the original
+       length of the vector.
+
+       <B>pfDotVec2</B>(v1, v2) = <I>v1</I> dot <I>v2</I> = <I>v1</I>[0] * <I>v2</I>[0] + <I>v1</I>[1] *
+       <I>v2</I>[1] .  Returns dot product of the vectors <I>v1</I> and <I>v2</I>.
+       Macro equivalent is  <B>PFDOT_VEC2</B>.
+
+       <B>pfLengthVec2</B>(v) = |v| = sqrt(<I>v</I> dot <I>v</I>).  Returns length of
+       the vector <I>v</I>.  Macro equivalent is  <B>PFLENGTH_VEC2</B>.
+
+       <B>pfSqrDistancePt2</B>(v1, v2) = (<I>v1</I> - <I>v2</I>) dot (<I>v1</I> - <I>v2</I>).
+       Returns square of distance between two points <I>v1</I> and <I>v2</I>.
+       Macro equivalent is  <B>PFSQR_DISTANCE_PT2</B>.
+
+       <B>pfDistancePt2</B>(v1, v2) = sqrt((<I>v1</I> - <I>v2</I>) dot (<I>v1</I> - <I>v2</I>)).
+       Returns distance between two points <I>v1</I> and <I>v2</I>.  Macro
+       equivalent is  <B>PFDISTANCE_PT2</B>.
+
+       <B>pfEqualVec2</B>(v1, v2) = (<I>v1</I> == <I>v2</I>).  Tests for strict compo-
+       nent-wise equality of two vectors <I>v1</I> and <I>v2</I> and returns
+       FALSE or TRUE.  Macro equivalent is  <B>PFEQUAL_VEC2</B>.
+
+       <B>pfAlmostEqualVec2</B>(v1, v2, tol).  Tests for approximate
+       component-wise equality of two vectors <I>v1</I> and <I>v2</I>.  It
+       returns FALSE or TRUE depending on whether the absolute
+       value of the difference between each pair of components is
+       less than the tolerance <I>tol</I>.  Macro equivalent is
+       <B>PFALMOST_EQUAL_VEC2</B>.
+
+       Routines can accept the same vector as source, destina-
+       tion, or as a repeated operand.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfMatrix, pfVec3, pfVec4
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

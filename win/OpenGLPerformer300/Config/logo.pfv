@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+<display>
+  <pipe>
+    <pwin>
+      <size>600,350</size>
+    </pwin>
+  </pipe>
+</display>
+
+<Module>
+  <class>pfvmLogo</class>
+  <data>
+
+    <logo>
+      <TexName>/usr/share/Performer/data/pfgroup.rgb</TexName>
+      <pos>0,1,0,1</pos>
+      <color>1,1,1,1</color>
+    </logo>
+
+    <logo>
+      <TexName>/usr/share/Performer/data/logo.128.rgb</TexName>
+      <Pos>0.01,0.11,0.02,0.2</Pos>
+      <TexCoords>0,1,0,1</TexCoords>
+      <Color>1,1,1,1</Color>
+    </logo>
+
+    <logo>
+      <TexName>/usr/share/Performer/data/henry.rgb</TexName>
+      <Pos>0.72,0.80,0.75,0.95</Pos>
+      <TexCoords>0.2,0.9,0,1</TexCoords>
+    </logo>
+
+  </data>
+</Module>
+
+</viewer>
+
+

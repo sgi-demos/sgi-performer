@@ -1,0 +1,161 @@
+<HTML>
+<HEAD>
+<TITLE>pfuGLXWinopen</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuGLXWinopen</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuGLXWinopen(3pf)                             pfuGLXWinopen(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuOpenXDisplay,</B>   <B>pfuGLXWinopen,</B>   <B>pfuGetGLXWin,</B>  <B>pfuGet-</B>
+       <B>GLXDisplayString,</B>  <B>pfuGLXAllocColormap,</B>   <B>pfuGLXMapcolors,</B>
+       <B>pfuGLMapcolors,</B>     <B>pfuMapWinColors,</B>     <B>pfuMapPWinColors,</B>
+       <B>pfuPrintWinFBConfig,</B> <B>pfuPrintPWinFBConfig,</B> <B>pfuChooseFBCon-</B>
+       <B>fig</B> - Open X display, open GLX window, get GLX window han-
+       dle.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfuXDisplay *    <B>pfuOpenXDisplay</B>(int screen);
+
+       pfuGLXWindow *   <B>pfuGLXWinopen</B>(pfPipe *pipe,    pfPipeWin-
+                          dow* pipewin, const char *name);
+
+       void             <B>pfuGetGLXWin</B>(pfPipe *pipe,     pfuGLXWin-
+                          dow *win);
+
+       const char *     <B>pfuGetGLXDisplayString</B>(pfPipe *pipe);
+
+       int              <B>pfuGLXAllocColormap</B>(pfuXDisplay *dsp,
+                          pfuXWindow win);
+
+       void             <B>pfuGLXMapcolors</B>(pfuXDisplay *dsp,
+                          pfuXWindow win,       pfVec3 *colors,
+                          int loc, int num);
+
+       void             <B>pfuGLMapcolors</B>(pfVec3 *colors,   int loc,
+                          int num);
+
+       void             <B>pfuMapWinColors</B>(pfWindow *win,
+                          pfVec3 *colors, int loc, int num);
+
+       void             <B>pfuMapPWinColors</B>(pfPipeWindow *pwin,
+                          pfVec3 *colors, int loc, int num);
+
+       void             <B>pfuPrintWinFBConfig</B>(pfWindow *win,
+                          FILE *file);
+
+       void             <B>pfuPrintPWinFBConfig</B>(pfPipeWindow *pwin,
+                          FILE *file);
+
+       pfFBConfig       <B>pfuChooseFBConfig</B>(Display *dsp,
+                          int screen,         int *constraints,
+                          void *arena);
+
+
+                        typedef Window      pfuXWindow;
+                        typedef uint   pfuXDisplay;
+
+                        typedef struct _pfuGLXWindow
+                        {
+                            pfPipeWindow *pw;
+                            pfuXDisplay *dsp;
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuInitUtil</B> should be called immediately after <B>pfConfig</B>
+       when using these routines to initialize shared memory used
+       by the utility library.
+
+       <B>pfuOpenXDisplay</B> opens and returns a handle to a connection
+       to the X server on <I>screen</I>.  If <I>screen</I> is 1, then the
+       default display, or that specified by the shell environ-
+       ment variable <B>DISPLAY</B> is used.  <B>pfuOpenXDisplay</B> returns
+       NULL if the X display cannot be opened.  These routines
+       are provided only for compatibility with previous OpenGL
+       Performer releases and new development should use the win-
+       dow system utilities in libpr, such as <B>pfOpenWSConnection</B>
+       and <B>pfOpenScreen</B>.
+
+       <B>pfuGLXWinopen</B> opens and returns a handle to a GLX window
+       for <B>pfPipe</B> <I>pipe</I>, using the existing <B>pfPipeWindow</B> <I>pipewin</I>
+       or making a new <B>pfPipeWindow</B> for <I>pipe</I> if <I>pipewin</I> is NULL.
+       The window's title bar is set to <I>name</I>.
+
+       <B>pfuGetGLXWin</B> returns a handle in <I>win</I> to the GLX window for
+       pfPipe <I>pipe</I>, and returns NULL if no such window can be
+       found.
+
+       <B>pfuGetGLXDisplayString</B> returns the name of the X Display
+       stored for <I>pipe</I>.
+
+       <B>pfuGLXAllocColormap</B> allocates color map entries for the
+       window specified in <I>win</I> and returns the number of colors
+       available. <I>dsp</I> is <I>win</I>'s connection to the X server.
+
+       <B>pfuGLMapcolors</B> replaces <I>num</I> IRIS GL color map entries.
+       <I>win</I>, starting at color map index <I>loc</I>.  The <I>colors</I> array
+       contains the color values to map, normalized in the range
+       [0, 1]. The red component is stored in <I>colors[i][0]</I>, the
+       green component in <I>colors[i][1]</I>, and the blue component in
+       <I>colors[i][2]</I>.  This function is no longer supported.
+
+       <B>pfuGLXMapcolors</B> replaces <I>num</I> color map entries in the X
+       window <I>win</I>, starting at color map index <I>loc</I>.  <I>dsp</I> is a
+       valid X connection.  The <I>colors</I> array contains the color
+       values to map, normalized in the range [0, 1]. The red
+       component is stored in <I>colors[i][0]</I>, the green component
+       in <I>colors[i][1]</I>, and the blue component in <I>colors[i][2]</I>.
+
+       <B>pfuMapWinColors</B> replaces <I>num</I> color map entries in the
+       pfWindow <I>win</I>, starting at color map index <I>loc</I>.  <I>win</I> can be
+       a GLX, or OpenGL/X window. The <I>colors</I> array contains the
+       color values to map, normalized in the range [0, 1]. The
+       red component is stored in <I>colors[i][0]</I>, the green compo-
+       nent in <I>colors[i][1]</I>, and the blue component in <I>col-</I>
+       <I>ors[i][2]</I>.  <B>pfuMapPWinColors</B> is the analogous routine for
+       pfPipeWindows.
+
+       <B>pfuPrintWinFBConfig</B> prints the framebuffer configuration
+       of the pfWindow, <I>win</I>, to the specified file <I>file</I>.  If <I>file</I>
+       is NULL, stderr is used.  <B>pfuPrintPWinFBConfig</B> prints the
+       framebuffer configuration of the pfPipeWindow, <I>pwin</I>, to
+       the specified file <I>file</I>.
+       <B>pfGetCurWSConnection</B> reference page for more information.
+       If the provided screen is (-1), the default screen of the
+       pfWSConnection will be used.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfuInitUtil, pfMultipipe
+
+
+
+                                               pfuGLXWinopen(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

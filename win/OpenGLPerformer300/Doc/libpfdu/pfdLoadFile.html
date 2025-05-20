@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+<TITLE>pfdLoadFile</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdLoadFile</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdConverter(3pf)                               pfdConverter(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdOpenFile,</B>  <B>pfdLoadFile,</B>  <B>pfdStoreFile,</B>  <B>pfdConvertFrom,</B>
+       <B>pfdConvertTo,</B> <B>pfdAddExtAlias,</B>  <B>pfdInitConverter,</B>  <B>pfdExit-</B>
+       <B>Converter,</B>  <B>pfdConverterMode,</B> <B>pfdGetConverterMode,</B> <B>pfdCon-</B>
+       <B>verterVal,</B> <B>pfdGetConverterVal,</B>  <B>pfdConverterAttr,</B>  <B>pfdGet-</B>
+       <B>ConverterAttr,</B>  <B>pfdPrintSceneGraphStats</B>  -  Utilities  for
+       loading object databases into Performer applications.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       FILE*     <B>pfdOpenFile</B>(const char *file);
+
+       pfNode*   <B>pfdLoadFile</B>(const char *fileName);
+
+       int       <B>pfdStoreFile</B>(pfNode *root,     const char *file-
+                   Name);
+
+       pfNode*   <B>pfdConvertFrom</B>(const char *ext, void *root);
+
+       void*     <B>pfdConvertTo</B>(const char *ext, pfNode *root);
+
+       void      <B>pfdAddExtAlias</B>(const char *ext,
+                   const char *alias);
+
+       int       <B>pfdInitConverter</B>(const char *ext);
+
+       int       <B>pfdExitConverter</B>(const char *ext);
+
+       void      <B>pfdConverterMode</B>(const char *ext,      int mode,
+                   int value);
+
+       int       <B>pfdGetConverterMode</B>(const char *ext, int mode);
+
+       void      <B>pfdConverterVal</B>(const char *ext,      int which,
+                   float val);
+
+       float     <B>pfdGetConverterVal</B>(const char *ext, int which);
+
+       void      <B>pfdConverterAttr</B>(const char *ext,     int which,
+                   void *attr);
+
+       void*     <B>pfdGetConverterAttr</B>(const char *ext, int which);
+
+       void      <B>pfdPrintSceneGraphStats</B>(pfNode *node,       dou-
+                   ble elapsedTime);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdOpenFile</B>  searches  through the OpenGL Performer search
+       path for the named file and opens it using fopen(). It  is
+       a  convenience  function  used by several of the functions
+       described here.
+
+       <B>pfdLoadFile</B>  builds  in-memory  data  structures  from  an
+       external  database file.  The filename's extension is used
+       by the file name's extension string.
+
+       <B>pfdConvertFrom</B>  converts the in-memory data structure <I>root</I>
+       of the format specified by <I>ext</I> into an in-memory Performer
+       scene.    <B>pfdConvertTo</B>  reverses the process taking an in-
+       memory Performer scene and converting into  the  specified
+       in-memory format.
+
+       <B>pfdAddExtAlias</B>  registers an alias for the given file name
+       extension.   Whenever  a  file  with  extension  <I>alias</I>  is
+       encountered, the loader for type <I>ext</I> will be used.
+
+       <B>pfdInitConverter</B>  dynamically  links  the converter corre-
+       sponding to the extension <I>ext</I> into the current executable.
+       This  routine  should  be  called  before <B>pfConfig</B> for all
+       extensions that an executable will use to ensure that  any
+       routines  and  static data required at run-time are avail-
+       able in all Performer  processes.   If  the  corresponding
+       loader  is already in the executable, e.g. as a statically
+       linked   object,   <B>pfdInitConverter</B>   takes   no   action.
+       <B>pfdInitConverter</B>  returns  TRUE if the loader is available
+       or FALSE if it could not be found or loaded.
+
+       The search for the converter DSO proceeds through the fol-
+       lowing locations in order:
+
+              1.   In  the directory indicated by the environment
+                   variable PFLD_LIBRARY{,N32,64}_PATH, if it  is
+                   defined.  The empty, "N32" and "64" substrings
+                   correspond to O32, N32 and N64 modes of compi-
+                   lation and execution.
+
+              2.   In the current directory.
+
+              3.   In the directory indicated by the rld environ-
+                   ment variable LD_LIBRARY{,N32,64}_PATH, if  it
+                   is defined.
+
+              4.   In                the                directory
+                   "$PFHOME/usr/lib{,32,64}/libpfdb",   if    the
+                   environment  variable  PFHOME  is defined. The
+                   empty, "32" and "64" lib suffix strings corre-
+                   spond to O32, N32 and N64 modes of compilation
+                   and execution.
+
+              5.   In   the   directory   "$PFHOME/usr/share/Per-
+                   former/lib/libpfdb",  if the environment vari-
+                   able PFHOME is defined.
+
+       The loader DSO name is created as "libpf{-g}.so" where the
+       "-g"  suffix  is  for  a  full symbol table debug version.
+       <B>pfdInitConverter</B> will only load the debug version  of  the
+       converter  DSO  if it is unable to find the optimized ver-
+       sion  of  the  DSO  in  any  of  paths  mentioned   above.
+       <B>pfdLoadFile</B>  also  requires  that  the  DSO version number
+       match that of libpfdu.  When PFLD_LIBRARY{,N32,64}_PATH is
+       set,  <B>pfdLoadFile</B>  prints diagnostic information about the
+       DSO search using <B>pfNotify</B> at the PFNFY_DEBUG  notification
+       level.
+       <B>pfdConverterMode</B>,  <B>pfdGetConverterMode</B>,  <B>pfdConverterAttr</B>,
+       <B>pfdGetConverterAttr</B>,          <B>pfdConverterVal</B>          and
+       <B>pfdGetConverterVal</B>  allow the user to access and alter the
+       modes, attributes and values of specific  loaders.   These
+       modes, attributes and values are defined inside each indi-
+       vidual loader. These functions are provided as a means for
+       the user to communicate with the loaders which are usually
+       loaded as Dynamic Shared Objects at run-time.
+
+       <B>pfdPrintSceneGraphStats</B> uses <B>pfNotify</B> to print some simple
+       statistics  about  the  primitives in the scene graph. The
+       <I>elapsedTime</I> argument is provided by the caller  and  indi-
+       cates  the  time it took for the scene graph to be loaded.
+       It is used by <B>pfdPrintSceneGraphStats</B> to  print  primitive
+       loading  rate  statistics. When the value is zero, none of
+       the loading rate statistics are printed
+
+       The routines that take an extension as an argument may  be
+       passed  a  full  file name, in which case the extension is
+       extracted and used.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+       Very few of the database  DSOs  provided  in  the  current
+       release   support   <B>pfdStoreFile</B>,  none  of  them  support
+       <B>pfdConvertTo</B>, and only the Open Inventor  loader  supports
+       <B>pfdConvertFrom</B>.   More  pervasive  support of these opera-
+       tions is planned for future releases, however, and  devel-
+       opers  of  new database conversion tools are encouraged to
+       provide the  full  set  of  conversion  functions  in  the
+       database tools they develop.
+
+       When  statically  linking  a  loader  library into an exe-
+       cutable that calls  <B>pfdLoadFile</B>,  you  can  use  the  '-u'
+       option  to  ld to force the inclusion of the loader object
+       even though it is never referenced in the executable, e.g.
+       "cc  -o myapp myapp.o -u pfdLoadFile_iv libpfiv_igl.a ..."
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFilePath, pfNotify, ld
+
+
+
+                                                pfdConverter(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

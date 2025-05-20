@@ -1,0 +1,263 @@
+<HTML>
+<HEAD>
+<TITLE>pfvInputMngr</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvInputMngr</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvInputMngr(3pf)                               pfvInputMngr(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvInputMngr</B>  - Track Mouse and Keyboard Input over multi-
+       ple Display Manager Views.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvInput.h&gt;
+
+       static int                     <B>pfvInputMngr::init</B>();
+
+       static
+                                      int                     <B>pfvInputMngr::collectEvents</B>();
+
+       static pfuMouse*               <B>pfvInputMngr::getMouse</B>();
+
+       static pfuEventStream*         <B>pfvInputMngr::getEvents</B>();
+
+       static
+                                      int                     <B>pfvInputMngr::getFocusViewIndex</B>();
+
+       static
+                                      int                     <B>pfvInputMngr::getViewNormXY</B>( float*x,
+                                        float*y );
+
+       static
+                                      int                     <B>pfvInputMngr::getFocusChanIndex</B>();
+
+       static
+                                      pfvDispChan*            <B>pfvInputMngr::getFocusChan</B>();
+
+       static
+                                      int                     <B>pfvInputMngr::getChanNormXY</B>( float*x,
+                                        float*y );
+
+       static
+                                      int                     <B>pfvInputMngr::getChanAbsXY</B>( int*x,
+                                        int*y );
+
+       static
+                                      int                     <B>pfvInputMngr::getFocusPWinIndex</B>();
+
+       static
+                                      int                     <B>pfvInputMngr::getPWinNormXY</B>( float*x,
+                                        float*y );
+
+       static
+                                      int                     <B>pfvInputMngr::getPWinAbsXY</B>( int*x,
+                                        int*y );
+
+       static
+                                      pfvInputMngrCallback*   <B>pfvInputMngr::addCallback</B>( pfvInputMngrCBFunc_t func,
+                                        void* data,
+                                        char* evMask,
+                                        uint64_t viewMask=0 );
+
+       static
+                                      pfvInputMngrCallback*   <B>pfvInputMngr::findCallback</B>(pfvInputMngrCBFunc_t func,
+                                        void*data);
+
+       static
+                                      int                     <B>pfvInputMngr::getNumCallbacks</B>();
+
+       static
+                                      pfvInputMngrCallback*   <B>pfvInputMngr::getCallback</B>(int i);
+
+       static
+                                      int                     <B>pfvInputMngr::dispatchEvents</B>();
+
+       static
+                                      int                     <B>pfvInputMngr::dispatchKeyEvent</B>(int key,
+                                        int viewMask=0);
+
+       static
+                                      char*                   <B>pfvInputMngr::getKeyName</B>(int key);
+
+       static
+                                      int                     <B>pfvInputMngr::getKeyFromName</B>(char*keyName);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvInputMngr class is used to track mouse and keyboard
+       events  over  multiple pipes, pipewindows and channels, as
+       configured by the Display Manager.
+
+       pfvInputMngr makes extensive use of the pfutil library for
+       input collection.
+
+       <B>pfvInputMngr::init</B>  initializes  input  collection  on all
+       pwins created by the pfvDisplayMngr. This function must be
+       called   after   pfvDispMngr::postConfig,   since  pfPipe,
+       pfPipeWindow and pfChannels are expected to  exist  before
+       input  can  be  initialized.  <B>pfvInputMngr::init</B> will call
+       pfuInitMultiChanInput.
+
+       <B>pfvInputMngr::collectEvents</B> will  collect  all  mouse  and
+       keyboard  events  generated  since method was last called,
+       and will carry out useful computation such as establishing
+       which  view  has  current mouse focus, and computing mouse
+       coordinates in channel,pwin  and  view-normalized  coords.
+       Note  that  <B>pfvInputMngr::collectEvents</B>  will call pfuGet-
+       Mouse and pfuGetEvents.
+
+       <B>pfvInputMngr::getMouse</B> returns a pointer to  the  pfuMouse
+       structure  used  by  pfvInputMngr  to  collect  mouse data
+       through pfuGetMouse. This  points  to  a  static  pfuMouse
+       structure within the pfvInputMngr class and will therefore
+       remain valid through the course of the application.
+
+       <B>pfvInputMngr::getEvents</B>   returns   a   pointer   to   the
+       pfuEventStream  structure  used by pfvInputMngr to collect
+       keyboard event data  through pfuGetEvents.  This points to
+       a  static pfuEventStream structure within the pfvInputMngr
+       class and will therefore remain valid through  the  course
+       of the application.
+
+       <B>pfvInputMngr::getFocusViewIndex</B>  returns  the index of the
+       Manager's view-list.  Note that when dragging cursor while
+       keeping one or more buttons pressed, focus is retained  by
+       the  view  over  which  button was first pressed, so it is
+       possible to have a valid focus-view index even if mouse is
+       not over a channel belonging to such view.
+
+       <B>pfvInputMngr::getViewNormXY</B>   will  return  current  mouse
+       coordinates normalized to the  current  focus-view.  View-
+       normalized  coordinates  are computed based on focus-chan-
+       nel's  view-range  settings  (see  man  page  for  pfvDis-
+       pChan::setViewRange).
+
+       <B>pfvInputMngr::getFocusChanIndex</B>  returns  the index of the
+       pfvDispChannel that has current  mouse  focus.  The  index
+       associated  with  a  channel  is  that returned by pfvDis-
+       pChan::getIndex, and represents channel's position in Dis-
+       play  Manager's  channel-list.  If  no channel has current
+       mouse focus, this method returns -1.
+
+       <B>pfvInputMngr::getFocusChan()</B>  returns  a  pointer  to  the
+       pfvDispChan  with  current  mouse focus. If no channel has
+       current mouse focus, this method returns NULL.
+
+       <B>pfvInputMngr::getChanNormXY</B>  returns  the  current  cursor
+       position normalized to focus-channel's viewport.
+
+       <B>pfvInputMngr::getChanAbsXY</B>   returns  the  current  cursor
+       position expressed as integer offsets (in pixels) from the
+       bottom-left  corner  of  viewport  of channel with current
+       focus.
+
+       <B>pfvInputMngr::getFocusPWinIndex</B> returns the index  of  the
+       pfvDispPWin with current mouse focus. The index associated
+       with a pwin is that returned by pfvDispPWin::getIndex, and
+       represents pwin's position in Display Manager's pwin-list.
+
+       <B>pfvInputMngr::getPWinNormXY</B>  will  return  current   mouse
+       coordinates normalized to the current focus-pwin.
+
+       <B>pfvInputMngr::getPWinAbsXY</B>   returns  the  current  cursor
+       position expressed as integer offsets (in pixels) from the
+       bottom-left corner of pipe window with current focus.
+
+       <B>pfvInputMngr::addCallback</B>  registers the callback function
+       func with the Input Manager. data is  a  pointer  to  user
+       data  that will be passed as an argument to callback when-
+       ever it is called by InputMngr.  evMask is  a  zero-termi-
+       nated  string  containing  a  list  of key values to which
+       callback function needs to be associated.  viewMask  is  a
+       64-bit mask indicating that callback should be called only
+       if event (key press) happens over the collection of  views
+       specified by mask.  Note that if mask is equal to 0, call-
+       back will be associated with  all  views.   This  function
+       creates and returns a handle to a new pfvInputMngrCallback
+       object. This pointer can be stored by user so  that  call-
+       back  can  later  be removed, or associated with different
+       keys, or with different views.  See man  page  for  pfvIn-
+       putMngrCallback.
+
+       userData.
+
+       <B>pfvInputMngr::findCallback</B> will look  through  all  regis-
+       tered  pfvInputMngrCallbacks,  and return a pointer to the
+       first one that has func as an  associated  callback  func-
+       tion,  and  data  as  associated userData.  If no matching
+       pfvInputMngrCallback is found, NULL is returned.
+
+       <B>pfvInputMngr::getNumCallbacks</B> returns the number  of  cur-
+       rently registered pfvInputMngrCallbacks.
+
+       <B>pfvInputMngr::getCallback</B>  returns  a  pointer  to the ith
+       pfvInputMngrCallback in global list held by Input  Manager
+       if i is a valid index, else method returns NULL.
+
+       <B>pfvInputMngr::dispatchKeyEvent</B>  can  be used to simulate a
+       key-press event for any given key. The input manager  will
+       go  through  the  list  of pfvInputMngrCallbacks which are
+       currently enabled for that key, and will call  the  corre-
+       sponding  user  callbacks  until  one of them returns non-
+       zero, indicating that key-down event was used (grabbed) by
+       user-callback.   If vMask is non-zero, only user-callbacks
+       associated with pfvInputMngrCallbacks whose  view-mask  is
+       either  zero,  or  the  result  of a bitwise OR on the two
+       masks is itself non-zero are called.
+
+       The method <B>pfvInputMngr::dispatchEvents</B> will look  at  the
+       pfuEventStream  structure  allocated by the Input Manager,
+       and will dispatch callback calls for all events it  finds.
+       Note  that  for  each  event in pfuEventStream struct, the
+       method <B>pfvInputMngr::dispatchKeyEvent</B>  is  called  with  a
+       viewMask  corresponding to the view with current focus, or
+       zero if no view has current focus.
+
+       <B>pfvInputMngr::getKeyName</B> returns a pointer to the name  (a
+       string),  associated with the key-value key. For a list of
+       all   defined   key   values   see   the    header    file
+       /usr/include/Performer/pfv/pfvInput.h.      The    strings
+       returned by <B>pfvInputMngr::getKeyName</B>  can  be  deduced  by
+       removing the PFVKEY_ prefix from the #defined token names.
+       Eg: key= PFVKEY_a, key-name=  "a"  key=  PFVKEY_BACKSLASH,
+       key-name= "BACKSLASH"
+
+       <B>pfvInputMngr::getKeyFromName</B>  returns the key value corre-
+       sponding to the key whose name matches string keyName,  or
+       0 if no key name matches.
+
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvInputMngrCallback,  pfDisplayMngr, pfvDispPWin, pfvDis-
+       pChan, pfDispView,  pfvViewer,  pfuInitIput,  pfuGetMouse,
+       pfuGetEvents
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

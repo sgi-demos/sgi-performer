@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+<TITLE>pfuTimer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuTimer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuTimer(3pf)                                       pfuTimer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuNewTimer,</B>  <B>pfuInitTimer,</B>  <B>pfuStartTimer,</B> <B>pfuEvalTimers,</B>
+       <B>pfuEvalTimer,</B> <B>pfuStopTimer,</B> <B>pfuActiveTimer</B> -  Benchmarking
+       and interval timing facilities.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfuTimer *   <B>pfuNewTimer</B>(void *arena, int size);
+
+       void         <B>pfuInitTimer</B>(pfuTimer *timer,   double start,
+                      double delta,    void (*func)(pfuTimer*),
+                      void *data);
+
+       void         <B>pfuStartTimer</B>(pfuTimer *timer);
+
+       void         <B>pfuEvalTimers</B>(void);
+
+       int          <B>pfuEvalTimer</B>(pfuTimer *timer);
+
+       void         <B>pfuStopTimer</B>(pfuTimer *timer);
+
+       int          <B>pfuActiveTimer</B>(pfuTimer *timer);
+
+
+                    struct _pfuTimer
+                    {
+                        double tstart, tstop, tdelta;
+
+                        int    frames;
+                        double tnow;
+                        double fraction;
+
+                        void   (*func)(struct _pfuTimer *timer);
+                        void   *data;
+                        int    dataSize;
+                    };
+                    typedef struct _pfuTimer pfuTimer;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuTimers</B> provide a real-time, frame rate independent
+       mechanism for defining time-based behavior.  A <B>pfuTimer</B> is
+       typically initialized with start and stop times, a call-
+       back function, and is triggered with <B>pfuStartTimer</B>.  Then
+       each time <B>pfuEvalTimer</B> is called, the function callback
+       will be invoked and can then carry out actions based on
+       the current time.
+
+       <B>pfuNewTimer</B> creates a new <B>pfuTimer</B> structure in <I>arena</I> as
+       well as a user-data memory block of <I>size</I> bytes that is
+       referenced by the <I>data</I> member of the <B>pfuTimer</B> structure.
+
+       <B>pfuInitTimer</B> initializes the starting time (<I>tstart</I>), dura-
+       tion (<I>tdelta</I>), function callback (<I>func</I>), and user data
+       function callback to be invoked.
+
+       When a timer is evaluated, the current time is checked
+       against its active interval defined by [<I>tstart</I>, <I>tstop</I>].
+       If the current time is within this interval, <I>func</I> will be
+       invoked with a pointer to the <B>pfuTimer</B>.  The following
+       elements of the timer will be set:
+
+              <I>frames</I> The number of times the pfuTimer has been
+                     evaluated,
+
+              <I>tnow</I>   The current time in seconds,
+
+              <I>fraction</I>
+                     The fraction of the interval that has
+                     passed, (<I>tnow</I>-<I>tstart</I>)/(<I>tstop</I>-<I>tstart</I>). This
+                     ranges from 0 to 1.
+
+              <I>data</I>   The user-data memory block referenced by the
+                     timer.
+
+       If the current time is not within the active interval, the
+       timer will be removed from the internal timer list.
+
+       <B>pfuStopTimer</B> stops <I>timer</I> and removes it from the internal
+       timer list.
+
+       <B>pfuActiveTimer</B> returns <B>TRUE</B> if <I>timer</I> is active and <B>FALSE</B>
+       otherwise.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfuTimer</B> utilizes <B>pfGetTime</B> and its accuracy is dependent
+       on the resolution of available system timers.  See
+       <B>pfGetTime</B> for more details.
+
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGetTime, pfInitClock
+
+
+
+                                                    pfuTimer(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

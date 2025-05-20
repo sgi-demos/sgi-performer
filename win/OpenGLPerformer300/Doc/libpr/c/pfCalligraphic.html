@@ -1,0 +1,702 @@
+<HTML>
+<HEAD>
+<TITLE>pfCalligraphic</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCalligraphic</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCalligraphic(3pf)                           pfCalligraphic(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewCallig,</B>    <B>pfGetCalligClassType,</B>   <B>pfCalligInitBoard,</B>
+       <B>pfCalligIsBoardInited,</B> <B>pfGetCalligBoardMemSize,</B>  <B>pfGetCal-</B>
+       <B>ligInfo,</B>  <B>pfGetCalligDeviceId,</B>  <B>pfCalligCloseBoard,</B> <B>pfCal-</B>
+       <B>ligQueryBoard,</B>   <B>pfCalligPartition,</B>    <B>pfCalligWaitForVME,</B>
+       <B>pfCalligWaitForVISI,</B>   <B>pfCalligSwapVME,</B>   <B>pfCalligChannel,</B>
+       <B>pfGetCalligChannel,</B> <B>pfCalligMultisample,</B> <B>pfGetCalligMulti-</B>
+       <B>sample,</B>  <B>pfCalligProjMatrix,</B> <B>pfGetCalligProjMatrix,</B> <B>pfCal-</B>
+       <B>ligIsInited,</B>   <B>pfCalligZFootPrintSize,</B>   <B>pfGetCalligZFoot-</B>
+       <B>PrintSize,</B>  <B>pfCalligDrawTime,</B>  <B>pfGetCalligDrawTime,</B> <B>pfCal-</B>
+       <B>ligExposureRatio,</B>  <B>pfGetCalligExposureRatio,</B>  <B>pfCalligFil-</B>
+       <B>terSize,</B> <B>pfGetCalligFilterSize,</B> <B>pfCalligDefocus,</B> <B>pfGetCal-</B>
+       <B>ligDefocus,</B> <B>pfCalligRasterDefocus,</B>  <B>pfGetCalligRasterDefo-</B>
+       <B>cus,</B>  <B>pfCalligStress,</B> <B>pfGetCalligStress,</B> <B>pfCalligDownLoad-</B>
+       <B>SlewTable,</B>  <B>pfCalligUpLoadSlewTable,</B>  <B>pfCalligDownLoadGam-</B>
+       <B>maTable,</B>  <B>pfCalligUpLoadGammaTable,</B> <B>pfCalligWin,</B> <B>pfGetCal-</B>
+       <B>ligWin,</B> <B>pfCalligXYSwap,</B> <B>pfGetCalligXYSwap,</B> <B>pfSelectCallig,</B>
+       <B>pfGetCurCallig</B>   -  Calligraphic  Lights  Points  optional
+       extension to OpenGL Performer
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfCalligraphic *   <B>pfNewCallig</B>(void *arena);
+
+       pfType *           <B>pfGetCalligClassType</B>(void);
+
+       int                <B>pfCalligInitBoard</B>(int board);
+
+       int                <B>pfCalligIsBoardInited</B>(int board);
+
+       int                <B>pfGetCalligBoardMemSize</B>(int board);
+
+       LPB_info *         <B>pfGetCalligInfo</B>(int board);
+
+       int                <B>pfGetCalligDeviceId</B>(int board);
+
+       int                <B>pfCalligCloseBoard</B>(int board);
+
+       unsigned int       <B>pfCalligQueryBoard</B>(int board);
+
+       int                <B>pfCalligPartition</B>(int board,
+                            size_t *allocate, int n);
+
+       int                <B>pfCalligWaitForVME</B>(int board);
+
+       int                <B>pfCalligWaitForVISI</B>(int board);
+
+       void               <B>pfCalligSwapVME</B>(int board);
+
+       int                <B>pfCalligChannel</B>(pfCalligraphic* calligraphic,
+                            int board, int channel);
+
+       int                <B>pfGetCalligChannel</B>(pfCalligraphic* calligraphic,
+                            int *board, int *channel);
+                            pfMatrix *projMat);
+
+       void               <B>pfGetCalligProjMatrix</B>(pfCalligraphic* calligraphic,
+                            pfMatrix *projMat);
+
+       int                <B>pfCalligIsInited</B>(pfCalligraphic* calligraphic);
+
+       void               <B>pfCalligZFootPrintSize</B>(pfCalligraphic* calligraphic,
+                            float size);
+
+       float              <B>pfGetCalligZFootPrintSize</B>(pfCalligraphic* calligraphic,
+                            float size);
+
+       void               <B>pfCalligDrawTime</B>(pfCalligraphic* calligraphic,
+                            float time);
+
+       float              <B>pfGetCalligDrawTime</B>(pfCalligraphic* calligraphic);
+
+       void               <B>pfCalligExposureRatio</B>(pfCalligraphic* calligraphic,
+                            float ratio);
+
+       float              <B>pfGetCalligExposureRatio</B>(pfCalligraphic* calligraphic);
+
+       void               <B>pfCalligFilterSize</B>(pfCalligraphic* calligraphic,
+                            unsigned int sizeX,
+                            unsigned int sizeY);
+
+       void               <B>pfGetCalligFilterSize</B>(pfCalligraphic* calligraphic,
+                            unsigned int *sizeX,
+                            unsigned int *sizeY);
+
+       void               <B>pfCalligDefocus</B>(pfCalligraphic* calligraphic,
+                            float defocus);
+
+       float              <B>pfGetCalligDefocus</B>(pfCalligraphic* calligraphic);
+
+       void               <B>pfCalligRasterDefocus</B>(pfCalligraphic* calligraphic,
+                            float defocus);
+
+       float              <B>pfGetCalligRasterDefocus</B>(pfCalligraphic* calligraphic);
+
+       void               <B>pfCalligStress</B>(pfCalligraphic* calligraphic,
+                            float stress);
+
+       float              <B>pfGetCalligStress</B>(pfCalligraphic* calligraphic);
+
+       int                <B>pfCalligDownLoadSlewTable</B>(pfCalligraphic* calligraphic,
+                            pfCalligSlewTableEnum offset,
+                            pfCalligSlewTable Slew);
+
+       int                <B>pfCalligUpLoadSlewTable</B>(pfCalligraphic* calligraphic,
+                            pfCalligSlewTableEnum offset,
+                            pfCalligSlewTable Slew);
+
+       int                <B>pfCalligDownLoadGammaTable</B>(pfCalligraphic* calligraphic,
+                            pfCalligGammaTableEnum offset,
+                            pfCalligGammaTable Gamma);
+
+       int                <B>pfCalligUpLoadGammaTable</B>(pfCalligraphic* calligraphic,
+       void               <B>pfGetCalligWin</B>(pfCalligraphic* calligraphic,
+                            float *xmin,           float *ymin,
+                            float *width, float *height);
+
+       void               <B>pfCalligXYSwap</B>(pfCalligraphic* calligraphic,
+                            int flag) ;
+
+       void               <B>pfGetCalligXYSwap</B>(pfCalligraphic* calligraphic);
+
+       void               <B>pfSelectCallig</B>(pfCalligraphic *calligraphic);
+
+       pfCalligraphic *   <B>pfGetCurCallig</B>(void);
+
+
+                          typedef enum {
+                              pfXSlewQuality0 = 0,
+                              pfXSlewQuality1 = 1,
+                              pfXSlewQuality2 = 2,
+                              pfYSlewQuality0 = 3,
+                              pfYSlewQuality1 = 4,
+                              pfYSlewQuality2 = 5,
+                              pfDefocusQuality0 = 6,
+                              pfDefocusQuality1 = 7
+                          } pfCalligSlewTableEnum;
+
+                          typedef float pfCalligSlewTable[256][256];
+
+                          typedef enum {
+                              pfRedGammaTable = 0,
+                              pfGreenGammaTable = 1,
+                              pfBlueGammaTable = 2
+                          } pfCalligGammaTableEnum;
+
+                          typedef float pfCalligGammaTable[1024];
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfCalligraphic</B> is derived from
+       the parent class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B> are also directly usable with
+       objects of class <B>pfCalligraphic</B>.  Casting an object of
+       class <B>pfCalligraphic</B> to an object of class <B>pfObject</B> is
+       taken care of automatically.  This is also true for casts
+       to objects of ancestor classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj, int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>calligraphic</I>  identifies a pfCalligraphic.
+
+       <I>Slew</I>          identifies a pfCalligraphicSlewTable
+
+       <I>Gamma</I>         identifies a pfCalligraphicGammaTable
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfCalligraphic object is a <B>libpr</B> data structure that
+       is used, in conjunction with a pfLPointState, to control
+       the calligraphic light point features in OpenGL Performer.
+       Calligraphic light points require a calligraphic light
+       point board (LPB) with it's low-level device driver, a
+       calligraphic display system, and special cables between
+       the InifiniteReality raster manager boards and the LPB. If
+       you do not have this specific optional hardware, you are
+       limited to raster light points, as supported by the pfL-
+       PointState extension to the pfGeoState.
+
+       The main difference between the usual raster display and a
+       calligraphic display is that the number of lights that can
+       be displayed is proportional to the time preallocated for
+       the calligraphic display in the video format.  No more
+       points can be displayed once the Vsync point is reached so
+       the LPB must stop its drawing, returning control back to
+       the raster display no matter how many points were still
+       waiting for calligraphic display.
+
+       An other main difference is that an error in a program or
+       an invalid parameter specified in a pfCalligraphic object
+       may have a <B>destructive</B> <B>effect</B> on the (often very expen-
+       sive) calligraphic projector or the light point board.
+
+       pfCalligraphic support provides advanced functions to man-
+       age calligraphic light points such as using raster lights
+       instead of calligraphic lights based on user-specified
+       significance, allowing delayed computation in a hybrid
+       video format and returning detailed information of the
+       previous frame for a good feedback loop.
+
+       The light point computation, and especially the calli-
+       graphic light point computation, is a sensitive (sometimes
+       proprietary) part of a simulator.  The design of pfCalli-
+       The LPB is a 9U VME board that is connected to a IR pipe
+       through the following links:
+
+
+
+              o The VME bus is used to transfer all the lights
+              points to the LPB,
+                     including the color, focus, exposure time,
+                     quality and position of each light point.
+
+              o The VISI bus is used to transfer the Z-buffer
+              comparison result
+                     from the graphic pipe to the LPB. Each Light
+                     Point have a unique Id sent to the pipe
+                     which is transferred back to the LPB with
+                     the number of visible samples. The VISI bus
+                     is a connector on each RM board, the LPB
+                     must be connected to all RMs board (1,2 or
+                     4).
+
+              o The video, including vertical and horizontal syn-
+              chronization signals.
+                     The LPB uses these signals to trigger the
+                     display of calligraphics.
+
+              o The Swap Ready signal. This signal is used to
+              tell the LPB that the
+                     raster display has swapped, so it should
+                     also swap it's internal buffers. If the LPB
+                     does not get a Swap Ready acknowledgement,
+                     the LPB will redisplay the same calligraphic
+                     light points at each Vsync (since the raster
+                     frame is being repeated, so must the calli-
+                     graphic lights be unchanged).
+
+       <I>Only</I> <I>one</I> <I>light</I> <I>point</I> <I>board</I> <I>is</I> <I>supported</I> <I>per</I> <I>pipe</I>. The LPB
+       is connected to all the Video Channels produced by a sin-
+       gle pipe.
+
+       The board may be used in a system without a VISI bus (sys-
+       tems prior to IR), in which case no Z-buffer information
+       will be given to the board, so all points will be 100%
+       visible.
+
+       Calligraphic computation is a very CPU consuming process,
+       and does a lot of Kernel calls through the LPB VME driver.
+       It is recommanded that at least one CPU is dedicated on a
+       system per LPB. The process creation and synchronization
+       is automatically handled in libpf when giving
+       <B>PFMP_FORK_LPOINT</B> to pfMultiprocess before calling pfCon-
+       fig. It is based on the display list preprocessing capac-
+       ity introduced in OpenGL Performer 2.2.
+
+       A special environment variable PF_LPOINT_BOARD may be used
+       when one wants to try pfCalligraphics without a light
+       point board. In this mode all the computations will be
+       performed, and raster light points will be displayed with
+       the following limitations:
+
+       Each LPB must be initialized before any fork() or sproc()
+       call. This means they must be initialized before calling
+       pfConfig() when using libpf. Each board is initialized by
+       <B>pfCalligInitBoard</B> with <I>board</I> the number of the board. As
+       there is one board per pipe, the board number is also the
+       pipe number.
+
+       This call will open the LPB device "/dev/lpb%" (% is the
+       board #) and get the current configuration. The configura-
+       tion of the board is not available through libpr, and all
+       Calligraphic channels have to be enabled before using the
+       LPB utilities.
+
+       This function returns TRUE in case of success, FALSE oth-
+       erwise.  <B>pfCalligIsBoardInited</B> can be used to check if the
+       board has been initialized.
+
+       <B>pfGetCalligInfo</B> returns a pointer to the info structure
+       maintained by the LPB driver. <B>LPB_info</B> is defined as an
+       unknown structure in 'pr.h'. In order to use the correct
+       definition of this structure, one must include the driver
+       'lpb.h' file <B>before</B> any OpenGL Performer includes files.
+       This file is not distributed with OpenGL Performer, it is
+       part of the LPB driver distribution.
+
+       <B>pfGetCalligDeviceId</B> returns the device Id returned by the
+       open() call done by libpr.
+
+       <B>pfCalligCloseBoard</B> close the driver and the initBoard
+       function has to be called again in order to use calli-
+       graphic light points again. This function can be used in a
+       test routine that just look if a board is there by using
+       initBoard and then closeBoard.
+
+       <B>pfCalligQueryBoard</B> returns a bit mask indicating which
+       channels are enabled on a board. A return of 0 is returned
+       if there is no board, or if no channel is enabled, in
+       either case no calligraphic light points can be used on
+       this pipe.  If the board is not opened, the this function
+       will open and then close the board, so it can be used any-
+       time, like other pfQuery functions.
+
+       Once a board is initialized, it has to be partitioned.
+       Each enabled channel on the LPB are given an equal amount
+       of Light Point Memory at initialization.
+       <B>LcpfCalligPartition</B> can be used to set up an other parti-
+       tion. This function accepts an array of type int specify-
+       ing how many bytes of memory should be allocated for each
+       channel. The size of the LPB memory is given by
+       <B>pfCalligraphic::getBoardMemSize</B> and is reported in bytes.
+
+
+   <B>LPB</B> <B>Synchronization</B>
+       As described above, the LPB is connected to the VME bus
+       and the VISI bus. Both buses contain information for the
+       light points that are buffered in the LPB. The SwapReady
+       connection to the graphic pipe tells the board when the
+       transfer on the VISI bus is finished, and that we should
+       display the next Frame at the next VSync.  <B>pfCalligSwapVME</B>
+       with delayed VME transfers.
+
+       If the VME bus swap is too late, the LPB will not wait for
+       the command and raise a TOO_LATE error exception. pfCalli-
+       graphic handle that problem and ensure that the LPB
+       buffers always contain valid data even if such an event
+       occurs.
+
+       The LPB needs some time before being able to accept new
+       information on the VME and the VISI bus after receiving
+       the corresponding swap command.  <B>pfCalligWaitForVME</B> and
+       <B>LcpfCalligWaitForVISI</B> are used to wait for the board to be
+       ready before sending new information to the board.
+
+       All of this synchronization mechanism is handled automati-
+       cally in libpf.  Note that if you use calligraphics, and
+       you do also use directly <I>pfSwapPWinBuffers</I>, then you will
+       have to do a VME swap to keep the board in sync, or issue
+       2 VME swap after a series of WIN swap to resynchronize the
+       LPB.
+
+
+   <B>Initializing</B> <B>a</B> <B>Calligraphic</B> <B>Channel</B>
+       If the LPB can be initialized in libpr, and some channels
+       have been enabled when its video format has been pro-
+       grammed, a pfCalligraphic object can be created
+       <B>pfNewCallig</B>, and mapped to on channel on one LPB using
+       <B>pfCalligChannel</B>.  This function returns TRUE in case of
+       success, FALSE otherwise.  <B>pfGetCalligChannel</B> or
+       <B>pfCalligIsInited</B> can be used to check if the pfCalli-
+       graphic is well initialized. More than one pfCalligraphic
+       can be mapped to the same LPB video channel, but they can-
+       not be processed in parallel.  Once mapped, any changed
+       made to a pfCalligraphic is immediately transmitted to the
+       driver.
+
+       <B>pfCalligMultisample</B> is used to tell the pfCalligraphic how
+       many multisample are used in the corresponding video chan-
+       nel. <B>pfGetCalligMultisample</B> returns the current setting.
+       This call is automatically done by libpf to tell the cur-
+       rent pfCalligraphic how many multisample are used in the
+       current window, only direct libpr users have to use that
+       function.
+
+       <B>pfCalligProjMat</B> is used by libpf to give a projection
+       matrix to use when sending the calligraphic footprint to
+       the pipe when this matrix should not be identity. It is
+       the case when DVR is in use. <B>pfCalligGetProjMat</B> copy the
+       current projMatrix at the address specicied as an argu-
+       ment.
+
+       <B>pfCalligDownLoadSlewTable</B> and <B>pfCalligDownLoadGammaTable</B>
+       respectively loads a slew table and a gamma table in the
+       LPB.  There are <B>pfSlewTableEnum</B> (8) slew tables and
+       <B>pfGammaTableEnum</B> (3) Gamma table per channel.
+
+       Some projectors do not need Slew Tables and/or Gamma
+       Tables. A default gamma and Slew table are loaded in the
+       LPB by the driver at the initialisation of the system. The
+       is a normalize floating point number [0,1].  Be aware that
+       not all values may have a meaning for the LPB/Projector
+       component. Refers to the LPB and projector documentation.
+
+       A default generic (slow) Slew Table is loaded in the LPB
+       when initializing the board.  A linear ramp is prepro-
+       grammed as a GammaTable (gamma = 1).
+
+       <B>pfCalligZFootPrintSize</B> gives the diameter in pixels of the
+       footprint sent to the graphic pipe for the Z buffer test.
+       It is required that the foot print covers at least 4 mul-
+       tisamples. The default value is 4 pixels, giving for a 8
+       multisample configuration a total of (PI*4*4/4*8) 100 mul-
+       tisamples for a 100% visible point.
+
+       A light point that covers less than 4 multisamples is con-
+       sidered not visible at all. A light point cannot cover
+       more than 255 multisamples, as the light point board reg-
+       ister is 8 bits. Anyway, the coverage should be limited to
+       100 multisamples as after this size, OpenGL uses an
+       approximation of a point using a triangle fan, that does
+       not provide a perfect circle and may result in slight
+       blinking effects.
+
+       <B>pfGetCalligZFootPrintSize</B> gives back the current setting.
+
+       <B>pfCalligWin</B> set the pfCalligraphic range for the 2D coor-
+       dinate system accepted by the projector and the LPB.
+       Default values are for an EIS projector, please refers to
+       the projector documentation if you are using a different
+       projector. You can also use the Win to draw in a smaller
+       area than the full screen in case you whant to have multi-
+       ple calligraphic channel on the same projector.  Negative
+       numbers can be used if the axis are reversed on the pro-
+       jector, and the projector do not have a INVERT option.
+
+       <B>pfGetCalligWin</B> gives back the current setting.
+
+       <B>pfCalligXYSwap</B> let you exchange the X and Y axis if it is
+       needed for your projector.  <B>pfGetCalligXYSwap</B> returns the
+       current setting.
+
+       The formulas used to compute the projector coordinates
+       from the 2D coordinates are: Xp = ax * X + bx; Yp = ay * Y
+       + by;
+
+       with: ax = (-width)/2.; bx = (xmin+width/2.); ay =
+       (height/2.); by = (ymin+height/2.);
+
+
+   <B>Calligraphic</B> <B>parameters</B>
+       <B>pfCalligDrawTime</B> set the draw time of the calligraphic
+       lights points. Changing this value result in a global
+       change in the intensity, but also in the number of Calli-
+       graphic Light Points drawable in a video field, as each
+       point takes more time to draw.  <B>pfGetCalligDrawTime</B>
+       returns the current setting.
+
+       Draw times are given in nano seconds, and are scaled to
+       <B>pfCalligFilterSize</B> set the Calligraphic debunching filter.
+       <B>pfGetCalligFilterSize</B> returns the current values.
+
+       <I>sizeX</I> and <I>sizeY</I> gives the size of the filter in the 2D
+       coordinate system defined by the pfCalligraphic viewport.
+       If two consecutive Light Points are separate by less than
+       the filter size, the one that have the lowest intensity is
+       removed. Filter is not active is both sizes are less or
+       equal to 1. Filter is always done after the callbacks (see
+       the pfLPointState extension below)
+
+       <B>pfCalligDefocus</B> set the requested defocus value for the
+       light points. (see the pfLPointState extension below)
+       <B>pfGetCalligDefocus</B> returns the current setting.
+
+       <B>pfCalligRasterDefocus</B> set the defocus for the Raster part
+       of the Hybrid projector.  <B>pfGetCalligRasterDefocus</B> returns
+       the current value.
+
+       The defocus result is very dependent of the LPB/projector
+       system used.  No rule can be givent here for the setting
+       of this value, refers to the LPB and projector documenta-
+       tion.
+
+       <B>pfCalligStress</B> sets the current Calligraphic Stress. If a
+       Calligraphic light point does not pass the stress test, it
+       will be drawned as a Raster light point. (see the plL-
+       PointState extension below) <B>pfGetCalligStress</B> returns the
+       current setting.
+
+       When using libpf, the calls to change the Calligraphic
+       parameters can be done in the LPoint process callback
+       function with <B>pfChanTravFunc</B>(chan, PFTRAV_LPOINT, Lpoint-
+       Func)
+
+
+   <B>Preprocessing</B> <B>a</B> <B>DL</B> <B>in</B> <B>a</B> <B>Process</B>
+       Calligraphic light points require a fair amount of CPU. To
+       add calligraphic light points to an application, OpenGL
+       Performer uses the Display List preprocessing capacity is
+       a separate process that runs in parallel with the Draw
+       Process.
+
+       Use <B>pfSelectCallig</B> to select on which channel of which LPB
+       the calligraphic light points have to be sent. See
+       <B>pfDispList</B> man pages for a complete description of Display
+       List preprocessing.
+
+       <B>pfGetCurCallig</B> returns the current selected calligraphic.
+
+
+   <B>Extension</B> <B>to</B> <B>pfLPointState</B>
+       Calligraphic lights points is an extension to the pfL-
+       PointState. Every field in a pfLPointState should be cor-
+       rectly filled before adding the Calligraphic capability.
+       So a pfLPointState that have a Calligraphic capability can
+       be rendered either in Raster or Calligraphic mode.
+
+       Extensions to the pfLPointState Mode:
+
+       <B>PFLPS_QUALITY_MODE</B>   /* Set the quality of draw */
+              <B>PFLPS_QUALITY_MODE_HIGH</B> - Use High Quality Slew
+              Tables
+              <B>PFLPS_QUALITY_MODE_MEDIUM</B> - Use Medium Quality Slew
+              Tables
+              <B>PFLPS_QUALITY_MODE_LOW</B> - Use Low Quality Slew
+              Tables
+
+
+       <B>PFLPS_DEBUNCHING_MODE</B>   /* Enable calligraphic debunching
+       */
+              <B>PFLPS_DEBUNCHING_MODE_ON</B> - Turn on the debunching
+              (see FilterSize)
+              <B>PFLPS_DEBUNCHING_MODE_OFF</B> - Turn off debunching
+
+
+       Extensions to the pfLPointState Vals:
+
+       <B>PFLPS_SIGNIFICANCE</B> give the significance of the light
+       points.  This
+              value is compared to the pfCalligraphic stress
+              value, and if the significance value is higher than
+              the stress value, then the light goes calligraphic.
+              If not, it will be drawned as regular raster
+              lights.
+
+
+       <B>PFLPS_MIN_DEFOCUS</B> set the min defocus value for the light
+       points.
+
+       <B>PFLPS_MAX_DEFOCUS</B> set the max defocus value for the light
+       points.
+
+              The pfCalligraphic defocus value is clamped against
+              those min and max defocus values.
+
+              When using libpf and in order to optimize the draw-
+              ing time of the calligraphic light points, it is
+              recommended to set the draw order of each GeoSet
+              attached to a pfLPointState. The lpoint process
+              creates the <B>PFSORT_LPSTATE_BIN</B> that have the
+              <B>PFSORT_DRAW_ORDER</B> sort that use directly the draw
+              order set in the pfGeoSet. See pfGeoSet and pfChan-
+              nel man pages.
+
+
+   <B>Callbacks</B>
+       The Calligraphic callback function is set through the
+       <B>pfLPointState</B>.
+
+       As for the pfLPointState callbacks, pfCalligraphic call-
+       backs can be done before or after the standard computation
+       by choosing the <B>PFLPS_CALLBACK_MODE_PRE</B> or
+       <B>PFLPS_CALLBACK_MODE_POST</B> mode.
+
+       The callback function receive many arguments (as defined
+       in pr.h):
+
+               pfVec3          *coords2D; /* Read Write - screen space X,Y,Z */
+               float           *intensity;/* Write Only - resulting intensity */
+               float           **focus;   /* Write Only - optional per lpoint (de)focus */
+               float           **drawTime;/* Write Only - optional per lpoint drawTime */
+       } pfCalligData;
+
+
+
+       <I>lpstate</I>, <I>geoset</I>, <I>userData</I> are defined just like in the
+       raster callback (see man pfLPointState).
+
+       But in the case of pfCalligraphic, a 2D projection and
+       clipping to the calligraphic viewport is always done. So
+       the callback has also access to:
+
+       o <I>coords2D</I> the screen space (X,Y,Z) coordinate of the ver-
+       tices after the
+              OpenGL transformations, including the projection
+              matrix.
+
+       o <I>index</I> the indirection vector, that give the list of non
+       clipped points. The
+              order of points in the indirection vector may be
+              changed, so the user callback can do a screen sort.
+
+       o <I>n</I> the number of elements to that indirection vector,
+       that write-able,
+              so the callback can eliminate some lpoints. One can
+              use it to do it's own debunching and disable the
+              one done by Performer.
+
+              Some post processing is also always done. The fil-
+              ter is called, it can be disabled by setting the
+              filter sized to 1.
+
+              Then the computed lpoints have to be sent to the
+              LPB and to the graphic pipe if a VISI bus is avail-
+              able. Two more options are given to the Callback:
+
+
+       o returning a non null pointer to an array of <I>focus</I> values
+       allow each
+              individual lights in the pfGeoSet to have a differ-
+              ent defocus value instead of using the standard min
+              and max clamping. For drawing performance materm it
+              is not recommanded to set a different value to each
+              point, but this can be used for special effects
+              such as local windscreen wipers.
+
+       o returning a non null pointer to an array of <I>drawTime</I>
+       values allow
+              each individual lights in the pfGeoSet to have a
+              different drawTime value instead of the fixed value
+              given in the pfCalligraphic. This may be necessary
+              for some very fine tuning, such as required but the
+              FAA regulation.
+
+              The <I>focus</I> and <I>drawTime</I> arrays are not allocated by
+              OpenGL Performer. It is safe not to allocate them
+
+       pfCalligraphic functionality is not supported under Linux.
+
+       EIS is short for Electronic Image Systems, Inc. 600 Bell-
+       brook Avenue, Xenia, OH 45385 USA.  Returning a negative
+       alpha cause Performer to use the BackColor in the <I>pfL-</I>
+       <I>PointState</I> and -alpha as the alpha value.
+
+       The filtering algorithm is active within a pfGeoSet, not
+       filtering occurs between points that are not in the same
+       geoset.
+
+       The GeoSet used for calligraphics has to have a color set-
+       ting, otherwise this will result in a core dump of the
+       lpoint process.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfConfig, pfDispList, pfGeoSet, pfGeoState,
+       pfLPointState, pfMultiprocess, pfState
+
+
+
+                                              pfCalligraphic(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

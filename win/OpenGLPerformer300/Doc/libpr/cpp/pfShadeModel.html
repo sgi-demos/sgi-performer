@@ -1,0 +1,162 @@
+<HTML>
+<HEAD>
+<TITLE>pfShadeModel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfShadeModel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfShadeModel(3pf)                               pfShadeModel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfShadeModel,</B>  <B>pfGetShadeModel</B>  -  Set and get the shading
+       model
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfShadeModel</B>(int model);
+
+       int    <B>pfGetShadeModel</B>(void);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>model</I>  is a symbolic constant and is one of:
+
+              <B>PFSM_FLAT</B>           Use flat shading,
+
+              <B>PFSM_GOURAUD</B>        Use Gouraud shading.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfShadeModel</B> sets the shading model to <I>model</I>.   When  flat
+       shading  is enabled, the last vertex in a geometric primi-
+       tive defines the color of the entire geometric  primitive.
+       When  Gouraud  shading,  vertex  colors  are  interpolated
+       across the primitive.
+
+       The following example shows how data equivalent to  OpenGL
+       immediate  mode  graphics commands would be interpreted in
+       both <B>PFSM_FLAT</B> and <B>PFSM_GOURAUD</B> shade models.
+
+       Example 1:
+
+       /*
+        * Draw a three-primitive triangle strip in OpenGL
+        */
+       glColor3f(0, 0, 0);     /****************************************/
+       glBegin(GL__TRIANGLE_STRIP);/*   Actual Rendered Triangle Colors    */
+       glVertex3v(v0);              /* ------------------------------------ */
+       glVertex3v(v1);              /* Tri  PFSM_FLAT       PFSM_GOURAUD    */
+       glColor3f(1, 0, 0);     /* ------------------------------------ */
+       glVertex3v(v2);              /*  0   red             black/black/red */
+       glColor3f(0, 1, 0);     /*                                      */
+       glVertex3v(v3);              /*  1   green           black/red/green */
+       glColor3f(0, 0, 1);     /*                                      */
+       glVertex3v(v4);              /*  2   blue            red/green/blue  */
+       glEnd();           /****************************************/
+
+
+       Consequently, strips (triangle <B>PFGS_TRISTRIPS</B> or line
+       <B>PFGS_LINESTRIPS</B>) which are composed of different colored
+       primitives <I>must</I> have flat shading enabled in order to be
+       rendered properly.  The pfGeoSet primitive types of
+       <B>PFGS_FLAT_TRISTRIPS</B> and <B>PFGS_FLAT_LINESTRIPS</B> ensure that
+       flat shading will be enabled when the pfGeoSet is drawn.
+
+       Another subtlety of the shading model is related to the
+       lighting can be seen.  The exception to this rule are the
+       flat strips discussed above.
+
+       The shading model state element is identified by the
+       <B>PFSTATE_SHADEMODEL</B> token.  Use this token with
+       <B>pfGeoState::setMode</B> to set the shading model of a
+       pfGeoState and with <B>pfOverride</B> to override subsequent
+       shading model changes.
+
+       Example 2:
+
+       /* Set up flat shaded pfGeoState. */
+       gstate-&gt;setMode(PFSTATE_SHADEMODEL, PFSM_FLAT);
+
+       /* Attach gstate to gset */
+       gset-&gt;setGState(gstate);
+
+       /* Draw flat shaded gset */
+       gset-&gt;draw();
+
+
+       Example 3:
+
+       /* Alternative way to draw flat-shaded pfGeoSet */
+       gset-&gt;setDrawMode(PFGS_FLATSHADE, PF_ON);
+       gset-&gt;draw();
+
+
+       Example 4:
+
+       /*
+        * Draw flat-shaded triangle strip pfGeoSet.  PFGS_FLATSHADE
+        * and pfShadeModel are not required.
+        */
+       gset-&gt;setPrimType(PFGS_FLAT_TRISTRIPS);
+       gset-&gt;draw();
+
+
+       Example 5:
+
+       pfShadeModel(PFSM_FLAT);
+
+       /* Override shading model to PFSM_FLAT */
+       pfOverride(PFSTATE_SHADEMODEL, PF_ON);
+
+
+       <B>pfShadeModel</B> is a display-listable command.  If a pfDis-
+       pList has been opened by <B>pfDispList::open</B>, <B>pfShadeModel</B>
+       will not have immediate effect but will be captured by the
+       pfDispList and will only have effect when that pfDispList
+       is later drawn with <B>pfDispList::draw</B>.
+
+       The selection of which shading model a pfGeoSet uses is
+       based upon the following decision hierarchy:
+
+              1.   Use flat shading if pfGeoSet is
+                   <B>PFGS_FLAT_TRISTRIPS</B> or <B>PFGS_FLAT_LINESTRIPS</B> or
+                   if <B>PFGS_FLATSHADE</B> is enabled through
+                   <B>pfGeoSet::setDrawMode</B>.
+
+       <B>pfGetShadeModel</B> returns the current shading model.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Overriding the shading model to <B>PFSM_FLAT</B> can be a useful
+       debugging aid since it reveals the facets of a normally
+       smooth surface.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGSetGState, pfGeoSet, pfGeoState, pfLModelLocal,
+       pfLightPos, pfState
+
+
+
+                                                pfShadeModel(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

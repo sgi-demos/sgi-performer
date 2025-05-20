@@ -1,0 +1,246 @@
+<HTML>
+<HEAD>
+<TITLE>pfGeode</TITLE>
+</HEAD>
+<BODY>
+<H1>pfGeode</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfGeode(3pf)                                         pfGeode(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGeode</B> - Create, modify, and query a geometry node.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfGeode.h&gt;
+
+                         <B>pfGeode::pfGeode</B>();
+
+       static pfType *   <B>pfGeode::getClassType</B>(void);
+
+       int               <B>pfGeode::addGSet</B>(pfGeoSet* gset);
+
+       int               <B>pfGeode::removeGSet</B>(pfGeoSet* gset);
+
+       int               <B>pfGeode::insertGSet</B>(int index,
+                           pfGeoSet* gset);
+
+       int               <B>pfGeode::replaceGSet</B>(pfGeoSet* old,
+                           pfGeoSet* new);
+
+       pfGeoSet *        <B>pfGeode::getGSet</B>(int index);
+
+       int               <B>pfGeode::getNumGSets</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class  <B>pfGeode</B> is derived from the
+       parent class <B>pfNode</B>, so each of these member functions  of
+       class  <B>pfNode</B>  are  also  directly  usable with objects of
+       class <B>pfGeode</B>.  This is also true for ancestor classes  of
+       class <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>, objects of class <B>pfGeode</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>, objects of class <B>pfGeode</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>geode</I>  identifies a pfGeode.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The name "pfGeode" is short for Geometry Node.  A  pfGeode
+       is a leaf node in the OpenGL Performer scene graph hierar-
+       chy and is derived from pfNode so it can use  pfNode  API.
+       A pfGeode is simply a list of pfGeoSets which it draws and
+       intersects with.  A pfGeode is the smallest cullable  unit
+       unless  <B>PFCULL_GSET</B>  is  set  by <B>pfChannel::setTravMode</B> in
+       which case OpenGL Performer will cull individual pfGeoSets
+       within pfGeodes.
+
+       The  bounding  volume of a pfGeode is that which surrounds
+       all its pfGeoSets.  Unless the bounding volume is  consid-
+       ered  static (see <B>pfNode::setBound</B>), OpenGL Performer will
+       <B>new</B>  <B>pfGeode</B>  creates  and  returns a handle to a pfGeode.
+       Like other pfNodes, pfGeodes  are  always  allocated  from
+       shared  memory  and  cannot  be created statically, on the
+       stack  or  in  arrays.   pfGeodes  can  be  deleted  using
+       <B>pfDelete</B>.
+
+       <B>pfGeode::getClassType</B>  returns  the  <B>pfType</B>* for the class
+       <B>pfGeode</B>.  The <B>pfType</B>* returned by <B>pfGeode::getClassType</B> is
+       the  same  as the <B>pfType</B>* returned by invoking the virtual
+       function  <B>getType</B>  on  any  instance  of  class   <B>pfGeode</B>.
+       Because  OpenGL  Performer  allows subclassing of built-in
+       types, when decisions are made based on  the  type  of  an
+       object,  it  is usually better to use  the member function
+       <B>isOfType</B> to test if an object is of a type derived from  a
+       Performer  type rather than to test for strict equality of
+       the <B>pfType</B>*'s.
+
+
+       <B>pfGeode::addGSet</B> appends <I>gset</I> to  the  pfGeode's  pfGeoSet
+       list.   <B>pfGeode::removeGSet</B> removes <I>gset</I> from the list and
+       shifts the list down over the vacant spot.   For  example,
+       if <I>gset</I> had index 0, then index 1 becomes index 0, index 2
+       becomes index 1 and so on.  <B>pfGeode::removeGSet</B> returns  a
+       1  if  <I>gset</I> was actually removed and 0 if it was not found
+       in the  list.   <B>pfGeode::addGSet</B>  and  <B>pfGeode::removeGSet</B>
+       will cause OpenGL Performer to recompute new bounding vol-
+       umes for the pfGeode unless it is configured to use static
+       bounding volumes.
+
+       <B>pfGeode::insertGSet</B>  will  insert <I>gset</I> before the pfGeoSet
+       with index <I>index</I>.  <I>index</I> must be within  the  range  0  to
+       <B>pfGeode::getNumGSets()</B>.  <B>pfGeode::replaceGSet</B> replaces <I>old</I>
+       with <I>new</I> and returns 1 if the operation was successful  or
+       0  if  <I>old</I> was not found in the list.  <B>pfGeode::insertGSet</B>
+       and <B>pfGeode::replaceGSet</B> will cause  OpenGL  Performer  to
+       recompute  new  bounding volumes for the pfGeode unless it
+       is configured to use static bounding volumes.
+
+       <B>pfGeode::getNumGSets</B> returns the number  of  pfGeoSets  in
+       the  pfGeode.   <B>pfGeode::getGSet</B>  returns  a handle to the
+       pfGeoSet with index <I>index</I> or <B>NULL</B> if the index is  out  of
+       range.
+
+       If   database   sorting   is  disabled,  that  is  if  the
+       <B>PFCULL_SORT</B> mode of <B>pfChannel::setTravMode</B> is not set, the
+       pfGeoSets  in  a  pfGeode  will be drawn in the order they
+       appear on the list.  If sorting is enabled,  there  is  no
+       guarantee about the drawing order, since the reordering of
+       GeoSets for minimum state-changing overhead is one of  the
+       primary design motivations of OpenGL Performer's libpf and
+       libpr.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfGeode geometry is not multibuffered by OpenGL  Performer
+       when  in  multiprocessing  mode  in  order to save memory.
+       Therefore there are some restrictions on dynamic geometry.
+       Modified  vertex positions will be culled properly only if
+       a static bound is defined  which  surrounds  all  possible
+       excursions  of  the dynamic geometry.  Since the draw pro-
+       and  pfSwitch  nodes to achieve any kind of dynamic geome-
+       try.
+
+       The shifting behavior  of  <B>pfGeode::removeGSet</B>  can  cause
+       some  confusion.   The  following sample code shows how to
+       remove all pfGeoSets from <I>geode</I>:
+
+
+       int  i;
+       int  n = geode-&gt;getNumGSets();
+
+       for (i = 0; i &lt; n; i++)
+           geode-&gt;removeGSet(geode-&gt;<B>getGSet(0)</B>); /* 0, not i */
+
+       Alternately, you can traverse the list from back to front,
+       in which case the shift never hits the fan.
+
+       int  i;
+       int  n = geode-&gt;getNumGSets();
+
+       for (i = n - 1; i &gt;= 0; i--)
+           geode-&gt;removeGSet(geode-&gt;getGSet(i)); /* i, not 0 */
+
+
+       When sorting is enabled (see <B>pfChannel::setTravMode</B> and
+       <B>PFCULL_SORT</B>), transparent pfGeoSets are drawn last unless
+       the pfGeode has a pre or post draw callback (see
+       <B>pfNode::setTravFuncs</B>).  Drawing transparent pfGeoSets
+       after opaque geometry reduces artifacts when blended
+       transparency (see <B>pfTransparency</B>) is used and can improve
+       fill rate performance.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfGeoSet, pfNode, pfTransparency, pfDelete
+
+
+
+                                                     pfGeode(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

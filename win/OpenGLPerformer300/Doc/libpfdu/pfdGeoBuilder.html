@@ -1,0 +1,487 @@
+<HTML>
+<HEAD>
+<TITLE>pfdGeoBuilder</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdGeoBuilder</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdGeoBuilder(3pf)                             pfdGeoBuilder(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdNewGeom,</B> <B>pfdResizeGeom,</B> <B>pfdDelGeom,</B> <B>pfdCopyGeom,</B> <B>pfdRe-</B>
+       <B>verseGeom,</B> <B>pfdNewGeoBldr,</B>  <B>pfdDelGeoBldr,</B>  <B>pfdGeoBldrMode,</B>
+       <B>pfdGetGeoBldrMode,</B> <B>pfdTriangulatePoly,</B> <B>pfdAddGeom,</B> <B>pfdAdd-</B>
+       <B>Point,</B> <B>pfdAddLine,</B>  <B>pfdAddTri,</B>  <B>pfdAddPoly,</B>  <B>pfdAddPoints,</B>
+       <B>pfdAddLines,</B>     <B>pfdAddLineStrips,</B>    <B>pfdAddIndexedPoints,</B>
+       <B>pfdAddIndexedLines,</B>   <B>pfdAddIndexedLineStrips,</B>   <B>pfdAddIn-</B>
+       <B>dexedTri,</B> <B>pfdAddIndexedPoly,</B> <B>pfdGetNumTris,</B> <B>pfdBuildGSets,</B>
+       <B>pfdPrintGSet</B> - Create optimized pfGeoSets from independent
+       geometry.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfdGeom *         <B>pfdNewGeom</B>(int numV);
+
+       void              <B>pfdResizeGeom</B>(pfdGeom *geom, int numV);
+
+       void              <B>pfdDelGeom</B>(pfdGeom *geom);
+
+       void              <B>pfdCopyGeom</B>(pfdGeom *dst, pfdGeom *src);
+
+       int               <B>pfdReverseGeom</B>(pfdGeom *geom);
+
+       pfdGeoBuilder *   <B>pfdNewGeoBldr</B>(void);
+
+       void              <B>pfdDelGeoBldr</B>(pfdGeoBuilder* bldr);
+
+       void              <B>pfdGeoBldrMode</B>(pfdGeoBuilder* bldr,
+                           int mode, int val);
+
+       int               <B>pfdGetGeoBldrMode</B>(pfdGeoBuilder* bldr,
+                           int mode);
+
+       int               <B>pfdTriangulatePoly</B>(pfdGeom *pgon,   pfd-
+                           Prim *triList);
+
+       void              <B>pfdAddGeom</B>(pfdGeoBuilder *bldr,     pfd-
+                           Geom *Geom, int num);
+
+       void              <B>pfdAddPoint</B>(pfdGeoBuilder *bldr,    pfd-
+                           Prim *Point);
+
+       void              <B>pfdAddLine</B>(pfdGeoBuilder *bldr,     pfd-
+                           Prim *line);
+
+       void              <B>pfdAddTri</B>(pfdGeoBuilder *bldr,      pfd-
+                           Prim *tri);
+
+       void              <B>pfdAddPoly</B>(pfdGeoBuilder *bldr,     pfd-
+                           Geom *poly);
+
+       void              <B>pfdAddPoints</B>(pfdGeoBuilder *bldr,   pfd-
+                           Geom *points);
+
+                           pfdGeom *points);
+
+       void              <B>pfdAddIndexedLines</B>(pfdGeoBuilder *bldr,
+                           pfdGeom *lines);
+
+       void              <B>pfdAddIndexedLineStrips</B>(pfdGeoBuilder *bldr,
+                           pfdGeom *lines, int num);
+
+       void              <B>pfdAddIndexedTri</B>(pfdGeoBuilder *bldr,
+                           pfdPrim *tri);
+
+       void              <B>pfdAddIndexedPoly</B>(pfdGeoBuilder *bldr,
+                           pfdGeom *poly);
+
+       int               <B>pfdGetNumTris</B>(pfdGeoBuilder *bldr);
+
+       pfList *          <B>pfdBuildGSets</B>(pfdGeoBuilder *bldr);
+
+       void              <B>pfdPrintGSet</B>(pfGeoSet *gset);
+
+
+                         typedef struct _pfdPrim
+                         {
+                             int         flags;
+                             int         nbind, cbind, tbind[PF_MAX_TEXTURES];
+
+                             float       pixelsize;
+
+                             pfVec3      coords[3];
+                             pfVec3      norms[3];
+                             pfVec4      colors[3];
+                             pfVec2      texCoords[PF_MAX_TEXTURES][3];
+
+                             pfVec3      *coordList;
+                             pfVec3      *normList;
+                             pfVec4      *colorList;
+                             pfVec2      *texCoordList[PF_MAX_TEXTURES];
+
+                             ushort      icoords[3];
+                             ushort      inorms[3];
+                             ushort      icolors[3];
+                             ushort      itexCoords[PF_MAX_TEXTURES][3];
+
+                             int         numTextures;
+
+                             struct _pfdPrim         *next;
+                         } pfdPrim;
+
+                         typedef struct _pfdGeom
+                         {
+                             int         flags;
+                             int         nbind, cbind, tbind[PF_MAX_TEXTURES];
+
+                             int         numVerts;
+                             short       primtype;
+                             float       pixelsize;
+
+                             pfVec3      *coords;
+                             pfVec3      *norms;
+
+                             ushort      *icoords;
+                             ushort      *inorms;
+                             ushort      *icolors;
+                             ushort      *itexCoords[PF_MAX_TEXTURES];
+
+                             int         numTextures;
+
+                             struct _pfdGeom         *next;
+                         } pfdGeom;
+
+                         typedef pfdGeom pfdPoly;
+                         typedef pfdPrim pfdTri;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfdGeoBuilder</B> tools greatly simplify the task of cre-
+       ating OpenGL Performer geometry structures (<B>pfGeoSets</B>).
+       More importantly, the <B>pfdGeoBuilder</B> utility creates opti-
+       mized line-strip and triangle-strip <B>pfGeoSets</B> that can
+       significantly improve rendering performance and decrease
+       memory usage.
+
+       The <B>pfdGeoBuilder</B> only manages geometry. For managing
+       geometry and state (appearance attributes such as texture
+       and material) there is a higher level <B>pfdBuilder</B> tool that
+       itself uses the <B>pfdGeoBuilder</B>.
+
+       Typically the higher-level <B>pfdBuilder</B> (rather than the
+       low-level <B>pfdGeoBuilder</B>) is used when writing a database
+       importer for OpenGL Performer.  In either case, the load-
+       ers take external data in popular database file formats
+       and convert them into OpenGL Performer runtime scene-graph
+       structures.  There are many examples of file loaders based
+       on the pfdBuilder and pfdGeoBuilder facilities in the
+       <B>libpfdb</B> database loader library.
+
+       The pfdGeoBuilder is used to build pfGeoSets from arbi-
+       trary input geometry in the following way:
+
+              1.   Create a <B>pfdGeoBuilder</B> data structure by call-
+                   ing <B>pfdNewGeoBldr</B>.
+
+              2.   Create a pfdGeom data structure by calling
+                   <B>pfdNewGeom</B> with the maximum number of vertices
+                   required. This size can be changed later via
+                   calls to <B>pfdResizeGeom</B>.
+
+              3.   Add geometric objects one at a time to the
+                   builder created in Step 1 via calls to
+                   <B>pfdAddGeom</B>, <B>pfdAddPoint</B>, <B>pfdAddLine</B>,
+                   <B>pfdAddTri</B>, <B>pfdAddPoly</B>, <B>pfdAddPoints</B>,
+                   <B>pfdAddLines</B>, <B>pfdAddLineStrips</B>,
+                   <B>pfdAddIndexedPoints</B>, <B>pfdAddIndexedLines</B>,
+                   <B>pfdAddIndexedLineStrips</B>, <B>pfdAddIndexedTri</B>, or
+                   <B>pfdAddIndexedPoly</B>.
+
+              4.   Once all geometry has been added to the
+                   builder, call <B>pfdBuildGSets</B> to obtain a list
+
+       can require a considerable amount of storage.
+
+       <B>pfdResizeGeom</B> is used to change the vertex limit of the
+       <B>pfdGeom</B> <I>geom</I>.  The old vertex values are retained in this
+       reallocation, so that loaders can simply invoke
+       <B>pfdResizeGeom</B> to enlarge a <B>pfdGeom</B> without special atten-
+       tion to the existing data. When the new size (<I>numV</I>) is
+       smaller than the previous size, only the first <I>numV</I> old
+       vertices are kept.
+
+       <B>pfdDelGeom</B> frees the storage allocated for the pfdGeom
+       <I>geom</I>.
+
+       <B>pfdCopyGeom</B> copies the contents of the pfdGeom <I>src</I> to <I>dst</I>.
+       Use <B>pfdResizeGeom</B> if necessary to ensure that the arrays
+       internal to <I>dst</I> are of an appropriate size prior to the
+       copy.
+
+       <B>pfdReverseGeom</B> reverses the order of the vertices in <I>geom</I>.
+       Use this to generate polygonal objects with a consistent
+       vertex ordering (clockwise or counterclockwise) when
+       viewed from the outside. When this is the case, backface
+       culling can be enabled for improved graphics performance.
+
+       <B>pfdNewGeoBldr</B> allocates a new <B>pfdGeoBuilder</B> structure and
+       initializes it to accept geometry. The <B>pfdGeoBuilder</B>'s
+       internal data is self-sizing and will grow as needed when
+       points, lines, and polygons are added to it.
+
+       <B>pfdDelGeoBldr</B> frees the storage allocated to the
+       <B>pfdGeoBuilder</B> <I>bldr</I>.
+
+       <B>pfdGeoBldrMode</B> specifies modes to be used by the
+       <B>pfdGeoBuilder</B> <I>bldr</I> as it processes input geometry and con-
+       structs <B>pfGeoSets</B>.  The supported modes are:
+
+
+              <B>PFDGBLDR_AUTO_COLORS</B>
+                   Generate random colors for geometric objects.
+                   There are four options for this mode, and they
+                   are:
+
+                   PFDGBLDR_COLORS_PRESERVE
+                        Leave color definitions as they are. This
+                        is the default mode.
+
+                   PFDGBLDR_COLORS_MISSING
+                        Generate colors for those primitives that
+                        do not provide them.  This mode only
+                        replaces missing colors, it does not
+                        override any colors that have been
+                        defined.
+
+                   PFDGBLDR_COLORS_GENERATE
+                        Generate a new random color for each
+                        primitive.
+
+                   PFDGBLDR_COLORS_DISCARD
+                        Discard existing color definitions and do
+
+                   PFDGBLDR_NORMALS_PRESERVE
+                        Leave normal definitions as they are.
+                        This is the default mode.
+
+                   PFDGBLDR_NORMALS_MISSING
+                        Generate normals for those primitives
+                        that do not provide them.  This mode only
+                        replaces missing normals, it does not
+                        override any normals that have been
+                        defined.
+
+                   PFDGBLDR_NORMALS_GENERATE
+                        Generate a new normal for each primitive.
+
+                   PFDGBLDR_NORMALS_DISCARD
+                        Discard existing normal definitions and
+                        do not generate any replacement normals.
+
+
+              <B>PFDGBLDR_AUTO_TEXTURE</B>
+                   Generate texture coordinates for geometric
+                   objects. There are four options for this mode,
+                   and they are:
+
+                   PFDGBLDR_TEXTURE_PRESERVE
+                        Leave texture coordinate definitions as
+                        they are. This is the default mode.
+
+                   PFDGBLDR_TEXTURE_MISSING
+                        Generate texture coordinates for those
+                        primitives that do not provide them.
+                        This mode only replaces missing texture
+                        coordinates, it does not override any
+                        texture coordinates that have been
+                        defined.  <I>This</I> <I>option</I> <I>is</I> <I>provided</I> <I>for</I>
+                        <I>future</I> <I>expansion.</I> <I>It</I> <I>is</I> <I>not</I> <I>currently</I>
+                        <I>implemented</I>.
+
+                   PFDGBLDR_TEXTURE_GENERATE
+                        Generate texture coordinates for each
+                        primitive. <I>This</I> <I>option</I> <I>is</I> <I>provided</I> <I>for</I>
+                        <I>future</I> <I>expansion.</I> <I>It</I> <I>is</I> <I>not</I> <I>currently</I>
+                        <I>implemented</I>.
+
+                   PFDGBLDR_TEXTURE_DISCARD
+                        Discard existing texture coordinate defi-
+                        nitions and do not generate any replace-
+                        ment texture coordinates.
+
+
+              <B>PFDGBLDR_AUTO_ORIENT</B>
+                   Automatically reverse normal vector direction
+                   or vertex order for polygons that have a sup-
+                   plied overall normal or per-vertex normals if
+                   the internally computed normal value indicates
+                   that the input vertices had clockwise rather
+                   than counterclockwise orientation.
+
+                   PFDGBLDR_ORIENT_PRESERVE
+                          which is counterclockwise when viewed
+                          from the outside of the surface.  The
+                          outside is defined as the direction in
+                          which the normal points.
+
+                   PFDGBLDR_ORIENT_VERTICES
+                          Reverse direction (by reversing the
+                          order of vertices) to make the sided-
+                          ness of polygons consistent with the
+                          standard orientation, which is counter-
+                          clockwise when viewed from the outside
+                          of the surface.  The outside is defined
+                          as the direction in which the normal
+                          points.  This is the default method,
+                          since people who provide a normal usu-
+                          ally know which way they want it to
+                          point.
+
+
+              <B>PFDGBLDR_MESH_ENABLE</B>
+                   Generate triangle meshes from input geometry.
+                   This task is actually performed using the
+                   <B>pfdMeshGSet</B> function. See the <B>pfdTMesher</B> man
+                   page for further details.  The default is
+                   <B>TRUE</B>.
+
+       <B>pfdGetBldrMode</B> returns the current value of <B>pfdGeoBuilder</B>
+       <I>bldr</I>'s internal processing mode, <I>mode</I>. The valid <I>mode</I>
+       arguments are those listed for <B>pfdGeoBldrMode</B> above.
+
+       <B>pfdTriangulatePoly</B> triangulates a polygon defined by pfd-
+       Geom <I>pgon</I> and appends the resulting triangles to the list
+       of triangles in <I>triList</I>. If the input polygon is concave,
+       <B>pfdTriangulatePoly</B> will OR the <B>PFDPOLY_CONCAVE</B> bit into
+       the <I>flags</I> member of the <I>poly</I> structure.  The return value
+       is <B>TRUE</B> if <I>poly</I> is concave and <B>FALSE</B> otherwise.  Note that
+       <B>pfdTriangulatePoly</B> will not "fan out" convex polygons but
+       will "zigzag" them so the resultant triangles can be eas-
+       ily formed into a single triangle strip (see <B>pfdMeshGSet</B>).
+
+       Geometric objects are added to a <B>pfdGeoBuilder</B> using the
+       general <B>pfdAddGeom</B> function or via the related functions
+       described below.  <B>pfdAddGeom</B> adds one a pfdGeom object to
+       the designated <B>pfdGeoBuilder</B> <I>bldr</I>. If the pfdGeom is a
+       line strip, then the argument <I>num</I> specifies the number of
+       lines in the line strip <B>pfdAddGeom</B> is the general way to
+       add geometry to a <B>pfdGeoBuilder</B>.
+
+       Four distinct types of geometric objects can be defined in
+       a pfdGeom: points, lines, line strips, and polygons, and
+       there is a lower-level primitive adding function for each:
+       <B>pfdAddPoints</B>, <B>pfdAddLines</B>, <B>pfdAddLineStrips</B>, and
+       <B>pfdAddPoly</B>. These functions are invoked by <B>pfdAddGeom</B> to
+       process input geometry and are not usually called directly
+       by users.
+
+       The <B>pfdGeoBuilder</B> also supports the optimization of
+       indexed geometric data. It is only necessary to specify
+       index list information in the pfdGeom structure and then
+       functions is discouraged.  <B>pfdAddPoint</B> adds the point
+       <B>pfdPrim</B> <I>Point</I> to <B>pfdGeoBuilder</B> <I>bldr</I>, <B>pfdAddLine</B> adds the
+       line <I>line</I>, <B>pfdAddTri</B> adds the triangle <I>tri</I>, and
+       <B>pfdAddIndexedTri</B> adds the indexed triangle <I>tri</I>.
+
+       In all cases, these geometry processing functions copy the
+       geometric definition into internal <B>pfdGeoBuilder</B> memory so
+       that the application need not manage multiple <B>pfdGeom</B> or
+       <B>pfdPrim</B> data structures. The fields of the <B>pfdGeom</B> or
+       <B>pfdPrim</B> structure should be set as follows:
+
+       <I>nbind</I>, <I>cbind</I>, <I>tbind</I> specify the normal, color, and texture
+       coordinate binding respectively.  They may be one of the
+       following values:
+
+
+              <B>PFGS_PER_VERTEX</B>
+                   An attribute is specified for each vertex of
+                   the point, line, or polygon.
+
+              <B>PFGS_PER_PRIM</B>, <B>PFGS_OVERALL</B>
+                   The first element of the attribute array spec-
+                   ifies the attribute for the point, line, or
+                   polygon, e.g. norms[0] is the normal for the
+                   entire object.
+
+              <B>PFGS_OFF</B>
+                   No attribute value is specified.
+
+       <I>pixelsize</I> defines the width in pixels to be used when
+       drawing the indicated point or line. <I>pixelsize</I> is ignored
+       for polygon data.
+
+       <I>coords</I>, <I>norms</I>, <I>colors</I>, <I>texCoords</I> specify the coordinates,
+       normals, colors, and texture coordinates of the point,
+       line, or polygon according to the binding types described
+       above, e.g. <I>coords</I>[0], <I>coords</I>[1], <I>coords</I>[2] define the
+       coordinates of a pfdTri.
+
+       Example 1:
+
+           pfdGeoBuilder *bldr;
+           pfdGeom       *geom;
+           pfList        *gsetList;
+           int          t;
+
+           /* allocate pfdGeoBuilder and pfdGeom storage */
+           bldr = pfdNewGeoBldr();
+           geom = <B>pfdNewGeom(4)</B>;
+
+           /* feed polygons to pfdGeoBuilder */
+           while (!done)
+           {
+                :
+            geom-&gt;flags = 0;
+            geom-&gt;nbind = PFGS_PER_PRIM;
+            geom-&gt;cbind = PFGS_OFF;
+            for (t = 0 ; t &lt; PF_MAX_TEXTURES ; t ++)
+                geom-&gt;tbind[t] = PFGS_OFF;
+
+            pfCopyVec3(geom-&gt;norms[0], myNorms[j]);
+
+            pfdAddGeom(bldr, geom, 1);
+                :
+           }
+
+           /* generate optimized triangle mesh GeoSet */
+           gsetList = pfdBuildGSets(bldr);
+
+           /* add returned pfGeoSets to geode */
+           for (i=0; i&lt;pfGetNum(gsetList); i++)
+            pfAddGSet(geode, pfGet(gsetList, i));
+
+           /* release pfdGeoBuilder and pfdGeom storage */
+           pfdDelGeoBldr(bldr);
+           pfdDelGeom(geom);
+
+
+       <B>pfdGetNumTris</B> returns the number of triangles currently
+       contained in the <B>pfdGeoBuilder</B> structure <I>bldr</I>.
+
+       <B>pfdBuildGSets</B> converts all accumulated points, lines, and
+       polygons into point, line, line strip, triangle, and tri-
+       angle-strip pfGeoSets and returns a <B>pfList</B> referencing
+       these pfGeoSets. <B>pfdBuildGSets</B> also resets <I>bldr</I>, removing
+       the geometric definitions therein.  The pfGeoSets created
+       by the builder are meshed by <B>pfdMeshGSet</B>, subject to the
+       meshing mode set by <B>pfdMesherMode</B>.
+
+       <B>pfdPrintGSet</B> prints a representation of pfGeoSet <I>gset</I>
+       using the <B>pfNotify</B> mechanism.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfGeode, pfList, pfdMeshGSet, pfdMesherMode,
+       pfdTMesher
+
+
+
+                                               pfdGeoBuilder(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

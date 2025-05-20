@@ -1,0 +1,528 @@
+<HTML>
+<HEAD>
+<TITLE>pfdLoadImageCache</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdLoadImageCache</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdLoadImageCache(3pf)                     pfdLoadImageCache(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdImageCacheNodeUpdate,</B>  <B>pfdLoadImageCache,</B> <B>pfdLoadImage-</B>
+       <B>CacheState</B> - Read Configuration File to Configure an Image
+       Cache
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       int              <B>pfdImageCacheNodeUpdate</B>(pfTraverser *trav,
+                          void *userData);
+
+       pfImageCache *   <B>pfdLoadImageCache</B>(const char *fileName,
+                          pfTexture *texture, int level)
+
+       pfImageCache
+                        *   <B>pfdLoadImageCacheState</B>(const char *fileName,
+                          pfTexture *texture,        int level,
+                          pfuImgCacheConfig *state)
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdImageCacheNodeUpdate</B> is a simple callback function that
+       can  be  attached  to a node to update an image cache in a
+       simple incremental way.  This function is designed  solely
+       for  testing  purposes  but shows how a user might use the
+       image cache centering api to update a pfImageCache.
+
+       <B>pfdLoadImageCacheState</B> works like <B>pfdLoadImageCache</B> except
+       that  it  takes  an  additional  argument,  a pointer to a
+       <B>pfuImgCacheConfig</B> structure. Normally the  parser  creates
+       and initializes its own <B>pfuImgCacheConfig</B> structure to the
+       default values set by <B>pfuInitImgCacheConfig</B>. This function
+       uses  the  the  structure passed by the <I>state</I> parameter as
+       its starting point. This allows the application to set its
+       own  <I>state</I>  values programmatically, and use the parser to
+       fill in the remaining ones. The parser doesn't  check  the
+       <I>state</I>  values,  so  it  will  overwrite a value set in the
+       <I>state</I> structure if it encounters the  corresponding  token
+       in its config file.
+
+       <B>pfdLoadImageCache</B>  accepts  the string <I>fileName</I> containing
+       the path to a configuration file describing a <B>pfImageCache</B>
+       (an  IC).  It  configures  and  loads  level  <I>level</I> of the
+       <B>pfTexture</B> <I>texture</I> with the Image Cache information.
+
+       An Image Cache is a  roamable  texture  level.  It  allows
+       OpenGL  Performer  to  roam  through a texture much larger
+       than can be held in hardware texture memory. Image  caches
+       are also used as levels of <B>ClipTextures</B>.
+
+       An  Image  Cache is composed of <B>pfImageTiles</B> arranged in a
+       rectangular grid. Each image tile in an image cache has  a
+       fixed size and format.  The texel dimensions of the entire
+       Image Cache is the Cache's <B>ICache</B> <B>Size</B>. Only a  subset  of
+       the  Image  Cache  tiles  are kept in system memory at any
+       given time. The number of tiles in memory is described  by
+       and locations of the files containing the image cache, the
+       dimensions  of  various  sizes, and information on mapping
+       tiles within the cache to stream  devices  containing  the
+       cache's texel data.
+
+       The  configuration  files contain a tokenized format; Each
+       data field is identified by a token followed by the  data.
+       The  version  token  must start the configuration file. It
+       allows configuration files to be automatically classified.
+       The  current  implementation  requires that tokens be sur-
+       rounded by whitespace. All tokens other than  the  version
+       token  can be in arbitrary order in the file, but the data
+       associated with a token must immediately follow it.
+
+       Comments start with a comment token. They can  start  any-
+       where  a  token  would expected, except before the version
+       token. There are a number of different comment tokens, for
+       stylistic convenience. They are:
+
+
+              "#" (shell-style comment)
+
+              "//" (C++ style comment)
+
+              ";" (LISP-style comment)
+
+              "comment" (ALGOL-style comment)
+
+              "rem" (BASIC-style comment for die-hards)
+
+       A  comment starts with a comment token and continues until
+       the end of the current line.
+
+       Some tokens and their data fields may be  omitted  if  the
+       default  value is desired. These are marked with asterisks
+       (*) in the list below. If a token is in the file, its data
+       field <B>must</B> be included.
+
+       Some tokens form groups. Tokens that are normally optional
+       may not be if another token in  it's  group  is  specified
+       with  a  non-default  value.   The  interdependencies  are
+       described below.
+
+       <B>Image</B> <B>Cache</B> <B>Configuration</B> <B>Format</B>
+
+       <B>Version</B> <B>1.0</B>
+
+       ic_version1.0 &lt;no data field&gt; (starts file: identify and version)
+       ext_format &lt;string&gt; (external format of stored texels)
+       int_format &lt;string&gt; (internal format used by graphics hw)
+       img_format &lt;string&gt; (image format of stored texels)
+
+       virt_size &lt;int&gt; &lt;int&gt; &lt;int&gt; (width, height, depth of icache in texels)
+       cache_size &lt;int&gt; &lt;int&gt; &lt;int&gt; (number of rows and columns of tiles in memory)
+       valid_region &lt;int&gt; &lt;int&gt; &lt;int&gt; (area x, y, z in texels in texture h/w)
+
+       *header_offset &lt;int&gt; (byte offset to skip user's file header)
+       *tiles_in_file &lt;int&gt; &lt;int&gt; &lt;int&gt; (image tile arrangement in each file)
+       tile_size &lt;int&gt; &lt;int&gt; &lt;int&gt;  (width, height, depth in texels of tile)
+       *num_streams &lt;int&gt; &lt;int&gt; &lt;int&gt; (number of s, t, and r stream servers)
+       *s_streams &lt;string list&gt; (list of S stream servers)
+       *t_streams &lt;string list&gt; (list of T stream servers)
+       *r_streams &lt;string list&gt; (list of R stream servers)
+       *default_tile &lt;file path string&gt; (use this one if tile missing)
+
+
+       <B>Version</B> <B>2.0</B>
+
+       ic_version2.0 &lt;no data field&gt; (starts file: identify and version)
+       ext_format &lt;string&gt; (external format of stored texels)
+       int_format &lt;string&gt; (internal format used by graphics hw)
+       img_format &lt;string&gt; (image format of stored texels)
+
+       icache_size &lt;int&gt; &lt;int&gt; &lt;int&gt; (s, t, r texel size of icache)
+       mem_region_size &lt;int&gt; &lt;int&gt; &lt;int&gt; (s, t, r sizes of tile array)
+       tex_region_size &lt;int&gt; &lt;int&gt; &lt;int&gt; (s, t, r texel sizes of tex region)
+
+       *header_offset &lt;int&gt; (byte offset to skip user's file header)
+       *tiles_in_file &lt;int&gt; &lt;int&gt; &lt;int&gt; (image tile layout in each file)
+       tile_size &lt;int&gt; &lt;int&gt; &lt;int&gt;  (s, t, r texel size of each tile)
+
+       *tile_base &lt;file path string&gt; (root of tile filenames)
+
+       *tile_format &lt;scanf string&gt; (tile filename format)
+       *num_tile_params &lt;int&gt; (number of parameter token arguments)
+       *tile_params &lt;string list&gt; (format parameter tokens in order)
+
+       *s_streams &lt;string list&gt; (list of S stream servers)
+       *t_streams &lt;string list&gt; (list of T stream servers)
+       *r_streams &lt;string list&gt; (list of R stream servers)
+
+       *read_func   &lt;1 or 2 strings&gt; (custom read function, dso library its in)
+       *lookahead   &lt;int&gt;  extra tiles surrounding tex region in mem region
+
+       *default_tile &lt;file path string&gt; (use this one if tile missing)
+
+
+       <B>Configuration</B> <B>Details</B>
+
+       <B>ic_version1.0</B> and <B>ic_version2.0</B> have no corresponding data
+       fields.  One or the other must start the configuration
+       file. This token allows programs to determine the type and
+       version of the configuration file. The parser will read
+       both version1 and version2 files. We recommend you convert
+       to version2.
+
+       <B>ext_format</B> expects a performer external format type. This
+       can be a token name, such as PFTEX_PACK_8, or a numeric
+       value.
+
+       <B>int_format</B> expects a performer internal format type. This
+       can be a token name, such as PFTEX_RGB_8, or a numeric
+       value.
+
+       <B>img_format</B> expects a performer image format type. This can
+       be a token name, such as PFTEX_RGB, or a numeric value.
+
+       <B>icache_size</B> (was <B>virt_size</B>) takes three integer arguments,
+       <B>mem_region_size</B> multiplied by <B>tile_size</B> should not exceed
+       the <B>icache__size</B>, for any dimension. This value is manda-
+       tory.
+
+       <B>tex_region_size</B> (was <B>valid_region</B>) takes three integer
+       arguments, s, t, and r, describing the dimensions of the
+       texture region of the image cache (the region that should
+       be kept in in hardware texture memory). This value is
+       mandatory.
+
+       <B>header_offset</B> is the size, in bytes, of any application-
+       specific header information at the beginning of each file.
+       If there is no application header information, this value
+       should be set to 0, which is the default value if this
+       field is omitted.
+
+       <B>tiles_in_file</B> takes three integers, s, t, and r, describ-
+       ing the layout of tiles in each image tile file. Each com-
+       ponent describes the number of tiles in each dimension, in
+       units of tiles. The tiles are stored in the tiles in row-
+       order. If this field is omitted, the s, t, and r values
+       all default to 1, indicating a single tile in each file.
+
+       <B>tile_size</B> takes three integers, s, t, and r, describing
+       the dimensions of each tile that makes up the image cache,
+       in units of texels. All tiles in the image cache must be
+       this.
+
+       <B>tile_base</B> defines the directory path and constant begin-
+       ning of the image cache tile filenames. It is a conve-
+       nience feature, making it easy to repoint a configuration
+       file to data in a different directory. If omitted,
+       <B>tile_base</B> defaults to "" (empty string).  The <B>tile_base</B>
+       token is obsolecent; its use is discouraged.
+
+       The <B>tile_base</B> field can start with an optional environment
+       variable name.  The environment variable name must start
+       the field, and start with a '$' (dollar sign) character.
+       The environment variable name can be delineated in the
+       usual way, using parenthesis or braces; for example
+       $(FNAME) or ${FNAME}.  The $FNAME style format can be used
+       if the variable name is unambiguous in the field. The
+       environment variable name will be replaced by its value in
+       the field. If the variable is undefined, it will be
+       expanded to "" (the empty string).  To specify a default
+       value to be used in the case that the variable is not set,
+       use the form ${FNAME:-DEFAULT} or $(FNAME:-DEFAULT).
+
+       The <B>tile_base</B> field can be a relative pathname. The path-
+       name is expanded relative to where the configuration file
+       was found.
+
+       <B>tile_format</B> is a printf-style string containing a descrip-
+       tion of the variable part of the image cache tile file-
+       names. If you omit <B>tile_format</B> you must also omit
+       <B>num_tile_params</B> and <B>tile_params</B>, and accept the default
+       filename format.
+
+       If no <B>tile_base</B> is defined, the <B>tile_format</B> field can
+       will be replaced by its value in the field. If the vari-
+       able is undefined, it will be expanded to "" (the empty
+       string). To specify a default value to be used in the case
+       that the variable is not set, use the form
+       ${FNAME:-DEFAULT} or $(FNAME:-DEFAULT).
+
+       If no <B>tile_base</B> is defined, the <B>tile_format</B> field can be a
+       relative pathname. The pathname is expanded relative to
+       where the configuration file was found.
+
+       If <B>tile_format</B> is omitted, the default filename string is
+       "%s%s.%d.r%03d.c%03d.raw888". By default, this string uses
+       the following arguments in order:
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVERNAME</B>
+              This token indicates that the corresponding %s seg-
+              ment of the filepath will be filled in by calculat-
+              ing the appropriate stream path. Streams are
+              selected as a function of the tile's s, t, r tile
+              coordinates in the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_CACHENAME</B>
+              This token indicates that the corresponding %s seg-
+              ment of the filepath will be filled in from the
+              string associated with the <B>tile_base</B> token. Any
+              environment variables in the base string will be
+              expanded.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_VSIZE_S</B>
+              This token indicates that the corresponding %d seg-
+              ment of the filename will be filled with the size
+              of the image cache in its S dimension.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_T</B>
+              This token indicates that the corresponding %03d
+              segment of the filename will be filled with the T
+              coordinate of the file's corresponding tile loca-
+              tion in the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_S</B>
+              This token indicates that the corresponding %03d
+              segment of the filename will be filled with the S
+              coordinate of the file's corresponding tile loca-
+              tion in the image cache.
+
+       <B>num_tile_params</B> is followed by an integer listing the num-
+       ber of data elements used by <B>icache_format</B>. It should
+       match the number of format parameters (%parameter_specifi-
+       cation) in the format string. This value is mandatory if
+       there are any parameter specifications in the <B>tile_format</B>
+       string.
+
+       <B>tile_params</B> is followed by a whitespace separated list
+       containing some combination of the following token names:
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_VSIZE_S</B>
+              Corresponds to the size of the image cache in the S
+              dimension.
+
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_S</B>
+              Corresponds to the S coordinate of the file's cor-
+              responding tile location (in tile coordinates) in
+              the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_T</B>
+              Corresponds to the T coordinate of the file's cor-
+              responding tile location (in tile coordinates) in
+              the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_R</B>
+              Corresponds to the R coordinate of the file's cor-
+              responding tile location (in tile coordinates) in
+              the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILEORG_S</B>
+              Corresponds to the S texel coordinate of the file's
+              corresponding tile origin in the image cache.
+
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILEORG_T</B>
+              Corresponds to the T texel coordinate of the file's
+              corresponding tile origin in the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_TILEORG_R</B>
+              Corresponds to the R texel coordinate of the file's
+              corresponding tile origin in the image cache.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVERNAME</B>
+              Corresponds to the appropriate stream pathname. The
+              stream pathname is a function of the file's corre-
+              sponding tile's location in the image cache.  If
+              streams aren't specified, it defaults to the empty
+              string.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_CACHENAME</B>
+              Corresponds to the string associated with the
+              <B>tile_base</B> token.  If not specified, it defaults to
+              the empty string.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_FILENUM_S</B>
+              Corresponds to the S coordinate of the file's cor-
+              responding origin tile location (in tile coordi-
+              nates) in the image cache. This value will differ
+              from PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_S if
+              there are multiple tiles per file in the S direc-
+              tion.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_FILENUM_T</B>
+              Corresponds to the T coordinate of the file's cor-
+              responding origin tile location (in tile coordi-
+              nates) in the image cache. This value will differ
+              from PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_T if
+              there are multiple tiles per file in the T direc-
+              tion.
+
+       <B>PFIMAGECACHE_TILE_FILENAMEARG_FILENUM_R</B>
+              Corresponds to the R coordinate of the file's cor-
+
+       <B>num_icache_params</B> and the number of parameter specifica-
+       tions in the <B>icache_format</B> string.  This list is mandatory
+       if there are any parameter specifications in the
+       <B>icache_format</B> string.
+
+       <B>num_streams</B> is now obsolete, and ignored by the parser.
+       The number of streams in s, t, and r are computed directly
+       by the parser.  For high-performance applications, the
+       texel data for an image cache can be spread out over a
+       number of stream devices (disks). The image cache deter-
+       mines which disk the access by using each tile's grid
+       position, in s, t, and r coordinates, in units of tiles.
+       The tile's s, t, and r position, modulo the corresponding
+       s t or r number from num_streams, is used to determine the
+       stream device needed to load that tile.
+
+       The numbering can be such that more than one stream device
+       may contain the information for a given tile. In this
+       case, the least busy stream device is accessed.
+
+       <B>s_streams</B>, <B>t_streams</B>, and  <B>r_streams</B> are each followed by
+       a whitespace-separated list of pathnames, corresponding to
+       the appropriate dimension. The number of pathnames in each
+       list must exactly match the corresponding component of
+       <B>num_streams</B>.
+
+       The stream server pathnames are accessed by PFIMAGE-
+       CACHE_TILE_FILENAMEARG_STREAMSERVERNAME if it is used by
+       the <B>tile_format</B> filename string (as it is by the default
+       format string). If no stream server pathnames have been
+       specified, the default pathname is "" (the empty string).
+
+       <B>default_tile</B> is followed by the filename of the file to
+       use if the image cache can't find a file using the file-
+       name format. It can be used to fill out an image cache. If
+       this field is missing, there is no default tile. This
+       field is prepended with <B>tile_base</B> before used.
+
+       <B>lookahead</B> takes a single integer, which indicates the num-
+       ber of extra rows and columns of (beyond the amount needed
+       to cover the tex region) tiles used to compute the mem
+       region size. The configuration system uses the mem region
+       size if it is supplied, or computes the size based on the
+       tile size and tex region size. It chooses a mem region
+       size so that the tex region can be covered, even if it is
+       not aligned with the tile boundaries.
+
+       The default lookahead value 1 one, which means there is an
+       extra row and column of tiles in the mem region beyond the
+       minimum required to prevent errors. Setting a lookahead
+       value in the cliptexture configuration file sets the
+       lookahead for all the cliptexture's image caches, unless
+       the value is set in an image cache config file. In that
+       case, the image cache lookahead value takes precidence for
+       that image cache.
+
+       <B>read_func</B> takes one or two arguments. If the custom read
+       function is in the application's executable, then a single
+       argument giving the function name is sufficient. Otherwise
+
+
+       ic_version2.0
+       //
+       // Simple configuration File. RGB, 8 bits per pixel. Using default
+       // values for most optional fields. 1 tile per file, and all of
+       // image cache texture is stored in system memory, in a 4 by 4 grid
+       // of 512 x 512 tiles.
+       //
+       ext_format PFTEX_PACK_8
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       icache_size 2048    2048 1
+       mem_region_size 4   4    1
+       tex_region_size 512 512  1
+       tile_size 512  512  1
+       tile_base /usr/share/Performer/data/clipdata/hl
+
+
+       ic_version2.0
+       //
+       // More elaborate version of the same configuration file.
+       // icache format and parameters are the same as the default.
+       // stream servers, since they are not listed, default to
+       // "" (empty string).
+       //
+       ext_format PFTEX_PACK_8
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       icache_size 2048    2048 1
+       mem_region_size 4   4    1
+       tex_region_size 512 512  1
+       tile_size 512  512  1
+       tile_base /usr/share/Performer/data/clipdata/hl
+       tile_format %s%s.%d.r%03d.c%03d.raw888
+       num_tile_params 5
+       tile_params
+       PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVERNAME
+       PFIMAGECACHE_TILE_FILENAMEARG_CACHENAME
+       PFIMAGECACHE_TILE_FILENAMEARG_VSIZE_S
+       PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_T
+       PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_S
+
+
+
+       ic_version2.0
+       // This example assumes there are a number disks mounted
+       // under /usr/{s,t}disks{0,1}. That contains multiple copies
+       // of the image tile files. This type of configuration allows
+       // higher disk bandwidth.
+
+       // The $(DATAFIELDS) part of the icache_base field will be
+       // replaced with the current value of DATAFIELDS environment
+       // variable, or removed if the variable isn't defined.
+
+       ext_format PFTEX_PACK_8
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       icache_size 2048    2048 1
+       PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVERNAME
+       PFIMAGECACHE_TILE_FILENAMEARG_CACHENAME
+       PFIMAGECACHE_TILE_FILENAMEARG_VSIZE_S
+       PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_T
+       PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_S
+       s_streams
+       /usr/sdisks0
+       /usr/sdisks1
+       t_streams
+       /usr/tdisks0
+       /usr/tdisks1
+       /usr/tdisks1
+
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The parser that reads configuration files is very limited.
+       In particular, it only allows comments where it would be
+       expecting a token.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfImageCache, pfMPImageCache, pfClipTexture, pfMPClipTex-
+       ture, pfTexture, pfdLoadClipTexture
+
+
+
+                                           pfdLoadImageCache(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,203 @@
+<HTML>
+<HEAD>
+<TITLE>pfCombiner</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCombiner</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCombiner(3pf)                                   pfCombiner(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCombiner</B> - Encapsulation of <B>NV_register_combiners</B> OpenGL
+       extension.
+
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfCombiner.h&gt;
+
+                         <B>pfCombiner::pfCombiner</B>();
+
+       static pfType *   <B>pfCombiner::getClassType</B>();
+
+       void              <B>pfCombiner::apply</B>();
+
+       void              <B>pfCombiner::setGeneralInput</B>(GLenum stage,
+                           GLenum portion,     GLenum variable,
+                           GLenum input,        GLenum mapping,
+                           GLenum componentUsage);
+
+       void              <B>pfCombiner::setGeneralOutput</B>(GLenum stage,
+                           GLenum portion,     GLenum abOutput,
+                           GLenum cdOutput,   GLenum sumOutput,
+                           GLenum scale,           GLenum bias,
+                           GLboolean abDotProduct,
+                           GLboolean cdDotProduct,
+                           GLboolean muxSum);
+
+       void              <B>pfCombiner::setFinalInput</B>(GLenum variable,
+                           GLenum input,        GLenum mapping,
+                           GLenum componentUsage);
+
+       void              <B>pfCombiner::setGeneralOutput</B>(GLenum stage,
+                           GLenum portion,     GLenum componen-
+                           tUsage);
+
+       int               <B>pfCombiner::getMaxGeneralCombiners</B>(void);
+
+       void              <B>pfCombiner::setActiveCombiners</B>(int count);
+
+       void              <B>pfCombiner::setActiveConstColors</B>(int count);
+
+       void              <B>pfCombiner::setConstantColor0</B>(const pfVec4 color);
+
+       void              <B>pfCombiner::setConstantColor1</B>(const pfVec4 color);
+
+       virtual int       <B>pfCombiner::print</B>(uint _travMode,
+                           uint _verbose,         char *prefix,
+                           FILE *file);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfCombiner</B> is derived from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class  <B>pfCombiner</B>.  This is also true for ancestor classes
+       of class <B>pfObject</B>.
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfCombiner</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A <B>pfCombiner</B> is an encapsulation of the state of all modes
+       related to the <B>NV_register_combiners</B> OpenGL extension.   A
+       <B>pfCombiner</B>  can be used within a <B>pfGeoState</B> by setting the
+       <B>PFSTATE_COMBINER</B> attribute and the and  the  <B>PFEN_COMBINER</B>
+       state.
+
+       The  function  <B>pfCombiner::getClassType</B> returns the <B>pfType</B>
+       pointer for the class <B>pfCombiner</B>.
+
+       The number of active register combiners can  be  set  with
+       the  function <B>pfCombiner::setActiveCombiners</B>.  The maximum
+       number of available general combiners can be queried  with
+       the function <B>pfCombiner::getMaxGeneralCombiners</B>.
+
+       The  parameter  <I>stage</I>  for <B>pfCombiner::setGeneralInput</B> and
+       <B>pfCombiner::setGeneralOutput</B> can take on any of  the  fol-
+       lowing values:
+              <B>GL_COMBINER0_NV</B>
+              <B>GL_COMBINER1_NV</B>
+              <B>GL_COMBINER2_NV</B>
+              <B>GL_COMBINER3_NV</B>
+              <B>GL_COMBINER4_NV</B>
+              <B>GL_COMBINER5_NV</B>
+              <B>GL_COMBINER6_NV</B>
+              <B>GL_COMBINER7_NV</B>
+
+       The  parameter <I>variable</I> in <B>pfCombiner::setGeneralInput</B> and
+              <B>pfCombiner::setFinalInput</B>)
+              <B>GL_VARIABLE_F_NV</B>      (applicable      only      to
+              <B>pfCombiner::setFinalInput</B>)
+              <B>GL_VARIABLE_G_NV</B>      (applicable      only      to
+              <B>pfCombiner::setFinalInput</B>)
+
+       The parameter <I>input</I>  for  <B>pfCombiner::setGeneralInput</B>  and
+       <B>pfCombiner::setFinalInput</B> can take on any of the following
+       values:
+              <B>GL_ZERO</B>
+              <B>GL_CONSTANT_COLOR0_NV</B>
+              <B>GL_CONSTANT_COLOR1_NV</B>
+              <B>GL_FOG</B>
+              <B>GL_PRIMARY_COLOR_NV</B>
+              <B>GL_SECONDARY_COLOR_NV</B>
+              <B>GL_SPARE0_NV</B>
+              <B>GL_SPARE1_NV</B>
+              <B>GL_TEXTURE0_ARB</B>
+              <B>GL_TEXTURE1_ARB</B>
+              <B>GL_E_TIMES_F_NV</B>      (applicable      only       to
+              <B>pfCombiner::setFinalInput</B>)
+              <B>GL_SPARE0_PLUS_SECONDARY_COLOR_NV</B>  (applicable only
+              to <B>pfCombiner::setFinalInput</B>)
+
+       The parameter <I>mapping</I> to  <B>pfCombiner::setGeneralInput</B>  and
+       <B>pfCombiner::setFinalInput</B> can take on any of the following
+       values:
+              <B>GL_UNSIGNED_IDENTITY_NV</B>
+              <B>GL_UNSIGNED_INVERT_NV</B>
+              <B>GL_EXPAND_NORMAL_NV</B>
+              <B>GL_EXPAND_NEGATE_NV</B>
+              <B>GL_HALF_BIAS_NORMAL_NV</B>
+              <B>GL_HALF_BIAS_NEGATE_NV</B>
+              <B>GL_SIGNED_IDENTITY_NV</B>
+              <B>GL_SIGNED_NEGATE_NV</B>
+
+       The             <I>scale</I>             parameter             of
+       <B>LcpfGeneralOutputCombinerpfCombiner::setGeneralOutput</B>  can
+       take any of the following values:
+              <B>GL_NONE</B>
+              <B>GL_SCALE_BY_TWO_NV</B>
+              <B>GL_SCALE_BY_FOUR_NV</B>
+              <B>GL_SCALE_BY_ONE_HALF_NV</B>
+
+       The <I>bias</I>  parameter  of  <B>pfCombiner::setGeneralOutput</B>  can
+       take the following values:
+              <B>GL_NONE</B>
+              <B>GL_BIAS_BY_NEGATIVE_ONE_HALF_NV</B>
+
+       Accepted  by the <I>abOutput</I>, <I>cdOutput</I>, and <I>sumOutput</I> parame-
+       ter of <B>pfCombiner::setGeneralOutput</B> are the following val-
+       ues:
+              <B>GL_DISCARD_NV</B>
+              <B>GL_PRIMARY_COLOR_NV</B>
+              <B>GL_SECONDARY_COLOR_NV</B>
+              <B>GL_SPARE0_NV</B>
+              <B>GL_SPARE1_NV</B>
+              <B>GL_TEXTURE0_ARB</B>
+              <B>GL_TEXTURE1_ARB</B>
+                                                  pfCombiner(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

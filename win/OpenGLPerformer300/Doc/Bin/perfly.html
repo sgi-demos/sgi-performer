@@ -1,0 +1,603 @@
+<HTML>
+<HEAD>
+<TITLE>perfly</TITLE>
+</HEAD>
+<BODY>
+<H1>perfly</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+perfly(3pf)                                           perfly(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>perfly</B> - OpenGL Performer scene viewer
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>perfly</B> [ options ] file ...
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>perfly</B> is a sample application distributed with the OpenGL
+       Performer high-performance graphics library.  <B>perfly</B> is  a
+       powerful  way  to see graphics data: it's very fast, reads
+       many different graphics file formats, and has  interesting
+       options for examining your dataset.
+
+       If  you are new to OpenGL Performer, the best way to start
+       learning about it is to go for a  test  drive.   The  Per-
+       former-based sample application <B>perfly</B> is installed in the
+       <I>/usr/sbin</I> directory.  To run perfly, simply type  "perfly"
+       followed  by  a  list  of  files that you want to see. For
+       example:
+
+       <B>perfly</B> <B>esprit.flt</B>
+
+       There are quite a few models in the <I>/usr/share/Per-</I>
+       <I>former/data</I> directory that you may wish to explore.  The
+       formats supported by OpenGL Performer are listed toward
+       the end of this reference page.
+
+       <B>perfly</B> will by default start up with a trackball motion
+       model.  Type "man pfiXformer" for details on how to use
+       the motion models: drive, fly, flight stick, and track-
+       ball.  <B>perfly</B> is largely self-documenting. Run <B>perfly</B> with
+       the command line option "-help" and a full list of fea-
+       tures will be printed. Type "?" while running <B>perfly</B> to
+       print a list of keyboard command sequences to the shell
+       window.
+
+       <B>Perfly</B> is used by many OpenGL Performer demos to view
+       large databases, including the standard Performer Town
+       demo.  The Town is shipped in the fast-loading OpenGL Per-
+       former binary format (pfb).  You can run the Town with
+       <B>perfly</B> <B>town.perfly</B>.
+
+
+   <B>OPTIONS</B>
+       <B>Perfly</B> supports a large number of command line options.
+       These options and the arguments accepted by each, are
+       described below.
+
+       Note:  Characters such as the less-than and greater-than
+       symbols in "&lt;text&gt;", the braces in "[text]", and so on are
+       not meant to be typed on the command line itself; they
+       represent regular expressions, optional arguments, or
+       wildcard substitutions, and are for clarity of documenta-
+       tion.
+
+           Use &lt;string&gt; as the text overlaid in the upper right corner of
+           the perfly window (IRIX Only).  Default is "OpenGL Performer"
+
+       <B>-B</B> <B>&lt;num,...&gt;</B>                  -mapping of processes to procesors
+
+       <B>-b</B> <B>&lt;r,g,b[,a]&gt;</B>
+           Use the color specified by &lt;r,g,b&gt; (with optional alpha) as the
+           background color when the EarthSky mode is set to "clear".
+           Default is &lt;0.07,0.11,0.18,1.0&gt;
+
+       <B>-c</B> <B>&lt;numChannels&gt;</B>
+           Number of channels (side-by-side).  Default is one per window.
+
+       <B>-C</B> <B>&lt;a,b,c,...&gt;</B>
+           Ordering of pipes in relation to channels, from left to right.
+           ex: -C 2,0,1 makes pipe 0 display the center channel, whereas
+           with -C 0,1,2 pipe 0 would display the leftmost.  Default is in
+           increasing number from left to right (0,1,2,..)
+
+       <B>-d</B>
+           Use 'drive' mode input model.  See pfiXformer(3pf) for details.
+           Default is 'trackball' mode.
+
+       <B>-D</B>
+           Lock down the DRAW process (if running in MP mode) on a
+           particular CPU.  Must have root permissions.  Off by default.
+
+       <B>-e</B> <B>&lt;h,p,r&gt;</B>                    -Initial view angles
+           Set the initial view angle to the Euler angle specified by
+           &lt;heading,pitch,roll&gt;.  Default is &lt;0,0,0&gt;
+
+       <B>-E</B> <B>&lt;string&gt;</B>
+           Set the EarthSky (background) mode to &lt;string&gt;.  Valid options
+           are:
+
+           <B>clear</B>    : clear screen to the standard background color
+                      (default)
+
+           <B>sky</B>      : draw the sky polygons only; ground area is not
+                      cleared.
+
+           <B>skygrnd</B>  : draw both the sky and ground
+
+           <B>skyclear</B> : draw the sky polygons and clear the ground area
+                      to the default background color.
+
+           <B>tag</B>      : Special fast 'tag' clear (only available on
+                      RealityEngine systems, where it is the default)
+
+       <B>-f</B>
+           Use 'fly' mode input model.  See pfiXformer(3pf) for details.
+           Default is 'trackball' mode.
+
+       <B>-F</B> <B>&lt;path&gt;</B>
+           Set the data-file search path to &lt;path&gt;.  See pfFilePath(3pf) for
+           details.  Default is <I>/usr/share/Performer/data</I> or $PFPATH if set.
+
+       <B>-g</B> <B>&lt;format&gt;</B>
+           Set the display format of the graphical interface.  Valid
+           Enable Gangdraw (PFCHAN_SWAPBUFFERS_SW) synchronization in
+           multi-pipe mode.  See pfChannel(3pf) for more information.  Off
+           by default.
+
+       <B>-h</B>
+           Print the command argument list, and exit.
+
+       <B>-i</B> <B>&lt;count&gt;</B>
+           Load &lt;count&gt; copies of each data file into the scene graph.
+           Typically used in conjunction with -u or -X.  Off by default.
+
+       <B>-I</B> <B>&lt;count&gt;</B>
+           Run perfly for &lt;count&gt; frames, then print performance statistics
+           and exit.  Off by default.
+
+       <B>-j</B> <B>&lt;font_type&gt;</B>
+           Set the font type of the welcome text (see -a).  Valid
+           settings are:
+
+           <B>0</B> :  2D Textured Font
+           <B>1</B> :  2D Outline Font
+           <B>2</B> :  2D Filled Font
+           <B>3</B> :  3D Filled &amp; Extruded Font  (Default)
+
+       <B>-J</B> <B>&lt;font_name&gt;</B>
+           Set the Font of the welcome text (see -a) to &lt;font_name&gt;.
+           Currently, the only valid fonts are <I>Mistr</I> and
+           <I>Times-Elfin</I>.  Default is Mistr.
+
+       <B>-k</B> <B>&lt;r,g,b[,a]&gt;</B>
+           Set the color of outlines drawn when in 'scribed' mode to &lt;r,g,b&gt;
+           with optional alpha.  Default is &lt;1.0,1.0,1.0&gt;
+
+       <B>-K</B> <B>&lt;count&gt;</B>
+           Merge pfBillboards together, up to number &lt;count&gt;.  See
+           pfdCombineBillboards(3pf) for more information.  Off by default.
+
+       <B>-l</B> <B>&lt;style&gt;</B>
+       <B>-l</B> <B>&lt;x,y,z,r,g,b&gt;</B>
+           If arguments are of the format &lt;style&gt;, set the lighting style.
+           Valid settings are:
+
+           <B>0</B> :  turn lighting off
+           <B>1</B> :  Illuminate the scene from the eyepoint (Default)
+           <B>2</B> :  Illuminate the scene from above
+
+           If arguments are of the format &lt;x,y,z,r,g,b&gt;, then add a
+           pfLightSource to the scene at position &lt;x,y,z&gt; with diffuse color
+           &lt;r,g,b&gt;.  Off by default.
+
+       <B>-L</B>
+           Free processesors, then lock Performer processes to a particular
+           CPU.  Must have root permission.  Also see -D, -Z, and -B.  Off
+           by default.
+
+       <B>-m</B> <B>&lt;mode&gt;</B>
+           Override the default multiprocessing mode.  Valid modes are:
+
+          <B>-1</B> : PFMP_DEFAULT       : (Default)
+
+       <B>-M</B> <B>&lt;mode&gt;</B>
+           Override the default multi-pipe mode.  Valid modes are:
+           <B>0</B> : Force single-pipe mode
+           <B>1</B> : Allow multi-pipe mode if detected (default)
+           <B>2[,h=&lt;netId&gt;...][,s=&lt;dpyName&gt;...]</B> : hyperpipe mode
+
+           Hyperpipe mode arguments:
+            <B>&lt;netId&gt;</B>   - hyperpipe network id (see <B>hyperpipeinfo(1)</B>)
+            <B>&lt;dpyName&gt;</B> - X display name for single pipe (including screen)
+
+           Notes regarding hyperpipe:
+            - hyperpipe rendering pipelines must preceed single pipelines
+            - no netIds will configure no hyperpipes
+            - no dpyNames will configure no single pipes
+            - no netIds and dpyNames will configure all hyperpipes
+
+       <B>-n</B> <B>&lt;level&gt;</B>
+           Set the maximum notification level to &lt;level&gt;.  Overrides
+           $PFNFYLEVEL if set.  Valid levels are:
+
+           <B>0</B> : PFNFY_ALWAYS   | Mandatory notifications only
+           <B>1</B> : PFNFY_FATAL    | Fatal errors
+           <B>2</B> : PFNFY_WARN     | Serious warnings
+           <B>3</B> : PFNFY_NOTICE   | General warnings (default)
+           <B>4</B> : PFNFY_INFO     | Progress or Status Information
+           <B>5</B> : PFNFY_DEBUG    | Verbose Debug information
+           <B>6</B> : PFNFY_DEBUG_FP | Floating-point messages
+           <B>6</B> : PFNFY_INTERNAL_DEBUG | Internal messages
+
+       <B>-N</B>
+           Assign non-degrading priorities to Performer processes.  Off by
+           default.
+
+       <B>-o</B> <B>&lt;mode&gt;,&lt;value&gt;</B>
+           Turn specified builder mode/value pair OFF.  (see -O)
+
+       <B>-O</B> <B>&lt;mode&gt;,&lt;value&gt;</B>
+           Turn the specified builder mode/value pair ON.  See the
+           <B>pfdBldrMode</B> reference page for more information.  Valid modes
+           &amp; values correspond to:
+
+           0 : PFDBLDR_MESH_ENABLE
+           1 : PFDBLDR_MESH_SHOW_TSTRIPS
+           2 : PFDBLDR_MESH_INDEXED
+           3 : PFDBLDR_MESH_MAX_TRIS
+           4 : PFDBLDR_MESH_RETESSELLATE
+           5 : PFDBLDR_MESH_LOCAL_LIGHTING
+          10 : PFDBLDR_AUTO_COLORS
+                0 : PFDBLDR_COLORS_PRESERVE  + leave colors alone
+                1 : PFDBLDR_COLORS_MISSING   - make missing colors
+                2 : PFDBLDR_COLORS_GENERATE  - make all colors
+                3 : PFDBLDR_COLORS_DISCARD   - toss existing colors
+          11 : PFDBLDR_AUTO_NORMALS
+                0 : PFDBLDR_NORMALS_PRESERVE - leave normals alone
+                1 : PFDBLDR_NORMALS_MISSING  + make missing normals
+                2 : PFDBLDR_NORMALS_GENERATE - make all normals
+                3 : PFDBLDR_NORMALS_DISCARD  - toss existing normals
+          12 : PFDBLDR_AUTO_TEXTURE
+                2 : PFDBLDR_ORIENT_VERTICES  + make vertex order match normal
+          15 : PFDBLDR_AUTO_DISABLE_TCOORDS_BY_STATE
+                0 - dont remove tcoords if no texture specified
+                1 - remove tcoords if no texture specified
+          16 : PFDBLDR_AUTO_DISABLE_NCOORDS_BY_STATE
+                0 - dont remove ncoords if no material specified
+                1 - remove ncoords if no material specified
+          17 : PFDBLDR_AUTO_LIGHTING_STATE_BY_NCOORDS
+                0 - don't automatically set lighting enable based on
+                 presence of ncoords
+                1 - automatically set lighting enable based on
+                 presence of ncoords
+          18 : PFDBLDR_AUTO_LIGHTING_STATE_BY_MATERIALS
+                0 - dont automatically set lighting enable based
+                 on presence of material
+                1 - automatically set lighting enable based on
+                 presence of material
+          19 : PFDBLDR_AUTO_TEXTURE_STATE_BY_TEXTURES
+                0 - dont automatically set texture enable based
+                 on presence of tcoords
+                1 - automatically set texture enable based on
+                 presence of tcoords
+          20 : PFDBLDR_AUTO_TEXTURE_STATE_BY_TCOORDS
+                0 - dont automatically set texture enable based
+                 on presence of texture
+                1 - automatically set texture enable based on
+                 presence of texture
+          30 : PFDBLDR_BREAKUP
+          31 : PFDBLDR_BREAKUP_SIZE
+          32 : PFDBLDR_BREAKUP_BRANCH
+          33 : PFDBLDR_BREAKUP_STRIP_LENGTH
+          34 : PFDBLDR_SHARE_MASK
+          35 : PFDBLDR_ATTACH_NODE_NAMES
+          36 : PFDBLDR_DESTROY_DATA_UPON_BUILD
+          37 : PFDBLDR_PF12_STATE_COMPATIBLE
+          38 : PFDBLDR_BUILD_LIMIT  -maximum number of tris/strip
+
+       <B>-p</B> <B>&lt;x,y,z&gt;</B>
+           Set the initial view position to &lt;x,y,z&gt;.  Default is calculated
+           based on database extent.  Also see -e.
+
+       <B>-P</B> <B>&lt;phase&gt;</B>
+           Set the multi-process phase mode to &lt;phase&gt;.  See pfPhase(3pf)
+           for more information.  Valid settings are:
+
+           <B>0</B> : PFPHASE_FLOAT
+           <B>1</B> : PFPHASE_LOCK
+           <B>2</B> : PFPHASE_FREE_RUN (default)
+           <B>3</B> : PFPHASE_LIMIT
+
+       <B>-q</B> <B>&lt;0/1&gt;</B>
+           Optimize graphics state by calculating and applying a global
+           scene pfGeoState.  See pfdMakeSharedScene(3pf) for more
+           information.  Default is 0 (off).
+
+       <B>-Q</B> <B>&lt;0/1&gt;</B>
+           Flatten the scene graph and prune empty SCS nodes.  See
+           pfdCleanTree(3pf) for more information.  Default is 0 (off).
+
+
+       <B>-s</B> <B>&lt;LODscale&gt;</B>
+           Set the global LOD scale to &lt;LODscale&gt;.  See pfLOD(3pf) for more
+           information.  Off (1.0) by default.
+
+       <B>-S</B> <B>&lt;0/1&gt;</B>
+           Color-code each triangle strip with psychadelic pastels.  Default
+           is 0 (off).
+
+       <B>-t</B> <B>&lt;0xVisual_id&gt;</B>
+           Override the GLX Visual used by perfly to &lt;0xVisual_id&gt;
+           (specified in hex).  Can cause visual artifacts to occur if not
+           chosen wisely.  Default is internally calculated.
+
+       <B>-T</B> <B>&lt;0/1&gt;</B>
+           Compile data in geosets into GL display lists.  This results in a
+           performance optimization on most systems, at the cost of memory
+           usage.  On InfiniteReality systems, GL display lists are stored
+           in the graphics pipeline.  See pfGeoSet(3pf) for more
+           information.  Default is 1 (on).
+
+       <B>-u</B>
+           "Explode" or separate multiple input values by an internally
+           calculated distance.  Off by default.
+
+       <B>-v</B> <B>&lt;format&gt;</B>
+           Compile data in geosets into GL vertex arrays.  See pfGeoSet(3pf)
+           for more information.  Valid formats are:
+
+           <B>0</B> : Off (default)
+           <B>1</B> : PFGS_PA_C4UBN3ST2FV3F - all attributes packed in arrays
+           <B>2</B> : PFGS_PA_C4UBN3ST2F - all except verts packed in arrays
+
+       <B>-V</B> <B>&lt;DVRmode&gt;</B>
+       <B>-V</B> <B>&lt;DVRmode,xsize,ysize&gt;</B>
+           Set DVR mode to &lt;mode&gt;.  Only available on InfiniteReality
+           systems.  See pfPipeVideoChannel(3pf) for more information.
+           Valid settings are:
+
+           0 : PFPVC_DVR_OFF
+           1 : PFPVC_DVR_MANUAL
+           2 : PFPVC_DVR_AUTOMATIC
+
+           If arguments are given in the format &lt;mode,xsize,ysize&gt;,
+           set the DVR mode to &lt;mode&gt; (as above) and the initial size
+           to &lt;xsize,ysize&gt;
+
+       <B>-w</B> <B>&lt;file&gt;.out</B>
+       <B>-w</B> <B>&lt;file.ext&gt;</B>
+           Upon exit, write scene graph to filename &lt;file.ext&gt; in the
+           current working directory using the &lt;ext&gt; format store function,
+           if it exists.  If &lt;ext&gt; is 'out', pfPrint the scene graph in flat
+           ASCII.
+
+       <B>-W</B> <B>&lt;width,height&gt;</B>
+           Set the window size to &lt;width,height&gt;.  If height is omitted,
+           uses the width value for both.  Default is the screen size.
+
+       <B>-x</B> <B>&lt;forkmode&gt;</B>
+           "Explode" or separate multiple input values by the distance
+           &lt;radius&gt;.  0 (off) by default.
+
+       <B>-y</B> <B>&lt;ext,mode,value&gt;</B>
+           Set the &lt;mode&gt; for file extention type &lt;ext&gt; to &lt;value&gt;.  See
+           pfdConverterVal(3pf) for more details.
+
+       <B>-Y</B> <B>&lt;ext,alias&gt;</B>
+           Substitute file extension &lt;alias&gt; for file extension &lt;ext&gt; when
+           determining file type.  See pfdLoadFile(3pf) for more details.
+
+       <B>-z</B> <B>&lt;near,far&gt;</B>
+           Set initial clipping plane ranges to &lt;near,far&gt;.
+
+       <B>-Z</B>
+           Attempt to lock CPUs without initially freeing them.  Off by
+           default.
+
+
+
+
+
+   <B>Perfly</B> <B>keyboard</B> <B>options</B>
+       <B>Perfly</B> supports several keyboard options. These are func-
+       tions that can be invoked during simulation by typing the
+       indicated key while the cursor is in the <B>perfly</B> window.
+
+
+        Key     Function
+       -----    --------------
+        ESC     Exit program
+         ?      Print help
+       SPACE    Stop moving
+       F1KEY    Toggle graphical user interface (GUI)
+         b      Toggle backface mode
+         c      Toggle collision detection
+         C      Change culling mode
+         f      Decrease the target frame rate
+         F      Increase the target frame rate
+         g      Toggle stats and stats graph
+         G      Print stats graph contents to stderr
+         k      Cycle through DVR modes (off,manual,auto)
+         l      Cycle through lighting modes (off, eye, sun)
+         p      Change frame phase
+         r      Reset positions
+         s      Toggle diagnostics display
+         S      Print stats graph contents to stderr
+         t      Toggle texturing on/off
+         w      Toggle draw mode between solid/wire
+         W      Cycle draw mode between all styles
+         x      Snapshot RGB screen image to file
+         X      Snapshot RGBA screen image to file
+         z      Show culling frustum
+
+
+
+
+
+
+
+
+              3ds       AutoDesk <I>3DStudio</I> binary data
+              bin       Minor SGI format used by <I>powerflip</I>
+              bpoly     Side Effects Software <I>PRISMS</I> binary
+              byu       Brigham Young University CAD/FEA data
+              dwb       Coryphaeus Software <I>Designer's</I> <I>Workbench</I>
+              dxf       AutoDesk <I>AutoCAD</I> ASCII format
+              flt11     MultiGen public domain Flight v11 format
+              flt14     MultiGen <I>OpenFlight</I> v14 format
+              gds       McDonnell-Douglas GDS <I>things</I> data
+              gfo       Minor SGI format (radiosity output)
+              im        Minor SGI format (OpenGL Performer exam-
+                        ple)
+              irtp      AAI/Graphicon <I>Interactive</I> <I>Real-Time</I> <I>PHIGS</I>
+              iv        SGI OpenInventor / Silicon Studio Key-
+                        stone
+              lsa       Lightscape Technologies radiosity (ASCII)
+              lsb       Lightscape Technologies radiosity
+                        (binary)
+              m         University of Washington mesh data
+              medit     Medit Productions <I>medit</I> modeling tool
+              nff       Eric Haines' ray tracing test data format
+              obj       Wavefront Technologies data format
+              phd       Minor SGI format (polyhedra)
+              pfa       OpenGL Performer ASCII database format
+              pfb       OpenGL Performer fast loading BINARY
+                        database format (see the <I>/usr/share/Per-</I>
+                        <I>former/src/lib/libpfdb/libpfpfb/README</I>
+                        for more information)
+              poly      Side Effects Software <I>PRISMS</I> ASCII data
+              pts       University of Washington point data
+              ptu       Minor SGI format (OpenGL Performer exam-
+                        ple)
+              sgf       US NAVY standard graphics format
+              sgo       Minor SGI format
+              spf       US NAVY simple polygon format
+              sponge    Sierpinski sponge 3D fractal generator
+              star      Yale University compact star chart data
+              stla      3D Structures Stereolithography (ASCII)
+              stlb      3D Structures Stereolithography (binary)
+              sv        Format of John Kichury's <I>i3dm</I> modeler
+              tri       University of Minnesota Geometry Center
+                        data
+              unc       University of North Carolina data
+
+       While most loaders do in fact "load" data from files,
+       scene graphs can also be generated procedurally.  The
+       <I>sponge</I> loader is an example of such automatic generation;
+       it builds a model of the Menger (Sierpinski) sponge, with-
+       out requiring an input file.  To see the sponge run <B>perfly</B>
+       specify the number of recursions (0, 1, 2, ...) as the
+       filename.  For example
+
+       perfly 2.sponge
+
+
+
+
+                     framebuffer which can be used for load man-
+                     agement.  On a per-frame basis, current load
+                     can be evaluated and the output drawing area
+                     reduced to reduce load.  The video hardware
+                     will scale up the output drawing area to
+                     match the full targeted size, with bilinear
+                     interpolation.  This operation can be con-
+                     trolled manually by the application or in an
+                     parameterized automatic mode.  <B>Perfly</B> can
+                     demonstrate these modes.
+
+                         % perfly -V 1,640,408
+                                # Start up in manual DVR mode with initial size
+                                # as 640x480.  The Up/down arrow keys will allow
+                                # you to adjust output region size.
+
+                         % perfly -V 2
+                                # start up with automatic DVR
+
+                          Note that when DVR is enabled, the cur-
+                          rent output size of the video channel
+                          is displayed in the statistics status
+                          line (click the stats button in the
+                          GUI).  Additionally, there will be an M
+                          or A displayed with the size to indi-
+                          cate Manual or Automatic DVR.  For best
+                          results, AUTO DVR should be used in
+                          combination with the InfiniteReality
+                          graphics pipeline statistics.
+
+              <B>Graphics</B> <B>Pipeline</B> <B>Statistics:</B>
+                     InfiniteReality offers graphics pipeline
+                     statistics for measuring load within the
+                     graphics pipeline.  These statistics are not
+                     yet on by default in OpenGL Performer
+                     because only one application may success-
+                     fully use them at a time in the initial IRIX
+                     6.2 InfiniteReality release.  However,
+                     graphics pipeline statistics are both much
+                     more accurate than timing measurements made
+                     on the CPU and are also less invasive.  To
+                     turn these statistics on in <B>perfly</B>, click on
+                     the "Pipe" option in the statistics radio
+                     button in the GUI.  The (GP=XXmsecs) in the
+                     status line indicates the graphics pipeline
+                     timing measurement.  Other statistics modes
+                     (such as "Dft" for the full timing graph and
+                     "Gfx" for detailed drawing statistics" may
+                     than be selected and the pipeline statistics
+                     will stay enabled.  Selection of "Fill"
+                     statistics or turning the statistics off
+                     will disable the graphics pipeline statis-
+                     tics.  For more information, see the <B>pfStats</B>
+                     and <B>pfFrameStats</B> reference pages.
+
+              <B>Clip-Mapping</B> <B>for</B> <B>very</B> <B>large</B> <B>textures:</B>
+                     OpenGL Performer and InfiniteReality
+                     together provide Clip-mapping for automatic
+                     viewing and paging of very large textures.
+                          <B>clipfly</B> that has many more clip texture
+                          related enhancements; see the clipfly
+                          man page for more information.
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       When using DVR, <B>perfly</B> should always be run in full screen
+       mode (do not use the -W option).  Also, when DVR and the
+       graphical user-interface are both enabled, the GUI must be
+       redrawn whenever there is a video channel resize, or when-
+       ever the mouse is in the GUI.  This is very expensive and
+       a drop in framerate will be incurred.
+
+       Only one application at a time may be using DVR.  If a
+       second application starts up and attempts to use DVR while
+       the first is still executing, the second may terminate.
+       See the <B>pfPipeVideoChannel</B> reference page for more infor-
+       mation.
+
+       Only one copy of <B>perfly</B> should be runing with graphics
+       pipeline statistics ("Pipe") selected at a time.  If mul-
+       tiple copies of <B>perfly</B> are running, de-select pipe stats
+       in one before turning it on in another.
+
+
+
+   <B>Learning</B> <B>More</B>
+       Once you've seen OpenGL Performer in action, you will want
+       to learn more about it.  The OpenGL Performer Programming
+       Guide and the OpenGL Performer Release Notes are the pri-
+       mary sources of information, but the a number of informa-
+       tion sources are available to give you a good start in
+       your learning process. The origin of this quest is the
+       Performer man page. Just type "man performer" and just
+       about everything you might want to know will be there or
+       in one of the on-line resources listed there.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>performer</B>, <B>clipfly</B>, <B>pfconv</B>
+
+
+
+                                                      perfly(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

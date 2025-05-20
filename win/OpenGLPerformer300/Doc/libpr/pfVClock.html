@@ -1,0 +1,116 @@
+<HTML>
+<HEAD>
+<TITLE>pfVClock</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVClock</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVClock(3pf)                                       pfVClock(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfStartVClock,</B> <B>pfStopVClock,</B> <B>pfInitVClock,</B> <B>pfGetVClockOff-</B>
+       <B>set,</B> <B>pfVClockOffset,</B> <B>pfGetVClock,</B> <B>pfVClockSync</B> -  Initial-
+       ize and query vertical retrace clock
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfStartVClock</B>(void);
+
+       void   <B>pfStopVClock</B>(void);
+
+       void   <B>pfInitVClock</B>(int ticks);
+
+       int    <B>pfGetVClockOffset</B>(void);
+
+       void   <B>pfVClockOffset</B>(int offset);
+
+       int    <B>pfGetVClock</B>(void);
+
+       int    <B>pfVClockSync</B>(int rate, int offset);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfVClock  (Video  Clock)  is  a clock which runs at the
+       video retrace rate.  There is one clock for each  hardware
+       graphics  pipeline  which  runs  at the video rate of that
+       pipeline. A pipeline's video rate is defined by its  video
+       format  (see <B>setmon</B>). To access the video clock a Graphics
+       Library window must be opened and  made  current  although
+       the  window does not need to be mapped to the display sur-
+       face (<B>noport</B> in IRIS GL). The screen of the current window
+       determines which pipe's video clock is accessed on multip-
+       ipe machines.
+
+       <B>pfStartVClock</B> starts  the  video  clock  by  enabling  CPU
+       interrupts  from  the graphics pipeline while <B>pfStopVClock</B>
+       disables CPU interrupts.  At this time,  the  video  clock
+       can be started/stopped only on VGX and VGXT graphics hard-
+       ware. On other hardware such as InfiniteReality and Reali-
+       tyEngine, CPU interrupts are always enabled.
+
+       <B>pfInitVClock</B>  sets the initial value of the video clock to
+       <I>ticks</I>.  Note that <B>pfInitVClock</B>  does  not  set  the  video
+       clock,  rather it computes an offset which is added to the
+       real video clock's value.  This  offset  is  unique  to  a
+       given address space - <B>fork</B>ed processes each have their own
+       offset while <B>sproc</B>ed processes share the offset. The  off-
+       set    computed    by    <B>pfInitVClock</B>   is   returned   by
+       <B>pfGetVClockOffset</B>   and   may   be   set   directly   with
+       <B>pfVClockOffset</B>,  simplifying  clock synchronization across
+       processes.
+
+       <B>pfGetVClock</B> returns the current video retrace count  rela-
+       tive to the initial value set by <B>pfInitVClock</B>.
+
+
+       If the retrace count modulo <I>rate</I> is equal to <I>offset</I> at the
+       time <B>pfVClockSync</B> is called, the caller  will  not  return
+       immediately but will go to sleep until <I>rate</I> ticks later.
+
+       The following code fragment illustrates a true video clock
+       which will wake up each vertical retrace  period  (subject
+       to process priorities):
+
+       while (1)
+       {
+           /* wait for next vertical retrace */
+           pfVClockSync(1, 0);
+
+           /* perform per-interval actions */
+            :
+       }
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfVClock functionality is not currently supported under
+       Linux.
+
+       A GL window (which may be a <B>noport</B> window) must be open
+       before any pfVClock routines are called.
+
+       The video clock count is *not* the <B>swapbuffers</B> count.
+
+
+
+
+                                                    pfVClock(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

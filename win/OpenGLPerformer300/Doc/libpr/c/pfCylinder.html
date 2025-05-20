@@ -1,0 +1,138 @@
+<HTML>
+<HEAD>
+<TITLE>pfCylinder</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCylinder</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCylinder(3pf)                                   pfCylinder(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMakeEmptyCyl,</B>   <B>pfCylAroundSegs,</B>  <B>pfCylAroundPts,</B>  <B>pfCy-</B>
+       <B>lAroundBoxes,</B>    <B>pfCylAroundSpheres,</B>     <B>pfCylExtendByBox,</B>
+       <B>pfCylExtendBySphere,</B>   <B>pfCylExtendByCyl,</B>  <B>pfCylContainsPt,</B>
+       <B>pfCylIsectSeg,</B> <B>pfOrthoXformCyl</B> -  Operations  on  cylinder
+       definitions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfMakeEmptyCyl</B>(pfCylinder *cyl);
+
+       void   <B>pfCylAroundSegs</B>(pfCylinder *dst,
+                const pfSeg **segs, int nseg);
+
+       void   <B>pfCylAroundPts</B>(pfCylinder *dst,  const pfVec3 *pts,
+                int npt);
+
+       void   <B>pfCylAroundBoxes</B>(pfCylinder *dst,
+                const pfBox **boxes, int nbox);
+
+       void   <B>pfCylAroundSpheres</B>(pfCylinder *dst,
+                const pfSphere **sphs, int nsph);
+
+       void   <B>pfCylExtendByBox</B>(pfCylinder *dst,
+                const pfBox *box);
+
+       void   <B>pfCylExtendBySphere</B>(pfCylinder *dst,
+                const pfSphere *sph);
+
+       void   <B>pfCylExtendByCyl</B>(pfCylinder *dst,    const pfCylin-
+                der *cyl);
+
+       int    <B>pfCylContainsPt</B>(const pfCylinder* cyl,
+                const pfVec3 pt);
+
+       int    <B>pfCylIsectSeg</B>(const pfCylinder* cyl,
+                const pfSeg* seg, float* d1, float* d2);
+
+       void   <B>pfOrthoXformCyl</B>(pfCylinder *dst,     const pfCylin-
+                der *cyl, const pfMatrix xform);
+
+
+              typedef struct
+              {
+                  pfVec3   center;
+                  float    radius;
+                  pfVec3   axis;
+                  float    halfLength;
+              } pfCylinder;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfCylinder represents a cylinder of finite length.  The
+       routines listed here provide means of creating and extend-
+
+       <B>pfMakeEmptyCyl</B> sets <I>dst</I> so that it appears empty to other
+       operations.
+
+       <B>pfCylAroundSegs</B>, <B>pfCylAroundPts</B>, <B>pfCylAroundSpheres</B> and
+       <B>pfCylAroundBoxes</B> set <I>dst</I> to a cylinder which contains a
+       set of line segments, points, spheres or boxes, respec-
+       tively.  These routines are passed the address of an array
+       of pointers to the objects to be encompassed along with
+       the number of objects.
+
+       <B>pfCylExtendByBox</B>, <B>pfCylExtendBySphere</B>, and
+       <B>pfCylExtendByCyl</B> set <I>dst</I> to a cylinder which contains both
+       the pfSphere <I>dst</I> and the box <I>box</I>, the sphere <I>sph</I> or the
+       cylinder <I>cyl</I>, respectively.
+
+       <B>pfCylContainsPt</B> returns <B>TRUE</B> or <B>FALSE</B> depending on whether
+       the point <I>pt</I> is in the interior of the specified pfCylin-
+       der.
+
+       <B>pfCylIsectSeg</B> intersects the line segment <I>seg</I> with the
+       volume of the cylinder <I>cyl</I>.  The possible return values
+       are:
+
+              <B>PFIS_FALSE</B>:
+                   <I>seg</I> lies entirely in the exterior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_START_IN</B>:
+                   The starting point of <I>seg</I> lies in the inte-
+                   rior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_END_IN</B>:
+                   The ending point of <I>seg</I> lies in the interior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B> |
+              <B>PFIS_START_IN</B> | <B>PFIS_END_IN</B>:
+                   Both end points of <I>seg</I> lie in the interior.
+
+       If <I>d1</I> and <I>d2</I> are non-NULL, on return from <B>pfCylIsectSeg</B>
+       they contain the starting and ending positions of the line
+       segment (0 &lt;= d1 &lt;= d2 &lt;= seg-&gt;length) intersected with
+       the cyl.
+
+       <B>pfOrthoXformCyl</B> sets <I>dst</I> to the cylinder <I>cyl</I> transformed
+       by the orthogonal transformation <I>xform</I>.  <I>dst</I> = <I>cyl</I> *
+       <I>xform</I>.  If <I>xform</I> is not an orthogonal transformation the
+       results are undefined.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfCylinder, pfSeg, pfSphere, pfVec3
+
+
+
+                                                  pfCylinder(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

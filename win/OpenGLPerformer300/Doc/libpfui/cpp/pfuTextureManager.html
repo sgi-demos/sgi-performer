@@ -1,0 +1,200 @@
+<HTML>
+<HEAD>
+<TITLE>pfuTextureManager</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuTextureManager</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuTextureManager(3pf)                     pfuTextureManager(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuTextureManager</B> - Class for managing texture lists
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil/pfuTextureManager.h&gt;
+
+                          <B>pfuTextureManager::pfuTextureManager</B>(void);
+
+                          <B>pfuTextureManager::~pfuTextureManager</B>(void);
+
+       int                <B>pfuTextureManager::getTextureMemoryAvailable</B>(void);
+
+       int                <B>pfuTextureManager::getTextureMemoryUsed</B>(void);
+
+       float              <B>pfuTextureManager::getTextureMemoryUsedPercent</B>(void);
+
+       pfuTexList     *   <B>pfuTextureManager::addTextureList</B>(pfList *texList,
+                            const char *name,            pfTex-
+                            ture *default);
+
+       pfuTexList
+                          *       <B>pfuTextureManager::addTextureList</B>(pfNode *node,
+                            const char *name,            pfTex-
+                            ture *default);
+
+       pfuTexList
+                          *       <B>pfuTextureManager::addTextureList</B>(pfList *texList,
+                            const char *name);
+
+       pfuTexList
+                          *       <B>pfuTextureManager::addTextureList</B>(pfNode *node,
+                            const char *name);
+
+       void               <B>pfuTextureManager::deleteTextureList</B>(pfuTexList *tlist);
+
+       void               <B>pfuTextureManager::load</B>(pfuTexList *texList);
+
+       float              <B>pfuTextureManager::load</B>(pfuTexList *texList,
+                            float deadline);
+
+       void               <B>pfuTextureManager::unload</B>(pfuTexList *texList);
+
+       void               <B>pfuTextureManager::loadUnload</B>(pfuTexList *loadList,
+                            pfuTexList *unloadList);
+
+       int                <B>pfuTextureManager::getTextureMemorySize</B>(void);
+
+       float              <B>pfuTextureManager::getTextureMemoryUsage</B>(void);
+
+       int                <B>pfuTextureManager::willFit</B>(pfuTexList *texList);
+
+       float              <B>pfuTextureManager::isListLoaded</B>(pfuTexList *texList);
+
+       void               <B>pfuTextureManager::Print</B>(int level);
+
+       requests.  Further, the Texture Manager  allows  "trickle"
+       loads, that is, partial loads of a list allowing the load-
+       ing of a texture list to be amortized over several frames.
+
+
+       <B>pfuTextureManager::getTextureMemoryAvailable</B>(void) returns
+       the size of unused texture memory in bytes.
+
+       <B>pfuTextureManager::getTextureMemoryUsed</B>(void) return  size
+       in  bytes  of the texture memory used by the textures that
+       the TextureManager if managing.
+
+       <B>pfuTextureManager::getTextureMemoryUsedPercent</B>(void)
+       returns  a percentage (0.0 to 100.0 of texture memory used
+       by textures that the Texture Manager is managing.
+
+       <B>pfuTextureManager::*addTextureList</B>(pfList *texList,  const
+       char  *name, pfTexture *default) adds a texture list to be
+       managed from a pfList of pfTextures <B>texList</B>.  <B>name</B>  is  an
+       arbitary  name  that  is  used for identifying the texture
+       list in a <B>Print</B>.  <B>default</B> is a pfTexture whose image  will
+       be  substituded  in  the  case of an <B>unload</B>.  This way, no
+       textures will be accidentally loaded if something is drawn
+       which  references  the  texture.  <B>addTextureList</B> returns a
+       pfTextureManager::pfuTexList type which is solely used  to
+       pass   to  <B>deleteTextureList</B>,  <B>load</B>,  <B>unload</B>,  <B>loadUnload</B>,
+       <B>willFit</B>, and <B>isListLoaded</B>.
+
+       <B>pfuTextureManager::*addTextureList</B>(pfNode   *node,   const
+       char  *name, pfTexture *default) adds a texture list to be
+       managed based on a pfNode <B>node</B>.  <B>name</B> is an arbitary  name
+       that  is used for identifying the texture list in a <B>Print</B>.
+       <B>default</B> is a pfTexture whose image will be substituded  in
+       the  case  of  an  <B>unload</B>.   This way, no textures will be
+       accidentally loaded if something is drawn which references
+       the   texture.   <B>addTextureList</B>  returns  a  pfTextureMan-
+       ager::pfuTexList type which is  solely  used  to  pass  to
+       <B>deleteTextureList</B>,  <B>load</B>, <B>unload</B>, <B>loadUnload</B>, <B>willFit</B>, and
+       <B>isListLoaded</B>.
+
+
+       <B>pfuTextureManager::*addTextureList</B>(pfList *texList,  const
+       char  *name)  adds a texture list to be managed based on a
+       pfList <B>texList</B> of pfTextures.  <B>name</B> is  an  arbitary  name
+       that  is used for identifying the texture list in a <B>Print</B>.
+       This version does not supply a default texture and  it  is
+       therefore  possible to accidentally load a texture outside
+       of the Texture Manager's control if the object  is  drawn.
+       <B>addTextureList</B> returns a pfTextureManager::pfuTexList type
+       which is solely used to pass to  <B>deleteTextureList</B>,  <B>load</B>,
+       <B>unload</B>, <B>loadUnload</B>, <B>willFit</B>, and <B>isListLoaded</B>.
+
+
+       <B>pfuTextureManager::*addTextureList</B>(pfNode   *node,   const
+       char *name) adds a texture list based on  a  pfNode  <B>node</B>.
+       <B>name</B>  is an arbitary name that is used for identifying the
+       texture list in a <B>Print</B>.  This version does not  supply  a
+       default  texture  and it is therefore possible to acciden-
+       tally load a texture outside of the Texture Manager's con-
+       Texture Manager is managing.
+
+       <B>pfuTextureManager::load</B>(pfuTexList  *texList)  loads   the
+       list  referred to by <B>texList</B> to texture memory.  This must
+       be called from the DRAW process.
+
+       <B>pfuTextureManager::load</B>(pfuTexList *texList,  float  dead-
+       line)  loads  as  much  of the texture list referred to by
+       <B>texList</B> to texture memory as it can before  <B>deadline</B>,  and
+       returns a value between 0.0f and 1.0f indicating the level
+       of completion.  This function can be called multiple times
+       until  it  returns  1.0f.   This is useful when there is a
+       need to load a large list of textures.  The  load  may  be
+       amortized  over several frames.  This function can only be
+       called in the DRAW process.
+
+       <B>pfuTextureManager::unload</B>(pfuTexList  *texList)  unload  a
+       texture list from texture memory.  If a default texture is
+       associated with this list, it will point the image  point-
+       ers  of  all of the list of pfTextures to the default tex-
+       ture image.
+
+       <B>pfuTextureManager::loadUnload</B>(pfuTexList  *loadList,  pfu-
+       TexList  *unloadList)  effects  a  load of <B>loadlist</B> and an
+       unload of <B>unloadList</B> in one  operation.   This  is  useful
+       when  <B>loadList</B> and <B>unloadList</B> that have textures in common
+       to avoid unloading and reloading the common textures.
+
+       <B>pfuTextureManager::getTextureMemorySize</B>(void) returns  the
+       size of texture memory in bytes.
+
+       <B>pfuTextureManager::getTextureMemoryUsage</B>(void) returns the
+       size of texture memory in bytes used by  textures  managed
+       by the texture manager.
+
+       <B>pfuTextureManager::willFit</B>(pfuTexList  *texList) returns a
+       boolean indicating whether <B>texList</B> will all fit in texture
+       memory.
+
+       <B>pfuTextureManager::isListLoaded</B>(pfuTexList       *texList)
+       returns a boolean indicating  whether  all  pfTextures  in
+       <B>texList</B> are loaded in texture memory.
+
+       <B>pfuTextureManager::Print</B>(int level) prints a formated mes-
+       sage about managed textures and lists and  is  useful  for
+       debuggin  or  observing  the  Texture  Manager's behavior.
+       Three levels are currently supported: 1) prints  only  the
+       name  of  each texture list, it's overall size and a frac-
+       tion indicating the level of residence in texture  memory,
+       2)  a more comprehensive list of each list, including sta-
+       tus of individual texture on the list, and 3) a more  ver-
+       bose description.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfTexture(3pf)
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE>pfvInputMngrPicker</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvInputMngrPicker</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvInputMngrPicker(3pf)                   pfvInputMngrPicker(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvInputMngrPicker</B>  - A pfvPicker implementation that uses
+       mouse and keyboard events collected by the pfvInputMngr to
+       determine  current  focus  and to coordinate user-interac-
+       tion.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvXml.h&gt;
+
+                         <B>pfvInputMngrPicker::pfvInputMngrPicker</B>();
+
+       int               <B>pfvInputMngrPicker::getViewIndex</B>();
+
+       void              <B>pfvInputMngrPicker::setViewIndex</B>(int i);
+
+       pfuMouse *        <B>pfvInputMngrPicker::getMouse</B>();
+
+       pfuEventStream*   <B>pfvInputMngrPicker::getEventStream</B>();
+
+       pfChannel*        <B>pfvInputMngrPicker::getChan</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfvInputMngrPicker</B> extends the pfvPicker class and may
+       be  used  directly  by applications in order to coordinate
+       user interaction with scene  elements  through  mouse  and
+       keyboard  input.   pfvInputMngrPickers are very similar to
+       pfvMousePickers. The only difference is that pfvMousePick-
+       ers  calls  pfuGetMouse and pfuGetEvents to collect events
+       and current mouse state, while pfvInputMngrPickers  relies
+       on  pfvInputMngr to call pfuGetMouse and pfuGetEvents, and
+       obtains its input from  the  pfuMouse  and  pfuEventStream
+       structures managed by pfvInputMnger.
+
+       <B>new</B>  <B>pfvInputMngrPicker</B>  creates and returns a handle to a
+       new pfvInputMngrPicker object.
+
+       <B>pfvInputMngrPicker::setViewIndex</B>  associates  this  picker
+       with  the  ith view in Display Manager's view list. Picker
+       will ignore events  generated  while  other  views  detain
+       mouse focus.
+
+       <B>pfvInputMngrPicker::getViewIndex</B>  returns the index of the
+       view to which picker is associated, as set through  method
+       <B>pfvInputMngrPicker::setViewIndex</B>.
+
+       <B>pfvInputMngrPicker::getMouse</B> returns a pointer to the pfu-
+       Mouse structure used by  picker  for  determining  current
+       mouse  state.  Note  that  this will point directly to the
+       pfuMouse structure managed and updated by  the  pfvInputM-
+       ngr.
+
+       <B>pfvInputMngrPicker::getEventStream</B>  returns  a  pointer to
+       the pfuEventStream structure used by picker  for  tracking
+       keyboard  events.   Note  that this will point directly to
+       the pfuEventStream structure managed and  updated  by  the
+       focus, or if focus channel belongs  to  a  view  different
+       from  that  associated  with  picker,  this method returns
+       NULL.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       For examples of uses of the pfvPicker  API,  look  at  the
+       sample           code          in          /usr/share/Per-
+       former/src/pguide/libpfv/picker and the README  file  con-
+       tained in that directory.
+
+       For  an  example  of usage of the pfvInputMngrPicker class
+       also look at the source code for the pfvmPicker module  in
+       /usr/share/Performer/src/pguide/libpfv/viewer/mod-
+       ules/pfvmPicker
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvInputMngr, pfvPicker, pfvmPicker
+
+
+
+                                          pfvInputMngrPicker(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

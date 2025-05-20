@@ -1,0 +1,381 @@
+<HTML>
+<HEAD>
+<TITLE>pfLight</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLight</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLight(3pf)                                         pfLight(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfLight,</B> <B>pfGetCurLights</B> - Create, modify and query lights
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLight.h&gt;
+
+                         <B>pfLight::pfLight</B>()
+
+       static pfType *   <B>pfLight::getClassType</B>(void);
+
+       void              <B>pfLight::setColor</B>(int which,    float r,
+                           float g, float b);
+
+       void              <B>pfLight::getColor</B>(int which,   float *r,
+                           float *g, float *b);
+
+       void              <B>pfLight::setAtten</B>(float constant,
+                           float linear, float quadratic);
+
+       void              <B>pfLight::getAtten</B>(float *constant,
+                           float *linear, float *quadratic);
+
+       void              <B>pfLight::setPos</B>(float x,        float y,
+                           float z, float w);
+
+       void              <B>pfLight::getPos</B>(float *x,      float *y,
+                           float *z, float *w);
+
+       void              <B>pfLight::setSpotDir</B>(float x,    float y,
+                           float z);
+
+       void              <B>pfLight::getSpotDir</B>(float *x,  float *y,
+                           float *z);
+
+       void              <B>pfLight::setSpotCone</B>(float exponent,
+                           float spread);
+
+       void              <B>pfLight::getSpotCone</B>(float *exponent,
+                           float *spread);
+
+       void              <B>pfLight::on</B>(void);
+
+       void              <B>pfLight::off</B>(void);
+
+       int               <B>pfLight::isOn</B>(void);
+
+       void              <B>pfLight::setAmbient</B>(float r,    float g,
+                           float b);
+
+       void              <B>pfLight::getAmbient</B>(float *r,  float *g,
+                           float *b);
+
+       int               <B>pfGetCurLights</B>(pfLight *lights[PF_MAX_LIGHTS]);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfLight</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfLight is a light source that illuminates scene geome-
+       try, generating realistic shading effects.  A pfLight can-
+       not  itself  be seen but its effect is visible through its
+       illuminative effect on scene  geometry.   See  the  OpenGL
+       <B>glLight(3g)</B>  man page for more details on lights and indi-
+       vidual lighting parameters.
+
+       <B>new</B>(arena) allocates a pfLight from the  specified  memory
+       arena,  or  from  the  process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfLight from the  default  memory  arena  (see
+       <B>pfGetSharedArena</B>).   Like other pfObjects, pfLights cannot
+       be created statically, automatically on the  stack  or  in
+       arrays.   pfLights  should be deleted with <B>pfDelete</B> rather
+       than the delete operator.
+
+       <B>pfLight::getClassType</B> returns the <B>pfType</B>*  for  the  class
+       <B>pfLight</B>.  The <B>pfType</B>* returned by <B>pfLight::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking  the  virtual
+       function   <B>getType</B>  on  any  instance  of  class  <B>pfLight</B>.
+       Because OpenGL Performer allows  subclassing  of  built-in
+       types,  when  decisions  are  made based on the type of an
+       object, it is usually better to use  the  member  function
+       [0.0 .. 1.0] defining values for the red, green, and  blue
+       components of the indicated attribute of the light source.
+       By  default,  the  r,  g,  and  b  values  are  all   1.0.
+       <B>pfLight::getColor</B>  copies the requested light color values
+       for the given light source and color  attribute  into  the
+       parameters <I>r</I>, <I>g</I>, and <I>b</I>.
+
+       <B>pfLight::setAtten</B>  sets  the attenuation parameters of the
+       pfLight. The light intensity is scaled at each vertex by:
+
+              1.0 / (<I>constant</I> +  <I>linear</I>  *  dist  +  <I>quadratic</I>  *
+              dist^2)
+
+       where  'dist'  is  the distance from the light position to
+       the lit vertex.  Note that  'dist'  is  1.0  for  infinite
+       light sources. The default attenuation values are <I>constant</I>
+       = 1.0, <I>linear</I> = 0.0, <I>quadratic</I> = 0.0, i.e., light attenua-
+       tion  is disabled.  <B>pfLight::getAtten</B> returns the attenua-
+       tion parameters of the pfLight in  <I>constant</I>,  <I>linear</I>,  and
+       <I>quadratic</I>.   See  the  <B>pfLightModel::setAtten</B> man page for
+       more information.
+
+       <B>pfLight::setSpotDir</B> specifies the  direction  in  which  a
+       spot  light  source  emits  its  light.  It receives three
+       floating point values, <I>x</I>, <I>y</I>, and <I>z</I>, specifying the  x,  y,
+       and  z  direction vectors.  <B>pfLight::getSpotDir</B> copies the
+       x, y, and z direction vectors into the  parameters  <I>x</I>,  <I>y</I>,
+       and <I>z</I>.
+
+       <B>pfLight::setSpotCone</B>  specifies the exponent and spread of
+       the spot light cone, and receives two floating point  val-
+       ues, <I>f1</I> and <I>f2</I>, to set the exponent for the intensity, and
+       the     spread     of     the     cone,      respectively.
+       <B>pfLight::getSpotCone</B>   copies  the  current  exponent  and
+       spread of the cone into the parameters <I>f1</I> and <I>f2</I>.
+
+       <B>pfLight::setPos</B> receives four floating point values to set
+       the  <I>x</I>,  <I>y</I>,  <I>z</I>, and <I>w</I>, coordinates for the position of the
+       light source.  Typically, the homogeneous coordinate <I>w</I>  is
+       0.0  to indicate that the light position is infinitely far
+       from the origin in the direction (<I>x</I>, <I>y</I>, <I>z</I>).   Local  light
+       sources  are  specified by a non-zero value for <I>w</I> and usu-
+       ally incur a performance penalty.  <B>pfLight::getPos</B>  copies
+       the x, y, z and w coordinates of the light source into the
+       parameters <I>x</I>, <I>y</I>, <I>z</I> and <I>w</I>, respectively.
+
+       <B>pfLight::on</B> enables the pfLight so that  its  illumination
+       will  influence  scene  geometry  if  lighting is properly
+       enabled (See below).  The maximum number of active  lights
+       is determined by the particular graphics library implemen-
+       tation but typically is at least eight.
+
+       Modifications made to a pfLight do not have  effect  until
+       <B>pfLight::on</B> is called.
+
+       For  geometry  to  be  illuminated,  the following must be
+       true:
+
+              1.   Lighting   must   be    enabled:    <B>pfEnable</B>(-
+
+              4.   One or more pfLights must be on: <B>pfLight::on</B>
+
+              5.   Illuminated   geometry   must   have  normals:
+                   <B>pfGeoSet::setAttr</B>, <B>PFGS_NORMAL3</B>
+
+       <B>pfLight::on</B> also affects the position of the light in  the
+       scene.   When  called,  the  current graphics library Mod-
+       elView matrix transforms the position of the light set  by
+       <B>pfLight::setPos</B>.  Calling <B>pfLight::on</B> when specific trans-
+       formations are on the stack will result in different light
+       behaviors, which are outlined in the following paragraphs.
+
+       To simulate a light attached to the viewer  (simulating  a
+       miner's  head-mounted  lamp) call <B>pfLightOn</B> only once with
+       an identity matrix on the stack:
+
+       viewerLight-&gt;setPos(0.0, 0.0, 1.0, 0.0);
+
+       /*
+        * viewerLight always points in direction of view, i.e. - down -Z axis.
+        */
+       pfPushIdentMatrix();
+       viewerLight-&gt;on();
+       pfPopMatrix();
+
+       /* Draw scene */
+
+
+       To simulate a light "attached" to the world (at a fixed
+       location in world-space coordinates like the sun or moon)
+       call <B>pfLightOn</B> every frame with only the viewing transfor-
+       mation on the stack:
+
+       sunLight-&gt;setPos(0.0, 1.0, 0.0, 0.0);
+
+       pfPushIdentMatrix();
+
+       /* viewer is at origin looking +30 degrees 'up' */
+       pfRotate(PF_X, -30.0f);
+
+       /* sunLight always points straight down on scene */
+       sunLight-&gt;on();
+
+       /* Draw scene */
+
+       pfPopMatrix();
+
+
+       To simulate a light attached to an object like the head-
+       lights of a car, call <B>pfLightOn</B> every frame with the com-
+       bined viewing and modeling transformation on the stack:
+
+       headLight-&gt;setPos(2.0, 0.0, 0.0, 1.0);
+
+       pfPushIdentMatrix();
+
+       /* Viewer is at origin looking +30 degrees 'up' */
+       pfRotate(PF_X, -30.0f);
+        * 2 units from the center of the car in the +X direction.
+        */
+       headLight-&gt;on();
+
+       /* Draw scene */
+
+       pfPopMatrix();
+
+
+       <B>pfLight::off</B> disables the pfLight so that it does not con-
+       tribute to scene illumination.
+
+       <B>pfLight::isOn</B> returns a boolean indicating whether the
+       pfLight is on or not.
+
+       <B>pfGetCurLights</B> returns the number of currently active
+       lights, <I>n</I>.  The array <I>lights</I> is filled with <I>n</I> pointers to
+       the pfLight structures of the light sources that are cur-
+       rently ``on''.
+
+       The light source state element is identified by the
+       <B>PFSTATE_LIGHT</B> token.  Use this token with
+       <B>pfGeoState::setAttr</B> to set the light array of a pfGeoState
+       and with <B>pfOverride</B> to override subsequent light source
+       changes:
+
+       <B>pfLight::setAmbient</B> is provided for compatibility with
+       previous versions of OpenGL Performer. It accepts three
+       floating point values in the range from 0.0 through 1.0 to
+       set the <I>r</I>, <I>g</I>, and <I>b</I>, values for the red, green, and blue
+       components of the ambient light.  By default, lights have
+       ambient red, green, and blue values of 0.0.
+       <B>pfLight::getAmbient</B> copies the ambient light values for
+       the given light source into the parameters <I>r</I>, <I>g</I>, and <I>b</I>.
+       For future compatibility, calls to:
+
+       lt-&gt;setAmbient(r, g, b);
+
+
+       should be replaced by
+
+       lt-&gt;setColor(<B>PFLT_AMBIENT</B>, r, g, b);
+
+       and calls to:
+
+       lt-&gt;getAmbient(&amp;r, &amp;g, &amp;b);
+
+
+       should be replaced by
+
+       lt-&gt;getColor(<B>PFLT_AMBIENT</B>, &amp;r, &amp;g, &amp;b);
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Example 1:
+
+       pfLight        *lightArray[PF_MAX_LIGHTS];
+
+       for (i=0; i&lt;PF_MAX_LIGHTS; i++)
+       gstate-&gt;setAttr(PFSTATE_LIGHT, lightArray);
+
+       /* Attach gstate to gset */
+       gset-&gt;setGState(gstate);
+
+       /* Set normal array. 'gset' is non-indexed */
+       gset-&gt;setAttr(PFGS_NORMAL3, PFGS_PER_VERTEX, norms, NULL);
+
+       /* Draw specially-lit gset */
+       gset-&gt;draw();
+
+
+       Example 2:
+
+       light0-&gt;on();
+       light1-&gt;on();
+
+       /*
+        * Override so that all geometry is lit with light0 and light1
+        * if lighting is otherwise properly enabled.
+        */
+       pfOverride(PFSTATE_LIGHT, PF_ON);
+
+
+       The array of lights passed to <B>pfGeoState::setAttr</B> should
+       be <B>PF_MAX_LIGHTS</B> long and should contain references to
+       pfLights that are to be used by the pfGeoState.  Empty
+       array elements should be set to <B>NULL</B>.
+
+       <B>pfLight::on</B> and <B>pfLight::off</B> are display-listable com-
+       mands.  If a pfDispList has been opened by
+       <B>pfDispList::open</B>, <B>pfLight::on</B> and <B>pfLight::off</B> will not
+       have immediate effect but will be captured by the pfDis-
+       pList and will only have effect when that pfDispList is
+       later drawn with <B>pfDispList::draw</B>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Local lighting results in improper shading of flat-shaded
+       triangle and line strips (<B>PFGS_FLAT_TRISTRIPS</B>,
+       <B>PFGS_LINE_TRISTRIPS</B>) which often manifests itself as
+       "faceting" of planar polygons.  The only solution is
+       either to use infinite lighting or not use FLAT primi-
+       tives.  Note that when using the OpenGL Performer triangle
+       meshing routine, <B>pfdMeshGSet</B>, the construction of non-FLAT
+       strips is easily enforced with
+       <B>pfdMesherMode(PFDMESH_LOCAL_LIGHTING,</B> <B>1)</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfGeoState, pfLightModel, pfMate-
+       rial, pfObject, pfOverride, pfState, lmbind, lmcolor,
+       lmdef, glLight, glColorMaterial
+
+
+
+                                                     pfLight(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,126 @@
+<HTML>
+<HEAD>
+<TITLE>pfdTMesher</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdTMesher</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdTMesher(3pf)                                   pfdTMesher(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdMeshGSet,</B>   <B>pfdMesherMode,</B>  <B>pfdGetMesherMode,</B>  <B>pfdShow-</B>
+       <B>Strips</B> - Create triangle meshes from pfGeoSets.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfGeoSet *   <B>pfdMeshGSet</B>(pfGeoSet *gset);
+
+       void         <B>pfdMesherMode</B>(int mode, int val);
+
+       int          <B>pfdGetMesherMode</B>(int mode);
+
+       void         <B>pfdShowStrips</B>(pfGeoSet *gset);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Forming independent triangles  into  triangle  strips  (or
+       meshes) can significantly improve rendering performance on
+       most systems.  Strips reduce the amount of  work  required
+       by  the CPU, bus, and graphics subsystem.  The OpenGL Per-
+       former utility mesher is adapted from  the  triangle  mesh
+       code supplied in "/usr/people/4Dgifts".  It is modified to
+       work with Performer <B>pfGeoSet</B> data structures and is  opti-
+       mized for optimal performance.
+
+       <B>pfdMeshGSet</B>  takes as input a <B>pfGeoSet</B> consisting of inde-
+       pendent triangles, (<B>PFGS_TRIS</B>).  The input may  be  either
+       indexed  or  non-indexed.   This routine outputs the input
+       <B>pfGeoSet</B> if it cannot strip the input or a single <B>pfGeoSet</B>
+       that  is  a collection of triangle strips (PFGS_<B>TRISTRIPS</B>)
+       if it is successful.  The output <B>pfGeoSet</B>  is  non-indexed
+       and  the input <B>pfGeoSet</B> is not deleted although the appli-
+       cation generally should do so to avoid wasted memory.
+
+       The mesher attempts to maximize the average length of tri-
+       angle  strips  inside <I>gset</I>.  The code is complex but works
+       well and can significantly improve drawing performance  if
+       the  average number of triangles in the triangle strips in
+       the output GeoSets is at least four.  The length of trian-
+       gle  strips  necessary to achieve peak drawing performance
+       is dependent on the exact hardware configuration.
+
+       <B>pfdMesherMode</B> sets the mode that the mesher will use  when
+       forming  triangle  strips.   Currently  two modes are sup-
+       ported:
+
+              <B>PFDMESH_SHOW_TSTRIPS</B>
+                   Generate a  random  color  for  each  triangle
+                   strip  generated.   This  is a diagnostic mode
+                   which is extremely useful in understanding the
+                   structure  and  efficiency  of databases.  The
+                   OpenGL  Performer  sample  application  <B>perfly</B>
+                   supports the specification of this mode on the
+                   command line via the "-O1" flag.  Type "perfly
+                   -help"  for  full  instructions.   The default
+                   disabled from the command line.  Type  "perfly
+                   -O4   ...."  to  enable  retessellation.   The
+                   default value is <B>TRUE</B>.
+
+              <B>PFDMESH_INDEXED</B>
+                   Will construct indexed  triangle  strips.   If
+                   the  pfdBuilder mode <B>PFDBLDR_SHARE_INDEX_LISTS</B>
+                   is set, the index lists will be shared between
+                   the different vertex attribute lists.
+
+              <B>pfdGetMesherMode</B>  returns  the  current  setting of
+              <I>mode</I>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       If <B>pfdMeshGSet</B> generates a set of  triangle  strips  whose
+       lengths  are  all three or four i.e. they are all indepen-
+       dent triangles or quads, the output <B>pfGeoSet</B>  will  be  of
+       type <B>PFGS_TRIS</B> or <B>PFGS_QUADS</B>, respectively.
+
+       <B>pfdMeshGSet</B>  also  calls <B>pfuHashGSetVerts</B> which may delete
+       the attribute and index  arrays  of  the  input  <B>pfGeoSet</B>.
+       Thus  you  may  wish  to  <B>pfRef</B> your arrays to avoid their
+       deletion.
+
+       <B>pfdShowStrips</B> will assign each  triangle  strip  a  random
+       color.   The first triangle in each strip is distinguished
+       by being slightly darker than the rest of the strip
+
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfRef, pfuHashGSetVerts, pfdBldrMode,  pfdGeoBl-
+       drMode
+
+
+
+                                                  pfdTMesher(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

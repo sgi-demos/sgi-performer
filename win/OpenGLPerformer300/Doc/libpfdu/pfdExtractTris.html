@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>pfdExtractTris</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdExtractTris</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdExtractGraphTriangles(3pf)       pfdExtractGraphTriangles(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdExtractGraphTriangles</B> - Extraxt all the triangle from a
+       scene graph.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       #include &lt;Performer/pfdu.h&gt;
+
+       void   <B>pfdExtractGraphTriangles</B>(pfNode *node,
+                pfGeoSet *gset, unsigned long flags);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdExtractGraphTriangles</B>  takes  the pfNode <I>node</I> as input.
+       It traverses the scene graph portion spanned by this  node
+       and  collects all the triangles.  It stores all the trian-
+       gles in the pfGeoSet <I>gset</I>.  <B>pfdExtractGraphTriangles</B>  uses
+       the  parameter <I>flags</I> to determine whar triangle attributes
+       are to be collected in <I>gset</I>. <I>flags</I> is a bitwise OR of  the
+       following:
+
+
+              <B>PR_QUERY_TRI_COORD</B>
+                   - Collect PFGS_COORD3 attributes.
+
+              <B>PR_QUERY_TRI_TEXTURE</B>
+                   - Collect PFGS_TEXCOORD2 attributes.
+
+              <B>PR_QUERY_TRI_COLOR</B>
+                   - Collect per-vertex PFGS_COLOR4 attributes.
+
+              <B>PR_QUERY_TRI_NORMAL</B>
+                   -  Collect per-vertex PFGS_NORMAL3 attributes.
+
+
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfASD,  pfTerrain,  pfdAlignVerticesToASD,  pfdProjectVer-
+       ticesOnASD
+
+
+
+                                    pfdExtractGraphTriangles(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

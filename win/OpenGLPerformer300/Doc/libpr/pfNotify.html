@@ -1,0 +1,186 @@
+<HTML>
+<HEAD>
+<TITLE>pfNotify</TITLE>
+</HEAD>
+<BODY>
+<H1>pfNotify</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfNotify(3pf)                                       pfNotify(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNotify,</B>  <B>pfNotifyLevel,</B>  <B>pfGetNotifyLevel,</B>  <B>pfNotifyHan-</B>
+       <B>dler,</B> <B>pfGetNotifyHandler,</B> <B>pfDefaultNotifyHandler,</B>  <B>pfNoti-</B>
+       <B>fyLock,</B>  <B>pfNotifyUnlock</B>  -  Control error handling, signal
+       errors or log messages
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void               <B>pfNotify</B>(int severity,       int error,
+                            char *format,  ...);
+
+       void               <B>pfNotifyLevel</B>(int severity);
+
+       int                <B>pfGetNotifyLevel</B>(void);
+
+       void               <B>pfNotifyHandler</B>(pfNotifyFuncType handler);
+
+       pfNotifyFuncType   <B>pfGetNotifyHandler</B>(void);
+
+       void               <B>pfDefaultNotifyHandler</B>(pfNotifyData *data);
+
+       void               <B>pfNotifyLock</B>(void);
+
+       void               <B>pfNotifyUnlock</B>(void);
+
+
+                          typedef struct
+                          {
+                              int severity;
+                              int pferrno;
+                              char *emsg;
+                          } pfNotifyData;
+
+                          typedef void (*pfNotifyFuncType)(pfNotifyData*);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions provide a general purpose error message
+       and notification handling facility for applications using
+       OpenGL Performer.  This facility is used internally by
+       OpenGL Performer for error, warning, and status notifica-
+       tions and can be used by user developed programs as well.
+
+       <B>pfNotifyHandler</B> sets <I>handler</I> as the user error handling
+       routine.  All errors, warnings and notices will call <I>han-</I>
+       <I>dler</I> with a pointer to a pfNotifyData structure that
+       describes the error or message.  The default notification
+       handler <B>pfDefaultNotifyHandler</B> prints out a message to
+       stderr of the form:
+
+       &lt;PID&gt; PF &lt;LEVEL&gt;/&lt;PFERROR&gt;(&lt;ERRNO&gt;)     &lt;MESSAGE&gt;
+
+       where PID is the process id of the process that encoun-
+       tered the error (PID is only emitted when the notification
+       and the print format is:
+
+       PF             &lt;MESSAGE&gt;
+
+
+
+       The companion function <B>pfGetNotifyHandler</B> returns the
+       address of the installed handler function.  It is possible
+       to inquire this address and provide it to user installed
+       handlers in order to chain multiple notification handlers
+       to any desired level.
+
+       The functions <B>pfNotifyLock</B> and <B>pfNotifyUnlock</B> provide
+       access to the lock used by <B>pfDefaultNotifyHandler</B>.  This
+       can be used to atomically print messages to stderr that
+       won't get scrambled with the output from
+       <B>pfDefaultNotifyHandler</B> (or other routines that use this
+       lock) in other processes.
+
+       <B>pfNotifyLevel</B> sets the threshold for notification.  A
+       notification must have a level less than or equal to the
+       threshold for the default handler to print a message.  The
+       notification handler itself is invoked regardless of the
+       notification level.  The levels are in decreasing sever-
+       ity:
+              <B>PFNFY_ALWAYS</B>
+              <B>PFNFY_FATAL</B>
+              <B>PFNFY_WARN</B>
+              <B>PFNFY_NOTICE</B>
+              <B>PFNFY_INFO</B>
+              <B>PFNFY_DEBUG</B>
+              <B>PFNFY_FP_DEBUG</B>.
+
+       The default notification threshold is <B>PFNFY_NOTICE</B>.
+
+       Call <B>pfGetNotifyLevel</B> to query the current notification
+       level.  The meaning of these notification levels is as
+       follows:
+
+       center tab($) ; c | c l | l .  Error Level$Description _
+       <B>PFNFY_ALWAYS</B>$Always print regardless of notify level
+       <B>PFNFY_FATAL</B>$Fatal error, the dying gasp of a doomed pro-
+       cess <B>PFNFY_WARN</B>$Serious warning, rarely used for frame-
+       time errors <B>PFNFY_NOTICE</B>$Warning, may be used for frame
+       time errors <B>PFNFY_INFO</B>$Information on progress as well as
+       errors <B>PFNFY_DEBUG</B>$Debug information of significant ver-
+       bosity <B>PFNFY_FP_DEBUG</B>$Debug information and floating point
+       exceptions
+
+       Setting the notification level to PFNFY_FP_DEBUG also
+       enables floating point exceptions for overflow, underflow
+       and invalid operations.  Normally, these floating point
+       errors are handled through kernel exceptions or by the
+       floating point hardware, and may be nearly invisible to an
+       application except from the performance degradation, some-
+       times very significant, which they can cause.  When
+       enabled, pfNotify events are generated for the floating
+       point exceptions mentioned above and messages displayed or
+       passed to the user supplied pfNotify handler.
+       exit after notification; less severe levels do not.
+
+       <B>pfNotify</B> generates an error message.  <I>severity</I> must be one
+       of the above listed constants.  <I>error</I> may be any integer
+       value, however, OpenGL Performer uses the following values
+       internally:
+              <B>PFNFY_USAGE</B>
+              <B>PFNFY_RESOURCE</B>
+              <B>PFNFY_SYSERR</B>
+              <B>PFNFY_ASSERT</B>
+              <B>PFNFY_PRINT</B>
+              <B>PFNFY_INTERNAL</B>
+              <B>PFNFY_FP_OVERFLOW</B>
+              <B>PFNFY_FP_DIVZERO</B>
+              <B>PFNFY_FP_INVALID</B>
+              <B>PFNFY_FP_UNDERFLOW</B>
+              <B>PFNFY_MORE</B> does a continuation of the previous mes-
+              sage.
+
+       The severity must be less than or equal to the severity
+       set in <B>pfNotifyLevel</B> for the error message to be output.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Notification level is managed on a per process basis.
+       Processes forked off after <B>pfNotifyLevel</B> is called inherit
+       the specified level.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Enabling floating point exceptions may cause the values
+       returned from exceptions to be different than the system
+       defaults.  After an <B>_INVALID</B> operation, all subsequent
+       exceptions will generate incorrect return values.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       errno, handle_sigfpes, perror
+
+
+
+                                                    pfNotify(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

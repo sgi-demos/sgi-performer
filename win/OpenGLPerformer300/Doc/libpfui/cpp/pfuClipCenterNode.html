@@ -1,0 +1,325 @@
+<HTML>
+<HEAD>
+<TITLE>pfuClipCenterNode</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuClipCenterNode</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuClipCenterNode(3pf)                     pfuClipCenterNode(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuClipCenterNode,</B>  <B>pfuProcessClipCenters,</B> <B>pfuProcessClip-</B>
+       <B>CentersWithChannel,</B> <B>pfuTexGenClipCenterNode,</B> <B>pfuNewTexGen-</B>
+       <B>ClipCenterNode,</B>  <B>pfuTexGenClipCenterNodeTexGen,</B> <B>pfuGetTex-</B>
+       <B>GenClipCenterNodeTexGen</B> - Special  scene  graph  node  for
+       managing and updating pfMPClipTextures
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil/pfuClipCenterNode.h&gt;
+
+                                            <B>pfuClipCenterNode::pfuClipCenterNode</B>(void);
+
+       pfType
+                                            *                             <B>pfuClipCenterNode::getClassType</B>(void);
+
+       void                                 <B>pfuClipCenterNode::setCallback</B>(pfuClipCenterPostAppCallbackType *callback)
+
+       pfuClipCenterPostAppCallbackType
+                                            *   <B>pfuClipCenterNode::getCallback</B>(void)
+
+       void                                 <B>pfuClipCenterNode::setRefNode</B>(pfNode *node);
+
+       pfNode
+                                            *                             <B>pfuClipCenterNode::getRefNode</B>(void);
+
+       void                                 <B>pfuClipCenterNode::setClipTexture</B>(pfClipTexture *cliptex);
+
+       pfClipTexture
+                                            *                      <B>pfuClipCenterNode::getClipTexture</B>(void);
+
+       void                                 <B>pfuClipCenterNode::setMPClipTexture</B>(pfMPClipTexture *mpcliptex);
+
+       pfMPClipTexture
+                                            *                    <B>pfuClipCenterNode::getMPClipTexture</B>(void);
+
+       void                                 <B>pfuClipCenterNode::setChannel</B>(pfChannel *chan);
+
+       pfChannel
+                                            *                          <B>pfuClipCenterNode::getChannel</B>(void);
+
+       void                                 <B>pfuProcessClipCenters</B>(pfNode *node,
+                                              pfList *mpclip-
+                                              tex);
+
+       void                                 <B>pfuProcessClipCentersWithChannel</B>(pfNode *node,
+                                              pfList *mpclip-
+                                              tex,      pfChan-
+                                              nel *chan);
+
+                                            <B>pfuTexGenClipCenterNode::pfuTexGenClipCenterNode</B>(void);
+
+       void                                 <B>pfuTexGenClipCenterNode::setTexGen</B>(pfTexGen tgen);
+
+       pfTexGen
+                                            *                           <B>pfuTexGenClipCenterNode::getTexGen</B>(void);
+
+       pfTexGen
+                                            *                           <B>pfuGetTexGenClipCenterNodeTexGen</B>(pfuTexGenClipCenterNode *node);
+
+       <B>pfuTexGenClipCenterNode::pfuTexGenClipCenterNode</B>
+
+       constructs a subclass of the pfuClipCenterNode called the
+
+       pfuTexGenClipCenterNode.  This  node uses a different cen-
+       tering algorithm.
+
+       Rather  than  derive  the center from the closest point on
+       the cliptextured
+
+       geometry  to  the channels viewpoint, as does the pfuClip-
+       CenterNode, it converts
+
+       the position of the viewpoint from object space to texture
+       space. It uses
+
+       the  current value of the object linear texture generation
+       parameters. It
+
+       does <B>not</B> take the texture transform matrix into account.
+
+       This centering algorithm is useful if the clipmapped geom-
+       etry is mapped
+
+       using object space texture coordinate generation.
+
+       <B>pfuTexGenClipCenterNode::setTexGen</B>
+
+       sets  a  pointer to the pfTexGen object used to apply tex-
+       ture coordinates to
+
+       the  cliptextured  geometry.  This  object  is used by the
+       post-APP callback
+
+       to compute the viewpoint position in texture space.
+
+       <B>pfuTexGenClipCenterNode::getTexGen</B>
+
+       returns  a  pointer to the current pfTexGen object used by
+       the post-APP
+
+       centering   callback.  If  no  pfTexGen  object  has  been
+       assigned, the default
+
+       value is NULL.
+
+       <B>pfuProcessClipCenters</B>
+
+       finds  all  the  pfuClipCenterNodes in sub-graph rooted by
+       the node argument,
+
+       collects all the pfMPClipTexture objects connected to them
+       (creating them
+
+       if only the pfClipTexture exists), and appends them to the
+       pfList provided as
+       terNodes in the
+
+       scenegraph,  then adds them to all the pipes, using pipe 0
+       as the masterpipe:
+
+
+
+       mpcliptextures
+                                            =                     <B>pfNewList</B>(sizeof(pfMPClipTexture*),
+                                              1,  pfGet-
+                                              SharedArena());
+
+                                            <B>pfuProcessClipCenters</B>((pfNode *)scene,
+                                              mpcliptex-
+                                              tures);
+
+                                            <B>(void)pfuAddMPClipTexturesToPipes</B>(mpcliptextures,
+                                              pfGet-
+                                              <B>Pipe(0)</B>,
+                                              NULL);
+
+
+
+       <B>pfuProcessClipCentersWithChannel</B>
+
+       this routine works like
+       <B>pfuProcessClipCenters</B> except that it also
+
+       sets the pfChannel pointer on each pfuClip-
+       CenterNode found in the scene
+
+       graph, using the pfChannel pointer argument.
+       Setting a pfChannel pointer
+
+       on a pfuClipCenter node cause the node to
+       ignore all traversals by
+
+       pfChannels that don't match the channel
+       pointer. A channel pointer of
+
+                                            <B>NULL</B>(the default) makes the pfuClipCenterNode respond to any channel
+
+       that traverses it.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfuClipCenterNode is a C++ subclass of
+       the pfGroup node. In addition to functioning
+       as a group node in a scene graph, a clipcen-
+       ter node manages a cliptexture.
+
+       When a scene graph is loaded, the clip cen-
+       ter node can be configured to point to a
+       pfClipTexture used by a pfGeoState object.
+       The clip center node is placed in the scene
+       graph so that its child nodes contain the
+       geometry textured by the cliptexture.
+       Optionally, the clip center node can also
+       contain a link to a reference node, which
+       contains a simplified version of the clip-
+       and configure an pfMPClipTexture for each
+       pfClipTexture in the scene. At this point,
+       the application may also want to replace the
+       default cliptexture center callback (a post-
+       APP callback) with a custom one.
+
+       While the scene graph is being displayed,
+       the clipcenter node uses its callback to
+       update its cliptexture's center, using the
+       relationship between the viewpoint of the
+       channel traversing the scenegraph, and the
+       geometry textured with the clip center
+       node's cliptexture.
+
+       The clip center node can be customized by
+       subclassing it; the source code in
+       <B>/usr/share/Performer/src/lib/libpfutil/pfuClipCenterNode.C</B>
+       contains an example subclass illustrating
+       the technique.
+
+       <B>pfuClipCenterNode::getCallback</B> returns a
+       pointer to the current post-APP pfMPClipTex-
+       ture centering callback function. The clip
+       center node is created with a default call-
+       back function, <B>clipCenterPostApp()</B>, which
+       takes a pointer to a pfTraverser object as
+       its argument, and returns an integer indi-
+       cating how the traversal should continue.
+
+       The default function finds the closest poly-
+       gon to the viewpoint, taking into account
+       any transforms in the scenegraph, then
+       chooses the closest point on that polygon.
+       It then transforms the texture coordinates
+       of that point into texel coordinates (scal-
+       ing by the virtual size of the cliptexture),
+       and uses that coordinate to update the clip-
+       texture's center.
+
+       <B>pfuClipCenterNode::setCallback</B> this function
+       allows the application to provide its own
+       centering function for the clip center node
+       to use at its post-APP centering callback.
+       The function's signature  must match the
+       <B>pfuClipCenterPostAppCallback</B> type.
+
+       <B>pfuClipCenterNode::setRefNode</B> allows the
+       application to provide the clip center node
+       with a subgraph containing a simplified ver-
+       sion of the cliptextured geometry. The clip
+       center node's callback function will use
+       this geometry, if provided, to calculate the
+       new center for the pfMPClipTexture.
+
+       <B>pfuClipCenterNode::getRefNode</B> returns a
+       pointer to the reference geometry used by
+       the clip center node's post-APP centering
+       callback. If no reference node has been pro-
+       vided, this function will return NULL.
+       the current cliptexture, or NULL if no clip-
+       texture has been set.
+
+       <B>pfuClipCenterNode::setMPClipTexture</B> sets the
+       clip center node's pfMPClipTexture. This
+       function is normally not used, if the corre-
+       sponding get function is called, a pfMPClip-
+       Texture is automatically created, config-
+       ured, and a pointer to it returned.
+
+       <B>pfuClipCenterNode::getMPClipTexture</B> return a
+       pointer to the clip center node's pfMPClip-
+       Texture. If no pfMPClipTexture exists, and
+       the clip center node has a pfClipTexture, a
+       pfMPClipTexture is created, connected to the
+       cliptexture, a pointer to it is saved in the
+       clip center node and returned.
+
+       <B>pfuClipCenterNode::setChannel</B> set the clip
+       center node's channel pointer. If the chan-
+       nel pointer is not NULL, then the clip cen-
+       ter node will ignore any pfChannel that tra-
+       verses it if its address doesn't match the
+       value of the channel pointer.  This allows
+       the clip center node to only update a clip
+       texture for a particular channel. If the
+       channel pointer is NULL, the clip center
+       node will center the cliptexture when any
+       channel traverses it.
+
+       <B>pfuClipCenterNode::getChannel</B> returns the
+       current value of the clip center node's
+       channel pointer.  If a channel pointer
+       hasn't been set, this function will return
+       the NULL pointer.
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       ClipTexture functionality is not supported
+       under Linux.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Making a clipcenter node with a pfGeode
+       (possibly other types as well) as a child
+       when a pfdBuilder is being used to create a
+       scene graph (e.g. in the .im loader) can
+       result in the callback being lost.  One
+       workaround is to create a dummy pfGroup node
+       above the pfGeode and use that instead.
+
+       See the reference page for pfuGetClosest-
+       Point() for bugs and limitations of the
+       closest-point search implementation.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfClipTexture, pfMPClipTexture, pfImage-
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

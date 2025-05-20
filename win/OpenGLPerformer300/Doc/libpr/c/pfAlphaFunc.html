@@ -1,0 +1,127 @@
+<HTML>
+<HEAD>
+<TITLE>pfAlphaFunc</TITLE>
+</HEAD>
+<BODY>
+<H1>pfAlphaFunc</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfAlphaFunc(3pf)                                 pfAlphaFunc(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfAlphaFunc,</B>  <B>pfGetAlphaFunc</B>  - Specify alpha function and
+       reference value
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfAlphaFunc</B>(float ref, int mode);
+
+       void   <B>pfGetAlphaFunc</B>(float *ref, int *mode);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>ref</I>   is a reference value with which  to  compare  source
+             alpha  at  each pixel.  This value should be a float
+             in the range 0 through 1.
+
+       <I>mode</I>  is a symbolic constant  that  specifies  the  condi-
+             tional  comparison  that  source  alpha and <I>ref</I> must
+             pass for a pixel to be drawn.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfAlphaFunc</B> sets the alpha  function  mode  and  reference
+       value  which  affects  all subsequent geometry.  <I>mode</I> is a
+       symbolic constant that specifies the conditional  compari-
+       son  that source alpha and <I>ref</I> must pass for a pixel to be
+       drawn.  For example:
+
+       if (source alpha <I>mode</I> <I>ref</I>)
+           draw the pixel
+
+       where the alpha value boolean function <I>mode</I> is be one of:
+              <B>PFAF_ALWAYS</B>
+              <B>PFAF_EQUAL</B>
+              <B>PFAF_GEQUAL</B>
+              <B>PFAF_GREATER</B>
+              <B>PFAF_LEQUAL</B>
+              <B>PFAF_LESS</B>
+              <B>PFAF_NEVER</B>
+              <B>PFAF_NOTEQUAL</B>
+              <B>PFAF_OFF</B>
+
+       If it was desired to only draw pixels whose alpha value
+       was greater than or equal to 50% of the representable
+       range, then a <I>mode</I> of <B>PFAF_GEQUAL</B> and a <I>ref</I> of 0.5 would
+       produce the hardware pixel rendering conditional:
+
+       if (source alpha <B>PFAF_GEQUAL</B> <B>0.5</B>)
+           draw the pixel
+
+
+       The the default <I>mode</I> is <B>PFAF_OFF</B> and default <I>ref</I> value is
+       0.  The alpha function and reference value state elements
+       are identified by the <B>PFSTATE_ALPHAFUNC</B> mode and
+       <B>PFSTATE_ALPHAREF</B> value tokens respectively.  Use these
+       tokens with <B>pfGStateMode</B> and <B>pfGStateVal</B>, respectively, to
+        * Setup pfGeoState so that only pixels whose alpha is &gt; 40
+        * are drawn once the pfGeoState is applied with pfApplyGState.
+        */
+       pfGStateMode(gstate, PFSTATE_ALPHAFUNC, PFAF_GREATER);
+       pfGStateVal(gstate, PFSTATE_ALPHAREF, (40.0f/255.0f));
+
+       /*
+        * Override alpha function.  The alpha reference value can still
+        * be changed.
+        */
+       pfOverride(PFSTATE_ALPHAFUNC, PF_ON);
+
+       /*
+        * All subsequent attempts to set alpha function will be ignored
+        * until pfOverride is called to unlock it.
+        */
+
+
+       <B>pfAlphaFunc</B> is a display-listable command.  If a pfDis-
+       pList has been opened by <B>pfOpenDList</B>, <B>pfAlphaFunc</B> will not
+       have immediate effect but will be captured by the pfDis-
+       pList and will only have effect when that pfDispList is
+       later drawn with <B>pfDrawDList</B>.
+
+       <B>pfGetAlphaFunc</B> copies the current alpha function reference
+       value and mode into <I>ref</I> and <I>mode</I> respectively.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfAlphaFunc</B> is typically used for textures with alpha that
+       simulate trees and other complicated geometry having many
+       holes.  See the OpenGL <B>glAlphaFunc</B> manual page for further
+       details.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       afunction, glAlphaFunc, pfDispList, pfGeoState, pfState
+
+
+
+                                                 pfAlphaFunc(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

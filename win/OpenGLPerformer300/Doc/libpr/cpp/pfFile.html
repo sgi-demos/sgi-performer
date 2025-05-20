@@ -1,0 +1,181 @@
+<HTML>
+<HEAD>
+<TITLE>pfFile</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFile</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFile(3pf)                                           pfFile(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFile</B> - Asynchronous real-time file access operations
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfFile.h&gt;
+
+       static pfFile*    <B>pfFile::create</B>(char *path, mode_t mode);
+
+       static pfFile*    <B>pfFile::open</B>(char *fname,     int oflag,
+                            ...);
+
+       int               <B>pfFile::close</B>(void);
+
+       int               <B>pfFile::read</B>(char *buf, int nbyte);
+
+       off_t             <B>pfFile::seek</B>(off_t off, int whence);
+
+       int               <B>pfFile::write</B>(char *buf, int nbyte);
+
+       int               <B>pfFile::getStatus</B>(int attr);
+
+       static pfType *   <B>pfFile::getClassType</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFile</B> is derived from the par-
+       ent class <B>pfObject</B>, so each of these member  functions  of
+       class  <B>pfObject</B>  are  also directly usable with objects of
+       class <B>pfFile</B>.  This is also true for ancestor  classes  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfFile</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfFile</B> member functions  <B>create,</B>  <B>open,</B>  <B>close,</B>  <B>read,</B>
+       <B>write,</B>  and  <B>seek</B> operate in an identical fashion and take
+       similar arguments as the standard UNIX file I/O functions:
+       <B>creat,</B>  <B>open,</B>  <B>close,</B> <B>read,</B> <B>write,</B> and <B>lseek</B>.  The differ-
+       ence is that  they  return  immediately  without  blocking
+       while  the physical file-system access operation completes
+       and also that instead of an  integer  file  descriptor,  a
+       pfFile  handle is used.  OpenGL Performer supports a maxi-
+       mum of <B>PFRTF_MAXREQ</B> pending file I/O requests.
+
+       When called, <B>pfFile::open</B> and <B>pfFile::create</B> create a  new
+       process  using  the  <B>sproc</B> mechanism that manages the file
+       operations asynchronously with the  calling  process.   If
+       the  calling  process  has  super-user privileges, the new
+       process will assign itself to processor 0, and  lower  its
+       priority.   The  spawned process will exit when either its
+       pfFile is closed via <B>pfFile::close</B> or when its parent pro-
+       cess  (that  which called the member function <B>pfFile::open</B>
+       or <B>pfFile::create</B>) exits.  The pfFile structure is created
+       on the process heap.
+
+       <B>pfFile::close</B>  closes the open file and terminates the I/O
+       process created by <B>pfFile::open</B> or  <B>pfFile::close</B>.   <B>close</B>
+       does not free <I>file</I> - use <B>pfDelete</B> for that purpose.
+
+       <B>pfFile::getClassType</B>  returns  the  <B>pfType</B>*  for the class
+       <B>pfFile</B>.  The <B>pfType</B>* returned by <B>pfGetFileClassType</B> is the
+       same  as the <B>pfType</B>* returned by invoking the member func-
+       tion <B>getType</B> on any instance  of  class  <B>pfFile</B>.   Because
+       OpenGL  Performer  allows  subclassing  of built-in types,
+       when decisions are made based on the type of an object, it
+       is  usually  better to use the member function <B>isOfType</B> to
+       test if an object is of a type derived  from  a  Performer
+       type  rather  than  to  test  for  strict  equality of the
+       <B>pfType</B>*'s.
+
+       <B>pfFile::getStatus</B> returns the status of <I>file</I> corresponding
+       to <B>attr</B> which may be one of:
+
+              <B>PFRTF_STATUS</B>        Return  0  if  last action com-
+                                  plete  and  no  other   actions
+                                  pending.    1   if   action  in
+                                  progress, and -1 if last action
+                                  failed.
+
+              <B>PFRTF_CMD</B>           Return  the  current  (or last)
+                                  file I/O  action,  one  of  the
+                                  following:
+                                  <B>PFRTF_NOACTION</B>
+                                  <B>PFRTF_CREATE</B>
+                                  <B>PFRTF_OPEN</B>
+                                  <B>PFRTF_READ</B>
+                                  <B>PFRTF_WRITE</B>
+
+              <B>PFRTF_OFFSET</B>        Return the offset from the last
+                                  seek action.
+
+              <B>PFRTF_PID</B>           Return the process  id  of  the
+                                  I/O   process  associated  with
+                                  <I>file</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       OpenGL Performer for  Linux  does  not  currently  support
+       Direct File I/O.
+
+       The  need  for the pfFile facility has been largely super-
+       seded by the IRIX  5  asynchronous  I/O  facility.   These
+       capabilities are accessible through <B>aio_cancel</B>, <B>aio_error</B>,
+       <B>aio_init</B>,   <B>aio_read</B>,   <B>aio_return</B>,    <B>aio_suspend</B>,    and
+       <B>aio_write</B>.   Users are encouraged to use the aio functions
+       for performing asynchronous file  operations  in  programs
+       now in development.
+
+       The  calling  process  should always call <B>pfFile::close</B> to
+       close a file before exiting.  If the calling program exits
+       without doing so, the file will not be closed.  Such files
+       can be challenging to remove from the file system.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       access,   aio_cancel,   aio_error,   aio_init,   aio_read,
+       aio_return,  aio_suspend,  aio_write, close, creat, fcntl,
+       lseek, open, read, write
+
+
+
+                                                      pfFile(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

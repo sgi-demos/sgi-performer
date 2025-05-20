@@ -1,0 +1,59 @@
+<HTML>
+<HEAD>
+<TITLE>pfdCombineLayer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdCombineLayer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdCombineLayers(3pf)                       pfdCombineLayers(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdCombineLayers</B> - Merge layer nodes together.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       void   <B>pfdCombineLayers</B>(pfNode *node);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdCombineLayers</B> gathers sibling layers (<B>pfLayer</B>) together
+       into a single super-layer.  All bases are grouped together
+       followed by all the layers.
+
+       All  layer nodes, both existing and newly created, are set
+       to use  the  <B>PFDECAL_LAYER_DISPLACE</B>  style  for  rendering
+       coplanar geometry.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfLayer
+
+
+
+                                            pfdCombineLayers(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

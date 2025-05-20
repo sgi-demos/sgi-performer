@@ -1,0 +1,83 @@
+<HTML>
+<HEAD>
+<TITLE>pfvMousePicker</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvMousePicker</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvMousePicker(3pf)                           pfvMousePicker(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvMousePicker</B>  -  A  pfvPicker  implementation  that uses
+       mouse and keyboard events to determine current  focus  and
+       to coordinate user-interaction.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvMousePicker.h&gt;
+
+                         <B>pfvMousePicker::pfvMousePicker</B>();
+
+       pfuMouse*         <B>pfvMousePicker::getMouse</B>();
+
+       pfuEventStream*   <B>pfvMousePicker::getEventStream</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The  pfvMousePicker extends the pfvPicker class and may be
+       used directly by applications in order to coordinate  user
+       interaction with scene elements through mouse and keyboard
+       input.
+
+       <B>new</B> <B>pfvMousePicker</B> creates and returns a handle to  a  new
+       pfvMousePicker object.
+
+       <B>pfvMousePicker::getMouse()</B> returns a pointer to a pfuMouse
+       structure stored within the pfvMousePicker  object,  which
+       contains  current  mouse  state  and  is  updated  by pfv-
+       MousePicker through function pfuGetMouse.
+
+       <B>pfvMousePicker::getEventStream()</B> returns a  pointer  to  a
+       pfuEventStream  structure stored within the pfvMousePicker
+       object, which  contains  current  keyboard  state  and  is
+       updated by pfvMousePicker through function pfuGetEvents.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfvMousePicker  objecys  may be used by Performer applica-
+       tions that do not use the Display and Input Managers  from
+       libpfv.
+
+       For  examples of uses of the pfvMousePicker class, look at
+       the       sample       code       in       /usr/share/Per-
+       former/src/pguide/libpfv/picker  and  the README file con-
+       tained in that directory.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvPicker, pfvInputMngrPicker, pfuGetMouse, pfuGetEvents
+
+
+
+                                              pfvMousePicker(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

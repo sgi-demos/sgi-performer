@@ -1,0 +1,264 @@
+<HTML>
+<HEAD>
+<TITLE>pfvInteractor</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvInteractor</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvInteractor(3pf)                             pfvInteractor(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvInteractor</B>  - Manage user-interaction with a scene or a
+       subset of a scene.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvPicker.h&gt;
+
+                      <B>pfvInteractor::pfvInteractor</B>(pfvXmlNode* xml=NULL);
+
+       virtual int    <B>pfvInteractor::getActive</B>(pfvPicker*p);
+
+       virtual int    <B>pfvInteractor::startHlite</B>( pfvPicker*p,
+                        int prmsn );
+
+       virtual int    <B>pfvInteractor::updateHlite</B>( pfvPicker* p,
+                        int ev,     int prmsn,     pfvPickerRe-
+                        quest*r );
+
+       virtual void   <B>pfvInteractor::endHlite</B>( pfvPicker* p );
+
+       virtual int    <B>pfvInteractor::specialFocus</B>( pfvPicker* p,
+                        int ev,     int prmsn,     pfvPickerRe-
+                        quest*r );
+
+       virtual
+                      int    <B>pfvInteractor::startInteraction</B>( pfvPicker*p,
+                        int ev /*, int prmsn*/ );
+
+       virtual
+                      int    <B>pfvInteractor::updateInteraction</B>( pfvPicker* p,
+                        int ev,     int prmsn,     pfvPickerRe-
+                        quest*r );
+
+       virtual
+                      void   <B>pfvInteractor::endInteraction</B>( pfvPicker* p );
+
+       int            <B>pfvInteractor::getState</B>();
+
+       int            <B>pfvInteractor::isHlited</B>();
+
+       int            <B>pfvInteractor::isInteracting</B>();
+
+       virtual void   <B>pfvInteractor::nodeSetup</B>( pfNode* node,
+                        int slotIndex );
+
+       void           <B>pfvInteractor::nodeSetup</B>( pfNode* node,
+                        pfvPicker* p );
+
+       void           <B>pfvInteractor::nodeSetup</B>( pfNode* node,
+                        char*slotName );
+
+       void           <B>pfvInteractor::nodeSetup</B>( pfNode*node );
+
+       static void    <B>pfvInteractor::clearNodeSlot</B>( pfNode* node,
+                        int slotIndex );
+
+       static
+                      void    <B>pfvInteractor::clearNodeSlot</B>( pfNode*node );
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvInteractor class is a base class for setting up and
+       managing user-interaction with a scene or a portion  of  a
+       scene. Instances of pfvInteractor objects are not expected
+       to be created by applications; instead applications should
+       derive their own classes from pfvInteractor, and implement
+       specific interaction through the implementation of  pfvin-
+       teractor's virtual methods.
+
+       pfvInteractors work in conjunction with pfvPicker objects.
+       A single ppfvPicker may coordinate the action of  multiple
+       interactors.   Basically, the picker will isect a scene to
+       determine which pfNode is currently under focus;  It  will
+       then try to find the pfvInteractor that has been set up to
+       manage interaction for picked node.  Assignment of a  pfv-
+       interactor  to  a  pfNode is done through the use of Named
+       Data  Slots  (see  man  page  for  pfObject::getNamedUser-
+       DataSlot).  Each  picker  will  be configured to look at a
+       certain slot index. The picked node user-slot is  examined
+       first: if slot contains a pointer to an active pfvInterac-
+       tor, the search ends. If user-slot is  NULL,  then  picker
+       continues  its  search   for  an  interactor by looking at
+       node's parent data-slot, and walks up the pfNode hierarchy
+       until  a  pointer to an active interactor  is found or the
+       pfScene root-node is found.  Note that pfvinteractors  can
+       also be assigned to pfScene nodes.
+
+       A pfvInteractor supports the following functionalities:
+
+       HLITE: If picker state includes PFPICKER_ALLOW_HLITE, when
+       picker focus is on some geometry  managed  by  interactor,
+       interactor  can  accept  hlite  state. A pfvInteractor may
+       decide to render hlited geometry in a different style (eg:
+       wireframe),  or to change cursor shape, in order to signal
+       to the user that interaction  with  hlited  geometry  will
+       take  place  if  user  generates  the right events (actual
+       event types depend on picker implementation).
+
+       FOCUS_EVENTS:     When     picker      state      includes
+       PFPICKER_FOCUS_EVENT,  interactor will receive events from
+       picker if these are generated while  focus  is  over  some
+       geometry  managed  by  interactor.   Interactor can ignore
+       each event, or respond to it by carrying  out  a  one-time
+       action,  or  by  accepting  INTERACT  state,  which allows
+       interactions to be carried out over a  number  of  frames,
+       such  as  for  example  dragging  a slider, or rotating an
+       object.
+
+       INTERACTION: Once interactor has requested INTERACT state,
+       picker  will  guarantee  at  least one call to pfvInterac-
+       tor::updateInteraction  on  each  frame  (the  number   of
+       updates  is  greater if more than one event were collected
+       by picker during current frame).
+
+       <B>pfvInteractor::getActive</B> will be called by picker (with  a
+       pointer  to  itself  passed on as an argument) in order to
+       node.
+
+       <B>pfvInteractor::startHlite</B>  will  be  called  by  picker to
+       offer interactor a chance to accept hlite state. This will
+       only     happen     if     picker's     state     includes
+       PFPICKER_ALLOW_HLITE, and if focus is currently over geom-
+       etry  assigned  to  this interactor through node data slot
+       assignment. Interactor may return 0 to reject hlite state,
+       or  non-zero  to  accept it.  The value of parameter prmsn
+       will contain the permission mask granted by picker's  cur-
+       rent  selector.  prmsn is a bitwise integer containing any
+       of the following tokens:
+
+           o PFPICKER_HLITE, indicating that interactor has permissions
+             to accept hlite state.
+           o PFPICKER_INTERACT, indicating that interactor has permission
+             to request and enter
+             interact state.
+           o PFPICKER_SELECT, indicating that interactor has permission to
+             request select state.
+
+       Note however that pfvInteractors cannot accept select
+       state. See man page for pfvSelector for details of how to
+       carry out object selection through the pfvPicker API.
+       Note also that if picker has no current selector, permis-
+       sions will be equal to PFPICKER_FULL_PERMISSIONS.
+
+       <B>pfvInteractor::updateHlite</B> will be called by picker on
+       every frame while interactor maintains hlited state. If
+       events have been collected by picker while interactor is
+       in hlited state, events will be passed as argument ev in
+       <B>pfvInteractor::updateHlite</B>.  Parameter prmsn indicates the
+       level of permissions granted by picker's current selector.
+
+       <B>pfvInteractor::endHlite</B> will be called by the picker to
+       indicate that focus is no longer over geometry assigned to
+       interactor, and thus interactor must leave hlite state.
+       Interactor is expected to restore normal appearance of
+       hlited geometry, or restore cursor shape accordingly.
+
+       <B>pfvInteractor::specialFocus</B> will be called by picker when
+       picker's state includes PFPICKER_FOCUS_EVENT, and an event
+       has been generated while focus is over geometry assigned
+       to this interactor. Parameter ev will indicate which event
+       was generated, prmsn will indicate the permission level
+       granted by picker's current selector, and r will point to
+       a pfvPickerRequest structure initialized to picker's cur-
+       rent state, which can be modified by interactor in order
+       to request a state change.
+
+       <B>pfvInteractor::startInteraction</B> will be called by picker
+       in order to offer interactor a chance to accept INTERACT
+       state. Usually this will happen in response to a request
+       made by interactor itself through methods updateHlite or
+       specialFocus. Alternatively, this can happen if method
+       pfvPicker::setState or pfvPicker::grantRequest were called
+       with request state including PFPICKER_HLITE or
+       PFPICKER_INTERACT, and a pointer to this as requested
+       interactor.
+       current selector.
+
+       <B>pfvInteractor::endInteraction</B> will be called by the picker
+       to indicate that interactor must leave INTERACT state.
+
+       <B>pfvInteractor::getState</B> returns interactor's current
+       state. This may include PFPICKER_HLITE or PFPICKER_INTER-
+       ACT indicating that interactor is currently in hlite or in
+       interact state respectively.
+
+       <B>pfvInteractor::isHlited</B> returns 1 if interactor is cur-
+       rently in HLITED state, 0 otherwise.
+
+       <B>pfvInteractor::isInteracting</B> returns 1 if interactor is
+       currently in INTERACT state, 0 otherwise
+
+       <B>pfvInteractor::nodeSetup(pfNode*</B> <B>node,</B> <B>int</B> <B>slotIndex)</B> sets
+       the data slot with index slotIndex of node to point to
+       this interactor.
+
+       <B>pfvInteractor::nodeSetup(pfNode*</B> <B>node,</B> <B>pfvPicker*</B> <B>p)</B> first
+       queries picker to find out which data slot is of interest
+       to it, then sets the appropriate data slot of node to
+       point to this interactor.
+
+       <B>pfvInteractor::nodeSetup(pfNode*</B> <B>node,</B> <B>char*slotName)</B> sets
+       the named slot of node to point to this interactor.
+
+       <B>pfvInteractor::nodeSetup(pfNode*node)</B> sets the slot named
+       "PFPICKER" of node to point to this interactor.
+
+       <B>pfvInteractor::clearNodeSlot(pfNode*</B> <B>node,</B> <B>int</B> <B>slotIndex)</B>
+       sets the slot with index slotIndex of node to NULL.
+
+       <B>pfvInteractor::clearNodeSlot(pfNode*</B> <B>node,</B> <B>pfvPicker*</B> <B>p)</B>
+       first queries picker to find out which data slot is of
+       interest to it, then sets the appropriate data slot of
+       node to NULL.
+
+       <B>pfvInteractor::clearNodeSlot(pfNode*</B> <B>node,</B> <B>char*slotName)</B>
+       sets the named slot of node to NULL.
+
+       <B>pfvInteractor::clearNodeSlot(pfNode*node)</B> sets the slot
+       named "PFPICKER" of node to NULL.
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       For examples of uses of the pfvPicker API, look at the
+       sample code in /usr/share/Per-
+       former/src/pguide/libpfv/picker and the README file con-
+       tained in that directory.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvPicker, pfvMousePicker, pfInputMngrPicker, pfSelector,
+       pfObject
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

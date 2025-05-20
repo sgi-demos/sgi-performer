@@ -1,0 +1,124 @@
+<HTML>
+<HEAD>
+<TITLE>pfClear</TITLE>
+</HEAD>
+<BODY>
+<H1>pfClear</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfClear(3pf)                                         pfClear(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfClear</B> - Clear specified graphics buffers
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       void   <B>pfClear</B>(int which, const pfVec4 color);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>which</I>  is  a  mask  that specifies which buffers are to be
+              cleared.  <I>which</I> is a bitwise OR of:
+
+              <B>PFCL_COLOR</B>          Clear color buffer to <I>color</I>.
+
+              <B>PFCL_DEPTH</B>          Clear depth buffer  to  maximum
+                                  value   of  our  defined  depth
+                                  range.
+
+              <B>PFCL_MSDEPTH</B>        Fast clear of  the  multisample
+                                  depth buffer.
+
+              <B>PFCL_STENCIL</B>        Clear stencil buffer to 0.
+
+              <B>PFCL_DITHER</B>         Enable   dithering  during  the
+                                  color   clear.    By   default,
+                                  <B>pfClear</B> turns off dithering for
+                                  color clears.
+
+       <I>color</I>  specifies the red, green, blue,  and  alpha  compo-
+              nents of the color buffer clear color.  Each compo-
+              nent is defined in the range 0.0 to 1.0.  If  <I>color</I>
+              is  NULL  then  a  black fully opaque color will be
+              used.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfClear</B> clears the buffers specified by <I>which</I> in the  cur-
+       rent  graphics  window.   The  actual  screen area cleared
+       depends on many GL state settings including  viewport  and
+       screen  or  scissor  mask (OpenGL <B>glScissor</B>), current draw
+       buffer (front, back, left, right, overlay, etc.), and  the
+       existence  of  a  depth  buffer for <B>PFCL_DEPTH</B> and stencil
+       buffer for <B>PFCL_STENCIL</B>.  See the OpenGL <B>glClear(3g)</B>  ref-
+       erence page for more details.
+
+       If  <I>which</I>  includes <B>PFCL_COLOR</B> and <I>color</I> is NULL, then any
+       selected color buffer  will  be  cleared  to  black  fully
+       opaque pixels using <B>glColor4f(0,0,0,1)</B> in OpenGL.
+
+       <B>PFCL_MSDEPTH</B>  has  effect  only  when  multisampling  (See
+       <B>pfAntialias</B>).  In this case, instead of writing the  maxi-
+       mum depth value into each individual pixel subsample, each
+       pixel is "tagged" as having the maximum depth value.  This
+       clear  is much faster than a full depth buffer clear; how-
+       ever, the color buffer is not cleared so results from pre-
+       vious  frames  will  be  left  in  the color buffer if not
+       redrawn.  This requires that each pixel in the viewport be
+       covered  by geometry.  Often this is accomplished by draw-
+       depth  buffer  clear  will be required if multisampling is
+       not in use or not supported  in  the  current  framebuffer
+       configuration.   Note  that  the background drawing should
+       leave depth buffering enabled so that  it's  depth  values
+       will be written.
+
+       The follow example shows how to clear all buffers with one
+       <B>pfClear</B> call:
+
+       /*
+        * Clear color buffer to black, depth buffer to the maximum depth value,
+        * and stencil buffer to 0.
+        */
+       pfClear(PFCL_DEPTH | PFCL_COLOR | PFCL_STENCIL, NULL);
+
+
+       <B>pfClear</B> is a display-listable command.  If a pfDispList
+       has been opened by <B>pfOpenDList</B>, <B>pfClear</B> will not have
+       immediate effect but will be captured by the pfDispList
+       and will only have effect when that pfDispList is later
+       drawn with <B>pfDrawDList</B>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>PFCL_MSDEPTH</B> is only available on RealityEngine systems,
+       and then only in the multisample antialiasing mode.  For
+       performance reasons, the depth buffer for the entire win-
+       dow rather than just the current viewport is cleared with
+       OpenGL on Indy, i.e. scissoring is disabled.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAntialias, pfDispList, glClear, glDepthFunc, clear, mul-
+       tisample, gconfig, zclear, zfunction, czclear
+
+
+
+                                                     pfClear(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

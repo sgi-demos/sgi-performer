@@ -1,0 +1,206 @@
+<HTML>
+<HEAD>
+<TITLE>pfLODState</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLODState</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLODState(3pf)                                   pfLODState(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfLODState</B>  -  Create,  modify,  and query level of detail
+       state.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfLODState.h&gt;
+
+                         <B>pfLODState::pfLODState</B>();
+
+       static pfType *   <B>pfLODState::getClassType</B>(void);
+
+       void              <B>pfLODState::setAttr</B>(long attr,
+                           float val);
+
+       float             <B>pfLODState::getAttr</B>(long attr);
+
+       int               <B>pfLODState::setName</B>(const char *name);
+
+       const char *      <B>pfLODState::getName</B>(void);
+
+       pfLODState *      <B>pfLODState::find</B>(const char *name);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL Performer class <B>pfLODState</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfLODState</B>.  This is also true for ancestor  classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfLODState</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>ls</I>  identifies a pfLODState.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfLODState encapsulates a definition  of  how  an  LOD  or
+       group of LODs should respond to distance from the eyepoint
+       and stress.  Currently, there are 8 attributes that can be
+       used  to  define  LOD child selection and child transition
+       distance based on a  LOD's  distance  from  the  channel's
+       viewpoint  and  the  channel's  stress  (see <B>pfChannel</B> and
+       <B>pfChannel::setStress</B>).
+
+       <B>new</B> <B>pfLODState</B> creates and returns a handle  to  a  pfLOD-
+       State.   pfLODStates are always allocated from shared mem-
+       ory and cannot be created statically, on the stack  or  in
+       arrays.   pfLODStates  should  be  deleted  using <B>pfDelete</B>
+       rather than the delete operator.
+
+       <B>pfLODState::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfLODState</B>.        The       <B>pfType</B>*      returned      by
+       <B>pfLODState::getClassType</B>  is  the  same  as  the   <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfLODState</B>.   Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than  to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfLODState::setAttr</B>  and  <B>pfLODState::getAttr</B>  are used to
+       set and get the following attributes:
+
+              <B>PFLODSTATE_RANGE_RANGESCALE</B>,
+              <B>PFLODSTATE_RANGE_RANGEOFFSET</B>
+                   directly modify the geometric  range  used  to
+                   determine the current LOD child.
+
+              <B>PFLODSTATE_RANGE_STRESSSCALE</B>,
+              <B>PFLODSTATE_RANGE_STRESSOFFSET</B>
+                   modify  the  way  the  current  channel stress
+                   affects the range computation.
+
+              <B>PFLODSTATE_TRANSITION_RANGESCALE</B>,
+              <B>PFLODSTATE_TRANSITION_RANGEOFFSET</B>
+                   directly modify the transition widths  set  by
+                   <B>pfLOD::setTransition</B>.
+
+              <B>PFLODSTATE_TRANSITION_STRESSSCALE</B>,
+              <B>PFLODSTATE_TRANSITION_STRESSOFFSET</B>
+                   modify  the way transition widths are adjusted
+                   by the channel stress value.
+
+       These scale and offset values  adjust  the  LOD  selection
+       process in the following way, presented in pseudocode:
+
+           (Trans[i] * <B>TRANSITION_RANGESCALE</B> + <B>TRANSITION_RANGEOFFSET</B>) /
+           (Stress * <B>TRANSITION_STRESSSCALE</B> + <B>TRANSITION_STRESSOFFSET</B>);
+
+
+       OverallLODScale and OverallFadeScale are the <B>PFLOD_SCALE</B>
+       and <B>PFLOD_FADE</B> attributes set with <B>pfChanLODAttr</B>. Both are
+       global values that affect the switching and transition
+       ranges of all pfLODs in the scene.
+
+       The default values for all <B>SCALE</B> and <B>OFFSET</B> attributes are
+       1.0 and 0.0 respectively except <B>TRANSITION_STRESSSCALE</B> and
+       <B>TRANSITION_STRESSOFFSET</B> which are 0.0 and 1.0 respec-
+       tively, i.e., transition ranges are not scaled by stress
+       by default.
+
+       A pfLODState influences a pfLOD's behavior in one of 3
+       ways:
+
+              1.     Direct reference. A pfLOD may directly ref-
+                     erence a pfLODState with <B>pfLOD::setLODState</B>.
+
+              2.     Indexed. A pfLOD may index a pfLODState with
+                     <B>pfLOD::setLODStateIndex</B>. When the LOD is
+                     evaluated, the <I>index</I>th entry of the evaluat-
+                     ing pfChannel's pfLODState table is used. A
+                     pfChannel's pfLODState table is set with (-
+                     <B>pfChannel::setLODStateList</B>).  With indexed
+                     pfLODStates, different pfChannels can have
+                     different LOD behavior by using different
+                     pfLODState tables, e.g., an infrared channel
+                     may not "see" cold objects as well as a
+                     visual channel so "cold" pfLODs will index a
+                     different pfLODState in the infrared channel
+                     than in the visual channel.
+
+              3.     Inherited from pfChannel. A pfLOD which does
+                     not directly reference or index a pfLODState
+                     will use the pfLODState of the evaluating
+                     pfChannel (<B>pfChannel::setLODState</B>). This is
+                     the default pfLOD behavior.
+
+       When a pfLOD references or indexes a pfLODState,  the
+       <B>SCALE</B> and <B>OFFSET</B> parameters of the pfLODState are multi-
+       plied and added, respectively, to the corresponding <B>SCALE</B>
+       and <B>OFFSET</B> parameters of the evaluating pfChannel's pfLOD-
+       State, e.g., effective <B>RANGE_RANGESCALE</B> = pfLODState's
+       <B>RANGE_RANGESCALE</B> * pfChannel's <B>RANGE_RANGESCALE</B>.
+
+       Multiple pfLODs may share the same pfLODState reference or
+       index.
+
+       <B>pfLODState::setName</B> and <B>pfLODState::getName</B> set and get
+       the name of a particular pfLODState while <B>pfLODState::find</B>
+       will return the first pfLODState defined with the given
+       name.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfLOD, pfChannel
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

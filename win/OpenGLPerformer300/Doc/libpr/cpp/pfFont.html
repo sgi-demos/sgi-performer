@@ -1,0 +1,196 @@
+<HTML>
+<HEAD>
+<TITLE>pfFont</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFont</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFont(3pf)                                           pfFont(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFont</B> - Routines to load fonts for use in Performer.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfString.h&gt;
+
+                        <B>pfFont::pfFont</B>()
+
+       static pfType*   <B>pfFont::getClassType</B>(void);
+
+       void             <B>pfFont::setCharGSet</B>(int ascii,
+                          pfGeoSet *gset);
+
+       pfGeoSet*        <B>pfFont::getCharGSet</B>(int ascii);
+
+       void             <B>pfFont::setCharSpacing</B>(int ascii,
+                          pfVec3 &amp;spacing);
+
+       const pfVec3&amp;    <B>pfFont::getCharSpacing</B>(int ascii);
+
+       void             <B>pfFont::setAttr</B>(int which, void *attr);
+
+       void*            <B>pfFont::getAttr</B>(int which);
+
+       void             <B>pfFont::setVal</B>(int which, float val);
+
+       float            <B>pfFont::getVal</B>(int which);
+
+       void             <B>pfFont::setMode</B>(int mode, int val);
+
+       int              <B>pfFont::getMode</B>(int mode);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFont</B> is derived from the par-
+       ent class <B>pfObject</B>, so each of these member  functions  of
+       class  <B>pfObject</B>  are  also directly usable with objects of
+       class <B>pfFont</B>.  This is also true for ancestor  classes  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfFont</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfFont</B> facility provides the capability to load  fonts
+       for  3-D  rendering  with the string drawing routines from
+       <B>pfString</B> and <B>pfText</B>.  The basic methodology  is  the  user
+       provides individual GeoSets to be used as font characters.
+       Likewise, the user provides 3-D spacings for each  charac-
+       ter  so  that Performer can correctly move the 'cursor' or
+       '3-D origin' after drawing each character.  Note that this
+       facility  is  completely  general  and  is  independent of
+       external  font  descriptions  -  see  <B>pfdLoadFont</B>  for   a
+       description of loading some PostScript Type I fonts into a
+       pfFont structure.
+
+       <B>new</B>(arena) allocates a pfFont from  the  specified  memory
+       arena,  or  from  the  process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfFont from  the  default  memory  arena  (see
+       <B>pfGetSharedArena</B>).   Like  other pfObjects, pfFonts cannot
+       be created statically, automatically on the  stack  or  in
+       arrays and should be deleted with <B>pfDelete</B> rather than the
+       delete operator.
+
+       <B>pfFont::getClassType</B> returns the  <B>pfType</B>*  for  the  class
+       <B>pfFont</B>.   The  <B>pfType</B>* returned by <B>pfFont::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking  the  virtual
+       function <B>getType</B> on any instance of class <B>pfFont</B>.  Because
+       OpenGL Performer allows  subclassing  of  built-in  types,
+       when decisions are made based on the type of an object, it
+       is usually better to use  the member function <B>isOfType</B>  to
+       test  if  an  object is of a type derived from a Performer
+       type rather than  to  test  for  strict  equality  of  the
+       <B>pfType</B>*'s.
+
+
+   <B>pfFont</B> <B>Definition:</B>
+       Call  <B>pfFont::setCharGSet</B>  to  set the pfGeoSet which Per-
+       former should use when drawing the character specified  by
+       <I>ascii</I>  in  a  <B>pfString</B>.   <B>pfFont::getCharGSet</B>  returns the
+       pfGeoSet currently being used for the character  specified
+       by <I>ascii</I>.  Call <B>pfFont::setCharSpacing</B> to set the 3D spac-
+       ing for the character specified by <I>ascii</I> to be the  pfVec3
+       <I>spacing</I>.  This  spacing is used to update the cursor posi-
+       tion of a <B>pfString</B> after this character  has  been  drawn.
+       <B>pfFont::getCharSpacing</B>  returns  a  reference  to a pfVec3
+       specifying the spacing of a given character of a font.
+
+       <B>PFFONT_SPACING</B> <B>PFFONT_NAME</B>
+
+       <B>PFFONT_GSTATE</B> specifies a global pfGeoState to be used for
+       every character of a pfFont. Note that  pfGeoStates  bound
+       to  GeoSets  representing  characters will take precedence
+       over  the  PFFONT_GSTATE  pfGeoState.   A  Font   has   NO
+       pfGeoState by default.
+
+       <B>PFFONT_BBOX</B>  specifies  a  bounding  box that will enclose
+       every individual character of a pfFont.
+
+       <B>PFFONT_SPACING</B> specifies a global spacing to use to  simu-
+       late  fixed width fonts.  This spacing is used only if the
+       pfFont    mode    PFFONT_CHAR_SPACING    is     set     to
+       PFFONT_CHAR_SPACING_FIXED  or  a  spacing is not available
+       (NULL) for a given character.  <B>PFFONT_NAME</B>  simply  speci-
+       fies a name associated with a pfFont.
+
+
+   <B>pfFont</B> <B>Modes:</B>
+       <B>pfFont::setMode</B>  sets  a  particular mode for a given Per-
+       former font, while <B>pfFont::getAttr</B> will return the current
+       value of the mode corresponding to the <I>mode</I> token.
+
+       Current    valid    <B>pfFont</B>    Modes:   <B>PFFONT_CHAR_SPACING</B>
+       <B>PFFONT_NUM_CHARS</B>
+
+       <B>PFFONT_CHAR_SPACING</B> specifies  whether  to  use  fixed  or
+       variable  spacings for all characters of a pfFont.  Possi-
+       ble    values    are     <B>PFFONT_CHAR_SPACING_FIXED</B>     and
+       <B>PFFONT_CHAR_SPACING_VARIABLE</B>   -   the   later  being  the
+       default.
+
+
+   <B>pfFont</B> <B>Values:</B>
+       <B>pfFont::setVal</B> sets a particular value for  a  given  Per-
+       former  font,  while <B>pfFont::getVal</B> will return the corre-
+       sponding value associated with  the <I>which</I> token.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       See <B>pfText</B> for sample code demonstrating <B>pfFont</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfDelete, pfGeoSet, pfGeoState,  pfString,  pfText,
+       pfdLoadFont
+
+
+
+                                                      pfFont(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

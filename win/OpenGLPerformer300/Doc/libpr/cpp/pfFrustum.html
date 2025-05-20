@@ -1,0 +1,347 @@
+<HTML>
+<HEAD>
+<TITLE>pfFrustum</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFrustum</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFrustum(3pf)                                     pfFrustum(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFrustum</B> - Operations on frusta
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoMath.h&gt;
+
+                         <B>pfFrustum::pfFrustum</B>()
+
+       static pfType *   <B>pfFrustum::getClassType</B>(void);
+
+       void              <B>pfFrustum::makePersp</B>(float left,
+                           float right,           float bottom,
+                           float top);
+
+       void              <B>pfFrustum::makeOrtho</B>(float left,
+                           float right,           float bottom,
+                           float top);
+
+       void              <B>pfFrustum::makeSimple</B>(float fov);
+
+       int               <B>pfFrustum::getFrustType</B>(void);
+
+       void              <B>pfFrustum::getFOV</B>(float* fovh,
+                           float* fovv);
+
+       void              <B>pfFrustum::setAspect</B>(int which,
+                           float widthHeightRatio);
+
+       float             <B>pfFrustum::getAspect</B>(void);
+
+       void              <B>pfFrustum::setNearFar</B>(float near,
+                           float far);
+
+       void              <B>pfFrustum::getNearFar</B>(float* near,
+                           float* far);
+
+       void              <B>pfFrustum::getNear</B>(pfVec3 &amp;ll,
+                           pfVec3 &amp;lr, pfVec3 &amp;ul, pfVec3 &amp;ur);
+
+       void              <B>pfFrustum::getFar</B>(pfVec3 &amp;ll,
+                           pfVec3 &amp;lr, pfVec3 &amp;ul, pfVec3 &amp;ur);
+
+       int               <B>pfFrustum::getEye</B>(pfVec3 &amp;eye);
+
+       void              <B>pfFrustum::getPtope</B>(pfPolytope *ptope);
+
+       void              <B>pfFrustum::getGLProjMat</B>(pfMatrix &amp;mat);
+
+       void              <B>pfFrustum::apply</B>(void);
+
+       int               <B>pfFrustum::contains</B>(const pfVec3 &amp;pt);
+
+       int               <B>pfFrustum::contains</B>(const pfBox *box);
+
+       int               <B>pfFrustum::contains</B>(const pfSphere *sph);
+       The OpenGL Performer class <B>pfFrustum</B> is derived  from  the
+       parent class <B>pfPolytope</B>, so each of these member functions
+       of class <B>pfPolytope</B> are also directly usable with  objects
+       of  class  <B>pfFrustum</B>.   This  is  also  true  for ancestor
+       classes of class <B>pfPolytope</B>.
+
+       pfType*   <B>pfPolytope::getClassType</B>(void);
+       int       <B>pfPolytope::getNumFacets</B>(void);
+       int       <B>pfPolytope::setFacet</B>(int i,
+                   const pfPlane *facet);
+       int       <B>pfPolytope::getFacet</B>(int i, pfPlane *facet);
+       int       <B>pfPolytope::removeFacet</B>(int i);
+       void      <B>pfPolytope::orthoXform</B>(const pfPolytope *src,
+                   const pfMatrix  &amp;mat);
+       int       <B>pfPolytope::contains</B>(const pfVec3  &amp;pt);
+       int       <B>pfPolytope::contains</B>(const pfSphere *sphere);
+       int       <B>pfPolytope::contains</B>(const pfBox *box);
+       int       <B>pfPolytope::contains</B>(const pfCylinder *cyl);
+       int       <B>pfPolytope::contains</B>(const pfPolytope *ptope1);
+
+
+       Since the class <B>pfPolytope</B> is itself derived from the par-
+       ent class <B>pfObject</B>, objects of class <B>pfFrustum</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of  class <B>pfFrustum</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+
+       <B>new</B>(arena) allocates a pfFrustum from the specified memory
+       arena,  or  from  the  process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfFrustum from the default memory  arena  (see
+       <B>pfGetSharedArena</B>).   Like other pfObjects, pfFrusta cannot
+       be created statically, automatically on the  stack  or  in
+       arrays and should be deleted with <B>pfDelete</B> rather than the
+       delete operator.
+
+       A new pfFrustum defaults to a simple  perspective  frustum
+       (see <B>::makeSimple</B>) with FOV = 45 degrees, and near and far
+       distances of 1 and 1000.
+
+       <B>pfFrustum::getClassType</B> returns the <B>pfType</B>* for the  class
+       <B>pfFrustum</B>.        The       <B>pfType</B>*       returned      by
+       <B>pfFrustum::getClassType</B>  is  the  same  as   the   <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class  <B>pfFrustum</B>.   Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than  to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfFrustum::makePersp</B>  configures  the  pfFrustum as a per-
+       spective frustum with the eye at (0,0,0)  and  the  points
+       (<I>left</I>,  <I>near</I>,  <I>bottom</I>)  and  (<I>right</I>,  <I>near</I>, <I>top</I>) being the
+       lower-left and upper-right corners of the  viewing  plane.
+       The  coordinate  system  used is: left -&gt; right = +X axis,
+       near -&gt; far = +Y axis, bottom -&gt; top = +Z axis.   The  far
+       plane  lies  at  Y = far. Note that the field of view of a
+       frustum configured with <B>pfFrustum::makePersp</B> is  dependent
+       on  the  current  near plane distance. However, subsequent
+       changes    to    the    near    plane    distance     with
+       <B>pfFrustum::setNearFar</B>  do  not  affect  the field of view,
+       simplifying clip plane modification.
+
+       <B>pfFrustum::makePersp</B> is similar to the IRIS GL  <B>window(3g)</B>
+       command  and  can  generate  off-axis projections that are
+       often used for stereo and "video-wall" displays.  With  an
+       off-axis  frustum,  the  line  from  the  eyepoint passing
+       through the center of the image is  not  perpendicular  to
+       the projection plane.
+
+       Example 1:
+
+       /*
+        * Make two off-axis projections which together provide
+        * horizontal and vertical FOVs of 90 and 45 degrees.
+        */
+       t = pfTan(22.5f);
+
+       left-&gt;setNearFar( 1.0f, 1000.0f);
+       left-&gt;makePersp(-1.0f, 0.0f, -t, t);
+
+       right-&gt;setNearFar(1.0f, 1000.0f);
+       right-&gt;makePersp(0.0f, 1.0f, -t, t);
+
+       <B>pfFrustum::makeOrtho</B> configures the pfFrustum as an
+       axis perspective frustum with horizontal and vertical
+       fields-of-view of <I>fov</I> degrees.  With an on-axis frustum,
+       the line connecting the center of projection with the eye-
+       point is perpendicular to the projection plane.
+       <B>pfFrustum::makeSimple</B> is similar to the IRIS GL
+       <B>perspective(3g)</B> command.  The near and far distances of a
+       simple frustum are set by <B>pfFrustum::setNearFar</B>. For view-
+       ports with non-square aspect ratios, <B>pfFrustum::setAspect</B>
+       may be used to automatically fit either the horizontal or
+       vertical fields of view to the viewport (see below).
+
+       <B>pfFrustum::getFrustType</B> returns a symbolic token indicat-
+       ing the frustum type of the pfFrustum and is one of:
+       <B>PFFRUST_SIMPLE</B>, <B>PFFRUST_ORTHOGONAL</B>, or
+       <B>PFFRUST_PERSPECTIVE</B>.  The frustum type is set by the
+       <B>pfFrustum::make&lt;*&gt;</B> routines.  Note that it is possible to
+       make a simple frustum with <B>pfFrustum::makePersp</B> if <I>left</I> ==
+       -<I>right</I> and <I>bottom</I> == -<I>top</I>.
+
+       <B>pfFrustum::setNearFar</B> sets the near and far distances of
+       the pfFrustum.  It will also recalculate the frustum's
+       geometry based on the frustum type.  If <I>frust</I> is perspec-
+       tive, its field of view will not be changed, only the near
+       and far planes will be modified.  <B>pfFrustum::getNearFar</B>
+       copies the near and far distances of the pfFrustum into
+       <I>near</I> and <I>far</I>.
+
+       <B>pfFrustum::setAspect</B> adjusts the horizontal or vertical
+       extent of the pfFrustum to fit the aspect ratio specified
+       by <I>widthHeightRatio</I>.  <I>which</I> is a symbolic token specifying
+       how to modify <I>frust</I> and is one of:
+
+              <B>PFFRUST_CALC_NONE</B>             Disable aspect ratio
+                                            calculation
+
+              <B>PFFRUST_CALC_HORIZ</B>            Modify horizontal
+                                            extent of frustum to
+                                            match the aspect
+                                            ratio
+
+              <B>PFFRUST_CALC_VERT</B>             Modify vertical
+                                            extent of frustum to
+                                            match the aspect
+                                            ratio
+
+       <B>pfFrustum::setAspect</B> is useful for matching a frustum to a
+       viewport:
+
+       Example 2:
+
+       getviewport(&amp;l, &amp;r, &amp;b, &amp;t);
+       aspect = (float)(r - l) / (float)(t - b);
+
+       /*
+        * Fit vertical frustum extent to viewport so that horizontal
+        * FOV is 45 degrees and vertical is based on 'aspect'.
+        */
+       frust-&gt;makeSimple(45.0f);
+       frust-&gt;setAspect(PFFRUST_CALC_VERT, aspect);
+       pfFrustum.
+
+       <B>pfFrustum::getFOV</B> copies the total horizontal and vertical
+       fields of view into <I>fovh</I> and <I>fovv</I> respectively.  The
+       fields of view for an orthogonal frustum are both 0.0.
+
+       <B>pfFrustum::getNear</B> returns the four corners of the near
+       (viewing or projection) plane putting the lower-left,
+       lower-right, upper-left and upper-right vertices into <I>ll</I>,
+       <I>lr</I>, <I>ul</I>, and <I>ur</I>, respectively.
+
+       <B>pfFrustum::getFar</B> returns the four corners of the far
+       plane putting the lower-left, lower-right, upper-left and
+       upper-right vertices into <I>ll</I>, <I>lr</I>, <I>ul</I>, and <I>ur</I>, respec-
+       tively.
+
+       <B>pfFrustum::getEye</B> copies the eye position of the frustum
+       the pfFrustum into <I>eye</I>.
+
+       <B>pfFrustum::getPtope</B> copies the 6 half spaces which define
+       the pfFrustum into the pfPolytope <I>ptope</I>.
+
+       <B>pfFrustum::getGLProjMat</B> returns the projection matrix cor-
+       responding to the pfFrustum in the coordinate system of
+       the Graphics Library, ignoring any transformations applied
+       to <I>frust</I> with <B>pfFrustum::orthoXform</B>.
+
+       <B>pfFrustum::apply</B> configures the hardware projection matrix
+       with the projection defined by the pfFrustum.  Modifica-
+       tions made to <I>frust</I> do not have effect until
+       <B>pfFrustum::apply</B> is called.
+
+       <B>pfFrustum::apply</B> is a display-listable command.  If a
+       pfDispList has been opened by <B>pfDispList::open</B>,
+       <B>pfFrustum::apply</B> will not have immediate effect but will
+       be captured by the pfDispList and will only have effect
+       when that pfDispList is later drawn with <B>pfDispList::draw</B>.
+
+       <B>pfFrustum::contains(const</B> <B>pfVec3</B> <B>pt,</B> <B>...)</B>  returns <B>TRUE</B> or
+       <B>FALSE</B> depending on whether the point <I>pt</I> is in the interior
+       of the specified frustum.
+
+       pfFrustum::contains(struct pfBox *), pfFrustum::con-
+       tains(struct pfSphere *), and pfFrustum::contains(struct
+       pfCylinder *) test whether the specified pfFrustum con-
+       tains a non-empty portion of the volume specified by the
+       argument, a box, sphere or cylinder, respectively.  The
+       various member functions <B>pfFrustum::contains</B> test whether
+       the pfFrustum contains a non-empty portion of a box,
+       sphere, or cylinder.
+
+       The return value from these functions is the OR of one or
+       more bit fields.  The returned value may be:
+
+              <B>PFIS_FALSE</B>: The intersection of the primitive
+                   and the pfFrustum is empty.
+
+              <B>PFIS_MAYBE</B>: The intersection of the primitive and
+              the
+                   is non-empty and lies entirely inside the
+                   pfFrustum.
+
+       The primary use of <B>pfFrustum::contains</B> within OpenGL Per-
+       former is in culling the database to the view frustum each
+       frame, where speed is paramount.  If this computation can-
+       not be done easily, the function returns <B>PFIS_MAYBE</B>.
+
+       <B>pfFrustum::orthoXform</B> transforms the frustum using the
+       matrix <I>mat</I>: <I>dst</I> = <I>src</I> * <I>mat</I>.  If <I>mat</I> is not orthogonal the
+       results are undefined.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfFrustum construction orients the frustum with +Z up, +X
+       to the right, and +Y into the screen which is different
+       than the OpenGL viewing coordinate systems which has +Y
+       up, +X to the right and -Z into the screen.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfDelete, pfDispList, pfMatrix, pfObject, pfPlaneI-
+       sectSeg, pfPolytope, pfSphere, pfState, pfVec3, ortho,
+       perspective, window
+
+
+
+                                                   pfFrustum(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

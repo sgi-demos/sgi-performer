@@ -1,0 +1,413 @@
+<HTML>
+<HEAD>
+<TITLE>pfPipe</TITLE>
+</HEAD>
+<BODY>
+<H1>pfPipe</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfPipe(3pf)                                           pfPipe(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGetPipeSize,</B>  <B>pfGetPipeClassType,</B>  <B>pfPipeScreen,</B>  <B>pfGet-</B>
+       <B>PipeScreen,</B> <B>pfPipeWSConnectionName,</B> <B>pfGetPipeWSConnection-</B>
+       <B>Name,</B>  <B>pfGetPipePWin,</B>  <B>pfMovePWin,</B>  <B>pfPipeSwapFunc,</B> <B>pfGet-</B>
+       <B>PipeSwapFunc,</B>  <B>pfGetPipeLoad,</B>  <B>pfGetPipeNumPWins,</B>   <B>pfGet-</B>
+       <B>PipeNumChans,</B>  <B>pfGetPipeChan,</B>  <B>pfBindPipeVChans,</B> <B>pfUnbind-</B>
+       <B>PipePVChans,</B>  <B>pfPipeIncrementalStateChanNum,</B>  <B>pfGetPipeIn-</B>
+       <B>crementalStateChanNum,</B> <B>pfAddMPClipTexture,</B> <B>pfRemoveMPClip-</B>
+       <B>TexturePipe,</B> <B>pfGetPipeNumMPClipTextures,</B>  <B>pfGetPipeMPClip-</B>
+       <B>Texture,</B>   <B>pfPipeTotalTexLoadTime,</B>  <B>pfGetPipeTotalTexLoad-</B>
+       <B>Time,</B>   <B>pfGetPipeNum,</B>    <B>pfGetPipeDrawCount,</B>    <B>pfGetLast-</B>
+       <B>PipeFrameCount</B> - Initialize and get window information for
+       a pfPipe.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void                 <B>pfGetPipeSize</B>(const pfPipe *pipe,
+                              int *xsize, int *ysize);
+
+       pfType *             <B>pfGetPipeClassType</B>(void);
+
+       void                 <B>pfPipeScreen</B>(pfPipe *pipe,
+                              int screen);
+
+       int                  <B>pfGetPipeScreen</B>(const pfPipe *pipe);
+
+       void                 <B>pfPipeWSConnectionName</B>(pfPipe *pipe,
+                              const char *name);
+
+       const char
+                            *         <B>pfGetPipeWSConnectionName</B>(const pfPipe *pipe);
+
+       pfPipeWindow *       <B>pfGetPipePWin</B>(const pfPipe *pipe,
+                              int which);
+
+       int                  <B>pfMovePWin</B>(pfPipe* pipe,  int  where,
+                              pfPipeWindow *pwin);
+
+       void                 <B>pfPipeSwapFunc</B>(pfPipe* pipe,
+                              pfPipeSwapFuncType func);
+
+       pfPipeSwapFuncType   <B>pfGetPipeSwapFunc</B>(const pfPipe* pipe);
+
+       float                <B>pfGetPipeLoad</B>(const pfPipe* pipe);
+
+       int                  <B>pfGetPipeNumPWins</B>(const pfPipe *pipe);
+
+       int                  <B>pfGetPipeNumChans</B>(const pfPipe *pipe);
+
+       pfChannel *          <B>pfGetPipeChan</B>(const pfPipe *pipe,
+                              int which);
+
+       void                 <B>pfBindPipeVChans</B>(pfPipe* pipe);
+
+       void                 <B>pfAddMPClipTexture</B>(pfPipe* pipe, pfM-
+                              PClipTexture *clip);
+
+       int                  <B>pfRemoveMPClipTexturePipe</B>(pfPipe* pipe,
+                              pfMPClipTexture *clip);
+
+       int                  <B>pfGetPipeNumMPClipTextures</B>(pfPipe* pipe);
+
+       pfMPClipTexture*     <B>pfGetPipeMPClipTexture</B>(pfPipe* pipe,
+                              int which);
+
+       void                 <B>pfPipeTotalTexLoadTime</B>(float msecs);
+
+       float                <B>pfGetPipeTotalTexLoadTime</B>(void);
+
+       int                  <B>pfGetPipeNum</B>(void);
+
+       void                 <B>pfGetPipeDrawCount</B>(int pnum);
+
+       void                 <B>pfGetLastPipeFrameCount</B>(int pnum);
+
+
+                            /* pfPipe-specific types */
+                            typedef void (*pfPipeFuncType)(pfPipe *p);
+                            typedef void (*pfPipeSwapFuncType)(pfPipe *p, pfPipeWindow *pw);
+
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>pipe</I>  identifies a pfPipe.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfPipe is a software rendering pipeline which renders
+       one or more pfChannels into one or more pfPipeWindows. A
+       pfPipe can be configured as multiple processes for
+       increased throughput on multiprocessor systems. Multiple
+       pfPipes can operate in parallel in support of platforms
+       with multiple graphics pipelines.  The number of pfPipes
+       and the multiprocessing mode used are set by <B>pfMultipipe</B>
+       and <B>pfMultiprocess</B> respectively (see <B>pfConfig</B>).
+
+       A pfPipe references one or more pfPipeWindows which in
+       turn reference one or more pfChannels. A pfChannel is sim-
+       ply a view of a scene which is rendered into a viewport of
+       a pfPipeWindow.  A pfPipeWindow is a graphics window man-
+       aged by its parent pfPipe.
+
+       pfPipes, pfPipeWindows, and pfChannels form a hierarchy
+       with the following rules:
+
+
+              1.   A screen (i.e. hardware graphics display) can
+                   have multiple pfPipes but should only have one
+                   drawing to it
+
+              2.   A pfPipe may only draw to one screen
+
+              3.   A pfPipe may render to multiple pfPipeWindows
+
+              4.   A pfPipeWindow belongs to a single fixed
+                   pfPipeWindow is culled but not drawn.
+
+       The following is an example pfPipe-&gt;pfPipeWindow-&gt;pfChan-
+       nel configuration.
+
+       Example 1:
+
+
+       The screen:
+
+           hardware screen/graphics pipeline
+           +-----------------------------------------------+
+           | pfPipe                                        |
+           |                                               |
+           |                    pfPipeWindow1              |
+           |                   +----------------+          |
+           |                   |                |          |
+           |                   |                |          |
+           |                   |                |          |
+           |                   |                |          |
+           |                   |  pfChannel2    |          |
+           |                   |                |          |
+           |    pfPipeWindow0  |                |          |
+           |   +--------------------+           |          |
+           |   |            |       |           |          |
+           |   |            |       |-----------+          |
+           |   | pfChannel0 | blank |                      |
+           |   |            |       |                      |
+           |   |--------------------|                      |
+           |   |                    |                      |
+           |   |    pfChannel1      |                      |
+           |   |                    |                      |
+           |   +--------------------+                      |
+           |                                               |
+           |                                               |
+           +-----------------------------------------------+
+
+
+
+       The hierarchy:
+
+                       screen0 ....
+                         |
+                         |
+                       pfPipe0 ---------------------+
+                        /   \                       |
+                       /     \                      |
+                      /       \                     |
+               pfPipeWindow0   pfPipeWindow1        |
+                 /     \          \                 |
+                /       \          \                |
+           pfChannel0  pfChannel1   pfChannel2  pfChannel3
+                                                (not drawn)
+
+       The code: (in application process)
+
+           /* Calls that create the hierarchy: */
+           pfPipe          *pipe = <B>pfGetPipe(0)</B>;
+           pfPipeWindow    *pwin0 = pfNewPWin(pipe);
+           pfAddChan(pwin0, chan1);
+           pfAddChan(pwin1, chan2);
+
+           /* Calls that cause the window to be opened at next pfFrame() */
+           pfOpenPWin(pwin0);
+           pfOpenPWin(pwin1);
+           pfFrame();
+
+
+       If a pfPipe has no windows at the time <B>pfFrame</B> is called,
+       a full screen pfPipeWindow will be opened for <I>pipe</I> and all
+       pfChannels of <I>pipe</I> will be assigned to that pfPipeWindow.
+
+       <B>pfGetPipeClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfPipe</B>.  The <B>pfType</B>* returned by <B>pfGetPipeClassType</B> is the
+       same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on any
+       instance of class <B>pfPipe</B>.  Because OpenGL Performer allows
+       subclassing of built-in types, when decisions are made
+       based on the type of an object, it is usually better to
+       use <B>pfIsOfType</B> to test if an object is of a type derived
+       from a Performer type rather than to test for strict
+       equality of the <B>pfType</B>*'s.
+
+       <B>pfPipeScreen</B> specifies the hardware screen, <I>screen</I>,
+       (graphics pipeline) used for rendering by the pfPipe,
+       <I>pipe</I>.  The screen of the pfPipe may be specified in the
+       application process before the call to open or configure
+       any pfPipeWindows (<B>pfOpenPWin</B>, <B>pfConfigPWin</B>) on <I>pipe</I>, or
+       may be specified implicitly by the screen of the first
+       opened pfPipeWindow.  A pfPipe is tied to a specific hard-
+       ware pipeline and the screen of a pfPipe cannot be changed
+       once determined.  For single pipe operation, if the screen
+       of a pfPipe or pfPipeWindow is never explicitly set in
+       single pipe configuration, the screen will be taken from
+       the default screen of the current pfWSConnection, or cur-
+       rent X Display.  For multipipe operation, if the screen of
+       a pfPipe or pfPipeWindow is never explicitly set and
+       pfMultipipe() has been used to configure multiple pfPipes,
+       then pfPipes will automatically be assigned to hardware
+       screens in order, i.e., <B>pfGetPipe(0)</B> -&gt; screen 0, pfGet-
+       <B>Pipe(1)</B> -&gt; screen 1, etc.  If a custom mapping of pfPipes
+       to screens is desired, the screens of all pfPipes must be
+       specified before the configuration of the first pfPipe
+       which will happen at the first call to <B>pfFrame</B>.  See the
+       <B>pfGetCurWSConnection</B> reference  page for more details on
+       how to manage X display connections.
+
+       <B>pfPipeWSConnectionName</B> allows you to specify both a window
+       server target and screen for the pfPipe.  This is useful
+       for doing remote rendering, or for running on a system
+       with multiple window servers. This call should be made in
+       the application process, before the first call to pfFrame.
+       <B>pfGetPipeWSConnectionName</B> will return the current window
+       server target name.  A window server target specified on a
+       pfPipe will take precedence over any such targets speci-
+       fied on pfPipeWindows of that pfPipe.  If the window
+       server target of a pfPipe has not been set, it may be
+       implicitly set from the first such setting on a child
+       pfPipeWindow.  The window server target of a pfPipe may
+       the screen used by <I>pipe</I>.
+
+       For best performance only one pfPipe should render to a
+       given hardware pipeline. If multiple views on a single
+       screen are desired, use multiple pfChannels, and if neces-
+       sary, multiple pfPipeWindows.
+
+       Normally a pfPipe swaps the color buffers at the end of
+       each frame.  However, if special control is needed over
+       buffer swapping, <B>pfPipeSwapFunc</B> will register <I>func</I> as the
+       buffer swapping function for <I>pipe</I>.  Instead of swapping
+       buffers, <I>func</I> will be called and will be expected to swap
+       the color buffers of the provided pfPipeWindow.
+       <B>pfGetPipeSwapFunc</B> returns the buffer swapping function of
+       <I>pipe</I> or <B>NULL</B> if none is set.
+
+       If you wish to frame lock multiple pfPipes so that each
+       pfPipe swaps its color buffers at the same time, then you
+       should create a channel group consisting of one or more
+       pfChannels on each pfPipe and make sure <B>PFCHAN_SWAPBUFFERS</B>
+       is shared. In addition, separate hardware graphics
+       pipelines *must* be genlocked for proper frame-locking.
+
+       <B>pfGetPipePWin</B> returns the pointer to the pfPipeWindow at
+       the location specified by <I>which</I> in the pfPipeWindow list
+       on <I>pipe</I>.
+
+       <B>pfGetPipeNumPWins</B> returns the number of pfPipeWindows that
+       have been created on <I>pipe</I>.  <B>pfGetPipeNumChans</B> returns the
+       number of pfChannels that have been created on <I>pipe</I>.
+
+       <B>pfMovePWin</B> moves the specified pfPipeWindow <I>pwin</I> to the
+       location specified by <I>where</I> in the pfPipeWindow list on
+       <I>pipe</I>.  The move includes removing <I>pwin</I> from its current
+       location by moving up the elements in the list that follow
+       it and then inserting <I>pwin</I> into its new location.  If <I>pwin</I>
+       is attached to <I>pipe</I>, (-1) is returned and <I>pwin</I> is not
+       inserted into the list.  Otherwise, <I>where</I> is returned to
+       indicate success.  <I>where</I> must be within the range [0 .. n]
+       where n is the number returned by <B>pfGetPipeNumPWins</B>(), or
+       else (-1) is returned and no move is executed.
+
+       <B>pfGetPipeChan</B> returns the pointer to the pfChannel at
+       location <I>which</I> in the list of pfChannels on <I>pipe</I>.
+
+       <B>pfGetPipeLoad</B> returns the current instantaneous load
+       (ratio of time required to process a frame and the time
+       allotted for that frame's processing) for the pipe.
+
+       <B>pfBindPipeVChans</B> binds all pfPipeVideoChannels associated
+       with the pfPipe <I>pipe</I> to the video hardware.
+       <B>pfUnbindPipePVChans</B> performs the opposite action, unbind-
+       ing each from the video hardware.
+
+       Example 2: How to frame lock pfPipes
+
+       leftChan  = pfNewChan(<B>pfGetPipe(0)</B>);
+       rightChan = pfNewChan(<B>pfGetPipe(1)</B>);
+
+   <B>USING</B> <B>PFPIPES</B> <B>TO</B> <B>APPLY</B> <B>INCREMENTAL</B> <B>GRAPHICS</B> <B>STATE</B>
+       pfPipe's are also the level at which hardware pipeline
+       specific graphics state can be applied.  The only two cur-
+       rently supported incremental graphics state elements that
+       can be applied on a per-pipe basis are pfMPClipTexture's.
+       Both of the libpf primitives provide support for incremen-
+       tally paging texture from memory into texture memory which
+       contains a texture cache that differs on a per frame
+       basis.  Thus by attaching these structures to a pfPipe,
+       the pfPipe will provide frame accurate applying and down-
+       loading of these texture primitives.  Note that this
+       incremental downloading should be attached to a channel
+       such that loading statistics can be accumulated.
+
+       <B>pfPipeIncrementalStateChanNum</B> sets the channel with which
+       the incremental state should be processed.  If unspecified
+       the first channel enabled for drawing will be used to pro-
+       cess the incremental state.
+       <B>pfGetPipeIncrementalStateChanNum</B> returns the channel with
+       which all incremental state attached to the pfPipe will be
+       processed.
+
+       <B>pfAddMPClipTexture</B> is used to associate a pfMPClipTexture
+       with a particular pfPipe.  This association forces the
+       pfPipe to apply the pfMPClipTexture and download the
+       resulting incremental texture changes in a frame accurate
+       manner. If a pfMPClipTexture is added to a pipe that is
+       already connected to another pipe, the function silently
+       creates a new pfMPClipTexture, makes it a slave of the
+       pfMPClipTexture that is already connected to another pipe,
+       and adds the slave to the pipe in place of the one passed
+       as an argument to the function.
+
+       <B>pfRemoveMPClipTexture</B> is used to remove the association of
+       a pfMPClipTexture from a pfPipe such that the pfPipe will
+       no longer manage the incremental application of the pfMP-
+       ClipTexture. If a pfMPClipTexture is removed that is the
+       master of other pfMPClipTextures, the slaves will be
+       removed from their pipes as well.
+
+       <B>pfGetNumMPClipTextures</B> returns the number of pfMPClipTex-
+       tures that have been attached to the pfPipe.
+
+       <B>pfGetMPClipTexture</B> returns the <I>which</I>th pfMPClipTexture
+       that has been attached to the pfPipe.
+
+       <B>pfPipeTotalTexLoadTime</B> sets the total amount of texture
+       download time in (milliseconds) allocated for all the pfM-
+       PClipTextures attached to this pfPipe.  This download time
+       is used by the pfMPClipTexture's DTR load control system
+       to update texture memory as the pfMPClipTexture's center
+       is moved.
+
+       The total download time is distributed among the pfMPClip-
+       Textures attached to the pfPipe by examining the value of
+       each pfMPClipTexture's load time fraction parameter. This
+       floating point number is queried from each pfMPClipTexture
+       attached to the pfPipe and the results are summed. The
+       resulting value used to normalize each pfMPClipTexture's
+       return the current value for total texture download time.
+       The default value is 6 milliseconds.
+
+       <B>pfGetPipeNum</B> returns the pipeline number for the current
+       OpenGL Performer pipeline process. <B>pfGetPipeNum</B> returns
+       (-1) if invoked in a process that isn't associated with a
+       pfPipe.  Only the CULL, DRAW, and LPOINT processes have
+       valid pipe numbers.
+
+       <B>pfGetPipeDrawCount</B> will return the frame count of the last
+       draw to complete for the pfPipe. This can be called in the
+       application process to find out where the draw is.
+
+       <B>pfGetLastPipeFrameCount</B> will return the frame count of the
+       last process associated between ISECT and the DRAW of <I>pipe</I>
+       to finish.  This can tell you what processes might be
+       using old pfGeoSets in the scene graph.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfPipes cannot be deleted.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAttachChan, pfNewChan, pfConfig, pfMultipipe, pfMulti-
+       process, pfPipeWindow, pfGetCurWSConnection, pfMPClipTex-
+       ture
+
+
+
+                                                      pfPipe(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

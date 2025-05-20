@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<TITLE>pfdOpenFile</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdOpenFile</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdOpenFile(3pf)                                 pfdOpenFile(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdOpenFile</B> - Search for and open a file.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       FILE *   <B>pfdOpenFile</B>(char *fileName);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdOpenFile</B>  opens  the  specified file (much like <B>fopen</B>).
+       However, rather than simply looking in the current  direc-
+       tory, <B>pfdOpenFile</B> will search the Performer file path (see
+       <B>pfFilePath</B>) for the given filename.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       fopen, pfFilePath
+
+
+
+                                                 pfdOpenFile(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

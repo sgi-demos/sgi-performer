@@ -1,0 +1,379 @@
+<HTML>
+<HEAD>
+<TITLE>pfVideoChannel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVideoChannel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVideoChannel(3pf)                           pfVideoChannel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewVChan,</B>     <B>pfGetVChanClassType,</B>     <B>pfVChanAreaScale,</B>
+       <B>pfVChanCallig,</B> <B>pfVChanFullRect,</B> <B>pfVChanId,</B> <B>pfVChanOutputO-</B>
+       <B>rigin,</B>  <B>pfVChanOutputSize,</B>  <B>pfVChanScale,</B> <B>pfVChanMinScale,</B>
+       <B>pfVChanMaxScale,</B> <B>pfVChanMode,</B> <B>pfVChanScreen,</B> <B>pfVChanWSWin-</B>
+       <B>dow,</B>  <B>pfGetVChanAreaScale,</B> <B>pfGetVChanCallig,</B> <B>pfGetVChanId,</B>
+       <B>pfGetVChanInfo,</B> <B>pfGetVChanOutputOrigin,</B>  <B>pfGetVChanOutput-</B>
+       <B>Size,</B> <B>pfGetVChanScale,</B> <B>pfGetVChanMinScale,</B> <B>pfGetVChanMaxS-</B>
+       <B>cale,</B> <B>pfGetVChanMinDeltas,</B> <B>pfGetVChanMode,</B>  <B>pfGetVChanOri-</B>
+       <B>gin,</B> <B>pfGetVChanSize,</B> <B>pfGetVChanScreen,</B> <B>pfGetVChanWSWindow,</B>
+       <B>pfApplyVChan,</B> <B>pfBindVChan,</B>  <B>pfSelectVChan,</B>  <B>pfUnbindVChan,</B>
+       <B>pfIsVChanBound,</B>  <B>pfIsVChanActive,</B>  <B>pfGetCurVChan</B> - Create,
+       modify and query video channel state
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfVideoChannel *  <B>pfNewVChan</B>(void *arena);
+
+       pfType *          <B>pfGetVChanClassType</B>(void);
+
+       void              <B>pfVChanAreaScale</B>(pfVideoChannel* vchan,
+                           float s);
+
+       void              <B>pfVChanCallig</B>(pfVideoChannel* vchan pfCalligraphic* callig);
+
+       void              <B>pfVChanFullRect</B>(pfVideoChannel* vchan);
+
+       void              <B>pfVChanId</B>(pfVideoChannel* vchan,
+                           int index);
+
+       void              <B>pfVChanOutputOrigin</B>(pfVideoChannel* vchan,
+                           int xo, int yo);
+
+       void              <B>pfVChanOutputSize</B>(pfVideoChannel* vchan,
+                           int xs, int ys);
+
+       void              <B>pfVChanScale</B>(pfVideoChannel* vchan,
+                           float xs, float ys);
+
+       void              <B>pfVChanMinScale</B>(pfVideoChannel* vchan,
+                           float xs, float ys);
+
+       void              <B>pfVChanMaxScale</B>(pfVideoChannel* vchan,
+                           float xs, float ys);
+
+       void              <B>pfVChanMode</B>(pfVideoChannel* vchan,
+                           int mode, int val);
+
+       void              <B>pfVChanScreen</B>(pfVideoChannel* vchan,
+                           int screen);
+
+       void              <B>pfVChanWSWindow</B>(pfVideoChannel* vchan,
+                           pfWSWindow wsWin);
+
+                         <B>pfGetVChanInfo</B>(pfVideoChannel* vchan);
+
+       void              <B>pfGetVChanOutputOrigin</B>(const pfVideoChannel* vchan,
+                           int *xo, int *yo);
+
+       void              <B>pfGetVChanOutputSize</B>(const pfVideoChannel* vchan,
+                           int *xs, int *ys);
+
+       void              <B>pfGetVChanScale</B>(const pfVideoChannel* vchan,
+                           float *xs, float *ys);
+
+       void              <B>pfGetVChanMinScale</B>(const pfVideoChannel* vchan,
+                           float *xs, float *ys);
+
+       void              <B>pfGetVChanMaxScale</B>(const pfVideoChannel* vchan,
+                           float *xs, float *ys);
+
+       void              <B>pfGetVChanMinDeltas</B>(const pfVideoChannel* vchan,
+                           int *dx, int *dy);
+
+       int               <B>pfGetVChanMode</B>(pfVideoChannel* vchan,
+                           int _mode);
+
+       void              <B>pfGetVChanOrigin</B>(pfVideoChannel* vchan,
+                           int *xo, int *yo);
+
+       void              <B>pfGetVChanSize</B>(pfVideoChannel* vchan,
+                           int *xs, int *ys);
+
+       int               <B>pfGetVChanScreen</B>(const pfVideoChannel* vchan);
+
+       pfWSWindow        <B>pfGetVChanWSWindow</B>(const pfVideoChannel* vchan);
+
+       void              <B>pfApplyVChan</B>(pfVideoChannel* vchan);
+
+       void              <B>pfBindVChan</B>(pfVideoChannel* vchan);
+
+       void              <B>pfSelectVChan</B>(pfVideoChannel* vchan);
+
+       void              <B>pfUnbindVChan</B>(pfVideoChannel* vchan);
+
+       int               <B>pfIsVChanBound</B>(const pfVideoChannel* vchan);
+
+       int               <B>pfIsVChanActive</B>(const pfVideoChannel* vchan);
+
+       pfVideoChannel *  <B>pfGetCurVChan</B>(void);
+
+
+                         /* typedef of X-based Performer Types */
+                         typedef XSGIvcChannelInfo         *pfWSVideoChannelInfo;
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfVideoChannel</B> is derived from
+       the parent class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B> are also directly usable with
+       objects of class <B>pfVideoChannel</B>.  Casting an object of
+       class <B>pfVideoChannel</B> to an object of class <B>pfObject</B> is
+       taken care of automatically.  This is also true for casts
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfVideoChannel</B> can also
+       be used with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>vchan</I>  identifies a pfVideoChannel
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfVideoChannel</B> capability is used to query and control
+       the state and output area of a hardware video channel.
+       This support is done through the XSGIvc video control X
+       extension for SGI platforms.  See the <B>XSGIvc</B> man page for
+       more information on this library.  The <B>pfVideoChannel</B> only
+       accesses video hardware in the action routines of
+       <B>pfApplyVChan</B>, <B>pfBindVChan</B>, and <B>pfUnbindVChan</B>.  All parame-
+       ters set on the pfVideoChannel take effect turning these
+       actions.  These actions require that a pfWSWindow be set
+       on the <B>pfVideoChannel</B> via <B>pfVChanWSWindow</B>.
+
+       <B>pfNewVChan</B> creates and returns a handle to a pfVideoChan-
+       nel.  <I>arena</I> specifies a malloc arena out of which the
+       pfVideoChannel is allocated or <B>NULL</B> for allocation off the
+       process heap.  pfVideoChannel can be deleted with
+       <B>pfDelete</B>.
+
+       <B>pfVChanMode</B> sets a given mode to <I>val</I> where <I>mode</I> may be one
+       of the following:
+
+              <B>PFVCHAN_SYNC</B>
+                     sets the video boundary upon which changes
+                     to the video channel origin and size should
+                     boundary allows the panning of video output
+                     from the visible color buffer asynchronous
+                     to drawing and so should be used in conjunc-
+                     tion with the <B>PFVCHAN_AUTO_APPLY</B> mode and
+                     doing a <B>pfSelectVChan</B> on the pfVideoChannel.
+
+              <B>PFVCHAN_AUTO_APPLY</B>
+                     accepts a boolean value indicating if
+                     changes to <I>vchan</I> should be applied automati-
+                     cally, as opposed to waiting for an explicit
+                     call to <B>pfApplyVChan</B>. This is done if <I>vchan</I>
+                     has been selected via <B>pfSelectVChan</B> to be
+                     the current active pfVideoChannel. The
+                     changes are not applied by the set routines
+                     because those routines may be called from an
+                     asynchronous process.  On InfiniteReality
+                     changes to the video channel must be applied
+                     by the draw process so these are applied
+                     internally by the rendering portion of
+                     OpenGL Performer.
+       <B>pfGetVChanMode</B> will return the value of the specified <I>mode</I>
+       for <I>vchan</I>.
+
+       <B>pfVChanFullRect</B> will cause the output area of the video
+       channel to be reset to its full size.
+
+       <B>pfVChanId</B> will cause the pfVideoChannel to refer to the
+       hardware video channel indicated by <I>index</I>.  This is the
+       same index used by the XSGIvc routines.
+
+       <B>pfVChanOutputOrigin</B> will set the origin of the output area
+       of the video channel to be the lower-left channel relative
+       coordinates of <I>xo</I>, <I>yo</I>.  The actual screen origin of the
+       video channel can be gotten with <B>pfGetVChanOrigin</B>.
+
+       <B>pfVChanOutputSize</B> will set the size of the output area of
+       the video channel to be that specified by <I>xs</I>, <I>ys</I>.  The
+       size of the video channel can not be set larger than its
+       full size which can be queried with <B>pfGetVChanSize</B>.
+
+       <B>pfVChanAreaScale</B> will scale the X and Y dimensions of the
+       output area of the video channel to achieve a scaling of
+       the drawing area by <I>s</I>. The implementation is to scale both
+       X and Y by the square root of <I>s</I>, so that compound effect
+       on area is <I>s</I>.  For example a 1000-pixel square display
+       area scaled by 0.5 would result in a 707-pixel square ren-
+       der area, since 707*707 is 0.5*1000*1000 (the actual X and
+       Y resolutions are subject to hardware constrains as well).
+       The maximum scale allowed is 1.0 which will reset the
+       channel output area to its full size.
+
+       <B>pfVChanScale</B> will scale the size of the X and Y dimensions
+       output area of the video channel by specified by <I>xs</I>, <I>ys</I>.
+       The minimum and and maximum scaling allowed is that set by
+       <B>pfVChanMinScale</B> and <B>pfVChanMaxScale</B>.  The minimum and max-
+       imum scale bounds default to 0.25 and 1.0, respectively.
+
+       <B>pfVChanMinScale</B> will set the lower bound on the allowable
+       pixel scale values for the X and Y dimensions of the
+       This window should be the WSDrawable that is connected to
+       the main GL context being displayed into that video chan-
+       nel.  This can be gotten from a pfWindow or pfPipeWindow
+       with pfGetWinWSDrawable <B>or</B> <B>pfGetPWinWSDrawable</B>, respec-
+       tively.  Video channel resize operations will be triggered
+       by the swapping of the display buffers for that GL con-
+       text.  If <I>wsWin</I> is NULL, it will cause an unbind of the
+       video channel from its current WSWindow upon the next call
+       to <B>pfApplyVChan</B>.  If <I>wsWin</I> is not null, the screen of the
+       pfVideoChannel will be set to that of <I>wsWin</I>.
+
+       <B>pfGetVChanId</B> will return the video channel index of the
+       pfVideoChannel.
+
+       <B>pfGetVChanInfo</B> will return the XSGIvcChannelInfo handle,
+       useful for doing XSGIvc queries directly.
+
+       <B>pfGetVChanMinDeltas</B> will return the minimum resolution of
+       resize for X and Y that the video channel size can be
+       changed in <I>dx</I> and <I>dy</I>, respectively.
+
+       <B>pfGetVChanOutputOrigin</B> will return the origin of the out-
+       put area of the video channel in <I>xo</I>, <I>yo</I>.
+
+       <B>pfGetVChanOutputSize</B> will return the size of the output
+       area of the video channel in <I>xs</I> and <I>ys</I>.
+
+       <B>pfGetVChanScale</B> will return the area scale the video chan-
+       nel. This value represents the ratio of drawn to displayed
+       area in pixels. For example a 1000-pixel square display
+       scaled to 707-pixels would return an area scale value of
+       to 0.5, since 707*707 is 0.5*1000*1000.
+
+       <B>pfGetVChanScale</B> will return the scale of the X and Y
+       dimensions output area of the video channel in <I>xs</I> and <I>ys</I>.
+
+       <B>pfGetVChanMinScale</B> will return the lower bound on pixel
+       scale of the X and Y dimensions in <I>xs</I> and <I>ys</I>. The default
+       pixel scale lower bound is 0.25.
+
+       <B>pfGetVChanMaxScale</B> will return the upper bound on pixel
+       scale of the X and Y dimensions in <I>xs</I> and <I>ys</I>. The default
+       pixel scale upper bound is 1.0.
+
+       <B>pfVChanScreen</B> sets the screen number of <I>vchan</I> to <I>screen</I>
+       and <B>pfGetVChanScreen</B> returns the screen number of <I>vchan</I>.
+
+       <B>pfGetVChanSize</B> will return the full size of the video
+       channel in <I>xs</I> and <I>ys</I>.
+
+       <B>pfBindVChan</B> forces a bind of the video channel to the
+       WSWindow set with <B>pfVChanWSWindow</B>.
+
+       <B>pfUnbindVChan</B> forces an unbind of the video from its cur-
+       rent WSWindow.  This will also cause the video channel to
+       reset its output area to the configuration it had before
+       the channel was bound.
+
+       <B>pfIsVChanBound</B> returns a boolean value indicating whether
+       <B>pfSelectPVChan</B> makes <I>vchan</I> the current pfVideoChannel in
+       the process. This should be done in a rendering process if
+       the purpose is for using the <B>PFVCHAN_AUTO_APPLY</B> mode.
+
+       <B>pfGetCurVChan</B> will return a pointer to the current
+       pfVideoChannel.
+
+       <B>pfApplyVChan</B> will apply the current origin and size param-
+       eters to the currently selected video channel.  A bind of
+       the video channel to the specified WSWindow will be auto-
+       matically done if necessary.
+
+       <B>pfVChanCallig</B> set the <I>callig</I> to use with this pfVideoChan-
+       nel. If a light-point board (see pfCalligraphic) has been
+       initialized before pfConfig, then each pfVideoChannel
+       automatically create a pfCalligraphic with its screen as
+       the Light Point Board id, and its display id as the chan-
+       nel to use on the Light Point Board.
+
+       <B>pfGetVChanCallig</B> returns the pfCalligraphic in use with
+       this pfVideoChannel, or NULL if none are used (so only
+       Raster Light Points are available).
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfVideoChannel functionality is not currently supported
+       under Linux.
+
+       An XSGIvc video channel may only be bound to a single win-
+       dow at a time on the system.  Only  a single pfVideoChan-
+       nel may bind a hardware video channel.
+
+       On InfiniteReality, changes to video channel origin and
+       size require an active graphics context and so should be
+       made in a rendering process to avoid a graphics context
+       change which can be expensive.
+
+       See the sample program /usr/share/Per-
+       former/src/pguide/libpr/C/queryvchan.c for an example of
+       how to query general video channel attributes.  See the
+       sample program /usr/share/Per-
+       former/src/pguide/libpr/C/vchan.c for a basic resizing
+       example using pfVideoChannels.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfGetNumScreenVChans, pfState,
+       pfWindow, XSGIvc, glXSGIvcQueryChannelInfo, glXBindChan-
+       nelToWindowSGIX.
+
+
+
+                                              pfVideoChannel(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

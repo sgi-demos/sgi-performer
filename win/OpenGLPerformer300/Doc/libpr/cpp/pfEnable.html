@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>pfEnable</TITLE>
+</HEAD>
+<BODY>
+<H1>pfEnable</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfEnable(3pf)                                       pfEnable(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfEnable,</B>  <B>pfDisable,</B>  <B>pfGetEnable</B>  -  Enable  and disable
+       graphics modes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfEnable</B>(int mode);
+
+       void   <B>pfDisable</B>(int mode);
+
+       int    <B>pfGetEnable</B>(int mode);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>mode</I>  is a symbolic constant  that  specifies  the  enable
+             target  which  is  to  be  enabled or disabled.  The
+             enable targets are:
+
+             <B>PFEN_LIGHTING</B>                 Hardware lighting
+
+             <B>PFEN_TEXTURE</B>                  Hardware texturing
+
+             <B>PFEN_FOG</B>                      Hardware fogging
+
+             <B>PFEN_WIREFRAME</B>                Wireframe display mode
+
+             <B>PFEN_COLORTABLE</B>               Colortable     display
+                                           mode
+
+             <B>PFEN_HIGHLIGHTING</B>             Highlight display mode
+
+             <B>PFEN_LPOINTSTATE</B>              Light point mode
+
+             <B>PFEN_TEXGEN</B>                   Automatic      texture
+                                           coordinate generation
+
+             <B>PFEN_TEXLOD</B>                   Use  of  texture   LOD
+                                           objects
+
+             <B>PFEN_TEXMAT</B>                   Use of current texture
+                                           matrix
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfEnable</B> and <B>pfDisable</B> enable and disable various graphics
+       library  and  OpenGL Performer modes. By default all modes
+       listed above are disabled, i.e., when a pfState  is  first
+       created, its enable modes are all <B>PF_OFF</B>.
+
+       <B>pfGetEnable</B>  returns  the  enable status of the indicated-
+       <I>mode</I>.
+
+
+
+
+       Each  <B>pfEnable</B>/<B>pfDisable</B>  mode  token  corresponds  to   a
+       <B>PFSTATE_</B>  token  that  identifies the state element and is
+       used in pfGeoState routines and <B>pfOverride</B>.  The  <B>PFEN_</B>  /
+       <B>PFSTATE_</B>  correspondence  is  illustrated in the following
+       table:
+
+       center tab($) ; c | c lB | lB .  Enable Token$State  Token
+       _    PFEN_LIGHTING$PFSTATE_ENLIGHTING    PFEN_TEXTURE$PFS-
+       TATE_ENTEXTURE PFEN_FOG$PFSTATE_ENFOG  PFEN_WIREFRAME$PFS-
+       TATE_ENWIREFRAME      PFEN_COLORTABLE$PFSTATE_ENCOLORTABLE
+       PFEN_HIGHLIGHTING$PFSTATE_ENHIGHLIGHTING
+       PFEN_LPOINTSTATE$PFSTATE_ENLPOINTSTATE    PFEN_TEXGEN$PFS-
+       TATE_ENTEXGEN    PFEN_TEXLOD$PFSTATE_ENTEXLOD    PFEN_TEX-
+       MAT$PFSTATE_ENTEXMAT
+
+       Once enabled or disabled, these mode changes will not take
+       effect until their associated OpenGL Performer state  ele-
+       ments  are  applied.  The following table lists the modes,
+       state objects, and provoking activation routine  for  each
+       mode.
+
+       center  tab($)  ;  c  |  c  |  c  lB  |  l  |  l .  Enable
+       Mode$Required       State$Activation       Routine       _
+       PFEN_LIGHTING$pfLightModel$<B>pfLightModel::apply</B>
+       $$pfMaterial$<B>pfMaterial::apply</B>       $$pfLight$<B>pfLight::on</B>
+       $$normals$<B>n3f</B>
+
+       PFEN_TEXTURE$pfTexture$<B>pfTexture::apply</B>       $$pfTexEnv$-
+       <B>pfTexEnv::apply</B> $$texture coordinates$<B>t2f,</B> <B>t3f</B>
+
+       PFEN_FOG$pfFog$<B>pfFog::apply</B>
+
+       PFEN_COLORTABLE$pfColortable$<B>pfColortable::apply</B>
+
+       PFEN_HIGHLIGHTING$pfHighlight$<B>pfHighlight::apply</B>
+
+       PFEN_LPOINTSTATE$pfLPointState$<B>pfLPointState::apply</B>
+
+       PFEN_TEXGEN$pfTexGen$<B>pfTexGen::apply</B>
+
+       PFEN_TEXLOD$pfTexLOD$<B>pfTexLOD::apply</B>
+       PFEN_TEXMAT$pfTexMat$<B>none</B>
+
+       PFEN_WIREFRAME$none$none
+
+       Use  the <B>PFSTATE_</B> tokens with <B>pfGeoSet::setMode</B> to set the
+       enable modes of a pfGeoState and with <B>pfOverride</B> to  over-
+       ride subsequent enable mode changes:
+
+       Example 1:
+
+       /* Set up textured pfGeoState */
+       gstate-&gt;setMode(PFSTATE_ENTEXTURE, PF_ON);
+       gstate-&gt;setAttr(PFSTATE_TEXTURE, tex);
+       gstate-&gt;setAttr(PFSTATE_TEXENV, texEnv);
+
+       /* Attach gstate to gset */
+       gset-&gt;setGState(gstate);
+
+       pfDisable(PFEN_LIGHTING);
+       pfDisable(PFEN_TEXTURE);
+       pfOverride(PFSTATE_ENLIGHTING | PFSTATE_ENTEXTURE, PF_ON);
+
+
+       <B>pfEnable</B> and <B>pfDisable</B> are display-listable commands.  If
+       a pfDispList has been opened by <B>pfDispList::open</B>, then
+       <B>pfEnable</B> and <B>pfDisable</B> will not have immediate effect.
+       They will be captured by the pfDispList and will take
+       effect when that pfDispList is later drawn with
+       <B>pfDispList::draw</B>.
+
+       <B>pfBasicState</B> disables all of the above modes.
+
+       notes When lighting is disabled, lmcolor mode is set to
+       <B>LMC_COLOR</B> which effectively turns it off.  Then when
+       enabled, the lmcolor mode is restored to that of the cur-
+       rent front material if there is one.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDispList, pfGeoSet, pfGeoState, pfOverride, pfState
+
+
+
+                                                    pfEnable(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

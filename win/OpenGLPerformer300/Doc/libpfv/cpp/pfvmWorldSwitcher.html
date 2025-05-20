@@ -1,0 +1,207 @@
+<HTML>
+<HEAD>
+<TITLE>pfvmWorldSwitcher</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvmWorldSwitcher</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvmWorldSwitcher(3pf)                     pfvmWorldSwitcher(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvmWorldSwitcher</B>  -  A  Module  for  switching  worlds in
+       pfvViewer Applications
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfvm/pfvmWorldSwitcher.h&gt;
+
+
+       <B>pfvmWorldSwitcher::pfvmWorldSwitcher</B>();
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class  <B>pfvmWorldSwitcher</B>  is  derived
+       from  the  parent class <B>pfvModule</B>, so each of these member
+       functions of class <B>pfvModule</B> are also directly usable with
+       objects of class <B>pfvmWorldSwitcher</B>.  This is also true for
+       ancestor classes of class <B>pfvModule</B>.
+
+       int            <B>pfvModule::getScope</B>();
+       int            <B>pfvModule::getScopeIndex</B>();
+       pfvObject*     <B>pfvModule::getScopeTarget</B>();
+       void           <B>pfvModule::bindCallback</B>(int which);
+       void           <B>pfvModule::unbindCallback</B>(int which);
+       int            <B>pfvModule::getCBMask</B>();
+       virtual void   <B>pfvModule::preConfig</B>();
+       virtual void   <B>pfvModule::postConfig</B>();
+       virtual void   <B>pfvModule::enterView</B>(pfvView*v);
+       virtual void   <B>pfvModule::exitView</B>(pfvView*v);
+       virtual void   <B>pfvModule::enterWorld</B>();
+       virtual void   <B>pfvModule::exitWorld</B>();
+       virtual void   <B>pfvModule::sync</B>();
+       virtual void   <B>pfvModule::frame</B>();
+       virtual void   <B>pfvModule::preCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::preDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::overlay</B>(pfvDispChan*chan);
+       int            <B>pfvModule::bindKeys</B>(char*keys);
+       int            <B>pfvModule::unbindKeys</B>(char*keys)
+       char*          <B>pfvModule::getEventMask</B>()
+       void           <B>pfvModule::setEventMask</B>(char* str);
+       virtual int    <B>pfvModule::handleEvent</B>(int evType,
+                        char key);
+       uint64_t       <B>pfvModule::getViewMask</B>();
+
+
+       Since  the class <B>pfvModule</B> is itself derived from the par-
+       ent class <B>pfvobject</B>, objects  of  class  <B>pfvmWorldSwitcher</B>
+       can also be used with these functions designed for objects
+       of class <B>pfvobject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of  class <B>pfvmWorldSwitcher</B> can
+       also be used with these functions designed for objects  of
+       class <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfvmWorldSwitcher is a pfvViewer Module that may  be  used
+       in applications with multiple scenes (pfvWorlds), in order
+       to be able to  easily  switch  views  from  one  world  to
+       another in response to key presses.
+
+       It  is  configured  by defining a list of 'Switches'. Each
+       switch is activated by a key press (a different key may be
+       defined for each switch), and will direct view to a speci-
+       fied destination world.  Additionally,  each  world-switch
+       may be made smoother by fading out from current world, and
+       then fading  into  destination  world  over  a  number  of
+       frames.  Each  switch can thus be assigned a fade duration
+       value (in seconds), and a RGBA fade color.
+
+
+       ========
+       <B>XML</B> <B>tags</B>
+       ========
+
+
+
+           &lt;module&gt;
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+       where <B>parameters</B> is one or more of the following:
+
+       <B>&lt;key&gt;string&lt;/key&gt;</B> specifies the key that will trigger this
+       switch.  See man page for pfvInputMngr::getKeyFromName and
+       pfvInput.h for a complete list of the supported keys and
+       their associated strings.
+
+       <B>&lt;world&gt;string&lt;/world&gt;</B> specifies the destination world for
+       this switch.  <I>string</I> must match the name of one of the
+       pfvWorlds in pfvViewer's world-list.
+
+       <B>&lt;fadetime&gt;float&lt;/fadetime&gt;</B> specifies the duration of the
+       fade-in and fade-out stages of the switch. By default the
+       world-switch happens in a single frame (ie, fadetime is
+       0).
+
+       <B>&lt;fadecol&gt;float,float,float,float&lt;/fadecol&gt;</B> specifies the
+       color which will be used to fade out of current world, and
+       into destination world.  By default fadeColor is black,
+       with alpha = 1. This color is ignored when fadetime is non
+       positive.
+
+
+       =======
+       <B>Scoping</B>
+       =======
+
+       A pfvmWorldSwitcher module can be scoped globally, to a
+       single view, or to a single world.
+
+       If scoped globally pfvmWorldSwitcher will be active in all
+       pfvViews, so if a key press happens over any view, that
+       view will be redirected to the corresponding destination
+       world.
+
+       If scoped to a view, pfvmWorldSwitcher module will only
+       respond to key presses over the specified view (referred
+       to as module's target-view), and will only ever redirect
+       that view to destination worlds.
+
+       If scoped to a world, the pfvmWorldSwitcher module will be
+       active on all views while they are viewing module's tar-
+       get-world. If a key press happens over any of such views,
+       view will be redirected to destination world. Note that
+       the same pfvmWorldSwitcher module will not be active on
+       that same view after the switch has occurred, however mul-
+       tiple pfvmWorldSwitcher modules may be used to set up more
+       complex behaviors.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The source code for the pfvmWorldSwitcher Module is pro-
+       vided and can be found in /usr/share/Per-
+       former/src/pguide/libpfv/viewer/modules/pfvmWorldSwitcher
+
+
+
+                                           pfvmWorldSwitcher(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>pfdLoadMPClipTexture</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdLoadMPClipTexture</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdLoadMPClipTexture(3pf)               pfdLoadMPClipTexture(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdLoadMPClipTexture</B>  - Read Configuration File to Config-
+       ure a MultiProcess Clip Texture
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfMPClipTexture
+                           *   <B>pfdLoadMPClipTexture</B>(const char *fileName)
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdLoadMPClipTexture</B> accepts a string containing the  path
+       to  a  configuration  file  describing a <B>pfClipTexture</B>. It
+       configures and creates a multiprocess clip texture.
+
+       A Multiprocess Clip Texture is part of libpf, and unlike a
+       Clip  Texture,  is  not restricted to use in the draw pro-
+       cess. See the <B>pfMPClipTexture</B> man page for  more  informa-
+       tion.
+
+       The configuration files for creating a <B>pfClipTexture</B> and a
+       <B>pfMPClipTexture</B> are identical. See the  <B>pfClipTexture</B>  man
+       page  for  information  on  the clip texture configuration
+       file format.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       ClipTexture functionality is not supported under Linux.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The parser that reads configuration files is very limited.
+       In  particular,  it only allows comments where it would be
+       expecting a token, and expects the tokens and data  fields
+       in a fixed order.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfImageCache,  pfMPImageCache, pfClipTexture, pfMPClipTex-
+       ture, pfTexture, pfdLoadClipTexture
+
+
+
+                                        pfdLoadMPClipTexture(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

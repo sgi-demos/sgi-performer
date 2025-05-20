@@ -1,0 +1,547 @@
+<HTML>
+<HEAD>
+<TITLE>pfdLoadClipTexture</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdLoadClipTexture</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdLoadClipTexture(3pf)                   pfdLoadClipTexture(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdLoadClipTexture,</B>  <B>pfdLoadClipTextureState,</B>  <B>pfdClipTex-</B>
+       <B>tureNodeUpdate</B> - Read Configuration File  to  Configure  a
+       Clip Texture
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfClipTexture *   <B>pfdLoadClipTexture</B>(const char *fileName)
+
+       pfClipTexture
+                         *   <B>pfdLoadClipTextureState</B>(const char *fileName,
+                           pfuClipTexConfig *state)
+
+       int               <B>pfdClipTextureNodeUpdate</B>(pfTraverser *trav,
+                           void *userData);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdClipTextureNodeUpdate</B>  is  a  simple  callback function
+       that can be attached to a node to update a clip texture in
+       a  simple  incremental  way.   This  function  is designed
+       solely for testing purposes but shows how a user might use
+       the clip centering api to update a clipmap.
+
+       <B>pfdLoadClipTextureState</B>   works   like  <B>pfdLoadClipTexture</B>
+       except that it takes an additional argument, a pointer  to
+       a  <B>pfuClipTexConfig</B> structure. Normally the parser creates
+       and initializes its own <B>pfuClipTexConfig</B> structure to  the
+       default  values set by <B>pfuInitClipTexConfig</B>. This function
+       uses the the structure passed by the  <I>state</I>  parameter  as
+       its starting point. This allows the application to set its
+       own <I>state</I> values programmatically, and use the  parser  to
+       fill  in  the remaining ones. The parser doesn't check the
+       <I>state</I> values, so it will overwrite  a  value  set  in  the
+       <I>state</I>  structure  if it encounters the corresponding token
+       in its config file.
+
+       <B>pfdLoadClipTexture</B> accepts a string containing the path to
+       a  configuration  file describing a <B>pfClipTexture</B>. It con-
+       figures and creates a clip texture,  and  then  returns  a
+       pointer to it.
+
+       A  clip  texture  is a type of texture map used for repre-
+       senting very large textures. Large clipmap levels are com-
+       posed of image caches, which require only a part of a tex-
+       ture level to be in the graphics hardware's  texture  mem-
+       ory.
+
+       The clip texture configuration file contains a description
+       of the clip texture, including the locations of  the  clip
+       texture  image  files, the tile files for the smaller lev-
+       els, as well as the clip texture's size, format, and other
+       details.
+
+       The  configuration  files  are in a tokenized format; each
+       stylistic convenience. They are:
+
+              "#" (shell style comment)
+
+              "//" (C++ style comment)
+
+              ";" (LISP-style comment)
+
+              "comment" (ALGOL-style comment)
+
+              "rem" (BASIC-style comment for die-hards)
+
+       A comment starts with a comment token and continues  until
+       the end of that line.
+
+       Some  tokens  and  their data fields may be omitted if the
+       default value is desired. These are marked with  asterisks
+       (*)  in  the  list  below. If a token is in the file, it's
+       data field <B>must</B> be included.  The  current  implementation
+       requires  that the tokens that do appear in the configura-
+       tion file follow the ordering shown in the list below.
+
+       Some tokens form groups. Tokens that are normally optional
+       may  not  be  if  another token in it's group is specified
+       with  a  non-default  value.   The  interdependencies  are
+       described below.
+
+       <B>Clip</B> <B>Texture</B> <B>Configuration</B> <B>Format</B>
+
+
+       ct_version1.0 or ct_version2.0 must be at top of file
+       ext_format &lt;format string&gt; (external format of stored texels)
+       int_format &lt;format string&gt; (internal format used by graphics hw)
+       img_format &lt;format string&gt; (image format of stored texels)
+       virt_size  &lt;int&gt; &lt;int&gt; &lt;int&gt; (size of entire texture)
+       clip_size  &lt;int&gt; (size of square of texture levels in hardware)
+
+       *effective_levels &lt;int&gt; (number of effective levels of virtual clip texture)
+       *allocated_levels &lt;int&gt; (number of levels with texture memory allocated)
+
+       *invalid_border  &lt;int&gt; (width of clip region perimeter not to use)
+       *smallest_icache &lt;int&gt; &lt;int&gt; &lt;int&gt; (smallest icache level dimensions)
+
+       *icache_base   &lt;file path string&gt; (root of icache config filenames)
+       *icache_format &lt;scanf string&gt; (icache fnames: no field? list files)
+       *num_icache_params &lt;int&gt; (obsolete; ignored by parser)
+       *icache_params &lt;string list&gt; (format tokens in order)
+
+       *header_offset &lt;int&gt; (byte offset to skip user's tile file headers)
+       *tile_base   &lt;file path string&gt; (root of pyramid tile filenames)
+       *tile_format &lt;scanf string&gt; (tile fnames: no field? list tile files)
+       *tile_params   &lt;string list&gt; (format tokens in order)
+
+       *icache_files &lt;list of filenames&gt; (only if icache_format is default )
+       *tile_files &lt;list of filenames&gt; (pyramid; only if tile_format default)
+
+       *tile_size   &lt;int&gt; &lt;int&gt; &lt;int&gt; if no image cache config files
+       *read_func   &lt;1 or 2 strings&gt; (custom read function, dso library its in)
+       *lookahead   &lt;int&gt;  extra tiles surrounding tex region in mem region
+       fields.  One of these tokens must start the configuration
+       file. These tokens allow programs to determine the type
+       and version of the configuration file.
+
+       <B>ext_format</B> expects a Performer external format type. This
+       can be a token name, such as PFTEX_PACK_8, or a numeric
+       value.
+
+       <B>int_format</B> expects a Performer internal format type. This
+       can be a token name, such as PFTEX_RGB_8, or a numeric
+       value.
+
+       <B>img_format</B> expects a Performer image format type. This can
+       be a token name, such as PFTEX_RGB, or a numeric value.
+
+       <B>virt_size</B> takes three integer arguments, which describe
+       the s, t, and r dimensions of the entire image cache, mea-
+       sured in texels. This value is mandatory.
+
+       <B>clip_size</B> takes a single integer argument, which describes
+       the texel dimensions of the square part of each level of
+       the clip texture kept resident in hardware texture memory.
+
+       <B>invalid_border</B> takes a single integer argument, describing
+       how many texels the clip size should be shrunk in each
+       dimension. This value is used to ensure a smooth transi-
+       tion between the clip texture levels.
+
+       <B>effective_levels</B> takes a single integer argument, describ-
+       ing how many effective levels the clipmap should have.
+       Making the number of effective levels less than the number
+       of virtual levels (log2(virt_size)+1) makes the clip tex-
+       ture virtual, requiring intelligent runtime setting of the
+       virtual LOD offset to trade between high precision and
+       high spatial range.  The default value is 16.  On
+       InfiniteReality, the maximum number of effective levels is
+       16, so a clip texture of size greater than 32Kx32K is
+       always virtual.  Note also that on InfiniteReality, there
+       is a significant increase in texture memory required when
+       a clip texture is virtual: every pyramid level, no matter
+       how small, takes up a full clip_size worth of texture mem-
+       ory.
+
+       <B>allocated_levels</B> takes a single integer argument, describ-
+       ing how many clip texture levels actually have texture
+       memory allocated for them.  Virtual cliptextures can only
+       display levels that are allocated in texture memory. The
+       texture levels are allocated starting from level zero.
+
+       <B>smallest_icache</B> takes three integer values, describing the
+       dimensions of the smallest icache level in the clip tex-
+       ture. Every level smaller than these dimensions are
+       described by individual image tile filenames. The s and t
+       dimensions of <B>smallest_icache</B> must be exactly proportional
+       to the s and t dimensions of  <B>virt_size</B> differing only by
+       a power of two ratio. If <B>smallest_icache</B> is omitted, the
+       first level whose largest dimension matches <B>tile_size</B> is
+       the largest image tile level. Thus the maximum default
+       value of <B>smallest_icache</B> would be <B>clip_size</B> * 2.
+       The <B>icache_base</B> field can start with an optional environ-
+       ment variable name.  The environment variable name must
+       start the field, and start with a '$' (dollar sign) char-
+       acter. The environment variable name can be delineated in
+       the usual way, using parenthesis or braces; for example
+       $(FNAME) or ${FNAME}.  The $FNAME style format can be used
+       if the variable name is unambiguous in the field. The
+       environment variable name will be replaced by its value in
+       the field. If the variable is undefined, it will be
+       expanded to "" (the empty string).  To specify a default
+       value to be used in the case that the variable is not set,
+       use the form ${FNAME:-DEFAULT} or $(FNAME:-DEFAULT).  The
+       <B>icache_base</B> token is obsolecent; its use is discouraged.
+
+       The <B>icache_base</B> field can be a relative pathname. The
+       pathname is expanded relative to where the configuration
+       file was found.
+
+       <B>icache_format</B> is a printf-style string containing a
+       description of the variable part of the image cache file-
+       names. If you omit <B>icache_format</B>, you must also omit
+       <B>icache_params</B>, and include <B>icache_files</B>, explicitly list-
+       ing all of the image cache files.
+
+       If no <B>icache_base</B> is defined, the <B>icache_format</B> field can
+       start with an optional environment variable name.  The
+       environment variable name must start the field, and start
+       with a '$' (dollar sign) character. The environment vari-
+       able name can be delineated in the usual way, using paren-
+       thesis or braces; for example $(FNAME) or ${FNAME}.  The
+       $FNAME style format can be used if the variable name is
+       unambiguous in the field. The environment variable name
+       will be replaced by its value in the field. If the vari-
+       able is undefined, it will be expanded to "" (the empty
+       string).  To specify a default value to be used in the
+       case that the variable is not set, use the form
+       ${FNAME:-DEFAULT} or $(FNAME:-DEFAULT).
+
+       If no <B>icache_base</B> is defined, the <B>icache_format</B> field can
+       be a relative pathname. The pathname is expanded relative
+       to where the configuration file was found.
+
+       If <B>icache_format</B> is omitted, the default filename string
+       is "%s%s". By default, this string uses the <B>icache_base</B>
+       for the first argument (or "" the empty string if there no
+       <B>icache_base</B> argument), followed by one of the image cache
+       filenames provided by <B>icache_files</B>. The clip texture is
+       created by using each image cache file name in order, one
+       for each image cache level. The first image cache filename
+       in <B>icache_files</B> is used for the first (largest) image
+       cache level in the clip texture.
+
+       <B>num_icache_params</B> is obsolete and is ignored by the
+       parser.
+
+       <B>icache_params</B> is followed by a whitespace separated list
+       containing some combination of the following token names:
+
+              PFCLIPTEX_FNAMEARG_LEVEL
+
+       The number of items on the list must match the number of
+       parameter specifications in the <B>icache_format</B> string.
+       This list is mandatory if there are any parameter specifi-
+       cations in the <B>icache_format</B> string.
+
+
+       <B>header_offset</B> is the size, in bytes, of any application-
+       specific header information at the beginning of each file.
+       If there is no application header information, this value
+       should be set to 0, which is the default value if this
+       field is omitted. The header offset is only applied to the
+       image tiles described in the cliptexture. Header offsets
+       for the files used in clip texture's image caches are
+       described in the image cache configuration files.
+
+
+       <B>tile_base</B> defines the directory path and constant begin-
+       ning of the image tile filenames. It is a convenience fea-
+       ture, making it easy to repoint a configuration file to
+       data in a different directory. If omitted, <B>tile_base</B>
+       defaults to "" (empty string).  The <B>tile_base</B> token is
+       obsolecent; its use is discouraged.
+
+       The <B>tile_base</B> field can start with an optional environment
+       variable name.  The environment variable name must start
+       the field, and start with a '$' (dollar sign) character.
+       The environment variable name can be delineated in the
+       usual way, using parenthesis or braces; for example
+       $(FNAME) or ${FNAME}.  The $FNAME style format can be used
+       if the variable name is unambiguous in the field. The
+       environment variable name will be replaced by its value in
+       the field. If the variable is undefined, it will be
+       expanded to "" (the empty string).
+
+       The <B>tile_base</B> field can be a relative pathname. The path-
+       name is expanded relative to where the configuration file
+       was found.
+
+       <B>tile_format</B> is a printf-style string containing a descrip-
+       tion of the variable part of the image tile filenames. If
+       you omit <B>icache_format</B>, you must also omit <B>tile_params</B>,
+       and include <B>tile_files</B>, explicitly listing all of the
+       image cache files.
+
+       If no <B>tile_base</B> is defined, the <B>tile_format</B> field can
+       start with an optional environment variable name.  The
+       environment variable name must start the field, and start
+       with a '$' (dollar sign) character. The environment vari-
+       able name can be delineated in the usual way, using paren-
+       thesis or braces; for example $(FNAME) or ${FNAME}.  The
+       $FNAME style format can be used if the variable name is
+       unambiguous in the field. The environment variable name
+       will be replaced by its value in the field. If the vari-
+       able is undefined, it will be expanded to "" (the empty
+       string).
+
+       If no <B>tile_base</B> is defined, the <B>tile_format</B> field can be a
+       relative pathname. The pathname is expanded relative to
+       where the configuration file was found.
+       for each tile level. The first tile file filename in
+       <B>tile_files</B> is used for the first (largest) image tile
+       level in the clip texture.
+
+       <B>num_tile_params</B> is obsolete and ignored by the parser.
+
+       <B>tile_params</B> is followed by a whitespace separated list
+       containing some combination of the following token names:
+
+       <B>tile_size</B> should be set if the application doesn't use
+       image cache configuration files. Image cache configuration
+       files can be dispensed with if the image caches in the
+       cliptexture differ only in size from level to level. If no
+       image cache config files are supplied, the tile format
+       supplied in the clip texture configuration file is used to
+       find disk files for both the image tile levels and the
+       image tiles used in the configuration files. Image cache
+       configuration files should not be referenced in the clip
+       texture configuration file if the application doesn't want
+       to use them.
+
+       <B>page_size</B> takes a single integer value. This value is by
+       the system when allocating image tile texel data memory.
+       The data is aligned to the page size so that direct i/o
+       reads from disk are possible. Setting the proper page size
+       value can improve memory usage over the default conserva-
+       tive value.
+
+       <B>lookahead</B> takes a single integer, which indicates the num-
+       ber of extra rows and columns of (beyond the amount needed
+       to cover the tex region) tiles used to compute the mem
+       region size. The configuration system uses the mem region
+       size if it is supplied, or computes the size based on the
+       tile size and tex region size. It chooses a mem region
+       size so that the tex region can be covered, even if it is
+       not aligned with the tile boundaries.
+
+       The default lookahead value 1 one, which means there is an
+       extra row and column of tiles in the mem region beyond the
+       minimum required to prevent errors. Setting a lookahead
+       value in the cliptexture configuration file sets the
+       lookahead for all the cliptexture's image caches, unless
+       the value is set in an image cache config file. In that
+       case, the image cache lookahead value takes precidence for
+       that image cache.
+
+       <B>read_func</B> takes one or two arguments. If the custom read
+       function is in the application's executable, then a single
+       argument giving the function name is sufficient. Otherwise
+       two arguments should be provided, one for the DSO library
+       containing the custom read function, the second being the
+       function name itself. If supplied the custom read function
+       will be used in place of the default in the clip texture's
+       read queue.
+
+              PFCLIPTEX_FNAMEARG_LEVEL
+
+              PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+       specifications in the <B>tile_format</B> string.
+
+       <B>icache_files</B> is followed by a whitespace separated list of
+       image cache filenames. This entry should only be present
+       if <B>icache_format</B> is missing.  Each filename in the list is
+       used, in order to create the icache levels of the cliptex-
+       ture. They should be ordered from largest to smallest
+       icache level.  The filenames are pre-pended with
+       <B>icache_base</B> before used.
+
+       <B>tile_files</B> is followed by a whitespace separated list of
+       image tile file filenames. This entry should only be pre-
+       sent if <B>tile_format</B> is missing.  Each filename in the list
+       is used, in order to create the tile (pyramid) levels of
+       the cliptexture. They should be ordered from largest to
+       smallest tile level. The filenames are pre-pended with
+       <B>tile_base</B> before used.
+
+       <B>Example</B> <B>Configuration</B> <B>Files</B>
+
+
+       ct_version2.0
+       //
+       // Simple version of clip texture configuration file that uses
+       // explicit filenames for both image cache and tile (pyramid)
+       // level filenames.
+       //
+       // This example defines a 4K by 4K RGB clip texture with 8 bits
+       // per color component. The maximum area of the clip texture's
+       // top level is 512 by 512 texels, because the clip_size is 512.
+       //
+       ext_format PFTEX_PACK_8 // 8 bits Red, Green and Blue
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       virt_size 4096 4096 1
+       clip_size 512
+       invalid_border 16 // to get rid of edges
+       tile_base /usr/share/Performer/data/clipdata/
+       // NOTE: no icache_base or tile_format or icache_format entries
+
+       icache_files
+
+       hl.4096.ic
+       hl.2048.ic
+       hl.1024.ic
+
+       tile_files
+
+       hl.512.r000.c000.raw888
+       hl.256.r000.c000.raw888
+       hl.128.r000.c000.raw888
+       hl.64.r000.c000.raw888
+       hl.32.r000.c000.raw888
+       hl.16.r000.c000.raw888
+       hl.8.r000.c000.raw888
+       hl.4.r000.c000.raw888
+       hl.2.r000.c000.raw888
+       hl.1.r000.c000.raw888
+
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       virt_size 4096 4096
+       clip_size 512
+       invalid_border 16
+
+       icache_base /usr/share/Performer/data/clipdata/hl
+       icache_format %s.%d.ic
+       icache_params
+       PFCLIPTEX_FNAMEARG_ICACHE_BASE
+       PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+       tile_base /usr/share/Performer/data/clipdata/hl
+       tile_format %s.%d.r000.c000.raw888
+       tile_params
+       PFCLIPTEX_FNAMEARG_TILE_BASE
+       PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+       ct_version2.0
+       // Same clip texture. Putting image caches
+       // in part of pyramid allows easy adjustment of clip size.
+
+       // The ${DATAFIELDS} part of the icache_base field will be replaced
+       // with the current value of DATAFIELDS environment variable, or
+       // removed if the variable isn't defined. The same is true for the
+       // $DATAFIELDS part of tile_base
+
+       ext_format PFTEX_PACK_8 // 8 bits Red, Green and Blue
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       virt_size 4096 4096 1
+       clip_size 512
+       invalid_border 16 // to get rid of hard edges
+       smallest_icache 32 32 1
+
+       icache_base ${DATAFIELDS}/usr/share/Performer/data/clipdata/
+       icache_format %shl.%d.ic
+       icache_params
+       PFCLIPTEX_FNAMEARG_ICACHE_BASE
+       PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+       tile_base $DATAFIELDS/usr/share/Performer/data/clipdata/
+       tile_format %shl.%d.r000.c000.raw888
+       tile_params
+       PFCLIPTEX_FNAMEARG_TILE_BASE
+       PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+
+       ct_version2.0
+       ext_format PFTEX_PACK_8 # 8 bits Red, Green and Blue
+       int_format PFTEX_RGB_8
+       img_format PFTEX_RGB
+       virt_size 4096 4096 1
+       clip_size 512
+       invalid_border 16 # to get rid of hard edges
+       smallest_icache 64 64 1
+
+       tile_base $PFCLIPDATA
+       tile_size 512 512 1
+
+       ct_version2.0
+       ext_format PFTEX_UNSIGNED_SHORT_5_5_5_1 # 5 bits Red, Green, Blue, 1 Alpha
+       int_format PFTEX_RGB5_A1
+       img_format PFTEX_RGBA
+       virt_size 4096 4096 1
+       clip_size 512
+       invalid_border 16 # to get rid of hard edges
+       smallest_icache 64 64 1
+
+       icache_base $PFCLIPDATA
+       icache_format %s/hl.%d.5551.ic
+       icache_params
+       PFCLIPTEX_FNAMEARG_IMAGE_CACHE_BASE
+       PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+       tile_base $PFCLIPDATA
+       tile_format %s/hl.%d.r000.c000.raw5551
+       tile_params
+       PFCLIPTEX_FNAMEARG_TILE_BASE
+       PFCLIPTEX_FNAMEARG_LEVEL_SIZE
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       ClipTexture functionality is not supported under Linux.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The parser that reads configuration files is very limited.
+       In particular, it only allows comments where it would be
+       expecting a token.
+
+       The the use of cliptexture configuration files without
+       image cache configuration files is not well tested.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfImageCache, pfMPImageCache, pfClipTexture, pfMPClipTex-
+       ture, pfTexture, pfLoadClipTexture
+
+
+
+                                          pfdLoadClipTexture(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

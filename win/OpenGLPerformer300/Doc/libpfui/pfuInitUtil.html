@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<TITLE>pfuInitUtil</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuInitUtil</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuInit(3pf)                                         pfuInit(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuInit,</B>   <B>pfuInitClasses,</B>  <B>pfuGetUtilDPool,</B>  <B>pfuExitUtil,</B>
+       <B>pfuDPoolSize,</B> <B>pfuGetDPoolSize,</B>  <B>pfuFindUtilDPData</B>  -  Ini-
+       tialize and reset OpenGL Performer utility library.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void             <B>pfuInit</B>(void);
+
+       void             <B>pfuInitClasses</B>(void);
+
+       pfDataPool *     <B>pfuGetUtilDPool</B>(void);
+
+       void             <B>pfuExitUtil</B>(void);
+
+       void             <B>pfuDPoolSize</B>(long size);
+
+       long             <B>pfuGetDPoolSize</B>();
+
+       volatile void*   <B>pfuFindUtilDPData</B>(int id);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuInit</B>  must  be called before <B>pfConfig</B> and before making
+       any calls to the utility library.  <B>pfuInit</B> initializes C++
+       classes  internal  to  libpfutil which must be done before
+       <B>pfConfig</B>.  It creates a <B>pfDataPool</B>  which  <B>libpfutil</B>  uses
+       for  multiprocess operation.  The <B>pfDataPool</B> is created in
+       "/usr/tmp" or the directory specified by  the  environment
+       variable, <B>PFTMPDIR</B>, if it is set.
+
+       In  order to change the amount of memory that <B>pfuInit</B> will
+       allocate for the <B>libpfutil</B> data pool,  call  <B>pfuDPoolSize</B>.
+       <B>pfuGetDPoolSize</B>  returns  the size of the data pool.  Note
+       that the default data pool size is optimal for <B>libpfutil's</B>
+       memory  allocation.   You  should only use <B>pfuDPoolSize</B> to
+       increase the size of the data pool. Changes  to  the  data
+       pool  size  only  take  effect when your application calls
+       <B>pfuInit</B>.
+
+       <B>pfuInitClasses</B> is called by <B>pfuInit</B> to construct  all  C++
+       classes  defined in the utility library. It contains calls
+       to each class'es init routine. This routine does  one-time
+       initialization  for  the entire class, such as setting the
+       class type variable. The class  constructor  is  used  for
+       class object initialization.
+
+       <B>pfuGetUtilDPool</B>  returns  a pointer to the utility library
+       <B>pfDataPool</B>.
+
+       <B>pfuFindUtilDPData</B> returns a pointer to the block of memory
+       identified by <I>id</I> in the utility library <B>pfDataPool</B> or NULL
+       if <I>id</I> is not found.
+
+       <B>pfuExitUtil</B> removes the utility  library  <B>pfDataPool</B>  from
+
+       The libpfutil source code, object code  and  documentation
+       are  provided  as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+       <B>pfuInitUtil</B> has been obsoleted by pfuInit.  pfuInitUtil is
+       provided as a macro to <B>pfuInit</B> for compatibility.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDataPool
+
+
+
+                                                     pfuInit(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

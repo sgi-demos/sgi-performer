@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+<TITLE>pfiInputXformTrackball</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiInputXformTrackball</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiInputXformTrackball(3pf)           pfiInputXformTrackball(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiGetIXformTrackballClassType,</B>     <B>pfiNewIXformTrackball,</B>
+       <B>pfiIXformTrackballMode,</B> <B>pfiGetIXformTrackballMode,</B> <B>pfiCre-</B>
+       <B>ate2DIXformTrackball,</B>  <B>pfiUpdate2DIXformTrackball</B> - pfiIn-
+       putXformTrackball functions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfType
+                                  *                   <B>pfiGetIXformTrackballClassType</B>(void);
+
+       pfiInputXformTrackball
+                                  *   <B>pfiNewIXformTrackball</B>(void *arena);
+
+       void                       <B>pfiIXformTrackballMode</B>(pfiInputXformTrackball *tb,
+                                    int mode, int val);
+
+       int                        <B>pfiGetIXformTrackballMode</B>(pfiInputXformTrackball *tb,
+                                    int mode);
+
+       pfiInputXformTrackball
+                                  *   <B>pfiCreate2DIXformTrackball</B>(void *arena);
+
+       int                        <B>pfiUpdate2DIXformTrackball</B>(pfiInputXform *tb,
+                                    pfiInputCoord *icoord,
+                                    void *data);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiInputXformTrackball</B> functions.
+
+       A pfiInputXformTrackball is a child of  the  pfiInputXform
+       class  and  so pfiInputXform routines may be called with a
+       pfiInputXformTrackball.  See the  pfiInputXform  reference
+       page  for information on pfiInputXform functionality.  The
+       pfiInputXformTrackball has a complete  C++  API  following
+       the  conventions  of general OpenGL Performer C++ API; C++
+       methods are declared  in  /usr/include/Performer/pfui/pfi-
+       Trackball.h.
+
+       <B>pfiInit</B>  should  be  called once before any pfiInputXform-
+       Trackball routines and before the forked creation  of  any
+       additional  processes  that will be calling pfiInputXform-
+       Trackball routines.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+                                      pfiInputXformTrackball(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,267 @@
+<HTML>
+<HEAD>
+<TITLE>pfDecal</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDecal</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDecal(3pf)                                         pfDecal(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfDecal,</B> <B>pfGetDecal,</B> <B>pfApplyDecalPlane,</B> <B>pfGetCurDecalPlane</B>
+       - Set and get decal mode for drawing coplanar polygons
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void        <B>pfDecal</B>(int mode);
+
+       int         <B>pfGetDecal</B>(void);
+
+       void        <B>pfApplyDecalPlane</B>(pfPlane *plane);
+
+       pfPlane *   <B>pfGetCurDecalPlane</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>mode</I>  is a symbolic constant specifying  a  decaling  mode
+             and is one of:
+
+             <B>PFDECAL_OFF</B>
+                  Decaling is off
+
+             <B>PFDECAL_BASE</B>
+                  Subsequent  drawn  geometry is considered to be
+                  'base' geometry. Use the default decaling mech-
+                  anism.
+
+             <B>PFDECAL_LAYER</B>
+                  Subsequent  drawn  geometry is considered to be
+                  'layered' geometry. Use  the  default  decaling
+                  mechanism.
+
+             <B>PFDECAL_BASE_FAST</B>, <B>PFDECAL_LAYER_FAST</B>
+                  Use  a  decaling  mechanism  appropriate to the
+                  hardware that produces  the  fastest,  but  not
+                  necessarily the highest quality, decaling.
+
+             <B>PFDECAL_BASE_HIGH_QUALITY</B>,
+             <B>PFDECAL_LAYER_HIGH_QUALITY</B>
+                  Use  a  decaling  mechanism  appropriate to the
+                  hardware that produces the highest quality, but
+                  not necessarily the fastest, decaling.
+
+             <B>PFDECAL_BASE_DISPLACE</B>, <B>PFDECAL_LAYER_DISPLACE</B>
+                  Use   the  polygon  displacement  technique  (-
+                  <B>glPolygonOffsetEXT</B> in OpenGL) to slightly  dis-
+                  place the depth values of layer geometry <I>toward</I>
+                  the eyepoint.
+
+             <B>PFDECAL_BASE_DISPLACE</B>, <B>PFDECAL_LAYER_DISPLACE_AWAY</B>
+                  Use  the  polygon  displacement  technique   (-
+                  <B>glPolygonOffsetEXT</B>  in OpenGL) to slightly dis-
+                  place the depth values of layer  geometry  <I>away</I>
+                  from the eyepoint.
+
+                  Use the current decal reference plane to  force
+                  all decal geometry to be rendered with the same
+                  plane equation.
+
+       The constant <B>PFDECAL_PLANE</B> may be specified alone or OR'ed
+       with one of the above modes to enable the use of reference
+       planes for the base and layer geometry. When these  planes
+       are  specified,  subsequent geometry is forced to be truly
+       coplanar with the reference plane.  Displace  and  stencil
+       operations  happen  on  the  planed  geometry.   Reference
+       planes  may  be  specified  in  the  global   state   with
+       <B>pfApplyDecalPlane</B>,    in    the    pfGeoState   with   the
+       <B>PFSTATE_DECAL_PLANE</B> attribute, and on the pfGeoSet  itself
+       with <B>pfGeoSet::setDecalPlane</B>.  Setting reference planes on
+       pfGeoSets directly may help improve performance by  allow-
+       ing  better  re-use  of pfGeoStates but will also slightly
+       slow the handling of the pfGeoSet.  Reference  planes  are
+       only supported under OpenGL operation and require the ref-
+       erence_plane   SGI   extension   to   the   OpenGL.    The
+       <B>PFQFTR_DECAL_PLANE</B>  to <B>pfQueryFeature</B> can be used for run-
+       time queries for the support of decal reference planes.
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       In some cases, such as when drawing stripes on  a  runway,
+       it is easier to draw coplanar polygons than it is to model
+       the geometry without coplanar faces.  However, on Z-buffer
+       based  machines,  coplanar  polygons  can  cause  unwanted
+       visual artifacts because  the  visual  priorities  of  the
+       coplanar polygons are subject to the finite numerical pre-
+       cision of the graphics pipeline. This results in a  "torn"
+       appearance and "twinkling" from frame to frame.
+
+       Decaled  geometry  can be thought of as a stack where each
+       layer has visual priority over the geometry beneath it  in
+       the  stack.   An  example  of  a 3 layer stack consists of
+       stripes which are layered over a runway which  is  layered
+       over the ground. The bottommost layer is called the "base"
+       while the other layers are called  "decals"  or  "layers".
+       When     using     certain    hardware    mechanisms    (-
+       <B>PFDECAL_BASE_STENCIL</B>) to implement pfDecal, the "base"  is
+       special because it defines the depth values which are used
+       to determine layer visibility with respect to other  scene
+       geometry and which are written to the depth buffer.
+
+       Certain  decaling  mechanisms  (currently  only  <B>DISPLACE</B>)
+       require that each layer in the layer stack  be  identified
+       for   proper   rendering.    The  <B>PFDECAL_LAYER_1</B>  through
+       <B>PFDECAL_LAYER_7</B> tokens are provided for this  purpose  and
+       should  be  logically  OR'ed  into  the  layer mode, e.g.,
+       <B>PFDECAL_LAYER_DISPLACE</B> | <B>PFDECAL_LAYER_2</B>.  Note  that  the
+       layer identifier is extracted from the mode as follows:
+
+       layerId = (mode &amp; <B>PFDECAL_LAYER_MASK</B>) &gt;&gt; <B>PFDECAL_LAYER_SHIFT</B>;
+
+
+       <B>pfDecal</B> is used to draw visually correct coplanar polygons
+       that are arranged as 'base' and 'layer' polygons as shown
+       here:
+       pfDecal(PFDECAL_LAYER_DISPLACE);
+        :
+       /* draw layer geometry using OpenGL Performer or graphics library */
+        :
+       /* Prepare to draw second layer polygons */
+       pfDecal(PFDECAL_LAYER_DISPLACE | PFDECAL_LAYER_1);
+        :
+       /* draw layer geometry using OpenGL Performer or graphics library */
+        :
+       /* exit decal mode */
+       pfDecal(PFDECAL_OFF);
+
+       The different <B>pfDecal</B> modes offer quality-feature trade-
+       offs listed in the table below:
+
+       center tab($); C | C | C | C L | L | L | L.  $<B>DISPLACE</B>$-
+       <B>STENCIL</B>$<B>(DISPLACE</B> <B>|</B> <B>OFFSET)</B> _ Quality$medium$high$high
+       Order$not required$required$not required Coplanarity$not
+       required$required$not required Containment$not
+       required$required$not required
+
+       The <B>STENCIL</B> mechanism offers the best image quality but at
+       a performance cost since the base and layer geometry must
+       be rendered in strict order. When multisampling on Reali-
+       tyEngine, this mechanism also significantly reduces pixel
+       fill performance. An additional constraint is that
+       <B>STENCIL</B>ed layers must be coplanar or decal geometry may
+       incorrectly show through base geometry. For proper
+       results, each layer in the "stack" must be completely con-
+       tained within the boundaries of the base geometry.
+
+       The <B>DISPLACE</B> mechanism offers the best performance since
+       layers can be sorted by graphics state, because the dis-
+       place call itself is usually faster than other mode
+       changes, and because there is no pixel fill rate penalty
+       when it is in use.
+
+       The <B>DISPLACE</B> mechanism does not require that geometry
+       within a single layer be coplanar. The main disadvantage
+       is that decal geometry may incorrectly poke through other
+       geometry due to the displacement of the decal geometry.
+
+       The performance differences between <B>STENCIL</B> and <B>DISPLACE</B>
+       modes are hardware-dependent so some experimentation and
+       benchmarking is required to determine the most suitable
+       method for your application.
+
+       <B>pfDecal</B> is a display-listable command.  If a pfDispList
+       has been opened by <B>pfDispList::open</B>, <B>pfDecal</B> will not have
+       immediate effect but will be captured by the pfDispList
+       and will only have effect when that pfDispList is later
+       drawn with <B>pfDispList::draw</B>.
+
+       <B>pfGetDecal</B> returns the current decal mode.
+
+       The decaling mode state element is identified by the
+       <B>PFSTATE_DECAL</B> token.  Use this token with
+       <B>pfGeoState::setMode</B> to set the decaling mode of a
+       pfGeoState and with <B>pfOverride</B> to override subsequent
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Example 1:
+
+       /* Set up 'base' pfGeoState */
+       gstate-&gt;setMode(PFSTATE_DECAL, PFDECAL_BASE);
+
+       /* Attach pfGeoState to pfGeoSet */
+       gset-&gt;setGState(gstate);
+
+       /* Draw base pfGeoState */
+       gset-&gt;draw();
+
+
+       Example 2:
+
+       /* Override decaling mode to PFDECAL_OFF */
+       pfDecal(PFDECAL_OFF);
+       pfOverride(PFSTATE_DECAL, PF_ON);
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>PFDECAL_BASE_FAST</B> currently implies <B>displacepolygon</B> on
+       machines that support this feature.  The use of displace-
+       ments for rendering coplanar geometry can cause visual
+       artifacts such as decals "Z fighting" or "flimmering" when
+       viewed perpendicularly and punching through geometry that
+       should be in front of them when viewed obliquely.  In
+       these cases, use <B>PFDECAL_LAYER_OFFSET</B>, modify the database
+       should by cutting away overlapping polygons to eliminate
+       the need for coplanar rendering or use
+       <B>PFDECAL_BASE_HIGH_QUALITY</B> or <B>PFDECAL_BASE_STENCIL</B>.
+
+       <B>PFDECAL_BASE_STENCIL</B> is implemented with stencil planes
+       and requires the framebuffer to be configured with at
+       least one stencil bit (see <B>stensize(3g)</B> and <B>mssize(3g)</B>).
+       The first stencil bit should be considered as reserved for
+       <B>pfDecal</B>.
+
+       When using <B>PFDECAL_LAYER_OFFSET</B>, the minimum depth buffer
+       range set with <B>lsetdepth</B> must be incremented an extra 1024
+       * max layers so the negative displacement of the layers
+       does not wrap.  <B>pfInitGfx</B> does this automatically.
+
+       The <B>PFDECAL_LAYER_DISPLACE</B> decal mode implements a Z-depth
+       bias that is influenced by several issues including near
+       clipping plane distance, far clipping plane distance, the
+       ratio of these values, and the effective depth precision
+       in the Z-buffer. Clipping plane distances can be inquired
+       from the pfChannel via channel API and the Z-buffer con-
+       figuration of the current pfWindow is available from the
+       <B>pfQueryWin</B> function, using the <B>PFQWIN_MIN_DEPTH_VAL</B>,
+       <B>PFQWIN_MAX_DEPTH_VAL</B>, and <B>PFQWIN_DEPTH_BITS</B> arguments.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       mssize, pfDispList, pfGStateMode, pfGeoState, pfOverride,
+       pfState, pfInitGfx, pfQueryWin, pfChannel, stencil, sten-
+       size
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

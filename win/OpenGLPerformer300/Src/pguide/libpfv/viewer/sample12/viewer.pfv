@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+    <display>
+	<pipe>
+	    <pwin>
+		<title>OpenGL Performer pfvViewer</title>
+		<fullscreen>0</fullscreen>
+		<orig>200,200</orig>
+		<size>800,600</size>
+	    </pwin>
+	</pipe>
+    </display>
+
+    <modulepath>../modules/pfvmNavigator/Release/:../modules/pfvmPicker/Release/:../modules/pfvmNavigator/Debug/:../modules/pfvmPicker/Debug/</modulepath>
+
+    <module>
+	<class>pfvmNavigator</class>
+	<data>
+	    <default_xyz>0.0,0.0,0.0</default_xyz>
+	    <default_hpr>0.0,0.0,0.0</default_hpr>
+	    <deltaH>0.1</deltaH>	
+	    <deltaP>0.1</deltaP>
+	    <initSpeed>0.003</initSpeed>
+	    <minSpeed>0.001</minSpeed>
+	    <maxSpeed>0.1</maxSpeed>
+	    <deltaSpeed>1.02</deltaSpeed>
+	    <deltaStrafe>0.05</deltaStrafe>
+	    <deltaZ>0.05</deltaZ>
+	    <dzone>0.3,0.3</dzone>
+	</data>
+    </module>
+
+    <module>
+	<class>pfvmPicker</class>
+	<data>
+	    <slotName>PFPICKER</slotName>
+	</data>
+    </module>
+
+</viewer>
+
+
+

@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<TITLE>pfuPalettizer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuPalettizer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuPalettizer(3pf)                             pfuPalettizer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuPalettizer</B>  -  Class  for  creating one or more texture
+       palettes of multiple textures
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil/pfuPalettizer.h&gt;
+
+                  <B>pfuPalettizer::pfuPalettizer</B>(void);
+
+       pfList *   <B>pfuPalettizer::getPaletteList</B>(void);
+
+       pfList *   <B>pfuPalettizer::getCompleteList</B>(void);
+
+       int        <B>pfuPalettizer::palettize</B>(pfNode *node);
+
+       void       <B>pfuPalettizer::setST</B>(uint s, uint t);
+
+       void       <B>pfuPalettizer::setMargin</B>(uint margin);
+
+       void       <B>pfuPalettizer::setTexturePrefix</B>(const char *prefix);
+
+       void       <B>pfuPalettizer::setBackground</B>(float r,  float g,
+                    float b);
+
+       void       <B>pfuPalettizer::setMode</B>(int mode, int val);
+
+       void       <B>pfuPalettizer::getMode</B>(int mode);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The purpose of the palettizer is to  consolidate  textures
+       into  a single or a smaller group of textures, thus reduc-
+       ing expensive texture binds  during  rendering.   This  is
+       beneficial to databases that use many textures.  There are
+       two cases in which the palettizer is of no  use:  1)  Tex-
+       tures that are referred to by GeoSets that contain texture
+       coordinates outside the range of  0.0  -  1.0.   That  is,
+       geosets  that  intend  to  "repeat" textures.  2) Textures
+       that use detail.  There is currently no practical  way  to
+       produce  detail  textures  for  a palette of multiple tex-
+       tures.
+
+       <B>pfuPalettizer::getPaletteList</B>(void)  returns  a  list   of
+       newly created palettes after palettize has been called.
+
+       <B>pfuPalettizer::getCompleteList</B>(void)  returns  the list of
+       textures including the  newly  created  palette  that  are
+       referred  to under 'node' after palettize has been called.
+
+       <B>pfuPalettizer::palettize</B>(pfNode  *node)  does  the  actual
+       work of palettization.  <B>node</B> is traversed and all textures
+       are found.  Textures too large to fit in <B>s</B> or <B>t</B>,  textures
+       with  detail,  or  with pfGeoSets with texture coordinates
+       outside of the range 0.0-1.0 are passed over.  The remain-
+       ing  textures are bin-packed (allowing for margins), using
+       a multipass bin-packing algorithm into the larger texture.
+       is wasted.
+
+       <B>pfuPalettizer::setMargin</B>(uint margin) allows  the  setting
+       of  the margin around texture tiles.  <B>margin</B> is the number
+       of pixels of value 0 to be  placed  around  each  original
+       texture.  The space between adjacent textures then becomes
+       2 * <B>margin</B>.
+
+       <B>pfuPalettizer::setTexturePrefix</B>(const char *prefix) allows
+       the  specification of a file prefix <B>prefix</B> to be used when
+       naming the newly created texture palettes.  Palette  names
+       are  prepended  with  <B>prefix</B>  and  extended with <B>###</B>.rgba,
+       where <B>###</B> is a sequence of numbers.
+
+       <B>pfuPalettizer::setMode</B>(int mode, int val) specifies a mode
+       for  creating  the  palette  texture.   <B>mode</B> is a token to
+       specify which mode to set and  <B>val</B>  is  a  boolean  value.
+       Currently,  the  only mode supported is <B>PFUPAL_MODE_MIPMAP</B>
+       and <B>val</B> is a boolean.  By default, val is 1.   Force  non-
+       mipmapped palettes by seting <B>BPFUPAL_MODE_MIPMAP</B> to 0.
+
+       Example 1 :
+
+           pfInit();
+           pfConfig();
+                 ...
+
+           // Load a database
+            pfNode *node;
+           if( (node = pfdLoadFile( mydatabase )) == (pfNode *)0L )
+               <B>exit(1)</B>;
+
+            // Create a palettizer
+           p = new pfuPalettizer;
+           // Set the prefix of the palette to be created
+           p-&gt;setTexturePrefix( "myPalette" );
+           // Use a margin of 32 pixels between textures
+           p-&gt;setMargin( 32 );
+           // Allow mipmapping
+           p-&gt;setMode( PFUPAL_MODE_MIPMAP, 1 );
+           // Set maximum width and height of palette
+           p-&gt;setST( 512, 512 );
+
+           // palettize!
+           p-&gt;palettize( node );
+
+           // store the altered scene graph
+            pfdStoreFile( node, "mydatabase.pfb" );
+
+            // Store the new textures
+           pfList *texlist = p-&gt;getPaletteList();
+           for( int i = 0; i &lt; texlist-&gt;getNum(); i++ )
+           {
+               pfTexture *tex = (pfTexture *)texlist-&gt;get( i );
+               tex-&gt;saveFile( tex-&gt;getName() );
+           }
+
+                 ...
+
+
+                                               pfuPalettizer(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

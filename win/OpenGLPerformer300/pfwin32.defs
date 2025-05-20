@@ -1,0 +1,57 @@
+!if "$(CFG)" == ""
+CFG=debug
+!else
+!if "$(CFG)" != "opt" && "$(CFG)" != "dbg"
+!message Invalid configuration "$(CFG)" specified.
+!message You can specify a configuration when running NMAKE
+!message by defining the macro CFG on the command line. For example:
+!message NMAKE CFG="dbg"
+!message
+!message "Possible choices for CFG are opt and dbg"
+!message
+!error An invalid configuration was specified.
+!endif
+!endif
+
+CC=cl.exe
+RSC=rc.exe
+LINK=link.exe
+
+MULTITHREADING_FLAG=-D_MT
+
+PF_INCLUDES=-I"$(PFROOT)"/Include -I"$(PFROOT)"/Include/Performer
+
+COMMON_FLAGS= \
+	-D_DLL -DWIN32 -D_WIN32 -D_WIN32_WINNT=0x400 -D_WINNT \
+	-D__LITTLE_ENDIAN \
+	 /nologo \
+	-D__i386__ \
+	-DOPENGL \
+	$(PF_INCLUDES) \
+	$(MULTITHREADING_FLAG)
+
+!if "$(CFG)" == "opt"
+OUTDIR=.\Release
+COMMON_COMPILE_FLAGS=$(COMMON_FLAGS) -Ox
+COMMON_LINK_FLAGS=/RELEASE /nologo /LIBPATH:"$(PFROOT)"\Lib /LIBPATH:"$(PFROOT)"\Lib\Debug
+!else
+OUTDIR=.\Debug
+COMMON_COMPILE_FLAGS=$(COMMON_FLAGS) -Od -Z7 -D_DEBUG -DDEBUGLIBS
+COMMON_LINK_FLAGS=/DEBUG /nologo /LIBPATH:"$(PFROOT)"\Lib\Debug /LIBPATH:"$(PFROOT)"\Lib
+!endif
+
+COMMON_LIBS= \
+	libpf.lib \
+	opengl32.lib \
+	glu32.lib \
+	kernel32.lib \
+	user32.lib \
+	gdi32.lib \
+	advapi32.lib \
+	version.lib \
+	msvcprt.lib \
+	msvcrt.lib 
+
+COMMONLIB_FLAGS=/NODEFAULTLIB:LIBC /NODEFAULTLIB:MSVCRT /NODEFAULTLIB:MSVCPRT
+
+INTDIR=$(OUTDIR)

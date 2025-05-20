@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<TITLE>pfdASDClipring</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdASDClipring</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdASDClipring(3pf)                           pfdASDClipring(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdASDClipring</B>  -  Construct pfASD clipring size and value
+       for virtual cliptexture
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       void   <B>pfdASDClipring</B>(pfASD *asd, int numrings);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdASDClipring</B> computes numrings level of pfLODRange based
+       on the original asd LODRange and enables clipring in pfASD
+       node.
+
+       See libpfdb/pfevt.c  for  example.   Set  _PFASD_CLIPRINGS
+       without  any  particular  value will turn on the automatic
+       generation of number of cliprings.   Set  _PFASD_CLIPRINGS
+       to  an int, then pfdASDClipring will build that many addi-
+       tional LODRanges inside the smallest  switchin  range  and
+       use them as clipring boundries.
+
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfASD, pfTerrain
+
+
+
+                                              pfdASDClipring(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

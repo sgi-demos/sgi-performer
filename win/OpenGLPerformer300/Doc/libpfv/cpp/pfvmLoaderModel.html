@@ -1,0 +1,174 @@
+<HTML>
+<HEAD>
+<TITLE>pfvmLoaderModel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvmLoaderModel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvmLoaderModel(3pf)                         pfvmLoaderModel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvmLoaderModel</B> - LoaderModel class for pfvViewer
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfvm/pfvmLoader.h&gt;
+
+                 <B>pfvmLoaderModel::pfvmLoaderModel</B>();
+
+       char*     <B>pfvmLoaderModel::getFilePath</B>();
+
+       void      <B>pfvmLoaderModel::setFilePath</B>(char*path);
+
+       char*     <B>pfvmLoaderModel::getFileName</B>();
+
+       void      <B>pfvmLoaderModel::setFileName</B>(char*fName);
+
+       int       <B>pfvmLoaderModel::getAddToScene</B>();
+
+       void      <B>pfvmLoaderModel::setAddToScene</B>(int s);
+
+       void      <B>pfvmLoaderModel::setTrans</B>(pfVec3&amp; xyz);
+
+       void      <B>pfvmLoaderModel::setRot</B>(pfVec3&amp; hpr);
+
+       void      <B>pfvmLoaderModel::setScale</B>(pfVec3&amp; scaleXYZ);
+
+       void      <B>pfvmLoaderModel::setScale</B>(float s);
+
+       void      <B>pfvmLoaderModel::getTrans</B>(pfVec3&amp; xyz);
+
+       void      <B>pfvmLoaderModel::getRot</B>(pfVec3&amp; hpr);
+
+       void      <B>pfvmLoaderModel::getScale</B>(pfVec3&amp; scaleXYZ);
+
+       pfDCS*    <B>pfvmLoaderModel::getDCS</B>();
+
+       pfNode*   <B>pfvmLoaderModel::getRootNode</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfvmLoaderModel  is a part of the pfvmLoader module.  This
+       class takes care of the actual loading of the models.
+
+       <B>setFilePath()</B> sets the filepath  in  which  to  look  when
+       loading  a  specific  model. The path set here is searched
+       first, before searching the global path  set  through  the
+       pfvmLoader::setFilePath method.
+
+       <B>getFilePath()</B> returns the filepath.
+
+       <B>setFileName()</B> specifies the name of the file to be loaded.
+
+       <B>getFileName()</B> returns the filename specified with setFile-
+       Name().
+
+       <B>setAddToScene()</B>  specifies whether to add the loaded model
+
+       <B>getTrans()</B> returns the translation.
+
+       <B>setRot()</B> sets the rotation on the pfDCS the model will  be
+       under.
+
+       <B>getRot()</B> returns the rotation.
+
+       <B>setScale()</B>  sets  the  scale factor on the pfDCS the model
+       will be under.  The scale can be specified for  each  axis
+       or one scale to be applied to all axes.
+
+       <B>getScale()</B> returns the scale factor.
+
+       <B>getDCS()</B> returns the pfDCS associated with this model.
+
+       <B>getRootNode()</B> returns the root pfNode associated with this
+       model.
+
+
+
+       ========
+       <B>XML</B> <B>tags</B>
+       ========
+
+
+
+           &lt;module&gt;
+               &lt;class&gt;pfvmLoader&lt;/class&gt;
+               &lt;data&gt;
+                   ...
+                   &lt;Model&gt;
+                       ...
+                       parameters
+                       ...
+                   &lt;/Model&gt;
+                   ...
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+       where <B>parameters</B> is one or more of the following:
+
+       <B>&lt;Name&gt;</B>string<B>&lt;/Name&gt;</B> sets <B>string</B> to be the name assigned to
+       this pfvmLoaderModel instance.
+
+       <B>&lt;FileName&gt;</B>string<B>&lt;/FileName&gt;</B> specifies the filename to
+       load.
+
+       <B>&lt;FilePath&gt;</B>string<B>&lt;/FilePath&gt;</B> specifies the file search
+       path.
+
+       <B>&lt;Trans&gt;</B>float,float,float<B>&lt;/Trans&gt;</B> specifies the translation
+       to be applied after the model is loaded.
+
+       <B>&lt;Rot&gt;</B>float,float,float<B>&lt;/Rot&gt;</B> specifies the rotation to be
+       applied after the model is loaded.
+
+       <B>&lt;Scale&gt;</B>float,float,float<B>&lt;/Scale&gt;</B> specifies the scale to be
+           &lt;module&gt;
+            &lt;name&gt;loader&lt;/name&gt;
+            &lt;class&gt;pfvmLoader&lt;/class&gt;
+            &lt;data&gt;
+                &lt;FilePath&gt;/usr/share/Performer/data&lt;/FilePath&gt;
+                &lt;Model&gt;
+                 &lt;Name&gt;ESPRIT_1&lt;/Name&gt;
+                 &lt;FileName&gt;esprit.pfb&lt;/FileName&gt;
+                 &lt;Rot&gt;-90,0,0&lt;/Rot&gt;
+                 &lt;Trans&gt;-2,0,0&lt;/Trans&gt;
+                       &lt;!-- note: non-uniform scaling set below --&gt;
+                       &lt;Scale&gt;1.0,1.0,2.0&lt;/Scale&gt;
+                &lt;/Model&gt;
+            &lt;/data&gt;
+           &lt;/module&gt;
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       For examples of pfvViewer XML configuration files, look at
+       the sample .pfv files in /usr/share/Performer/config.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvmLoader, pfvModule, pfvViewer, pfvXml
+
+
+
+                                             pfvmLoaderModel(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

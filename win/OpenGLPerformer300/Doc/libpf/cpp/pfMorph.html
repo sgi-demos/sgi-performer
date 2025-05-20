@@ -1,0 +1,308 @@
+<HTML>
+<HEAD>
+<TITLE>pfMorph</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMorph</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>pfMorph OBSOLETED bypfMorphnOBSOLETEDlby(pfEngine and pfFlux(3pf)</H2><PRE>
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMorph</B> - Create, modify, and query a pfMorph node.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfMorph.h&gt;
+
+                         <B>pfMorph::pfMorph</B>();
+
+       static pfType *   <B>pfMorph::getClassType</B>(void);
+
+       int               <B>pfMorph::setAttr</B>(int index,
+                           int floatsPerElt,         int nelts,
+                           void *dst,                int nsrcs,
+                           float *alist[],     ushort *ilist[],
+                           int nlist[]);
+
+       int               <B>pfMorph::setWeights</B>(int index,
+                           float *weights);
+
+       int               <B>pfMorph::getWeights</B>(int index,
+                           float *weights);
+
+       int               <B>pfMorph::getNumAttrs</B>(void);
+
+       int               <B>pfMorph::getSrc</B>(int index,      int src,
+                           float **alist,       ushort **ilist,
+                           int *nlist);
+
+       int               <B>pfMorph::getNumSrcs</B>(int index);
+
+       void *            <B>pfMorph::getDst</B>(int index);
+
+       void              <B>pfMorph::evaluate</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class  <B>pfMorph</B> is derived from the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class  <B>pfGroup</B>  are  also  directly usable with objects of
+       class <B>pfMorph</B>.  This is also true for ancestor classes  of
+       class <B>pfGroup</B>.
+
+       int        <B>pfGroup::addChild</B>(pfNode *child);
+       int        <B>pfGroup::insertChild</B>(int index, pfNode *child);
+       int        <B>pfGroup::replaceChild</B>(pfNode *old,         pfN-
+                    ode *new);
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       int        <B>pfGroup::searchChild</B>(pfNode* child);
+       pfNode *   <B>pfGroup::getChild</B>(int index);
+       int        <B>pfGroup::getNumChildren</B>(void);
+       int        <B>pfGroup::bufferAddChild</B>(pfNode *child);
+       int        <B>pfGroup::bufferRemoveChild</B>(pfNode *child);
+
+
+       Since  the class <B>pfGroup</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class <B>pfMorph</B> can  also  be  used
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfMorph</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfMorph</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfMorph node does not define geometry; rather, it manip-
+       ulates geometric attributes of pfGeoSets and other geomet-
+       ric  primitives.   While pfMorph is very general, its pri-
+       mary use is for geometric morphing where the colors,  nor-
+       mals,  texture coordinates and coordinates of geometry are
+       smoothly changed over time to  simulate  actions  such  as
+       facial  and  skeletal  animation,  ocean waves, continuous
+       level-of-detail, and advanced special  effects.  In  these
+       situations,  the  rigid  body  transformations provided by
+       matrices do not suffice -  instead,  efficient  per-vertex
+       manipulations are required.
+
+       A  pfMorph  consists of one or more "sources" and a single
+       "destination" which together are  termed  an  "attribute".
+       Both  sources  and  destination  are  arrays of "elements"
+       where each element consists of 1 or  more  floating  point
+       numbers,  e.g.,  an  array  of  pfVec3  coordinates.   The
+       pfMorph node  produces  the  destination  by  computing  a
+       weighted sum of the sources. By varying the source weights
+       and using the morph destination as  a  pfGeoSet  attribute
+       array,  the application can achieve smooth, geometric ani-
+       mation. A pfMorph can "morph" multiple attributes.
+
+       <B>new</B> <B>pfMorph</B> creates and returns a  handle  to  a  pfMorph.
+       Like  other  pfNodes,  pfMorphs  are always allocated from
+       shared memory and cannot be  created  statically,  on  the
+       stack  or  in  arrays.   pfMorphs  should be deleted using
+       <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfMorph::getClassType</B> returns the <B>pfType</B>*  for  the  class
+       <B>pfMorph</B>.  The <B>pfType</B>* returned by <B>pfMorph::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking  the  virtual
+       function   <B>getType</B>  on  any  instance  of  class  <B>pfMorph</B>.
+       Because OpenGL Performer allows  subclassing  of  built-in
+       types,  when  decisions  are  made based on the type of an
+       object, it is usually better to use  the  member  function
+       <B>isOfType</B>  to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality  of
+       the <B>pfType</B>*'s.
+
+       <B>pfMorph::setAttr</B>  configures  the <I>index</I>th attribute of the
+       pfMorph.  <I>floatsPerElt</I> specifies how many  floating  point
+       numbers  comprise a single attribute element. For example,
+       when morphing pfGeoSet coordinate and  texture  coordinate
+       arrays  (<B>PFGS_COORD3</B>,  <B>PFGS_TEXCOORD2</B>), <I>floatsPerElt</I> would
+       be  3  and  2  respectively.   <I>nelts</I>  specifies  how  many
+       attribute  elements  are in the destination array.  If the
+       required number of pfGeoSet coordinates is 33, then  <I>nelts</I>
+       would be 33, <I>not</I> 33 * 3 = 99. <I>dst</I> is a pointer to the des-
+       tination  array  which  should  be  at   least   of   size
+       <I>floatsPerElt</I> * <I>nelts</I> * sizeof(float). If <I>dst</I> is <B>NULL</B>, then
+       the pfMorph will automatically create and use  a  pfCycle-
+       Buffer  of  appropriate  size.  (pfCycleBuffers are useful
+       when OpenGL Performer is configured to multiprocess.)
+
+       consists  of  <I>floatsPerElt</I>  floating  point numbers. Index
+       arrays and their lengths are provided in <I>ilist</I>  and  <I>nlist</I>
+       respectively.  If  <I>ilist</I> is <B>NULL</B> then all sources are non-
+       indexed. If <I>ilist</I> is non-<B>NULL</B>, it contains a list of index
+       lists corresponding to the source lists in <I>alist</I>. If <I>nlist</I>
+       is <B>NULL</B>, then the index lists are assumed to be <I>nelts</I> long
+       and  if  non-<B>NULL</B>, the length of each index list is speci-
+       fied in <I>nlist</I>. <I>ilist</I> may  contain  <B>NULL</B>  pointers  to  mix
+       indexed and non-indexed source arrays.
+
+       All source arrays referenced in <I>alist</I> and <I>ilist</I> are refer-
+       ence counted by <B>pfMorph::setAttr</B>.
+
+       <B>pfMorph::setWeights</B> specifies the source  weights  of  the
+       <I>index</I>th  attribute  of  the  pfMorph in the array <I>weights</I>.
+       <I>weights</I> should consist of  <I>nsrcs</I>  floating  point  numbers
+       where  <I>nsrcs</I>  is the number of attribute sources specified
+       in <B>pfMorph::setAttr</B>. If <I>index</I> is &lt; 0, then <I>weights</I> is used
+       for  all  attributes  of  the pfMorph. <B>pfMorph::getWeights</B>
+       copies the weights of the <I>index</I>th attribute of the pfMorph
+       into <I>weights</I>. <I>weights</I> should be an array of at least <I>nsrcs</I>
+       floats.
+
+       A pfMorph node is evaluated, i.e., its  destination  array
+       is  computed,  during the <B>APP</B> traversal which is triggered
+       directly  by  the  application  through  <B>pfAppFrame</B>   (see
+       <B>pfAppFrame</B>)  or  indirectly  by  <B>pfSync</B>.  Alternately, the
+       pfMorph node may be explicitly evaluated  by  calling  the
+       function  <B>pfMorph::evaluate</B>.   In  all  cases, destination
+       elements are computed as in the following pseudocode:
+
+       zero destination array;
+
+       for (s=0; s&lt;<I>nsrcs</I>; s++)
+       {
+           if (<I>ilist</I> == NULL || <I>ilist</I>[s] == NULL)
+           {
+            /* Source is non-indexed */
+               for (i=0; i&lt;<I>nelts</I>; i++)
+                   for (e=0; e&lt;<I>floatsPerElt</I>; e++)
+                      dst[i][e] += <I>weights</I>[s] * <I>alist</I>[s][i][e];
+           }
+           else
+           {
+            /* Source is indexed */
+
+            int  nindex;
+
+            if (<I>nlist</I> == NULL)
+                nindex = <I>nelts</I>;
+            else
+                nindex = <I>nlist</I>[s];
+
+               for (i=0; i&lt;nindex; i++)
+                   for (e=0; e&lt;<I>floatsPerElt</I>; e++)
+                      dst[<I>ilist</I>[s][i]][e] += <I>weights</I>[s] * <I>alist</I>[s][i][e];
+           }
+       }
+
+       is only evaluated by the APP traversal when its weights
+       change.
+
+       <B>pfMorph::getNumAttrs</B> returns the number of the pfMorph's
+       attributes.
+
+       <B>pfMorph::getSrc</B> returns the <I>src</I>th source parameters of the
+       <I>index</I>th attribute of the pfMorph. The source attribute
+       array and index array pointers are copied into <I>alist</I> and
+       <I>ilist</I> respectively. The size of the <I>src</I>th index array is
+       copied into <I>nlist</I> and the number of floats per element is
+       returned by <B>pfMorph::getSrc</B>.
+
+       <B>pfMorph::getNumSrcs</B> returns the number of sources of the
+       <I>index</I>th attribute of the pfMorph.
+
+       <B>pfMorph::getDst</B> returns the <I>index</I>th destination array of
+       <I>morph</I>.  The destination array is either that provided ear-
+       lier by <B>pfMorph::setAttr</B> or the pfCycleBuffer automati-
+       cally created when <B>NULL</B> was passed as the <I>dst</I> argument to
+       <B>pfMorph::setAttr</B>.
+
+
+
+</PRE>
+<H2>OBSOLETE</H2><PRE>
+       <B>pfMorph</B> has been obsoleted by <B>pfEngine</B> and <B>pfFlux</B>.
+       pfFluxes are multibuffered data objects for asyncrhonous
+       evaluation, such as by pfEngines, that can be directly
+       used as vertex attribute arrays, full pfGeoSets, matrices
+       for <B>pfFSC</B> tranformation nodes, and other special asyn-
+       chronous values for <B>pfLOD</B> and <B>pfSwitch</B>.  See these man
+       pages for more information.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAppFrame, pfCycleBuffer, pfGroup, pfDelete, pfEngine,
+       pfFlux, pfNode
+
+
+
+                    pfMorph OBSOLETED by pfEngine and pfFlux(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

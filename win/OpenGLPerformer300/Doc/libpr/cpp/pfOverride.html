@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<TITLE>pfOverride</TITLE>
+</HEAD>
+<BODY>
+<H1>pfOverride</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfOverride(3pf)                                   pfOverride(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfOverride,</B> <B>pfGetOverride,</B> <B>pfGLOverride,</B> <B>pfGetGLOverride</B> -
+       Override state element(s).
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void       <B>pfOverride</B>(uint64_t mask, int val);
+
+       uint64_t   <B>pfGetOverride</B>(void);
+
+       void       <B>pfGLOverride</B>(int which, float val);
+
+       float      <B>pfGetGLOverride</B>(int which);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>mask</I>  is a bit mask that specifies the state elements that
+             are  to be set to the override value <I>val</I>.  <I>mask</I> is a
+             bitwise OR of:
+                    <B>PFSTATE_ENLIGHTING</B>
+                    <B>PFSTATE_ENTEXTURE</B>
+                    <B>PFSTATE_ENFOG</B>
+                    <B>PFSTATE_ENWIREFRAME</B>
+                    <B>PFSTATE_ENHIGHLIGHTING</B>
+                    <B>PFSTATE_ENCOLORTABLE</B>
+                    <B>PFSTATE_FRONTMTL</B>
+                    <B>PFSTATE_BACKMTL</B>
+                    <B>PFSTATE_TEXTURE</B>
+                    <B>PFSTATE_TEXENV</B>
+                    <B>PFSTATE_ALPHAFUNC</B>
+                    <B>PFSTATE_TRANSPARENCY</B>
+                    <B>PFSTATE_ANTIALIAS</B>
+                    <B>PFSTATE_CULLFACE</B>
+                    <B>PFSTATE_DECAL</B>
+                    <B>PFSTATE_ALPHAREF</B>
+                    <B>PFSTATE_COLORTABLE</B>
+                    <B>PFSTATE_HIGHLIGHT</B>
+                    <B>PFSTATE_FOG</B>
+                    <B>PFSTATE_LIGHTS</B>
+                    <B>PFSTATE_LIGHTMODEL</B>
+
+       <I>val</I>   is a symbolic token and either <B>PF_ON</B> or <B>PF_OFF</B> indi-
+             cating  whether the state elements in <I>mask</I> should be
+             overridden or not.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfOverride</B> is used to override individual state  elements.
+       If  a state element is overridden, all subsequent attempts
+       to modify it will be ignored.  An overridden state element
+       is  locked  to the current value at the time <B>pfOverride</B> is
+       called.
+
+
+       Example 1:
+
+       is enabled.
+
+       <B>pfOverride</B> with a <I>val</I> of <B>PF_OFF</B> will free the state ele-
+       ments specified by <I>mask</I> to be modified.  Although state
+       elements will not be restored to their pre-override condi-
+       tion, <B>pfPushState</B> and <B>pfPopState</B> may be used to do so.
+       The override mask is pushed and popped along with the rest
+       of the state.
+
+       <B>pfGetOverride</B> returns the current override mask.
+
+       <B>pfOverride</B> is a display-listable command.  If a pfDispList
+       has been opened by <B>pfDispList::open</B>, <B>pfOverride</B> will not
+       have immediate effect but will be captured by the pfDis-
+       pList and will only have effect when that pfDispList is
+       later drawn with <B>pfDispList::draw</B>.
+
+       <B>pfGLOverride</B> overrides the graphics library mechanism used
+       to achieve a desired effect such as transparency and visu-
+       ally correct coplanar geometry. <I>which</I> identifies the mech-
+       anism to override and is one of the following:
+
+
+              <B>PFGL_TRANSPARENCY</B>
+                   <I>val</I> may be either <B>PFGL_TRANSP_MSALPHA</B> or
+                   <B>PFGL_TRANSP_BLEND</B>.  in which case multisample
+                   ("screen-door") or blending will be used when
+                   transparency is enabled (see <B>pfTransparency</B>).
+
+              <B>PFGL_DECAL</B>
+                   <I>val</I> may be either <B>PFGL_DECAL_STENCIL</B> or
+                   <B>PFGL_DECAL_DISPLACE</B> in which case stenciling
+                   or displacement will be used for all decals
+                   (see <B>pfDecal</B>).
+
+       <B>pfGetGLOverride</B> returns the override mode corresponding to
+       <I>which</I>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDispList, pfDrawDList, pfGeoState, pfOpenDList, pfState,
+       pfTransparency, pfDecal
+
+
+
+                                                  pfOverride(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

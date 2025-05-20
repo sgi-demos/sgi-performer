@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<TITLE>pfiInputXformDrive</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiInputXformDrive</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiInputXformDrive(3pf)                   pfiInputXformDrive(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiGetIXformDriveClassType,</B>  <B>pfiNewIXformDrive,</B> <B>pfiIXform-</B>
+       <B>DriveMode,</B>  <B>pfiGetIXformDriveMode,</B>   <B>pfiIXformDriveHeight,</B>
+       <B>pfiGetIXformDriveHeight,</B>   <B>pfiCreate2DIXformDrive,</B>  <B>pfiUp-</B>
+       <B>date2DIXformDrive</B> - pfiInputXformDrive functions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfType *               <B>pfiGetIXformDriveClassType</B>(void);
+
+       pfiInputXformDrive *   <B>pfiNewIXformDrive</B>(void *arena);
+
+       void                   <B>pfiIXformDriveMode</B>(pfiInputXformDrive *drive,
+                                int mode, int val);
+
+       int                    <B>pfiGetIXformDriveMode</B>(pfiInputXformDrive *drive,
+                                int mode);
+
+       void                   <B>pfiIXformDriveHeight</B>(pfiInputXformDrive* drive,
+                                float height);
+
+       float                  <B>pfiGetIXformDriveHeight</B>(pfiInputXformDrive* drive);
+
+       pfiInputXformDrive
+                              *   <B>pfiCreate2DIXformDrive</B>(void *arena);
+
+       int                    <B>pfiUpdate2DIXformDrive</B>(pfiInputXform *drive,
+                                pfiInputCoord *icoord,
+                                void *data);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiInputXformDrive</B> functions.
+
+       A pfiInputXformDrive is a child of the pfiInputXform class
+       and  so pfiInputXform routines may be called with a pfiIn-
+       putXformDrive.  See the pfiInputXform reference  page  for
+       information  on  pfiInputXform  functionality.  The pfiIn-
+       putXformDrive has a complete C++ API following the conven-
+       tions of general OpenGL Performer C++ API; C++ methods are
+       declared   in   /usr/include/Performer/pfui/pfiInputXform-
+       Drive.h.
+
+       <B>pfiInit</B>  should  be  called once before any pfiInputXform-
+       Drive routines and before the forked creation of any addi-
+       tional  processes  that will be calling pfiInputXformDrive
+       routines.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

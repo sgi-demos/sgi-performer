@@ -1,0 +1,154 @@
+<HTML>
+<HEAD>
+<TITLE>pfCylinder</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCylinder</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCylinder(3pf)                                   pfCylinder(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCylinder</B> - Operations on cylinder definitions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoMath.h&gt;
+
+       void*   <B>pfCylinder::operator</B> <B>new</B>(size_t);
+
+       void*   <B>pfCylinder::operator</B> <B>new</B>(size_t, void *arena);
+
+               <B>pfCylinder::pfCylinder</B>();
+
+               <B>pfCylinder</B>(const pfVec3&amp; _center,   float _radius,
+                 const pfVec3&amp; _axis, float _halfLength);
+
+       void    <B>pfCylinder::makeEmpty</B>(void);
+
+       void    <B>pfCylinder::around</B>(const pfSeg **segs, int nseg);
+
+       void    <B>pfCylinder::around</B>(const pfBox **boxes, int nbox);
+
+       void    <B>pfCylinder::around</B>(const pfVec3 *pts, int npt);
+
+       void    <B>pfCylinder::around</B>(const pfCylinder **cyls,
+                 int ncyl);
+
+       void    <B>pfCylinder::around</B>(const pfSphere **sphs,
+                 int nsph);
+
+       void    <B>pfCylinder::extendBy</B>(const pfBox *sph);
+
+       void    <B>pfCylinder::extendBy</B>(const pfSphere *sph);
+
+       void    <B>pfCylinder::extendBy</B>(const pfCylinder *cyl);
+
+       int     <B>pfCylinder::contains</B>(const pfVec3 &amp;pt);
+
+       int     <B>pfCylinder::isect</B>(const pfSeg* seg,     float* d1,
+                 float* d2);
+
+       void    <B>pfCylinder::orthoXform</B>(const pfCylinder *cyl,
+                 const pfMatrix &amp;xform);
+
+
+               struct pfCylinder
+               {
+                   pfVec3   center;
+                   float    radius;
+                   pfVec3   axis;
+                   float    halfLength;
+               };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfCylinder represents a cylinder of finite length.  The
+
+       The default constructor <B>pfCylinder</B>() is empty and does no
+       initialization.  There is also a constructor that will do
+       direct initialization of the pfCylinder's center, radius,
+       axis, and half length.  <B>new</B>(arena) allocates a pfCylinder
+       from the specified memory arena, or from the heap if <I>arena</I>
+       is NULL.  <B>new</B> allocates a pfCylinder from the default mem-
+       ory arena (see <B>pfGetSharedArena</B>).  pfCylinders can also be
+       created automatically automatically on the stack or stati-
+       cally.  pfCylinders allocated with <B>new</B> can be deleted with
+       <B>delete</B> or <B>pfDelete</B>.
+
+       <B>pfCylinder::makeEmpty</B> sets the pfCylinder so that it
+       appears empty to other operations.
+
+       <B>pfCylinder::around(const</B> <B>pfSeg**,</B> <B>int)</B>,
+       <B>pfCylinder::around(const</B> <B>pfVec3*,</B> <B>int)</B>,
+       <B>pfSphere::around(const</B> <B>pfSphere**,</B> <B>int)</B> and
+       <B>pfCylinder::around(const</B> <B>pfBox**,</B> <B>int)</B> set the pfCylinder
+       to a cylinder which contains a set of line segments,
+       points, spheres or boxes, respectively.  These routines
+       are passed the address of an array of pointers to the
+       objects to be encompassed along with the number of
+       objects.
+
+       <B>pfCylinder::extendBy(const</B> <B>pfBox</B> <B>*)</B>,
+       <B>pfCylinder::extendBy(const</B> <B>pfSphere</B> <B>*)</B>, and
+       <B>pfCylinder::extendBy(const</B> <B>pfCylinder</B> <B>*)</B> set the pfCylin-
+       der to a cylinder which contains both the pfSphere  and
+       the box <I>box</I>, the sphere <I>sph</I> or the cylinder <I>cyl</I>, respec-
+       tively.
+
+       <B>pfCylinder::contains</B> returns <B>TRUE</B> or <B>FALSE</B> depending on
+       whether the point <I>pt</I> is in the interior of the specified
+       pfCylinder.
+
+       <B>pfCylinder::isect</B> intersects the line segment <I>seg</I> with the
+       volume of the cylinder <I>cyl</I>.  The possible return values
+       are:
+
+              <B>PFIS_FALSE</B>:
+                   <I>seg</I> lies entirely in the exterior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_START_IN</B>:
+                   The starting point of <I>seg</I> lies in the inte-
+                   rior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_END_IN</B>:
+                   The ending point of <I>seg</I> lies in the interior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B> |
+              <B>PFIS_START_IN</B> | <B>PFIS_END_IN</B>:
+                   Both end points of <I>seg</I> lie in the interior.
+
+       If <I>d1</I> and <I>d2</I> are non-NULL, on return from
+       <B>pfCylinder::isect</B> they contain the starting and ending
+       positions of the line segment (0 &lt;= d1 &lt;= d2 &lt;=
+       seg-&gt;length) intersected with the cyl.
+
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfVec3[n].
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfCylinder, pfSeg, pfSphere, pfVec3
+
+
+
+                                                  pfCylinder(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>pfdLoadAppearance</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdLoadAppearance</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdLoadAppearance(3pf)                     pfdLoadAppearance(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdLoadAppearance,</B>  <B>pfdStoreAppearance,</B>  <B>pfdGetAppearance-</B>
+       <B>Filename</B> - Reading and writing islAppearances to files
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       islAppearance *   <B>pfdLoadAppearance</B>(const char *filename);
+
+       int               <B>pfdStoreAppearance</B>(const char *filename,
+                           islAppearance *appearance);
+
+       char
+                         *            <B>pfdGetAppearanceFilename</B>(islAppearance *appearance);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions implement  islAppearance  file  operations
+       which  are  not yet provided by the OpenGL Shader library.
+       These functions are used by  Performer  when  loading  and
+       saving pfb files.
+
+       <B>pfdLoadAppearance</B>  is used to load an islAppearance from a
+       simple XML file format. A value of  NULL  is  returned  if
+       loading  fails  for  any reason, otherwise a pointer to an
+       islAppearance is returned.
+
+       <B>pfdStoreAppearance</B> writes the specified <I>appearance</I> to  the
+       specified <I>filename</I>. A non-zero return value indicates suc-
+       cess, while a zero return value indicates  failure.  <I>file-</I>
+       <I>name</I>  may  be NULL, in which case a filename will be auto-
+       matically generated via the <B>pfdGetAppearanceFilename</B> func-
+       tion.  <B>pfdStoreAppearance</B> saves all the shaders within the
+       <I>appearance</I>, the values of all their respective  variables,
+       and all shader include paths.
+
+       <B>pfdGetAppearanceFilename</B> returns the name of the file from
+       which <I>appearance</I> was originally loaded. If  an  appearance
+       was  not loaded from a file but rather created programati-
+       cally, <B>pfdGetAppearanceFilename</B>  will  generate  a  unique
+       name.  This function is necessary since there is no way to
+       associate user data with an islAppearance  nor  do  islAp-
+       pearances  keep track of their filenames but a filename is
+       needed when saving to a pfb file.
+
+
+
+
+                                           pfdLoadAppearance(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,270 @@
+/*
+ * Copyright 1995, Silicon Graphics, Inc.
+ * ALL RIGHTS RESERVED
+ *
+ * This source code ("Source Code") was originally derived from a
+ * code base owned by Silicon Graphics, Inc. ("SGI")
+ * 
+ * LICENSE: SGI grants the user ("Licensee") permission to reproduce,
+ * distribute, and create derivative works from this Source Code,
+ * provided that: (1) the user reproduces this entire notice within
+ * both source and binary format redistributions and any accompanying
+ * materials such as documentation in printed or electronic format;
+ * (2) the Source Code is not to be used, or ported or modified for
+ * use, except in conjunction with OpenGL Performer; and (3) the
+ * names of Silicon Graphics, Inc.  and SGI may not be used in any
+ * advertising or publicity relating to the Source Code without the
+ * prior written permission of SGI.  No further license or permission
+ * may be inferred or deemed or construed to exist with regard to the
+ * Source Code or the code base of which it forms a part. All rights
+ * not expressly granted are reserved.
+ * 
+ * This Source Code is provided to Licensee AS IS, without any
+ * warranty of any kind, either express, implied, or statutory,
+ * including, but not limited to, any warranty that the Source Code
+ * will conform to specifications, any implied warranties of
+ * merchantability, fitness for a particular purpose, and freedom
+ * from infringement, and any warranty that the documentation will
+ * conform to the program, or any warranty that the Source Code will
+ * be error free.
+ * 
+ * IN NO EVENT WILL SGI BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT
+ * LIMITED TO DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
+ * ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THE
+ * SOURCE CODE, WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT OR
+ * OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM,
+ * OR AROSE OUT OF USE OR RESULTS FROM USE OF, OR LACK OF ABILITY TO
+ * USE, THE SOURCE CODE.
+ * 
+ * Contact information:  Silicon Graphics, Inc., 
+ * 1600 Amphitheatre Pkwy, Mountain View, CA  94043, 
+ * or:  http://www.sgi.com
+ *
+ * simple.c: simple Performer program for programmer's guide
+ *
+ * $Revision: 1.1 $ $Date: 2002/02/21 00:59:00 $ 
+ *
+ */
+#include <Performer/pf.h>
+#include <Performer/pfutil.h>
+#include <Performer/pfdu.h>
+
+#define GAPWIDTH 0.5f
+
+typedef struct ModelData
+{
+    pfNode *root;
+    pfDCS *dcs;
+    pfSphere bsphere;
+    float t;
+
+} ModelData;
+
+static ModelData *models;
+static int numModels;
+static pfHighlight *hl;
+static pfDCS* selectedDcs = NULL;
+
+
+static void
+Usage( char* prgName )
+{
+    pfNotify(PFNFY_FATAL, PFNFY_USAGE, 
+        "Usage: %s file1.ext file2.ext ...\n", prgName);
+    exit(-1);
+}
+
+pfDCS* WhichModelHaveIPickedOn( pfNode* node )
+{
+    int i;
+    while( node != NULL ) 
+    {
+	/* go up to next DCS */
+        while( node!=NULL && !pfIsExactType( node, pfGetDCSClassType() ) )
+            node = pfGetParent( node, 0 );
+        if( node == NULL )
+	    return NULL;
+        for( i=0; i<numModels; i++ )
+            if( models[i].dcs == (pfDCS*)node )
+	        return (pfDCS*) node;
+        node = pfGetParent( node, 0 );
+    }
+    return NULL;
+}
+
+int
+main (int argc, char *argv[])
+{
+    int i;
+
+    pfScene *scene;
+    pfPipe *p;
+    pfPipeWindow *pw;
+    pfChannel *chan;
+
+    pfSphere bsphere;
+    float t = 0.0f;
+    float width = 0.0f;
+    float offset;
+
+
+    if (argc < 2)
+	Usage(argv[0]);
+
+    pfInit();	
+    pfMultiprocess( PFMP_DEFAULT );			
+
+    numModels = argc-1;
+    for( i=0; i<numModels; i++ )
+        pfdInitConverter(argv[i+1]);
+
+    pfConfig();			
+    pfFilePath(".:/usr/share/Performer/data");
+
+    scene = pfNewScene();
+
+    if( (models=pfCalloc(numModels, sizeof(ModelData), 
+                                pfGetSharedArena())) == NULL)
+    {
+        pfNotify( PFNFY_FATAL, PFNFY_PRINT, "%s: pfCalloc failed", argv[0] );
+        pfExit();
+    }
+
+    for( i=0; i<numModels; i++ )
+    {
+        if((models[i].root = pfdLoadFile(argv[i+1])) == NULL) 
+        {
+            pfNotify( PFNFY_FATAL, PFNFY_PRINT, 
+             "%s: Failed to load file %s ... aborting.", argv[0], argv[i+1] );
+	    pfExit();
+        }
+        pfGetNodeBSphere (models[i].root, &(models[i].bsphere));
+        width += (2.0f*models[i].bsphere.radius);      
+
+        if((models[i].dcs = pfNewDCS()) == NULL) 
+        {
+            pfNotify( PFNFY_FATAL, PFNFY_PRINT, "%s: pfNewDCS failed.", argv[0] );
+	    pfExit();
+        }
+        pfAddChild( models[i].dcs, models[i].root );
+        pfAddChild( scene, models[i].dcs );
+
+    }
+
+    width += ((float)(numModels-1)*GAPWIDTH);
+
+    offset = -width/2.0f;    
+    for( i=0; i<numModels; i++ )
+    {
+        pfDCSTrans( models[i].dcs, offset+models[i].bsphere.radius, 0.0f, 0.0f );
+        offset +=  (2.0f*models[i].bsphere.radius);
+        offset += GAPWIDTH;      
+    }
+
+    if( (hl = pfNewHlight( pfGetSharedArena())) == NULL )
+    {
+        pfNotify( PFNFY_FATAL, PFNFY_PRINT, "%s: pfNewHlight failed", argv[0]);
+        pfExit();		    
+    }
+
+    pfHlightMode( hl, PFHL_LINES );
+    pfHlightColor( hl, PFHL_FGCOLOR, 1.0f, 0.0f, 0.0f );
+
+    /* Create a pfLightSource and attach it to scene. */
+    pfAddChild(scene, pfNewLSource());
+    
+    /* Configure and open GL window */
+    p = pfGetPipe(0);
+    pw = pfNewPWin(p);
+    pfPWinType(pw, PFPWIN_TYPE_X);
+    pfPWinName(pw, "OpenGL Performer");
+    pfPWinOriginSize(pw, 0, 0, 500, 500);
+    /* Open and configure the GL window. */
+    pfOpenPWin(pw);
+
+    /* Create and configure a pfChannel. */
+    chan = pfNewChan(p);	
+    pfChanScene(chan, scene);
+    pfChanFOV(chan, 45.0f, 0.0f);
+
+
+    pfuInitInput(pw, PFUINPUT_X);
+    pfNodePickSetup( scene );
+
+    /* determine extent of scene's geometry */
+    pfGetNodeBSphere (scene, &bsphere);
+    pfChanNearFar(chan, 1.0f, 10.0f * bsphere.radius);
+
+    /* Simulate for twenty seconds. */
+    while (t < 20.0f)
+    {
+	pfCoord	   view;
+	float      s, c;
+
+	/* Go to sleep until next frame time. */
+	pfSync();		
+
+	/* Initiate cull/draw for this frame. */
+	pfFrame();
+	
+        /* pick on a model to select it, pick in the background to deselect */
+        {
+            pfHit **picklist[32];
+            pfuMouse mouse;
+            float normX, normY;
+            pfuGetMouse(&mouse);
+            
+            if( mouse.click & PFUDEV_MOUSE_LEFT_DOWN )
+            {
+                pfuCalcNormalizedChanXY( &normX, &normY, chan, mouse.xpos, mouse.ypos );
+                if( pfChanPick( chan, (PFTRAV_IS_PRIM|PFPK_M_NEAREST), 
+                                    normX, normY, 0.0f, picklist) == 0 )
+                {
+                    if( selectedDcs )
+                    {
+                       pfuTravNodeHlight((pfNode*) selectedDcs, NULL );   
+                       selectedDcs = NULL;
+                    }
+                }
+                else
+                {
+                    pfGeode* geode;
+                    pfDCS* dcs;
+                    pfQueryHit(picklist[0][0], PFQHIT_NODE, &geode);
+                    if( (dcs = WhichModelHaveIPickedOn((pfNode*)geode)) != NULL )
+                    {
+                        if( selectedDcs!=dcs )
+                        {
+                            if( selectedDcs!=NULL )
+                                pfuTravNodeHlight((pfNode*)selectedDcs, NULL );
+                            selectedDcs = dcs;
+                            pfuTravNodeHlight((pfNode*) selectedDcs, hl );
+                        }
+                    }
+                    else
+                    {
+                        pfuTravNodeHlight((pfNode*) selectedDcs, NULL );   
+                        selectedDcs = NULL;
+                    }
+                }
+             }
+         } 
+
+
+	/* Compute new view position. */
+	t = pfGetTime();
+	pfSinCos(45.0f*t, &s, &c);
+	pfSetVec3(view.hpr, 45.0f*t, -10.0f, 0);
+	pfSetVec3(view.xyz, 2.0f * bsphere.radius * s, 
+		-2.0f * bsphere.radius *c, 
+		 0.5f * bsphere.radius);
+	pfChanView(chan, view.xyz, view.hpr);
+    }
+
+    /* Terminate parallel processes and exit. */
+    pfExit();
+    return 0;
+}
+
+

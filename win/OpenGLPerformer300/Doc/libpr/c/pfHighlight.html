@@ -1,0 +1,395 @@
+<HTML>
+<HEAD>
+<TITLE>pfHighlight</TITLE>
+</HEAD>
+<BODY>
+<H1>pfHighlight</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfHighlight(3pf)                                 pfHighlight(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewHlight,</B>   <B>pfGetHlightClassType,</B>  <B>pfApplyHlight,</B>  <B>pfH-</B>
+       <B>lightMode,</B>  <B>pfGetHlightMode,</B>  <B>pfHlightColor,</B>  <B>pfGetHlight-</B>
+       <B>Color,</B>  <B>pfHlightAlpha,</B>  <B>pfGetHlightAlpha,</B>  <B>pfHlightNormal-</B>
+       <B>Length,</B>    <B>pfGetHlightNormalLength,</B>     <B>pfHlightLineWidth,</B>
+       <B>pfGetHlightLineWidth,</B> <B>pfHlightPntSize,</B> <B>pfGetHlightPntSize,</B>
+       <B>pfHlightLinePat,</B>   <B>pfGetHlightLinePat,</B>    <B>pfHlightFillPat,</B>
+       <B>pfGetHlightFillPat,</B>   <B>pfHlightGState,</B>   <B>pfGetHlightGState,</B>
+       <B>pfHlightGStateIndex,</B> <B>pfGetHlightGStateIndex,</B>  <B>pfHlightTex,</B>
+       <B>pfGetHlightTex,</B>    <B>pfHlightTEnv,</B>   <B>pfGetHlightTEnv,</B>   <B>pfH-</B>
+       <B>lightTGen,</B> <B>pfGetHlightTGen,</B> <B>pfGetCurHlight</B> - Control, cre-
+       ate, modify and query highlight state
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfHighlight*    <B>pfNewHlight</B>(void *arena);
+
+       pfType *        <B>pfGetHlightClassType</B>(void);
+
+       void            <B>pfApplyHlight</B>(pfHighlight * hl);
+
+       void            <B>pfHlightMode</B>(pfHighlight *hl, uint mode);
+
+       uint            <B>pfGetHlightMode</B>(const pfHighlight *hl);
+
+       void            <B>pfHlightColor</B>(pfHighlight *hl, uint which,
+                         float r, float g, float b);
+
+       void            <B>pfGetHlightColor</B>(const pfHighlight *hl,
+                         uint which,     float *r,    float *g,
+                         float *b);
+
+       void            <B>pfHlightAlpha</B>(pfHighlight *hl, float a);
+
+       float           <B>pfGetHlightAlpha</B>(const pfHighlight *hl);
+
+       void            <B>pfHlightNormalLength</B>(pfHighlight* hl,
+                         float length, float bboxScale);
+
+       void            <B>pfGetHlightNormalLength</B>(const pfHighlight* hl,
+                         float *length, float *bboxScale);
+
+       void            <B>pfHlightLineWidth</B>(pfHighlight* hl,
+                         float width );
+
+       float           <B>pfGetHlightLineWidth</B>(const pfHighlight* hl);
+
+       void            <B>pfHlightPntSize</B>(pfHighlight* hl,
+                         float size );
+
+       float           <B>pfGetHlightPntSize</B>(const pfHighlight* hl);
+
+       void            <B>pfHlightLinePat</B>(pfHighlight* hl,
+                         int which, ushort pat);
+
+       void            <B>pfGetHlightFillPat</B>(const pfHighlight* hl,
+                         int which, uint *pat);
+
+       void            <B>pfHlightGState</B>(pfHighlight* hl,
+                         pfGeoState *gstate);
+
+       pfGeoState *    <B>pfGetHlightGState</B>(const pfHighlight* hl);
+
+       void            <B>pfHlightGStateIndex</B>(pfHighlight* hl,
+                         int id);
+
+       int             <B>pfGetHlightGStateIndex</B>(const pfHighlight* hl);
+
+       void            <B>pfHlightTex</B>(pfHighlight* hl,        pfTex-
+                         ture *tex);
+
+       pfTexture*      <B>pfGetHlightTex</B>(const pfHighlight* hl);
+
+       void            <B>pfHlightTEnv</B>(pfHighlight* hl,       pfTex-
+                         Env *tev);
+
+       pfTexEnv*       <B>pfGetHlightTEnv</B>(const pfHighlight* hl);
+
+       void            <B>pfHlightTGen</B>(pfHighlight* hl,       pfTex-
+                         Gen *tgen);
+
+       pfTexGen*       <B>pfGetHlightTGen</B>(const pfHighlight* hl);
+
+       pfHighlight *   <B>pfGetCurHlight</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfHighlight</B> is derived from the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfHighlight</B>.  Casting an object of class <B>pfHighlight</B>
+       to an object of class <B>pfObject</B> is taken care of  automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfHighlight</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>hl</I>  identifies a pfHighlight.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL  Performer  supports  a  mechanism for highlighting
+       individual objects in a scene with a  variety  of  special
+       drawing  styles  that  are activated by applying a pfHigh-
+       light state structure.  Highlighting makes use of  outlin-
+       ing  of  lines  and  polygons and of filling polygons with
+       patterned or textured overlays.  Highlighted drawing  uses
+       a  highlighting  color,  or  foreground color, and in some
+       modes, a contrasting, or background, color.  Additionally,
+       there are highlighting modes for displaying the bound nor-
+       mals and cached bounding boxes of pfGeoState geometry.
+
+       A pfHighlight structure can be applied in  immediate  mode
+       to  the  current active pfGeoState with <B>pfApplyHlight</B>, and
+       added to a specific pfGeoState with  <B>pfGStateMode</B>.   High-
+       lighting  can  be  enabled  and disabled in immediate mode
+       with    <B>pfEnable</B>(<B>PFEN_HIGHLIGHTING</B>)    and     <B>pfDisable</B>(-
+       <B>PFEN_HIGHLIGHTING</B>),  and the override for highlighting can
+       be set with <B>pfOverride</B>(<B>PFSTATE_HIGHLIGHT</B>).   Unlike  other
+       types  of  state, a structure may be applied to a specific
+       pfGeoSet with <B>pfGSetHlight</B>.  This will cause the  pfGeoSet
+       to be drawn as highlighted with the specified highlighting
+       structure, unless highlighting has been overridden as  off
+       with <B>pfOverride</B>.
+
+       This special exception was made because it is assumed that
+       highlighting is to be used dynamically to  highlight  spe-
+       cific  objects  for  a short period of time and should not
+       impact the rest of the state structure.
+
+       Highlighting does have some performance penalty,  in  part
+       because  some of the highlighting modes make use of expen-
+       sive graphics features, and in part because, to offer this
+       flexibility,  highlighted  objects  go  through a slightly
+       slower path in OpenGL Performer rendering code.
+
+       <B>pfNewHlight</B> creates and returns a handle to a pfHighlight.
+       <I>arena</I>  specifies  a  malloc arena out of which the pfHigh-
+       light is allocated or <B>NULL</B> for allocation off the  process
+       heap.  pfHighlights can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetHlightClassType</B>  returns  the  <B>pfType</B>*  for the class
+       <B>pfHighlight</B>.  The <B>pfType</B>* returned by <B>pfGetHlightClassType</B>
+       is  the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of class <B>pfHighlight</B>.  Because OpenGL Per-
+       former  allows  subclassing  of built-in types, when deci-
+
+       <B>pfGetCurHlight</B> returns a pointer  to  the  current  active
+       pfHighlight structure.
+
+       <B>pfHlightGState</B>  sets  a  highlighting  pfGeoState of <I>hl</I> to
+       <I>gstate</I>.  This pfGeoState is made  the  current  pfGeoState
+       for  the  highlighting  phase  of the drawing of the high-
+       lighted pfGeoSet.  Additional  highlighting  mode  changes
+       are applied on top of this pfGeoState.  This allows a user
+       to make additional custom  state  changes  to  highlighted
+       objects.   <B>pfGetHlightGState</B>  returns  the  previously set
+       highlighting pfGeoState of <I>hl</I>.  <B>pfHlightGStateIndex</B> speci-
+       fies  the  index  into  a  pfGeoState table to use for the
+       highlighting pfGeoState.   <B>pfGetHlightGStateIndex</B>  returns
+       the previously set highlighting pfGeoState index of <I>hl</I>.
+
+       <B>pfHlightMode</B>  sets the highlighting mode <I>mode</I> for <I>hl</I>.  The
+       mode specifies the drawing style: how  the  filled  region
+       and  polygon  outlines of an object should be drawn.  This
+       mode is a bitmask composed by bitwise OR-ing together  the
+       following  tokens.   The  default is <B>PFHL_FILL</B>, and a zero
+       mask is ignored.
+
+              <B>PFHL_POINTS</B>         Selects the display  of  object
+                                  vertices  as  points  using the
+                                  point   size    specified    by
+                                  <B>pfHlightPntSize</B>.
+
+              <B>PFHL_NORMALS</B>        Selects  the  display of object
+                                  normals  as  lines   of   width
+                                  determined                   by
+                                  <B>pfHlightLineWidth</B>,       length
+                                  determined                   by
+                                  <B>pfHlightNormalLength</B>, and color
+                                  determined by <B>pfHlightColor</B>.
+
+              <B>PFHL_BBOX_LINES</B>     Selects   the  display  of  the
+                                  object's cached bounding box in
+                                  lines  of  width  determined by
+                                  <B>pfHlightLineWidth</B>   and   color
+                                  determined by <B>pfHlightColor</B>.
+
+              <B>PFHL_BBOX_FILL</B>      Selects   the  display  of  the
+                                  object's cached bounding box as
+                                  a solid filled box of the fore-
+                                  ground color of <I>hl</I>.
+
+              <B>PFHL_LINES</B>          Selects  outlining  of   primi-
+                                  tives.  The  lines are drawn of
+                                  width       determined       by
+                                  <B>pfHlightLineWidth</B>   and   color
+                                  determined by <B>pfHlightColor</B>.
+
+              <B>PFHL_LINES_R</B>        Selects outlining of primitives
+                                  and   reverses  foreground  and
+                                  background   colors   for   the
+                                  lines.
+
+              <B>PFHL_LINESPAT</B>       Selects outlining of primitives
+              <B>PFHL_FILL</B>           Selects   filling  of  polygons
+                                  with the foreground  highlight-
+                                  ing  color.   In this mode, the
+                                  highlighted polygons are filled
+                                  once.    The  foreground  high-
+                                  lighting color is used  as  the
+                                  base  color of polygons, and as
+                                  the  material  color  for   lit
+                                  polygons.
+
+              <B>PFHL_FILL_R</B>         Selects outlining of primitives
+                                  and  reverses  foreground   and
+                                  background   colors   for  fill
+                                  highlight modes.
+
+              <B>PFHL_FILLTEX</B>        Selects the  application  of  a
+                                  highlight texture on the object
+                                  geometry.  The default  texture
+                                  may  be  used, or a texture and
+                                  associated  attributes  may  be
+                                  set      with      <B>pfHlightTex</B>,
+                                  <B>pfHlightTEnv</B>, and <B>pfHlightTGen</B>.
+
+              <B>PFHL_FILLPAT</B>        Selects  patterned  filling  of
+                                  polygons  with  the  foreground
+                                  highlighting  color.  This pat-
+                                  terning will be done  in  addi-
+                                  tion  to  the normal filling of
+                                  the polygons  and  will  be  an
+                                  overlay  with  the  normal base
+                                  polygons showing through.
+
+              <B>PFHL_FILLPAT2</B>       Selects 2-pass patterned  fill-
+                                  ing  of polygons using both the
+                                  foreground and background high-
+                                  lighting colors.  This pattern-
+                                  ing will be done in addition to
+                                  the normal filling of the poly-
+                                  gons and  will  be  an  overlay
+                                  with  the  normal base polygons
+                                  showing through.
+
+              <B>PFHL_SKIP_BASE</B>      Causes the normal drawing phase
+                                  of  the highlighted pfGeoSet to
+                                  be skipped.  This includes  the
+                                  application  of  the pfGeoState
+                                  for that pfGeoSet.
+
+       <B>pfGetHlightMode</B> returns the highlighting mode of <I>hl</I>.
+
+       <B>pfHlightColor</B> sets the specified highlighting color <I>color</I>,
+       <B>PFHL_FGCOLOR</B>  or  <B>PFHL_BGCOLOR</B>,  of  <I>hl</I>,  to  <I>r</I>, <I>g</I>, and <I>b</I>.
+       <B>pfGetHlightColor</B> copies the specified <I>color</I>,  <B>PFHL_FGCOLOR</B>
+       or <B>PFHL_BGCOLOR</B>, of <I>hl</I>, into <I>r</I>, <I>g</I>, and <I>b</I>.
+
+       <B>pfHlightAlpha</B> sets the alpha of <I>hl</I> to <I>a</I>.  <B>pfGetHlightAlpha</B>
+       returns the alpha of <I>hl</I>.
+
+       <B>pfHlightLineWidth</B> sets the line width to be used  for  the
+       the normals drawn in the <B>PFHL_NORMALS</B>  highlighting  mode.
+       The  normals will be drawn of length normalLength + bboxS-
+       cale*bboxLength.  <B>pfGetHlightNormalLength</B> will return  the
+       normal  length and scale values of <I>hl</I> in <I>length</I> and <I>bboxS-</I>
+       <I>cale</I>, respectively.
+
+       <B>pfHlightPntSize</B> sets the point size to  be  used  for  the
+       <B>PFHL_POINTS</B>  highlighting  mode of <I>hl</I> to <I>size</I>.  If <I>size</I> is
+       not greater than zero, the point size will not be  set  by
+       the  highlight  structure  and  will be inherited from the
+       current environment.  <B>pfGetHlightPntSize</B> returns the point
+       size of <I>hl</I>.
+
+       <B>pfHlightLinePat</B>  sets  the pattern to be used for lines in
+       the   <B>PFHL_LINES</B>  highlighting  modes  of   <I>hl</I>   to   <I>pat</I>.
+       <B>pfGetHlightLinePat</B>  returns  the highlighting line pattern
+       of <I>hl</I>.  For both functions, the <I>which</I> argument  determines
+       if  the  line  pattern  pertaining  to  the  foreground (-
+       <B>PFHL_FGPAT</B>) or background (<B>PFHL_BGPAT</B>) style is to be  set
+       or inquired.
+
+       <B>pfHlightFillPat</B>  sets  the  fill pattern to be used in the
+       <B>PFHL_FILLPAT</B>   highlighting   modes   of   <I>hl</I>   to    <I>pat</I>.
+       <B>pfGetHlightFillPat</B>  returns  the highlighting fill pattern
+       of <I>hl</I>.
+
+       <B>pfHlightTex</B> sets the pfTexture for the <B>PFHL_TEX</B> highlight-
+       ing modes of <I>hl</I> to <I>tex</I>.  <B>pfGetHlightTex</B> returns the previ-
+       ously set highlighting texture of <I>hl</I>.  If a texture is not
+       specified  but  the <B>PFHL_TEX</B> is selected for <I>hl</I>, a default
+       two-component texture using  the  highlighting  foreground
+       and background colors will be used.
+
+       <B>pfHlightTEnv</B>  sets  the texture environment (pfTexEnv) for
+       the  <B>PFHL_TEX</B>   highlighting   modes   of   <I>hl</I>   to   <I>tev</I>.
+       <B>pfGetHlightTEnv</B>  returns  the  previously set highlighting
+       texture environment of <I>hl</I>.  If a  texture  environment  is
+       not  specified  but  the  <B>PFHL_TEX</B>  is  selected for <I>hl</I>, a
+       default texture blend environment will be used.
+
+       <B>pfHlightTGen</B>  sets  the  texture   coordinate   generation
+       attribute  (pfTexGen)  for the <B>PFHL_TEX</B> highlighting modes
+       of <I>hl</I> to <I>tgen</I>.  <B>pfGetHlightTGen</B> returns the previously set
+       highlighting pfTexGen of <I>hl</I>.  If a texture coordinate gen-
+       eration function is not specified and  the  object  to  be
+       highlighted  has no texture coordinates of its own and the
+       <B>PFHL_TEX</B> is selected for <I>hl</I>, a default texture  coordinate
+       generation function will be used.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Example 1: Set up a highlighting structure and apply it in
+       immediate mode to the current pfGeoState.
+
+       pfHighlight *hl;
+
+       /* allocate a new highlight color */
+       hl = pfNewHlight(NULL);
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDisable, pfDrawHlightedGSet, pfEnable,
+       pfGSetHlight, pfGeoState, pfGetGSetHlight, pfObject,
+       pfOverride, pfState
+
+
+
+                                                 pfHighlight(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

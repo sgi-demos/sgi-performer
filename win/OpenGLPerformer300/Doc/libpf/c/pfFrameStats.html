@@ -1,0 +1,592 @@
+<HTML>
+<HEAD>
+<TITLE>pfFrameStats</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFrameStats</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFrameStats(3pf)                               pfFrameStats(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewFStats,</B> <B>pfGetFStatsClassType,</B> <B>pfDrawFStats,</B> <B>pfCopyFS-</B>
+       <B>tats,</B> <B>pfGetOpenFStats,</B> <B>pfOpenFStats,</B> <B>pfCloseFStats,</B>  <B>pfFS-</B>
+       <B>tatsCountNode,</B>   <B>pfFStatsClass,</B>   <B>pfGetFStatsClass,</B>  <B>pfFS-</B>
+       <B>tatsClassMode,</B> <B>pfGetFStatsClassMode,</B> <B>pfFStatsAttr,</B> <B>pfGetF-</B>
+       <B>StatsAttr,</B>  <B>pfResetFStats,</B>  <B>pfClearFStats,</B>  <B>pfFStatsCount-</B>
+       <B>GSet,</B> <B>pfAccumulateFStats,</B> <B>pfAverageFStats,</B>  <B>pfQueryFStats,</B>
+       <B>pfMQueryFStats</B>  -  Specify pfFrameStats modes and get col-
+       lected values.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       #include &lt;Performer/pfstats.h&gt;
+
+       pfFrameStats *   <B>pfNewFStats</B>(void);
+
+       pfType*          <B>pfGetFStatsClassType</B>(void);
+
+       void             <B>pfDrawFStats</B>(pfFrameStats *fstats,
+                          pfChannel *chan);
+
+       void             <B>pfCopyFStats</B>(pfFrameStats *dst, pfFrameS-
+                          tats *src,   uint dSel,    uint sSel,
+                          uint classes);
+
+       uint             <B>pfGetOpenFStats</B>(pfFrameStats *fstats,
+                          uint emask);
+
+       uint             <B>pfOpenFStats</B>(pfFrameStats *fstats,
+                          uint enmask);
+
+       uint             <B>pfCloseFStats</B>(uint enmask);
+
+       void             <B>pfFStatsCountNode</B>(pfFrameStats *fstats,
+                          int class, uint mode, pfNode * node);
+
+       uint             <B>pfFStatsClass</B>(pfFrameStats *fstats,
+                          uint enmask, int val);
+
+       uint             <B>pfGetFStatsClass</B>(pfFrameStats *fstats,
+                          uint enmask);
+
+       uint             <B>pfFStatsClassMode</B>(pfFrameStats *fstats,
+                          int class, uint mask, int val);
+
+       uint             <B>pfGetFStatsClassMode</B>(pfFrameStats *fstats,
+                          int class);
+
+       void             <B>pfFStatsAttr</B>(pfFrameStats *fstats,
+                          int attr, float val);
+
+       float            <B>pfGetFStatsAttr</B>(pfFrameStats *fstats,
+                          int attr);
+
+
+       void             <B>pfAccumulateFStats</B>(pfFrameStats* dst,
+                          pfFrameStats* src, uint which);
+
+       void             <B>pfAverageFStats</B>(pfFrameStats* dst,
+                          pfFrameStats* src,        uint which,
+                          int num);
+
+       int              <B>pfQueryFStats</B>(pfFrameStats *fstats,
+                          uint which, float *dst, int size);
+
+       int              <B>pfMQueryFStats</B>(pfFrameStats *fstats,
+                          uint *which, float *dst, int size);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFrameStats</B>  is  derived  from
+       the  parent  class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B>  are  also  directly  usable  with
+       objects of class <B>pfFrameStats</B>.  Casting an object of class
+       <B>pfFrameStats</B> to an object of class <B>pfObject</B> is taken  care
+       of  automatically.  This is also true for casts to objects
+       of ancestor classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfFrameStats</B> can also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+       of  a  scene  for  a given frame.  These statistics can be
+       kept automatically on every pfChannel, or users may  accu-
+       mulate and store their own statistics.  Routines for oper-
+       ating on, displaying, and  printing  statistics  are  also
+       provided.
+
+       The  frame  statistics  for a channel are fetched by first
+       getting the pointer to the channel's statistics  structure
+       with   <B>pfGetChanFStats</B>,  and  then  enabling  the  desired
+       statistics classes.  When a channel is automatically accu-
+       mulating   frame  statistics,  it  enables  the  necessary
+       statistics hardware and  statistics  accumulation  in  the
+       correct processes.  The resulting collected statistics can
+       then be displayed  in  a  channel,  queried,  or  printed.
+       These  statistics  may  be accumulated and averaged over a
+       specified number of frames or seconds.   The  pfFrameStats
+       declarations  are  contained  in  pfstats.h.  The class of
+       process frame timing statistics for  each  of  the  OpenGL
+       Performer  processes  of  application,  cull  and draw, is
+       enabled by default.
+
+       Many pfFrameStats  routines  are  borrowed  from  pfStats.
+       These  routines have the identical function as the pfStats
+       routines but operate on a pfFrameStats rather than a  pfS-
+       tats.  The routine correspondence is listed in the follow-
+       ing table.
+
+       center tab($); C | C L | L .  pfFrameStats routine$pfStats
+       routine _ pfAccumulateFStats$pfAccumulateStats pfAverageF-
+       Stats$pfAverageStats pfClearFStats$pfClearStats pfCloseFS-
+       tats$pfCloseStats      pfFStatsAttr$pfStatsAttr      pfFS-
+       tatsClass$pfStatsClass  pfFStatsClassMode$pfStatsClassMode
+       pfGetFStatsClassMode$pfGetStatsClassMode    pfFStatsCount-
+       GSet$pfStatsCountGSet       pfGetFStatsAttr$pfGetStatsAttr
+       pfGetFStatsClass$pfGetStatsClass  pfOpenFStats$pfOpenStats
+       pfCloseFStats$pfCloseStats  pfGetOpenFStats$pfGetOpenStats
+       pfMQueryFStats$pfMQueryStats      pfOpenFStats$pfOpenStats
+       pfGetOpenFStats$pfGetOpenStats  pfQueryFStats$pfQueryStats
+       pfResetFStats$pfResetStats _ Refer to the pfStats man page
+       for detailed descriptions of these routines.
+
+       <B>pfGetFStatsClassType</B> returns the  <B>pfType</B>*  for  the  class
+       <B>pfFrameStats</B>.       The      <B>pfType</B>*      returned      by
+       <B>pfGetFStatsClassType</B> is the same as the  <B>pfType</B>*  returned
+       by   invoking   <B>pfGetType</B>   on   any   instance  of  class
+       <B>pfFrameStats</B>.  Because OpenGL Performer allows subclassing
+       of  built-in  types,  when decisions are made based on the
+       type of an object, it is usually better to use  <B>pfIsOfType</B>
+       to test if an object is of a type derived from a Performer
+       type rather than  to  test  for  strict  equality  of  the
+       <B>pfType</B>*'s.
+
+       The  pfFrameStats  structure stores accumulated statistics
+       in several buffers.  The following is a list of the  frame
+       statistics buffers:
+
+              <B>PFFSTATS_BUF_PREV</B>             Statistics for previ-
+                                            ous completed frame
+
+              <B>PFFSTATS_BUF_AVG</B>              Statistics   averaged
+                                            over  previous update
+                                            period
+
+       These different buffers can be queried with  <B>pfQueryFStats</B>
+       and  printed  with  <B>pfPrint</B>.   The  desired <B>PFFSTATS_BUF_*</B>
+       token is simply bitwise OR-ed with the desired  statistics
+       value token.
+
+       The   following   table  of  additional  frame  statistics
+       classes, their naming token, and their  enable  token  for
+       forming  bitmasks.   Notice that pfFrameStats tokens start
+       with <B>PFFSTATS*</B>.
+
+       center tab($) ; c s s c | c | c l | l | l .  Frame Statis-
+       tics Class Table _ Class$PFSTATS_* Token$PFSTATS_EN* token
+       _ Process frame times$<B>PFFSTATS_PFTIMES</B>$<B>PFFSTATS_ENPFTIMES</B>
+
+       Database$<B>PFFSTATS_DB</B>$<B>PFFSTATS_ENDB</B>
+
+       Cull$<B>PFFSTATS_CULL</B>$<B>PFFSTATS_ENCULL</B>
+
+       This table lists the frame statistics modes and tokens.
+
+       center tab($) ; c s s c | c | c l | l | l .  Frame Statis-
+       tics  Class Mode Table _ Class$PFSTATS_ Token$Modes _ Pro-
+       cess  frame  times$<B>PFFSTATS_PFTIMES</B>$<B>PFFSTATS_PFTIMES_BASIC</B>
+       $$<B>PFFSTATS_PFTIMES_HIST</B>
+
+       Database$<B>PFFSTATS_DB</B>$<B>PFFSTATS_DB_VIS</B> $$<B>PFFSTATS_DB_EVAL</B>
+
+       Cull$<B>PFFSTATS_CULL</B>$<B>PFFSTATS_CULL_TRAV</B>
+
+       <B>pfNewFStats</B>  creates  and  returns a handle to a pfFrameS-
+       tats.  pfFrameStats are always allocated from shared  mem-
+       ory  and  can  be  deleted using <B>pfDelete</B>.  A pfFrameStats
+       structure contains pfStats statistics  as  well  as  addi-
+       tional  statistics  classes and support for tracking frame
+       related tasks.
+
+       Only the additional support  for  pfFrameStats  above  and
+       beyond  that  of  <B>pfNewStats</B> is discussed here.  There are
+       also examples  showing  different  basic  operations  with
+       pfFrameStats at the end of this man page.
+
+       <B>pfDrawFStats</B> displays the pfFrameStats structure <I>fstats</I> in
+       the channel specified by <I>chan</I>.  This is  useful  for  dis-
+       playing  the statistics in a special channel separate from
+       the main scene channel.   <B>pfDrawChanStats</B>  may  be  called
+       from  OpenGL  Performer's  application, cull, or draw pro-
+       cesses and must be called each frame a statistics  display
+       is  desired.   See <B>pfDrawChanStats</B> for a detailed explana-
+       tion of the channel statistics display.
+
+       <B>pfFStatsClass</B> takes a pointer to a  statistics  structure,
+       <I>fstats</I>, and will set the classes specified in the bitmask,
+       <I>enmask</I>, according to the <I>val</I>, which is one of the  follow-
+       ing:
+
+                                            classes   to    their
+                                            default values.
+
+              <B>PFSTATS_SET</B>                   Sets the class enable
+                                            mask to <I>enmask</I>.
+
+       All stats collection can be set at once to on, off, or the
+       default  by  using  <B>PFSTATS_ALL</B>  for  the  bitmask and the
+       appropriate value for the enable flag.  For  example,  the
+       following  function call will enable all frame statistics,
+       as well as basic statistics classes,  with  their  current
+       class mode settings.
+
+       pfFStatsClass(fstats, PFSTATS_ALL, PFSTATS_ON);
+
+
+       Only statistics classes that are enabled with pfFS-
+       tatsClass are able to be printed with <B>pfPrint</B>, collected,
+       copied, accumulated, averaged, and queried.
+
+       <B>pfGetFStatsClass</B> takes a pointer to a statistics struc-
+       ture, <I>fstats</I>, and the statistics classes of interest spec-
+       ified in the bitmask, <I>enmask</I>.  The frame statistics
+       classes are enabled through <B>pfFStatsClass</B> and the frame
+       statistics class bitmasks may be combined with the basic
+       statistics classes.  If any of the statistics classes
+       specified in <I>enmask</I> are enabled, then <B>pfGetFStatsClass</B>
+       will return the bitmask of those classes, and will other-
+       wise return zero.
+
+       <B>pfFStatsClassMode</B> takes a pointer to a pfFrameStats struc-
+       ture, <I>fstats</I>, the name of the class to set, <I>class</I>, a mask
+       of class modes, <I>mask</I>, and the value for those modes, <I>val</I>.
+       The pfFrameStats classes include all of the pfStats
+       classes.  If <I>class</I> is <B>PFSTATS_CLASSES</B>, then all pfFrameS-
+       tats classes will have their modes set according to <I>mask</I>
+       and <I>val</I>.  Each statistics class has its own mode tokens
+       that may be used for <I>mask</I>.  <I>mask</I> may also be one of
+       <B>PFSTATS_ALL</B> or 0x0.  <I>val</I> is one of the statistics value
+       tokens:  <B>PFSTATS_ON</B>, <B>PFSTATS_OFF</B>, <B>PFSTATS_SET</B>, or
+       <B>PFSTATS_DEFAULT</B>.  See the pfStats man page for more gen-
+       eral information on pfStats statistics classes and value
+       tokens under <B>pfStatsClassMode</B>.  The following describes
+       the additional classes for frame statistics and their cor-
+       responding modes.
+
+       Process Frame Times Modes:
+
+              <B>PFFSTATS_PFTIMES_BASIC</B>
+                   This mode enables a running average of the
+                   time for each OpenGL Performer process of
+                   application, cull, and draw to complete the
+                   tasks for a single frame.  This mode is
+                   enabled by default.
+
+              <B>PFFSTATS_PFTIMES_HIST</B>
+                   In this mode, a history of time stamps is
+                   maintained for different tasks within each of
+                   the OpenGL Performer processes: application
+                   processes there are time stamps to mark when
+                   the application process starts and finishes
+                   cleaning the scene in pfSync, a time stamp
+                   when the application process wakes up to sync
+                   to the next frame boundary (done when the
+                   application process is running with phase set
+                   to <B>PFPHASE_LOCK</B> or <B>PFPHASE_FLOAT</B>), and a time
+                   stamp to mark when the application process
+                   returns after setting off a forked CULL or
+                   ISECT process. The time stamps for each pro-
+                   cess are defined in the pfFStatsValPFTimes*
+                   data type and queried by providing the corre-
+                   sponding <B>PFFSTATSVAL_PFTIMES_HIST_*</B> tokens to
+                   <B>pfQueryFStats</B>.
+
+       Database Statistics Modes:
+
+              <B>PFFSTATS_DB_VIS</B>
+                   This mode enables tracking of how many pfNodes
+                   of each different type are visible and drawn
+                   in a given frame.  This mode is enabled by
+                   default.  These statistics are queried by pro-
+                   viding the desired <B>PFFSTATSVAL_VISIBLE*</B> token
+                   to <B>pfQueryFStats</B>.
+
+              <B>PFFSTATS_DB_EVAL</B>
+                   This mode enables tracking of how many pfNodes
+                   of each different type have special evalua-
+                   tions in a given frame.  Node types that
+                   require special evaluation steps include
+                   pfBillboard, pfSCS, pfDCS, pfLayer, pfLight-
+                   Point, pfLightSource, pfPartition, and pfSe-
+                   quence.  There are also query tokens to query
+                   what processes the evaluation step for a given
+                   node type is done in.  This mode is enabled by
+                   default.  These statistics are queried by pro-
+                   viding the desired <B>PFFSTATSVAL_EVALUATED*</B>
+                   token to <B>pfQueryFStats</B>.
+
+       Cull Statistics Modes:
+
+              <B>PFFSTATS_CULL_TRAV</B>
+                   There is only one cull frame statistics mode
+                   and it tracks culling traversal statistics:
+                   how many pfGeoSets and pfNodes of each type
+                   are traversed in the cull operation, how many
+                   pfNodes are trivially in or out of the viewing
+                   frustum, and how many must pass through a
+                   bounding sphere or bounding box test. These
+                   statistics are queried by providing one of the
+                   <B>PFFSTATSVAL_CULLTRAV</B> tokens to <B>pfQueryFStats</B>.
+                   There are also statistics on the test results
+                   of the cull traversal, queried with the
+                   <B>PFFSTATSVAL_CULLTEST*</B> tokens.
+
+       <B>pfGetFStatsClassMode</B> takes a pointer to a statistics
+       structure, <I>fstats</I>, and the name of the class to query,
+       <I>class</I>.  The return value is the mode of <I>class</I>.
+
+
+              <B>PFFSTATS_UPDATE_FRAMES</B>
+                   The number of frames over which statistics
+                   should be averaged.  The default value is 2.
+                   If <I>val</I> is 0, statistics accumulation and aver-
+                   aging is disabled and only the <B>CUR</B> and <B>PREV</B>
+                   statistics for enabled classes will be main-
+                   tained.  This is recommended for applications
+                   that are not using the averaged statistics and
+                   require a high, fixed frame rate.
+
+              <B>PFFSTATS_UPDATE_SECS</B>
+                   The number of seconds, over which statistics
+                   should be averaged.  The default uses the num-
+                   ber of frames.  As with
+                   <B>PFFSTATS_UPDATE_FRAMES</B>, if <I>val</I> is 0, statis-
+                   tics accumulation and averaging is disabled
+                   and only the <B>CUR</B> and <B>PREV</B> statistics for
+                   enabled classes will be maintained.
+
+              <B>PFFSTATS_PFTIMES_HIST_FRAMES</B>
+                   For the Process Frame Times Statistics,
+                   <B>PFFSTATS_PFTIMES</B>, the number of frames of
+                   time-stamp history to keep.  The default value
+                   is 4.
+
+       <B>pfGetFStatsAttr</B> takes a pointer to a statistics structure,
+       <I>fstats</I>, and the name of the attribute to query, <I>attr</I>.  The
+       return value is that of attribute <I>attr</I>.
+
+       <B>pfQueryFStats</B> takes a pointer to a statistics structure,
+       <I>fstats</I>.  <I>which</I> is a <B>PFSTATSVAL_*</B> or <B>PFFSTATSVAL_*</B> token
+       that specifies the value or values to query in <I>which</I>, and
+       <I>dst</I> destination buffer that is a pointer to a float, a
+       pfStatsVal* or pfFStatsVal* structure.  The size of the
+       expected return data is specified by <I>size</I> and if non-zero,
+       will prevent <B>pfQueryFStats</B> from writing beyond a buffer
+       that is too small.  The return value is the number of
+       bytes written to the destination buffer.  A single
+       <B>PFFSTATS_BUF_*</B> token should be bitwise OR-ed into the
+       <I>which</I> flag to select a frame stats buffer: <B>PREV</B>, <B>CUR</B>, <B>AVG</B>,
+       or <B>CUM</B>.  If no frame statistics buffer is selected, then
+       the query accesses the <B>PREV</B> buffer by default.  If multi-
+       ple stats buffers are selected, no results will be written
+       and a warning message will be printed.  In a running
+       application, one should query frame statistics in the
+       application process and query the <B>PREV</B> and <B>AVG</B> statistics
+       buffers.  The pfFrameStats query structures and tokens are
+       all defined in pfstats.h.  Frame statistics queries may be
+       mixed with standard statistics queries.  There are tokens
+       for getting back all of the statistics, entire sub-struc-
+       tures, and individual values.
+
+       <B>pfMQueryFStats</B> takes a pointer to a statistics structure,
+       <I>fstats</I>, a pointer to the start of a PFSTATSVAL_NULL-termi-
+       nated array of query tokens in <I>which</I>, and a destination
+       buffer <I>dst</I>.  The size of the expected return data is spec-
+       ified by <I>size</I> and if non-zero, will prevent <B>pfMQueryFStats</B>
+       from writing beyond a buffer that is too small.  The
+       specify the statistics buffers for both source and desti-
+       nation pfFrameStats structures.  A value of 0 is defaulted
+       to the value <B>PFFSTATS_BUF_CUR</B>.  The <I>classes</I> argument is a
+       <B>_EN*</B> statistics class enable bitmask.  Any buffer select
+       token included with the class bitmask is ignored.
+
+       <B>pfFStatsCountNode</B> will count <I>node</I> in the specified stats
+       <I>class</I> for the specified <I>mode</I> of the pfFrameStats structure
+       <I>fstats</I>.  Only one class and mode may be specified, and
+       children of <I>node</I> are not traversed.
+
+       <B>pfFStatsCountGSet</B> works as documented for the pfStats
+       statistics structure. It accumulates the statistics into
+       the <B>CUR</B> statistics buffer.
+
+       The <B>pfClearFStats</B>, <B>pfAccumulateFStats</B>, <B>pfAverageFStats</B>
+       routines all take pointers to a pfFrameStats structure,
+       <I>fstats</I>, and work as documented for the basic pfStats
+       statistics structure. However, for operating on a
+       pfFrameStats structure, these routines need to know which
+       pfFrameStats buffer to access.  A pfFrameStats buffer is
+       selected by OR-ing in a <B>_BUF_</B> token with the statistics
+       class enable.  The same pfFrameStats buffer is used for
+       both source and destination pfFrameStats structures.  If
+       no pfFrameStats buffer is selected with a <B>_BUF_</B> token, a
+       default value of <B>PFFSTATS_BUF_CUR</B> is used for calls to
+       <B>pfClearFStats</B> and <B>pfAccumulateFStats</B>, and a default value
+       of <B>PFFSTATS_BUF_CUM</B> is used for calls to <B>pfAverageFStats</B>.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       For a class of statistics to be collected, the following
+       must be true:
+
+              1.   A pfFrameStats structure must be fetched from
+                   the channel of interest, or created.
+
+              2.   The corresponding statistics class must be
+                   enabled with <B>pfFStatsClass</B>.  No statistics
+                   classes are enabled by default.
+
+              3.   The corresponding statistics class mode must
+                   be enabled with <B>pfFStatsClassMode</B> However,
+                   each statistics class does have a reasonable
+                   set of statistics modes enabled by default.
+
+       Here a pfFrameStats structure is obtained for the channel
+       of interest and then database, cull, and graphics statis-
+       tics are enabled.
+
+       pfFrameStats *fstats = NULL;
+       fstats = pfGetChanFStats(chan);
+       pfFStatsClass(stats, PFSTATS_ENGFX | PFFSTATS_ENDB | PFFSTATS_ENCULL, PFSTATS_ON);
+
+       This example shows how to enable and display just the
+       frame times and the number of triangles per frame.  This
+       is a very efficient configuration.
+
+       pfFrameStats *fstats = NULL;
+
+       /* disable the display of the verbose graphics stats
+        * and just have the total tris number at the top of your display.
+        */
+       pfChanFStatsMode(chan, PFCSTATS_DRAW, PFFSTATS_ENPFTIMES);
+
+
+       The following is an example of querying a few specific
+       statistics.  Note that if the corresponding stats class
+       and mode is not enabled then the query will simply return
+       0 for that value.
+
+       uint qtmp[5];
+       float ftmp[5];
+       pfFrameStats *fstats = NULL;
+
+       fstats = pfGetChanFStats(chan);
+
+       qtmp[0] = PFFSTATS_BUF_AVG | PFSTATSVAL_GFX_GEOM_TRIS;
+       qtmp[1] = PFFSTATS_BUF_AVG | PFFSTATSVAL_PFTIMES_PROC_TOTAL;
+       qtmp[2] = PFFSTATS_BUF_AVG | PFSTATSVAL_CPU_SYS_BUSY;
+       qtmp[3] = NULL;
+
+       pfMQueryFStats(fstats, qtmp, ftmp, sizeof(ftmp));
+
+       fprintf(stderr, "Query num tris: %.0f\n", ftmp[0]);
+       fprintf(stderr, "Query frame time: %.0f msecs\n", ftmp[1]*1000.0f);
+       fprintf(stderr, "Query sys busy: %.0f%%\n", ftmp[2]);
+
+       This example shows using a very inexpensive pfFrameStats
+       mode to track frame rates and frames that missed the goal
+       frame rate.
+
+       /* enable only the most minimal stats - tracking of process frame times */
+       pfFrameStats *fstats = pfGetChanFStats(chan);
+       pfFStatsClass(fstats, PFFSTATS_ENPFTIMES, PFSTATS_SET);
+       pfFStatsClassMode(fstats, PFFSTATS_PFTIMES, PFFSTATS_PFTIMES_BASIC, PFSTATS_SET);
+
+       /* turn off accumulation and averaging of stats */
+       pfFStatsAttr(fstats, PFFSTATS_UPDATE_FRAMES, 0.0f);
+
+       static uint query[] = {
+           PFFSTATS_BUF_PREV | PFFSTATSVAL_PFTIMES_APPSTAMP,
+           PFFSTATS_BUF_PREV | PFFSTATSVAL_PFTIMES_PROC,
+           PFFSTATS_BUF_PREV | PFFSTATSVAL_PFTIMES_MISSES,
+           NULL
+       };
+
+       static pfFStatsValProc dst[3];
+       int i;
+
+       if (!FrameStats)
+           initFrameStats();
+
+       /* get the prev frame times and corresponding app frame stamps */
+       pfMQueryFStats(fstats, query, dst, sizeof(dst));
+
+       /* record the collected data here */
+
+       are obtained from IRIX process accounting data at the
+       start and end of the update period.  They are then copied
+       into the <B>CUR</B> and <B>AVG</B> buffers.
+
+       <B>pfOpenFStats</B> and <B>pfCloseFStats</B> cannot be executed on a
+       pfFrameStats structure.  All actual frame statistics col-
+       lection is done only by individual pfChannels.  Frame
+       statistics can be copied and accumulated into additional
+       pfFrameStats structures.
+
+       The <B>pfDrawChanStats</B> manual page gives some pointers on how
+       to interpret the statistics to help in tuning your
+       database.  Refer to the OpenGL Performer Programming Guide
+       for more detailed information.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Calls to <B>pfQueryFStats</B> with the query tokens
+       <B>PFFSTATSVAL_NUMFRAMES</B> or <B>PFFSTATSVAL_NUMISECTFRAMES</B> return
+       values formatted as floats, even though the corresponding
+       fields in the pfFrameStatsValues structure are of type
+       type <B>int</B>.
+
+       The checking of <I>size</I> in and <B>pfMQueryFStats</B> is not yet
+       implemented.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChanStatsMode, pfDrawChanStats, pfGetChanFStats, pfS-
+       tats, pfDelete
+
+
+
+                                                pfFrameStats(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,261 @@
+<HTML>
+<HEAD>
+<TITLE>pfObject</TITLE>
+</HEAD>
+<BODY>
+<H1>pfObject</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfObject(3pf)                                       pfObject(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGetObjectClassType,</B>  <B>pfUserDataSlot,</B>  <B>pfUserData,</B>  <B>pfGe-</B>
+       <B>tUserDataSlot,</B> <B>pfGetUserData,</B> <B>pfGetNumUserData,</B> <B>pfGetName-</B>
+       <B>dUserDataSlot,</B>  <B>pfGetUserDataSlotName,</B>  <B>pfGetNumNamedUser-</B>
+       <B>DataSlots,</B> <B>pfCopyFuncSlot,</B> <B>pfCopyFunc,</B>  <B>pfGetCopyFuncSlot,</B>
+       <B>pfGetCopyFunc,</B>   <B>pfDeleteFuncSlot,</B>   <B>pfDeleteFunc,</B>  <B>pfGet-</B>
+       <B>DeleteFuncSlot,</B> <B>pfGetDeleteFunc,</B> <B>pfPrintFuncSlot,</B> <B>pfPrint-</B>
+       <B>Func,</B>  <B>pfGetPrintFuncSlot,</B>  <B>pfGetPrintFunc,</B> <B>pfGetGLHandle,</B>
+       <B>pfDeleteGLHandle</B> - pfObject, callback and user data opera-
+       tions
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfType*            <B>pfGetObjectClassType</B>(void);
+
+       void               <B>pfUserDataSlot</B>(pfObject *obj, int slot,
+                            void *data);
+
+       void               <B>pfUserData</B>(pfObject *obj, void *data);
+
+       void*              <B>pfGetUserDataSlot</B>(pfObject *obj,
+                            int slot);
+
+       void*              <B>pfGetUserData</B>(pfObject *obj);
+
+       int                <B>pfGetNumUserData</B>(pfObject *obj);
+
+       int                <B>pfGetNamedUserDataSlot</B>(const char *name);
+
+       const char*        <B>pfGetUserDataSlotName</B>(int slot);
+
+       int                <B>pfGetNumNamedUserDataSlots</B>(void);
+
+       void               <B>pfCopyFuncSlot</B>(int slot,    pfCopyFunc-
+                            Type func);
+
+       void               <B>pfCopyFunc</B>(pfCopyFuncType func);
+
+       pfCopyFuncType     <B>pfGetCopyFuncSlot</B>(int slot);
+
+       pfCopyFuncType     <B>pfGetCopyFunc</B>(void);
+
+       void               <B>pfDeleteFuncSlot</B>(int slot,    pfDelete-
+                            FuncType func);
+
+       void               <B>pfDeleteFunc</B>(pfDeleteFuncType func);
+
+       pfDeleteFuncType   <B>pfGetDeleteFuncSlot</B>(int slot);
+
+       pfDeleteFuncType   <B>pfGetDeleteFunc</B>(void);
+
+       void               <B>pfPrintFuncSlot</B>(int slot,  pfPrintFunc-
+                            Type func);
+
+
+       int                <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+                          typedef void (*pfCopyFuncType)(pfObject *dst, const pfObject *src);
+                          typedef void (*pfDeleteFuncType)(pfObject *obj);
+                          typedef void (*pfPrintFuncType)(const pfObject *obj, uint which, uint verbose, char *, FILE *);
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfObject</B> is derived from the
+       parent class <B>pfMemory</B>, so each of these member functions
+       of class <B>pfMemory</B> are also directly usable with objects of
+       class <B>pfObject</B>.  Casting an object of class <B>pfObject</B> to an
+       object of class <B>pfMemory</B> is taken care of automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfObject is the abstract data type from which the major
+       OpenGL Performer data structures are derived.  pfObject in
+       turn derives from pfMemory which is the basic memory allo-
+       cation unit.  Although pfObjects cannot be created
+       directly, most OpenGL Performer data structures are
+       derived from them and thus inherit the functionality of
+       the pfObject routines described here and those for pfMem-
+       ory.
+
+
+       <B>pfGetObjectClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfObject</B>.  The <B>pfType</B>* returned by <B>pfGetObjectClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfObject</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when decisions are
+       made based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test if an object is of a type
+       derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       User data provides a mechanism for associating application
+       with a slot, the next unused slot will be named <I>name</I>.
+       Once a slot has been named its name can never be changed.
+
+       <B>pfGetUserDataSlotName</B> returns the name of user data <I>slot</I>.
+
+       <B>pfGetNumNamedUserDataSlots</B> returns the number of named
+       user data slots.
+
+       <B>pfUserDataSlot</B> attaches the user-supplied data pointer,
+       <I>data</I>, to user data <I>slot</I> of <I>obj</I>.  <B>pfUserData</B> attaches the
+       user-supplied data pointer, <I>data</I>, to user data slot 0 of
+       <I>obj</I>.
+
+
+       Example 2: How to use User Data.
+
+       typedef struct
+       {
+           float coeffFriction;
+           float density;
+           float *dataPoints;
+       }
+       myMaterial;
+
+       myMaterial     *granite;
+
+       granite = (myMaterial *)pfMalloc(sizeof(myMaterial), NULL);
+       granite-&gt;coeffFriction = 0.5f;
+       granite-&gt;density = 3.0f;
+       granite-&gt;dataPoints = (float *)pfMalloc(sizeof(float)*8, NULL);
+       graniteMtl = pfNewMtl(NULL);
+
+       pfUserData(graniteMtl, granite);
+
+
+       <B>pfGetUserDataSlot</B> returns the user-data pointer for <I>slot</I>
+       of <I>obj</I>.  <B>pfGetUserData</B> returns the user-data pointer for
+       slot 0 of <I>obj</I>.
+
+       Note that memory from <B>pfMalloc</B> is not an considered a
+       pfObject so user-data pointers are not provided for pfMal-
+       loc'ed memory.
+
+       User data is reference counted if it is a <B>libpr</B>-type
+       object like pfTexture, pfGeoSet, or memory allocated from
+       <B>pfMalloc</B>.  Thus user data is deleted if its reference
+       count reaches 0 when its parent pfObject is deleted.
+
+       <B>pfGetNumUserData</B> returns 1 + greatest non-NULL user data
+       slot number of <I>obj</I>, or 0 if no slot contains non-NULL user
+       data.
+
+       <B>pfDeleteFunc</B>, <B>pfDeleteFuncSlot</B>, <B>pfCopyFunc</B>,
+       <B>pfCopyFuncSlot</B>, and <B>pfPrintFunc</B>, <B>pfPrintFuncSlot</B> set
+       global function callbacks which are called when deleting,
+       copying, and printing a pfObject with non-NULL user data
+       in <I>slot</I>.  If <I>slot</I> is not specified slot 0 is assumed.
+       These callbacks are provided so you can change the default
+       behavior of user data.  If a callback is not specified or
+                     reference count of the user data attached to
+                     the source pfObject and copy the user data
+                     pointer from the source to the destination
+                     pfObject. In pseudo-code:
+
+                          pfUnref(dst-&gt;userData[slot]);
+                          pfRef(src-&gt;userData[slot]);
+                          dst-&gt;userData[slot] = src-&gt;userData[slot];
+
+
+              3.     Print: Print the address of the user data.
+
+       <B>pfGetDeleteFunc</B>, <B>pfGetDeleteFuncSlot</B>, <B>pfGetCopyFunc</B>,
+       <B>pfGetCopyFuncSlot</B>, and <B>pfGetPrintFunc</B>, <B>pfGetPrintFuncSlot</B>
+       return the global deletion, copy, and print callbacks
+       respectively for <I>slot</I>.  If <I>slot</I> is not specified slot 0 is
+       assumed.
+
+       Example 3: How to delete the user data of Example 2.
+
+       void
+       myDeleteFunc(pfObject *obj)
+       {
+           myMaterial *mtl = pfGetUserData(obj);
+
+           pfFree(mtl-&gt;dataPoints);
+           pfFree(mtl);
+       }
+        :
+       /* allocate a new material */
+       graniteMtl = pfNewMtl(NULL);
+
+       /* bind user data to material */
+       pfUserData(graniteMtl, granite);
+
+       /* set deletion callback */
+       pfDeleteFunc(myDeleteFunc);
+
+       /*
+        * This will trigger callback only if graniteMtl has
+        * a reference count &lt;= 0.
+        */
+       pfDelete(graniteMtl);
+
+
+       In the above example, the 'dataPoints' array of the 'myMa-
+       terial' structure would not have been freed without the
+       deletion callback since pfDelete would have simply deleted
+       the myMaterial structure.
+
+       <B>pfGetGLHandle</B> is a back-door mechanism for those who need
+       to tweak the graphics library objects which underly many
+       libpr objects.  <B>pfGetGLHandle</B> returns the graphics library
+       identifier associated with <I>obj</I> or -1 if <I>obj</I> has no associ-
+       ated graphics library handle.  <B>pfDeleteGLHandle</B> will
+       delete the object's associated GL object.  Currently this
+       is supported only for pfTextures.
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

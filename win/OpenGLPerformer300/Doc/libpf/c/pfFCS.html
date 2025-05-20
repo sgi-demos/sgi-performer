@@ -1,0 +1,261 @@
+<HTML>
+<HEAD>
+<TITLE>pfFCS</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFCS</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFCS(3pf)                                             pfFCS(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewFCS,</B>   <B>pfGetFCSClassType,</B>   <B>pfFCSFlux,</B>  <B>pfGetFCSFlux,</B>
+       <B>pfGetFCSMat,</B> <B>pfGetFCSMatPtr,</B> <B>pfFCSMatType,</B> <B>pfGetFCSMatType</B>
+       -  Create, modify, and query flux coordinate system nodes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfFCS *           <B>pfNewFCS</B>(pfFlux *flux);
+
+       pfType *          <B>pfGetFCSClassType</B>(void);
+
+       void              <B>pfFCSFlux</B>(pfFCS* fcs, pfFlux *flux);
+
+       pfFlux*           <B>pfGetFCSFlux</B>(pfFCS* fcs);
+
+       void              <B>pfGetFCSMat</B>(pfFCS *fcs, pfMatrix m);
+
+       const pfMatrix*   <B>pfGetFCSMatPtr</B>(pfFCS *fcs);
+
+       void              <B>pfFCSMatType</B>(pfFCS *fcs, uint val);
+
+       uint              <B>pfGetFCSMatType</B>(pfFCS *fcs);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFCS</B> is derived from the  par-
+       ent  class  <B>pfSCS</B>,  so  each  of these member functions of
+       class <B>pfSCS</B> are also directly usable with objects of class
+       <B>pfFCS</B>.   Casting  an object of class <B>pfFCS</B> to an object of
+       class <B>pfSCS</B> is taken care of automatically.  This is  also
+       true  for  casts  to  objects of ancestor classes of class
+       <B>pfSCS</B>.
+
+       void              <B>pfGetSCSMat</B>(pfSCS *scs, pfMatrix mat);
+       const pfMatrix*   <B>pfGetSCSMatPtr</B>(pfSCS *scs);
+
+
+       Since the class <B>pfSCS</B> is itself derived  from  the  parent
+       class  <B>pfGroup</B>,  objects  of  class <B>pfFCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfGroup</B>.
+
+       int        <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+       int        <B>pfInsertChild</B>(pfGroup *group,  int index,  pfN-
+                    ode *child);
+       int        <B>pfReplaceChild</B>(pfGroup *group,     pfNode *old,
+                    pfNode *new);
+       int        <B>pfRemoveChild</B>(pfGroup *group, pfNode* child);
+       int        <B>pfSearchChild</B>(pfGroup *group, pfNode* child);
+       pfNode *   <B>pfGetChild</B>(const pfGroup *group, int index);
+       int        <B>pfGetNumChildren</B>(const pfGroup *group);
+       int        <B>pfBufferAddChild</B>(pfGroup *group,           pfN-
+                    ode *child);
+       int        <B>pfBufferRemoveChild</B>(pfGroup *group,        pfN-
+                    ode *child);
+
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>,  objects  of class <B>pfFCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfFCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>fcs</I>  identifies a pfFCS
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfFCS (Flux Coordinate System) is a pfSCS  whose  matrix
+       is  contained in a pfFlux.  A pfFCS is similar to a pfDCS,
+       in that its matrix can change, but  since  its  matrix  is
+       contained in a pfFlux, it can be animated using pfEngines.
+
+       <B>pfNewFCS</B> creates and returns a handle  to  a  pfFCS.   The
+       matrix  of a the new pfFCS will be contained in <I>flux</I>. Like
+       other pfNodes, pfFCSes are always  allocated  from  shared
+       memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetFCSClassType</B> returns the <B>pfType</B>* for the class <B>pfFCS</B>.
+       The <B>pfType</B>* returned by <B>pfGetFCSClassType</B> is the  same  as
+       the <B>pfType</B>* returned by invoking <B>pfGetType</B> on any instance
+       of class <B>pfFCS</B>.  Because OpenGL Performer allows subclass-
+       ing  of  built-in  types, when decisions are made based on
+       the type of  an  object,  it  is  usually  better  to  use
+       <B>pfIsOfType</B>  to test if an object is of a type derived from
+       a Performer type rather than to test for  strict  equality
+       of the <B>pfType</B>*'s.
+
+       <B>pfFCSFlux</B> attaches a pfFlux to a pFCS.
+
+       <B>pfGetFCSFlux</B>  returns  the  pfFlux currently attached to a
+       pfFCS.
+
+       <B>pfFCSMatType</B> allows the specification of information about
+       the  type  of  transformation the matrix represents.  This
+       information allows Performer to speed up some  operations.
+       The matrix type is specified as the OR of
+
+              PFMAT_TRANS:  matrix  may  include  a translational
+              component in the 4th row.
+
+              PFMAT_ROT
+                     matrix may include a rotational component in
+                     the left upper 3X3 submatrix.
+
+              PFMAT_SCALE
+                     matrix  may  include  a uniform scale in the
+                     left upper 3X3 submatrix.
+
+              PFMAT_NONORTHO
+                     matrix may have mat[4][4] != 1.
+
+              PFMAT_MIRROR
+                     matrix  may include mirroring transformation
+                     that switches between right handed and  left
+                     handed coordinate systems.
+
+
+              <B>pfGetFCSMatType</B> returns the matrix type as
+              set  by <B>pfFCSMatType</B>.  If no matrix type is set the
+              default is ~0, corresponding to a general matrix.
+
+              The transformation of a pfFCS affects all its chil-
+              dren.   As  the  hierarchy is traversed from top to
+              bottom, each new matrix is pre-multiplied to create
+              the  new  transformation.   For example, if FCSb is
+              below FCSa in the scene graph, any geometry G below
+              FCSa is transformed as G*FCSb*FCSa.
+
+              <B>pfFlatten</B>  cannot  flatten  pfFCSes  since they may
+              change at run-time.  In this  case  <B>pfFlatten</B>  will
+              compute a pfSCS representing the accumulated static
+              transformation that the pfFCS inherits  and  insert
+              it above the pfFCS.  Static transformations below a
+              pfFCS are flattened as usual.   See  <B>pfFlatten</B>  for
+              more details.
+
+              The  presence of transformations in the scene graph
+              impacts the performance  of  intersection,  culling
+              and  drawing.  pfGeoSet culling (see <B>PFCULL_GSET</B> in
+              <B>pfChanTravMode</B>) is  disabled  in  portions  of  the
+              scene graph below pfFCSes.
+
+              Both  pre and post CULL and DRAW callbacks attached
+              to a pfFCS (<B>pfNodeTravFuncs</B>) will  be  affected  by
+              the transformation represented by the pfFCS, i.e. -
+              the pfFCS matrix will already have been applied  to
+              the  matrix stack before the pre callback is called
+              and will be popped only after the post callback  is
+              called.
+
+              <B>pfGetFCSMat</B>  copies the transformation matrix value
+              from <I>fcs</I> into the  matrix  <I>m</I>.   For  faster  matrix
+              access,  <B>pfGetFCSMatPtr</B>  can be used to get a const
+              pointer to <I>fcs</I>'s matrix.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFlux, pfEngine, pfGroup,  pfChanTravMode,  pfLookupNode,
+       pfFlatten,  pfMatrix, pfNode, pfSCS, pfScene, pfTraverser,
+       pfDelete
+
+
+
+                                                       pfFCS(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

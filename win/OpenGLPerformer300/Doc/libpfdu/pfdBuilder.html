@@ -1,0 +1,411 @@
+<HTML>
+<HEAD>
+<TITLE>pfdBuilder</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdBuilder</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdBuilder(3pf)                                   pfdBuilder(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdInitBldr,</B>  <B>pfdExitBldr,</B>  <B>pfdNewBldr,</B> <B>pfdDelBldr,</B> <B>pfdSe-</B>
+       <B>lectBldr,</B> <B>pfdGetCurBldr,</B> <B>pfdAddBldrGeom,</B>  <B>pfdAddIndexedBl-</B>
+       <B>drGeom,</B> <B>pfdBldrStateVal,</B> <B>pfdGetBldrStateVal,</B> <B>pfdBldrState-</B>
+       <B>Mode,</B>  <B>pfdGetBldrStateMode,</B>  <B>pfdBldrStateAttr,</B>   <B>pfdGetBl-</B>
+       <B>drStateAttr,</B>  <B>pfdBldrStateInherit,</B> <B>pfdGetBldrStateInherit,</B>
+       <B>pfdCaptureDefaultBldrState,</B> <B>pfdResetBldrState,</B>  <B>pfdPushBl-</B>
+       <B>drState,</B>   <B>pfdPopBldrState,</B>  <B>pfdSaveBldrState,</B>  <B>pfdLoadBl-</B>
+       <B>drState,</B> <B>pfdBldrGState,</B> <B>pfdGetBldrGState,</B>  <B>pfdBuild,</B>  <B>pfd-</B>
+       <B>BuildNode,</B>  <B>pfdSelectBldrName,</B>  <B>pfdGetCurBldrName,</B> <B>pfdGet-</B>
+       <B>TemplateObject,</B>  <B>pfdResetAllTemplateObjects,</B>   <B>pfdResetOb-</B>
+       <B>ject,</B>  <B>pfdMakeDefaultObject,</B> <B>pfdResetBldrGeometry,</B> <B>pfdGet-</B>
+       <B>BldrShare,</B> <B>pfdSetBldrShare,</B> <B>pfdResetBldrShare,</B> <B>pfdCleanBl-</B>
+       <B>drShare,</B>   <B>pfdDefaultGState,</B>   <B>pfdGetDefaultGState,</B>   <B>pfd-</B>
+       <B>MakeSceneGState,</B> <B>pfdOptimizeGStateList,</B> <B>pfdBldrMode,</B>  <B>pfd-</B>
+       <B>GetBldrMode,</B>  <B>pfdBldrAttr,</B> <B>pfdGetBldrAttr,</B> <B>pfdBldrDeleteN-</B>
+       <B>ode</B> - Provides a simple interface between model input code
+       and internal Performer model representations.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       void                 <B>pfdInitBldr</B>(void);
+
+       void                 <B>pfdExitBldr</B>(void);
+
+       pfdBuilder *         <B>pfdNewBldr</B>(void);
+
+       void                 <B>pfdDelBldr</B>(pfdBuilder *bldr);
+
+       void                 <B>pfdSelectBldr</B>(pfdBuilder *bldr);
+
+       pfdBuilder *         <B>pfdGetCurBldr</B>(void);
+
+       void                 <B>pfdAddBldrGeom</B>(pfdGeom *prims,
+                              int count);
+
+       void                 <B>pfdAddIndexedBldrGeom</B>(pfdGeom *prims,
+                              int count);
+
+       void                 <B>pfdBldrStateVal</B>(int which,
+                              float val);
+
+       float                <B>pfdGetBldrStateVal</B>(int which);
+
+       void                 <B>pfdBldrStateMode</B>(int mode, int val);
+
+       int                  <B>pfdGetBldrStateMode</B>(int mode);
+
+       void                 <B>pfdBldrStateAttr</B>(int which,
+                              const void *attr);
+
+       const void *         <B>pfdGetBldrStateAttr</B>(int attr);
+
+       void                 <B>pfdBldrStateInherit</B>(uint mask);
+       void                 <B>pfdPushBldrState</B>(void);
+
+       void                 <B>pfdPopBldrState</B>(void);
+
+       void                 <B>pfdSaveBldrState</B>(void *name);
+
+       void                 <B>pfdLoadBldrState</B>(void *name);
+
+       void                 <B>pfdBldrGState</B>(const pfGeoState *gstate);
+
+       const pfGeoState *   <B>pfdGetBldrGState</B>(void);
+
+       pfNode *             <B>pfdBuild</B>(void);
+
+       pfNode *             <B>pfdBuildNode</B>(void *name);
+
+       void                 <B>pfdSelectBldrName</B>(void *name);
+
+       void *               <B>pfdGetCurBldrName</B>(void);
+
+       pfObject *           <B>pfdGetTemplateObject</B>(pfType *type);
+
+       void                 <B>pfdResetAllTemplateObjects</B>(void);
+
+       void                 <B>pfdResetObject</B>(pfObject *obj);
+
+       void                 <B>pfdMakeDefaultObject</B>(pfObject *obj);
+
+       void                 <B>pfdResetBldrGeometry</B>(void);
+
+       pfdShare *           <B>pfdGetBldrShare</B>(void);
+
+       void                 <B>pfdSetBldrShare</B>(pfdShare *share);
+
+       void                 <B>pfdResetBldrShare</B>(void);
+
+       void                 <B>pfdCleanBldrShare</B>(void);
+
+       void                 <B>pfdDefaultGState</B>(pfGeoState *def);
+
+       const pfGeoState *   <B>pfdGetDefaultGState</B>(void);
+
+       pfGeoState
+                            *         <B>pfdMakeSceneGState</B>(pfList *gstateList,
+                              pfGeoState *previousGlobalState);
+
+       void                 <B>pfdOptimizeGStateList</B>(pfList *gstateList,
+                              pfGeoState *globalGState);
+
+       void                 <B>pfdBldrMode</B>(int mode, int val);
+
+       int                  <B>pfdGetBldrMode</B>(int mode);
+
+       void                 <B>pfdBldrAttr</B>(int which, void *attr);
+
+       void *               <B>pfdGetBldrAttr</B>(int which);
+
+       void                 <B>pfdBldrDeleteNode</B>(pfNode *node);
+
+
+       The  Performer  <I>Builder</I>  is  meant  to  manage most of the
+       details of constructing efficient runtime structures.   It
+       provides  a  simple  and convenient interface for bringing
+       scene data into the application without the need for  con-
+       sidering  how  best  to  structure that data for efficient
+       rendering in Performer.  The Builder provides a comprehen-
+       sive  interface between model input code (such as database
+       file parsers) and the internal mechanisms of scene  repre-
+       sentation in Performer.
+
+       The  operational state of the Builder is encapsulated in a
+       <B>pfdBuilder</B> object.  During execution, there  is  always  a
+       current  pfdBuilder  defined.  <B>pfdInitBldr</B> initializes the
+       current (default) pfdBuilder  and  <B>pfdExitBldr</B>  terminates
+       its  use.  For those who wish to explicitly manage the use
+       of several builders, <B>pfdNewBldr</B> creates a  new  pfdBuilder
+       object   and  <B>pfdDelBldr</B>  destroys  a  pfdBuilder  object.
+       <B>pfdSelectBldr</B> and <B>pfdGetCurBldr</B> set and query the  current
+       pfdBuilder, respectively.
+
+       The Builder is used in an immediate mode fashion.  A typi-
+       cal client will feed a series of geometric  primitives  to
+       the Builder, occasionally setting certain graphics states,
+       and finally request that the Builder convert all the input
+       data into a Performer scene graph.
+
+       <B>pfdAddBldrGeom</B> is the means by which a new geometric prim-
+       itive is entered into the Builder.  It accepts  a  pointer
+       to  a  single  <B>pfdGeom</B>  structure  <I>prims</I>. If the indicated
+       <B>pfdGeom</B> is a line-strip, then the <I>count</I> argument  provides
+       the    number    of    line   segments   in   the   strip.
+       <B>pfdAddIndexedBldrGeom</B>  provides  the  same  functions  for
+       indexed  primitives.   See  the documentation for the Per-
+       former geometry builder (<B>pfdGeoBuilder</B>) for  documentation
+       on the structure and use of the <B>pfdGeom</B> structure.
+
+       In addition to geometry, we need to specify various graph-
+       ics states.  There is  always  a  current  graphics  state
+       being    applied    to    input    geometric   primitives.
+       <B>pfdBldrStateVal,</B>   <B>pfdGetBldrStateVal,</B>   <B>pfdBldrStateMode,</B>
+       <B>pfdGetBldrStateMode,</B>      <B>pfdBldrStateAttr,</B>      <B>pfdGetBl-</B>
+       <B>drStateAttr,</B>           <B>pfdBldrStateInherit</B>,            and
+       <B>pfdGetBldrStateInherit</B>  are  used to access and alter this
+       state.  These functions are an exact  duplication  of  the
+       interface to <B>pfGeoState</B>s; refer to the <B>pfGeoState</B> documen-
+       tation for details on graphics states and their use.
+
+       The current graphics state can also be  manipulated  as  a
+       whole.   <B>pfdPushBldrState</B> and <B>pfdPopBldrState</B> manipulate a
+       stack of graphics states, the top of which is the  current
+       state.  <B>pfdDefaultGState</B>  records  the  state  defined  by
+       pfGeoState   <I>def</I>   as   the   Builder's   default   state.
+       <B>pfdResetBldrState</B> resets the current graphics state to the
+       default state, and  <B>pfdCaptureDefaultBldrState</B>  makes  the
+       current     state    the    default    state.     Finally,
+       <B>pfdSaveBldrState</B> saves the current state  with  the  given
+       name,  and <B>pfdLoadBldrState</B> loads the named state into the
+       current state.
+
+       By default the Builder will use the global <B>pfdShare</B> struc-
+       ture to store shared graphics state.  It  is  possible  to
+       set  the <B>pfdShare</B> structure used by the current pfdBuilder
+       using  <B>pfdSetBldrShare</B>.    <B>pfdSetBldrShare</B>   returns   the
+       <B>pfdShare</B> structure used by the current pfdBuilder.
+
+       <B>pfdBuild</B>  takes  all  the geometry data and graphics state
+       information that has been input into the Builder and  con-
+       structs  a  Performer  scene  graph  for it.  The function
+       returns a pfNode which is the root of this graph.
+
+       While transferring database information to the Builder, it
+       is  possible to partition the database into logical units.
+       Each unit is given a name; in normal operation,  all  data
+       is  tagged with the same default name.  Every named parti-
+       tion will correspond to a disjoint subgraph in  the  scene
+       graph  generated  by  <B>pfdBuild</B>.  The function <B>pfdBuildNode</B>
+       can be used to build the graph for a single specific  par-
+       tition,   rather   than   the   entire   input   database.
+       <B>pfdSelectBldrName</B> sets the name  being  applied  to  input
+       data  and <B>pfdGetCurBldrName</B> queries the current name being
+       used.
+
+       It is also possible to remove all accumulated data in  the
+       Builder.   <B>pfdResetBldrGeometry</B>  clears  away all geometry
+       information  stored  in  the  Builder.   <B>pfdResetBldrShare</B>
+       deletes   all   shared  graphics  state  in  the  Builder.
+       <B>pfdCleanBldrShare</B> deletes all shared graphics  state  that
+       is  only referenced through the current pfdBuilder's share
+       structure  (this  is  accomplished  through  <B>pfdCleanShare</B>
+       which  in  turn  uses  <B>pfUnrefDelete</B>  to delete individual
+       state elements  that  are  only  referenced  by  the  pfd-
+       Builder).
+
+       <B>pfdBldrDeleteNode</B>  gets  a  list  of  all state attributes
+       attached to leaf nodes under <I>node</I>, activates  <B>pfDelete</B>  on
+       <I>node</I>,  then  proceeds  to remove each state attribute from
+       the   current    pfdBuilder's    share    structure    via
+       <B>pfdRemoveSharedObject</B>.
+
+       The  Builder also tries to alleviate the need for the user
+       to  manipulate  Performer  objects  while   building   the
+       database.   <B>pfdGetTemplateObject</B> returns a standard object
+       of the given type.  The user can then fill in  the  appro-
+       priate  slots  of  this object and pass this object to the
+       Builder.  This allows the Builder to deal with some of the
+       details of Performer data structures as well as accept the
+       burden  of   managing   memory   for   database   objects.
+       <B>pfdResetObject</B> fills in a template object with the default
+       values for that object  type.   <B>pfdMakeDefaultObject</B>  sets
+       the  default  values using the given object as a template.
+       Use <B>pfdResetAllTemplateObjects</B> to restore all of the  tem-
+       plate  objects  to  the  values  defined  by the Builder's
+       default pfGeoState.
+
+       As another form of sharing, Performer databases  can  also
+       utilize   a   default  global  pfGeoState.   For  example,
+       <B>pfSceneGState</B> sets the global  pfGeoState  for  an  entire
+       the   Builder   remembers    the    default    pfGeoState.
+       <B>pfdDefaultGState</B>    sets    this    default    state   and
+       <B>pfdGetDefaultGState</B>  can  be  used  to  query   it.    All
+       pfGeoStates  constructed  by  the Builder will inherit the
+       attributes of this default pfGeoState.   If  a  series  of
+       pfGeoStates     have     already     been     constructed,
+       <B>pfdMakeSceneGState</B>  can  be  used  to  extract  a  default
+       pfGeoState  which  maximizes  sharing through inheritance.
+       In order to do this, <B>pfdMakeSceneGState</B> requires the  list
+       of  pfGeoStates to be optimized and the default pfGeoState
+       in effect when they were originally constructed.  Finally,
+       <B>pfdOptimizeGStateList</B>  takes  a  list  of  pfGeoStates and
+       forces them to inherit state wherever  that  state  agrees
+       with the specified default.
+
+       The  behavior of the Builder can be controlled by changing
+       various Builder modes  and  attributes.   <B>pfdBldrMode</B>  and
+       <B>pfdGetBldrMode</B>  set  and  query the Builder modes, respec-
+       tively.  <B>pfdBldrAttr</B>  and  <B>pfdGetBldrAttr</B>  set  and  query
+       Builder attributes.
+
+       The supported Builder modes are:
+              <B>PFDBLDR_MESH_ENABLE</B>
+              <B>PFDBLDR_AUTO_COLORS</B>
+              <B>PFDBLDR_AUTO_ORIENT</B>
+              <B>PFDBLDR_AUTO_NORMALS</B>
+                     These modes are used to control the geometry
+                     builder.    See   the   documentation    for
+                     <B>pfdGeoBldrMode</B> for details.
+
+              <B>PFDBLDR_MESH_SHOW_TSTRIPS</B>
+              <B>PFDBLDR_MESH_INDEXED</B>
+              <B>PFDGBLDR_SHARE_INDEX_LISTS</B>
+              <B>PFDBLDR_MESH_MAX_TRIS</B>
+              <B>PFDBLDR_MESH_RETESSELLATE</B>
+                     These modes are used to control the triangle
+                     strip mesher.  Refer  to  the  documentation
+                     for <B>pfdMesherMode</B>.
+
+              <B>PFDBLDR_BREAKUP</B>
+                     When this mode is enabled (its value is non-
+                     NULL), input geometry will  be  fed  through
+                     <B>pfdBreakup</B>.  This utility takes the unstruc-
+                     tured input geometry and creates  an  output
+                     graph  reflecting  a  spatial subdivision of
+                     the input.
+
+              <B>PFDBLDR_BREAKUP_SIZE</B>
+              <B>PFDBLDR_BREAKUP_BRANCH</B>
+              <B>PFDBLDR_BREAKUP_STRIP_LENGTH</B>
+                     If <B>pfdBreakup</B> is called, the values of these
+                     modes  determine  the argument values passed
+                     to it.
+
+              <B>PFDBLDR_SHARE_MASK</B>
+                     This is a bitwise-OR of the attributes  that
+                     should  be  shared  in  the  Performer scene
+                     graph  constructed  by  the   Builder   (see
+                     <B>pfdShare</B>).
+                     the new nodes.
+
+              <B>PFDBLDR_DESTROY_DATA_UPON_BUILD</B>
+                     If this mode is set, all  the  data  in  the
+                     builder along with associated state informa-
+                     tion   (except   for    information    about
+                     attributes  that  should  be shared) will be
+                     destroyed when <B>pfdBuild</B> returns.
+
+       The available attributes are:
+              <B>PFDBLDR_NODE_NAME_COMPARE</B>
+                   The value of this attribute is a  function  to
+                   compare two node names.  If its value is NULL,
+                   the == operator is used for comparisons.
+
+              <B>PFDBLDR_STATE_NAME_COMPARE</B>
+                   The value of this attribute is a  function  to
+                   compare  two  state  names.   If  its value is
+                   NULL, the == operator is used for comparisons.
+
+       The  following  code  sample  illustrates  the  use of the
+       Builder.  It is designed to read a database file which  is
+       simply  a list of vertex coordinates.  Every vertex triple
+       defines a triangle.
+
+       pfNode * pfdLoadFile_tri (char *fileName)
+       {
+           FILE  *triFile  = NULL;
+           pfNode     *node          = NULL;
+           pfdGeom    *prim          = NULL;
+           int         v        = 0;
+           int         t;
+
+           /* open ".tri" file */
+           if ((triFile = pfdOpenFile(fileName)) == NULL)
+            return NULL;
+
+           /* allocate primitive buffer */
+           prim = <B>pfdNewGeom(3)</B>;
+
+           /* discard any lingering geometry in the builders */
+           pfdResetBldrGeometry();
+
+           /* pick a random not-too-dark color */
+           pfuRandomColor(prim-&gt;colors[0], 0.4f, 0.8f);
+
+           /* specify control data */
+           prim-&gt;numVerts = 3;
+           prim-&gt;primtype = PFGS_POLYS;
+           prim-&gt;nbind = PFGS_PER_VERTEX;
+           prim-&gt;cbind = PFGS_PER_PRIM;
+           for (t = 0 ; t &lt; PF_MAX_TEXTURES ; t ++)
+            prim-&gt;tbind = PFGS_OFF;
+
+           /* read triangles from ".tri" file */
+           while (!feof(triFile))
+           {
+            /* read vertices from ".tri" file */
+            for (v = 0; v &lt; 3; v++)
+                    &amp;prim-&gt;norms[v][PF_X],
+                    &amp;prim-&gt;norms[v][PF_Y],
+                    &amp;prim-&gt;norms[v][PF_Z]);
+            }
+
+            /* add this line to builder */
+            pfdAddBldrGeom(prim, 1);
+           }
+
+           /* close ".tri" file */
+           fclose(triFile);
+
+           /* release primitive buffer */
+           pfdDelGeom(prim);
+
+           /* get a complete scene graph representing file's primitives */
+           node = pfdBuild();
+
+           return node;
+       }
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfGeoState, pfObject, pfdBreakup, pfdGeoBuilder,
+       pfdMeshGSet, pfdMesherMode, pfdShare, pfSceneGState
+
+
+
+                                                  pfdBuilder(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+  <module>
+    <class>pfvmLoader</class>
+    <data>
+      <filepath>/usr/share/Performer/data</filepath>
+      <model>
+        <filename>pfLightSource.pfb</filename>
+      </model>
+      <model>
+        <filename>esprit.flt</filename>
+        <trans>-3.0,0.0,0.0</trans>
+        <rot>-90.0,0.0,0.0</rot>
+      </model>
+      <model>
+        <filename>truck.pfb</filename>
+        <trans>2.0,0.0,0.0</trans>
+      </model>
+    </data>
+  </module>
+
+</viewer>

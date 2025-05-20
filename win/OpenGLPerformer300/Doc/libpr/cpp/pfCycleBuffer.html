@@ -1,0 +1,327 @@
+<HTML>
+<HEAD>
+<TITLE>pfCycleBuffer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCycleBuffer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCycleBuffer OBSOLETE(3pf)           pfCycleBuffer OBSOLETE(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCycleBuffer,</B>  <B>pfCycleMemory</B>  -  pfCycleBuffer  and pfCy-
+       cleMemory obsoleted by pfFlux and pfFluxMemory
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfCycleBuffer.h&gt;
+
+                                <B>pfCycleBuffer::pfCycleBuffer</B>(size_t nbytes)
+
+       static pfType
+                                *          <B>pfCycleBuffer::getClassType</B>(void);
+
+       void *                   <B>pfCycleBuffer::getCurData</B>();
+
+       pfCycleMemory
+                                *          <B>pfCycleBuffer::getCMem</B>(int index);
+
+       void                     <B>pfCycleBuffer::changed</B>();
+
+       void                     <B>pfCycleBuffer::init</B>(void *data);
+
+       static
+                                int               <B>pfCycleBuffer::config</B>(int numBuffers);
+
+       static int               <B>pfCycleBuffer::getConfig</B>(void);
+
+       static int               <B>pfCycleBuffer::frame</B>(void);
+
+       static
+                                int               <B>pfCycleBuffer::getFrameCount</B>(void);
+
+       static int               <B>pfCycleBuffer::getCurIndex</B>(void);
+
+       static
+                                void              <B>pfCycleBuffer::setCurIndex</B>(int index);
+
+       static pfCycleBuffer
+                                *   <B>pfCycleBuffer::getCBuffer</B>(void *data);
+
+       static pfType
+                                *          <B>pfCycleMemory::getClassType</B>(void);
+
+       int                      <B>pfCycleMemory::getFrame</B>(void);
+
+       pfCycleBuffer *          <B>pfCycleMemory::getCBuffer</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfCycleBuffer</B> is  derived  from
+       the  parent  class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B>  are  also  directly  usable  with
+       objects  of  class  <B>pfCycleBuffer</B>.   This is also true for
+       ancestor classes of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfCycleBuffer</B> can also be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Together, pfCycleBuffer and pfCycleMemory provide an auto-
+       mated mechanism for managing dynamic data in a  pipelined,
+       multiprocessing environment.  In this kind of environment,
+       data is typically modified at the head of the pipeline and
+       must propagate down it in a "frame-accurate" fashion.  For
+       example, assume the coordinates of a pfGeoSet are modified
+       for facial animation. If a two-stage rendering pipeline is
+       used, then it is likely that the coordinates will be modi-
+       fied  in  the  head of the pipeline, at the same time they
+       are being rendered in the tail of the pipeline. If only  a
+       single  memory  buffer is used, then the pfGeoSet might be
+       rendered when its coordinates are only partially  updated,
+       potentially  resulting  in  cracks  in  the facial mesh or
+       other anomalies.
+
+       A solution to this problem is to use  two  memory  buffers
+       for  the  coordinates,  one written to by the head and one
+       read from by the tail of the pipeline. In  order  for  the
+       new  coordinates  to  propagate  to the rendering stage we
+       could copy the newly updated buffer  into  the  renderer's
+       buffer  during  a handshake period between the two stages.
+       However, if the buffer  is  large,  the  copy  time  could
+       become  objectionable.  Another  alternative  is to simply
+       swap pointers to the two buffers -  the  classic  "double-
+       buffering"  approach.  This  is  much  more  efficient but
+       requires that the contents of  the  buffer  be  completely
+       updated each frame. Otherwise the render stage will access
+       a "stale" buffer that represents the facial expression  at
+       a  previous  time  so that the animation will appear to go
+       backwards.
+       <B>pfCycleBuffer::setCurIndex</B> so that the buffers "cycle". By
+       advancing  the index appropriately in each pipeline stage,
+       dynamic data can be frame-accurately propagated  down  the
+       pipeline.
+
+       While pfCycleBuffers can be used for generic dynamic data,
+       a prominent use is as attribute arrays for pfGeoSets.  The
+       function  <B>pfGeoSet::setAttr</B>  accepts  pfCycleBuffer memory
+       for attribute arrays  and  the  pfGeoSet  will  index  the
+       appropriate  pfCycleMemory when rendering and intersection
+       testing.  Currently, pfGeoSets  do  not  support  pfCycle-
+       Buffer index lists.
+
+       <B>new</B>(arena)  allocates  a  pfCycleBuffer from the specified
+       memory arena, or from the process heap if <I>arena</I>  is  NULL.
+       <B>new</B>  allocates  a  pfCycleBuffer  from  the default memory
+       arena (see <B>pfGetSharedArena</B>).  Like other pfObjects, pfCy-
+       cleBuffers  cannot be created statically, automatically on
+       the stack or in arrays.  The argument <I>nbytes</I> to  the  con-
+       structor  specifies  the  length  of each associated pfCy-
+       cleMemory.  pfCycleBuffers should be deleted with <B>pfDelete</B>
+       rather than the delete operator.
+
+       The  number  of pfCycleMemorys allocated for each pfCycle-
+       Buffer is specified by <B>pfCBufferConfig</B> which is  typically
+       called     only     once     at    initialization    time.
+       <B>pfGetCBufferConfig</B>   returns    the    number    set    by
+       <B>pfCBufferConfig</B>.
+
+       <B>pfCycleBuffer::getClassType</B>  returns  the  <B>pfType</B>* for the
+       class   <B>pfCycleBuffer</B>.    The    <B>pfType</B>*    returned    by
+       <B>pfCycleBuffer::getClassType</B>  is  the  same  as the <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>  on  any
+       instance of class <B>pfCycleBuffer</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an  object
+       is  of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfCycleMemory::getClassType</B> returns the  <B>pfType</B>*  for  the
+       class <B>pfCycleMemory</B>.
+
+       <B>pfCycleBuffer::init</B>  initializes  all  pfCycleMemorys of a
+       pfCycleBuffer to the data referenced by <I>data</I>. <I>data</I>  should
+       be at least of size <I>nbytes</I>.
+
+       pfCycleMemory  is  derived from pfMemory and also provides
+       access to its raw data in the  form  of  a  void*  pointer
+       through  the  <B>pfMemory::getData</B>  call.  Thus pfCycleBuffer
+       memory is arranged in a hierarchy: pfCycleBuffer -&gt;  pfCy-
+       cleMemory  -&gt;  void* and various routines exist which con-
+       vert one handle into another.  These routines  are  listed
+       in the following table.
+
+       tab($)  ;  C  |  C  |  C  |  C  L | L | L | C .  $pfCycle-
+       Buffer*$pfCycleMemory*$pfMemory*        _         pfCycle-
+       Buffer*$NA$getCMem$getCurData                  pfCycleMem-
+       ory*$getCBuffer$NA$getData void*$getCBuffer$getMemory$NA
+       current pfCycleMemory = pfCycleBuffer[pfCurCBufferIndex]
+
+       Thus one should always get a new handle to the currently
+       active data whenever the global index changes. Data modi-
+       fication that is incremental, (such as a += .2) must
+       retain a handle to the previous data for proper results
+       (current a = previous a + .2).
+
+       As mentioned above, cycling buffer pointers is efficient
+       but requires that the buffers be completely updated each
+       frame. If the data at some time becomes static, it must
+       then be copied into those buffers that are out of date.
+       pfCycleBuffer supports this copying automatically with
+       <B>pfCycleBuffer::changed</B> in conjunction with
+       <B>pfCycleBuffer::frame</B>.  The member function <B>frame</B> advances
+       a global frame counter that is used to frame-stamp pfCy-
+       cleMemorys.  After the pfCycleBuffer has been updated,
+       <B>changed</B> frame-stamps the pfCycleBuffer with the current
+       frame count.  Then if that pfCycleBuffer is not changed in
+       a later frame, the member function <B>frame</B> will automati-
+       cally copy the latest pfCycleMemory into its currently
+       active, sibling pfCycleMemory. This copying will continue
+       until all selected pfCycleMemorys contain the latest data.
+       To determine the frame stamp of a pfCycleMemory, use the
+       member function <B>getFrame</B>. <B>pfCycleBuffer::getFrameCount</B>
+       returns the current, global, pfCycleBuffer frame count.
+
+
+       The following are examples of pfCycleBuffer usage for
+       <B>libpr</B>-only and <B>libpf</B> applications. When using <B>libpf</B>,
+       <B>pfConfig</B> and <B>pfFrame</B> call <B>pfCycleBuffer::config</B> and
+       <B>pfCycleBuffer::frame</B> respectively so the application
+       should not call the latter routines.  In addition, <B>libpf</B>
+       calls <B>pfCurCBufferIndex</B> in each process so that pfCycle-
+       Buffer changes are properly propagated down the processing
+       pipelines.
+
+       Example 1: <B>libpr</B>-only pfCycleBuffer example
+
+
+       pfVec3         *prevVerts, *curVerts;
+
+       /*
+        * Configure number of pfCycleMemorys per pfCycleBuffer
+       */
+       numBuffers-&gt;config();
+
+       verts = new pfCycleBuffer(sizeof(pfVec3) * numVerts);
+       gset-&gt;setAttr(PFGS_COORD3, PFGS_PER_VERTEX, verts, NULL);
+
+       while(!done)
+       {
+           static int index = 0;
+
+           index-&gt;setCurIndex();
+
+           curVerts = verts-&gt;getCurData();
+
+           /* Compute new positions of mass-spring system */
+
+           /* Advance cyclebuffer frame count */
+           pfCycleBuffer::frame();
+
+           /* Advance buffer index. */
+           index = (index + 1) % numBuffers;
+       }
+
+
+
+       Example 2: <B>libpf</B> pfCycleBuffer example
+
+
+       pfVec3         *prevVerts, *curVerts;
+
+       pfInit();
+
+       pfMultiprocess(mpMode);
+
+       /*
+        * This calls pfCycleBuffer::config() with the number of buffers
+        * appropriate to the multiprocessing mode.
+       */
+       pfConfig();
+
+       verts = new(pfGetSharedArena()) pfCycleBuffer(sizeof(pfVec3) * numVerts);
+       gset-&gt;setAttr(PFGS_COORD3, PFGS_PER_VERTEX, verts, NULL);
+
+       while(!done)
+       {
+           curVerts = verts-&gt;getCurData();
+
+           /* Compute new positions of mass-spring system */
+           for (i=0; i&lt;numVerts; i++)
+            curVerts[i] = prevVerts[i] + netForceVector * deltaTime;
+
+           /* Indicate that 'verts' has changed */
+           verts-&gt;changed();
+
+           prevVerts = curVerts;
+
+           /* This calls pfCycleBuffer::frame() */
+           pfFrame();
+       }
+
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The global index which selects the currently active pfCy-
+       cleMemory is unique for a given address space. Specifi-
+       cally, share group processes like those spawned by <B>sproc</B>
+       will share the same global index.
+
+
+
+</PRE>
+<H2>OBSOLETE</H2><PRE>
+       <B>pfCycleBuffer</B> and <B>pfCycleMemory</B> have been obsoleted by
+       <B>pfFlux</B> and <B>pfFluxMemory</B>.  See the <B>pfFlux</B> man page for
+
+
+                                      pfCycleBuffer OBSOLETE(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

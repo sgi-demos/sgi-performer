@@ -1,0 +1,415 @@
+<HTML>
+<HEAD>
+<TITLE>pfBuffer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfBuffer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfBuffer(3pf)                                       pfBuffer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfBuffer,</B>  <B>pfAsyncDelete,</B> <B>pfGetCurBuffer</B> - Create, select,
+       and merge a pfBuffer.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfBuffer.h&gt;
+
+                    <B>pfBuffer::pfBuffer</B>();
+
+       void         <B>pfBuffer::select</B>(void);
+
+       static int   <B>pfBuffer::merge</B>(void);
+
+       void         <B>pfBuffer::setScope</B>(pfObject *obj, int scope);
+
+       int          <B>pfBuffer::getScope</B>(pfObject *obj);
+
+       static int   <B>pfBuffer::add</B>(void *parent, void *child);
+
+       static int   <B>pfBuffer::remove</B>(void *parent, void *child);
+
+       static int   <B>pfBuffer::insert</B>(void *parent,     int index,
+                      void *child);
+
+       static int   <B>pfBuffer::replace</B>(void *parent,    void *old-
+                      Child, void *newChild);
+
+       static int   <B>pfBuffer::set</B>(void *parent,        int index,
+                      void *child);
+
+       int          <B>pfAsyncDelete</B>(void *mem);
+
+       pfBuffer*    <B>pfGetCurBuffer</B>(void);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>buf</I>  identifies a pfBuffer
+
+       <I>obj</I>  identifies a pfObject
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfBuffer is a data structure that logically  encompasses
+       <B>libpf</B>  objects  such as pfNodes. Newly created objects are
+       automatically "attached" to the current pfBuffer specified
+       by  <B>pfBuffer::select</B>.   Later,  any objects created in the
+       pfBuffer may be merged into the main OpenGL Performer pro-
+       cessing stream with <B>pfBuffer::merge</B>. In conjunction with a
+       forked <B>DBASE</B> process (see <B>pfMultiprocess</B> and <B>pfDBaseFunc</B>),
+       the pfBuffer mechanism supports asynchronous parallel cre-
+       ation and deletion of database objects.  This is the foun-
+       dation of a real-time database paging system.
+
+       <B>new</B>  <B>pfBuffer</B>  creates and returns a handle to a pfBuffer.
+       pfBuffers cannot be created statically, on the stack, from
+       the heap or in arrays.
+
+       given pfBuffer should only be current in a single  process
+       at  any  given  time.   In  this way, a pfBuffer restricts
+       access to a given object to  a  single  process,  avoiding
+       hard-to-find errors due to multiprocessed data collisions.
+       <B>pfGetCurBuffer</B> returns the current pfBuffer.
+
+       Only <B>libpf</B> objects are subject to pfBuffer access restric-
+       tions.   <B>libpf</B>  objects  include  pfNodes such as pfGroup,
+       pfGeode and pfUpdatables such  as  pfLODState,  pfChannel,
+       pfEarthSky.  <B>libpr</B> objects such as pfGeoSets, pfGeoStates,
+       and pfMaterials have no pfBuffer restrictions so they  may
+       be  accessed by any process at any time although care must
+       be taken by the application to avoid multiprocessed colli-
+       sions on these data structures.
+
+       <B>pfBuffer::merge</B>  merges the current pfBuffer with the main
+       OpenGL Performer pfBuffer.  This main pfBuffer is  created
+       by  <B>pfConfig</B>  and  will  resist  deletion  and merging and
+       should only be made current in the <B>APP</B>  process  (however,
+       it  is  legal to select a different buffer in the <B>APP</B> pro-
+       cess).  If  called  in  a  process  other  than  the  <B>APP</B>,
+       <B>pfBuffer::merge</B>  will block until the <B>APP</B> calls <B>pfSync</B>, at
+       which time the <B>APP</B> will merge the  current  pfBuffer  into
+       the   main  pfBuffer  and  then  allow  the  process  that
+       requested the merge to continue. If  called  in  the  <B>APP</B>,
+       <B>pfBuffer::merge</B> will immediately execute the merge.  After
+       <B>pfBuffer::merge</B> returns, any objects that were created  in
+       the  current pfBuffer may only be accessed in the <B>APP</B> pro-
+       cess when the <B>APP</B> pfBuffer has been selected as  the  cur-
+       rent  pfBuffer.   In  other words, the merged pfBuffer has
+       been "reset" and its objects now "exist" only in  the  <B>APP</B>
+       pfBuffer.  The  addresses of <B>libpf</B> objects are not changed
+       by <B>pfBuffer::merge</B>.
+
+       Any  number  of  pfBuffers  may  be  used  and  merged  (-
+       <B>pfBuffer::merge</B>)  by  any  number  of processes for multi-
+       threaded database manipulation, subject to  the  following
+       restrictions:
+
+
+              1.     A  given  pfBuffer  should  be  current (via
+                     <B>pfBuffer::select</B>) in only a  single  process
+                     at any given time.
+
+              2.     Each  process  which selects a pfBuffer must
+                     be <B>fork</B>ed, not <B>sproc</B>ed.
+
+       Specifically, pfBuffer usage  is  not  restricted  to  the
+       <B>DBASE</B> process (see <B>pfConfig</B>).
+
+       <B>pfGroup::bufferAddChild</B>   and   <B>pfGroup::bufferRemoveChild</B>
+       provide access to nodes that do not exist in  the  current
+       pfBuffer.   Either, none, or both of the pfBuffer and <I>node</I>
+       may    exist     outside     the     current     pfBuffer.
+       <B>pfGroup::bufferAddChild</B> and <B>pfGroup::bufferRemoveChild</B> act
+       just     like     their     non-buffered      counterparts
+       <B>pfGroup::addChild</B> and <B>pfGroup::removeChild</B> except that the
+       addition or removal request is not carried out immediately
+       but  is  recorded  by the current pfBuffer. The request is
+       otherwise.
+
+       <B>pfBuffer::set</B>  sets  the specified child <I>index</I> of a <I>parent</I>
+       node to the given <I>child</I>. It acts as a replace command  but
+       uses  an index to identify the replaced child. The current
+       implementation supports <B>pfBuffer::set</B> only for  setting  a
+       source array in a <B>pfAlign</B> node.
+
+       In       addition       to       the      pfGroup-specific
+       <B>pfGroup::bufferAddChild</B>   and   <B>pfGroup::bufferRemoveChild</B>
+       routines,  a  pfBuffer  allows generic list management for
+       pfGroup, pfGeode, pfText, and pfPipeWindow objects.  These
+       functions,    <B>pfGroup::bufferAdd</B>,   <B>pfGroup::bufferRemove</B>,
+       <B>pfGroup::bufferInsert</B>, <B>pfGroup::bufferReplace</B> can be  used
+       to manage a pfGroup's list of pfNodes, a pfGeode's list of
+       pfGeoSets, a pfText's list of pfStrings, or  a  pfPipeWin-
+       dow's  list  of  pfChannels  respectively.  These routines
+       infer the proper action to take from the  argument  types.
+       For  example, the following code fragment is equivalent to
+       <B>group-&gt;bufferAddChild(geode)</B>:
+
+
+       pfGroup   *group;
+       pfGeode   *geode;
+
+       pfBuffer::add(group, geode);
+
+
+       <B>pfGroup::bufferAdd</B>, <B>pfGroup::bufferRemove</B>,
+       <B>pfGroup::bufferInsert</B>, <B>pfGroup::bufferReplace</B>,
+       <B>pfBuffer::set</B> all act similarly in that they do not have
+       effect until <B>pfBuffer::merge</B> is called and all parties
+       have been merged into the main OpenGL Performer buffer.
+       They return -1 if the argument types are not consistent
+       (e.g., pfBuffer::remove(group, geoset)), 0 if the request
+       is immediately processed (this happens when all parties
+       already have scope in the current pfBuffer), and 1 if the
+       request is buffered until the next <B>pfBuffer::merge</B>.
+
+       <B>pfBuffer::setScope</B> sets the scope of <I>obj</I> with respect to
+       the pfBuffer. If <I>scope</I> is TRUE, then <I>obj</I> is "added" to the
+       pfBuffer so that when the pfBuffer is made current (-
+       <B>pfBuffer::select</B>) in a process, <I>obj</I> may be accessed
+       through OpenGL Performer routines in that same process.
+       When <I>scope</I> is FALSE, <I>obj</I> is "removed" from the pfBuffer.
+       <B>pfBuffer::setScope</B>'s primary purpose is to move objects
+       between pfBuffers, particularly from the main <B>APP</B> pfBuffer
+       into an application pfBuffer typically used for asyn-
+       chronous database manipulations.  In this case the
+       object's scope would be set to FALSE in the old pfBuffer
+       and TRUE in the new pfBuffer.  It is undefined when an
+       object has scope in multiple pfBuffers since this violates
+       the multiprocessing data exclusion requirement of OpenGL
+       Performer.  <B>pfBuffer::getScope</B> returns TRUE or FALSE indi-
+       cating the scope of <I>obj</I> in pfBuffer the pfBuffer.
+
+       When using pfBuffers for database paging, it is sometimes
+       desirable to retain certain, common database models
+       ("library models") in memory.  Examples are trees, houses,
+       2 performance problems:
+
+              1.     <B>pfBuffer::merge</B> will adversely impact the
+                     <B>APP</B> process, proportional to the number of
+                     <B>pfBuffer::addChild</B> and <B>pfBuffer::removeChild</B>
+                     requests.
+
+              2.     Transformations in the scene graph reduce
+                     OpenGL Performer's ability to sort the
+                     database (see <B>pfChannel::setBinSort</B>) and
+                     matrix operations have some cost in the
+                     graphics pipeline.
+
+       An alternative to classic instancing is "flattening" which
+       creates a clone of the instanced subtree and then applies
+       the transformation to all geometry in the cloned subtree.
+       This method eliminates the performance problems listed
+       above but does increase memory usage.
+
+
+              pfNode* <B>pfNode::bufferClone</B>(int mode, pfBuffer
+              *buf)
+
+       is a version of <B>pfNode::clone</B> which clones the pfBuffer
+       and its subtree, which resides in <I>buf</I>, into the current
+       pfBuffer. <I>mode</I> is the same argument as that passed to
+       <B>pfNode::clone</B> (it is currently ignored). Once cloned, a
+       subtree may be flattened with <B>pfNode::flatten</B>.:
+
+       Example 1: Instancing with pfGroup::bufferAddChild
+
+
+
+       libraryBuffer = new pfBuffer;
+       libraryBuffer-&gt;select();
+
+       loadLibraryObjects();
+
+       pagingBuffer = new pfBuffer;
+       pagingBuffer-&gt;select();
+
+       while (!done)
+       {
+           pfNode     *newStuff;
+           pfSCS *treeLocation;
+
+           /* Load new terrain tile or whatever */
+           newStuff = loadStuff();
+
+           /* Create pfSCS which is location of tree */
+           treeLocation = new pfSCS(treeMatrix);
+
+           /* Add library model of a tree to treeLocation */
+           treeLocation-&gt;bufferAddChild(libraryTree);
+
+           /* Add instanced tree to newly loaded stuff */
+           newStuff-&gt;addChild(treeLocation);
+       }
+
+       libraryBuffer-&gt;select();
+
+       loadLibraryObjects();
+
+       pagingBuffer = new pfBuffer;
+       pagingBuffer-&gt;select();
+
+       while (!done)
+       {
+           pfNode     *newStuff;
+           pfSCS *treeLocation;
+
+           /* Load new terrain tile or whatever */
+           newStuff = loadStuff();
+
+           /* Create pfSCS which is location of tree */
+           treeLocation = new pfSCS(treeMatrix);
+
+           /* Clone tree model from library into current, paging buffer */
+           newTree = libraryTree-&gt;bufferClone(0, libraryBuffer);
+
+           /* Transform cloned tree */
+           treeLocation-&gt;addChild(newTree);
+           treeLocation-&gt;flatten();
+
+           /* Get rid of unneeded treeLocation */
+           treeLocation-&gt;removeChild(newTree);
+           pfDelete(treeLocation);
+
+           /* Add cloned, flattened tree to newly loaded stuff */
+           newStuff-&gt;addChild(newTree);
+       }
+
+
+
+       <B>pfAsyncDelete</B> is a special version of <B>pfDelete</B> which is
+       useful for asynchronous database deletion. Instead of hav-
+       ing immediate effect, <B>pfAsyncDelete</B> simply registers a
+       deletion request at the time of invocation.  These dele-
+       tion requests are then processed in the <B>DBASE</B> trigger rou-
+       tine, <B>pfDBase</B> (<B>pfDBase</B> is automatically called if you have
+       not registered a <B>DBASE</B> callback with <B>pfDBaseFunc</B>).  Thus,
+       if the <B>DBASE</B> processing stage is configured as its own
+       process via <B>pfMultiprocess</B>, then the deletion will be car-
+       ried out asynchronously without affecting (slowing down)
+       the main processing pipelines.
+
+       <B>pfAsyncDelete</B> may be called from any process and returns
+       -1 if <I>mem</I> is NULL or not derived from pfMemory and returns
+       TRUE otherwise.  Note that unlike <B>pfDelete</B> <B>pfAsyncDelete</B>
+       does not check <I>mem</I>'s reference count and return TRUE or
+       FALSE indicating whether <I>mem</I> was successfully deleted or
+       not. Instead, the reference count check is delayed until
+       the next call to <B>pfDBase</B>.  At this time there is no way to
+       query the success of an <B>pfAsyncDelete</B> request.
+
+       Note that <B>pfDBase</B> should only be called from within the
+       database callback function (<B>pfDBaseFunc</B>) in the <B>DBASE</B> pro-
+       cess just like <B>pfCull</B> and <B>pfDraw</B> should only be called in
+       static pfGroup **Tiles;
+       static int     *TileStatus;
+
+       /*
+        * Load new tiles and delete old ones.
+        */
+       void
+       pageDBase(void *data)
+       {
+           static pfBuffer      *buf = NULL;
+           pfGroup         *root;
+
+           if (buf == NULL)
+           {
+            buf = new pfBuffer;
+            buf-&gt;select();
+           }
+
+           /* Asynchronously delete unneeded tiles and update their status */
+           for (allUnneededTiles)
+           {
+            /*
+                * Scene does not have scope in 'buf' so use pfBufferRemoveChild
+             * Tiles[i] is not really removed until pfMergeBuffer
+             */
+            Scene-&gt;bufferRemoveChild(Tiles[i]);
+
+            /* Delete Tiles[i] at pfDBase time if Tiles[i] only has Scene as
+               a parent.
+             */
+            pfAsyncDelete(Tiles[i]);
+
+            /* Update tile status */
+            TileStatus[i] = TILE_DELETED;
+           }
+
+           /*
+            * Synchronously load needed tiles and update their status.
+            */
+           LoadNeededDatabaseTiles(Tiles, TileStatus);
+
+           for (allLoadedTiles)
+           {
+            /*
+                * Scene does not have scope in 'buf' so use pfBufferAddChild
+             * loadedTile[i] is not really added until pfMergeBuffer
+             */
+            Scene-&gt;bufferAddChild(loadedTile[i]);
+           }
+
+           /*
+            * Merge newly loaded tiles into main pfBuffer then carry out
+            * all pfBufferAdd/RemoveChild requests.
+            */
+           pfBuffer::merge();
+
+           /*
+            * Carry out pfAsyncDelete requests. Call *after* pfBuffer::merge()
+            * so that all pfBufferRemoveChild requests have been processed
+
+       pfInit();
+       Tiles = pfMalloc(sizeof(pfGroup*) * NUM_TILES, pfGetSharedArena());
+       TileStatus = pfMalloc(sizeof(int) * NUM_TILES, pfGetSharedArena());
+       pfMultiprocess(PFMP_APP_CULL_DRAW | PFMP_FORK_DBASE);
+       pfConfig();
+           :
+       pfDBaseFunc(pageDBase);
+
+       while(!done)
+       {
+           pfSync();
+
+           /* Remove and request deletion of unneeded tiles */
+           UpdateTileStatus(Tiles, TileStatus);
+
+           pfFrame();
+       }
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfGetCurBuffer</B> will return the <B>APP</B> pfBuffer immediately
+       after <B>pfConfig</B> returns.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBuffer, pfConfig, pfDBaseFunc, pfFrame, pfMultiprocess,
+       pfGroup
+
+
+
+                                                    pfBuffer(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

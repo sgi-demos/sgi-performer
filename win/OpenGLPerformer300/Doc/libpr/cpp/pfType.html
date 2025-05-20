@@ -1,0 +1,87 @@
+<HTML>
+<HEAD>
+<TITLE>pfType</TITLE>
+</HEAD>
+<BODY>
+<H1>pfType</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfType(3pf)                                           pfType(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfType</B> - pfType data typing system
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfType.h&gt;
+
+                      <B>pfType::pfType</B>(pfType *parent, char *name);
+
+       void*          <B>pfType::operator</B> <B>new</B>(size_t s);
+
+       const char *   <B>pfType::getName</B>();
+
+       pfType *       <B>pfType::getParent</B>();
+
+       int            <B>pfType::isDerivedFrom</B>(pfType *ancestor);
+
+       void           <B>pfType::setMaxTypes</B>(int n);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Objects derived from pfMemory have an  associated  pfType.
+       An  object's pfType* is returned by calling pfMemory::get-
+       Type.
+
+       <B>pfType::getParent</B> returns the parent class of the  pfType.
+       Note  that  Performer only uses single inheritance and the
+       type system only maintains a single inheritance chain.
+
+       <B>pfType::getName</B> returns the name of the class.
+
+       <B>pfType::isDerivedFrom</B> tests whether the pfType has  <I>ances-</I>
+       <I>tor</I>  somewhere  in  its  inheritance ancestry.  It returns
+       TRUE if the ancestor was found, and FALSE otherwise.
+
+       The type system  must  be  initialized  in  shared  memory
+       before other processes that will share the type system are
+       created.  When the type system is initialized  by  <B>pfInit</B>,
+       each  Performer  class  creates  a  type  for itself.  <B>new</B>
+       <B>pfType(pfType*,char*)</B> allows an application to  add  addi-
+       tional  types  to  the  type system.  <I>parent</I> specifies the
+       parent class, or NULL if the class has no  parents.   <I>name</I>
+       is  the  name  of  the  class.  pfTypes must be explicitly
+       new'ed, i.e. they cannot be created statically or automat-
+       ically on the stack.
+
+       <B>pfType::setMaxTypes</B>  allows an application to increase the
+       number of allowed  types.   This  must  be  called  before
+       <B>pfInit</B> to have effect.
+
+       pfMemory    also    has    two    convenience    functions
+       <B>pfMemory::isOfType</B>,   <B>pfMemory::getTypeName</B>   that   allow
+       access to type information with a single call.
+
+       Because  OpenGL  Performer  allows subclassing of built-in
+       types, when decisions are made based on  the  type  of  an
+       object,  it is usually better to use <B>pfType::isDerivedFrom</B>
+       pfMemory
+
+
+
+                                                      pfType(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

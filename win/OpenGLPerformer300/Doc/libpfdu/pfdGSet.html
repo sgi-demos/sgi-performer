@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<TITLE>pfdGSet</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdGSet</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdGSet(3pf)                                         pfdGSet(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdNewCube,</B> <B>pfdNewSphere,</B> <B>pfdNewCylinder,</B> <B>pfdNewPipe,</B> <B>pfd-</B>
+       <B>NewCone,</B>  <B>pfdNewPyramid,</B>  <B>pfdNewArrow,</B>  <B>pfdNewDoubleArrow,</B>
+       <B>pfdNewCircle,</B>  <B>pfdNewRing,</B>  <B>pfdXformGSet,</B>  <B>pfdGSetColor</B>  -
+       Construct simple pfGeoSets  and  perform  simple  pfGeoSet
+       manipulations.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfGeoSet *   <B>pfdNewCube</B>(void *arena);
+
+       pfGeoSet *   <B>pfdNewSphere</B>(int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewCylinder</B>(int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewPipe</B>(float botRadius,  float topRadius,
+                      int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewCone</B>(int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewPyramid</B>(void *arena);
+
+       pfGeoSet *   <B>pfdNewArrow</B>(int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewDoubleArrow</B>(int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewCircle</B>(int ntris, void *arena);
+
+       pfGeoSet *   <B>pfdNewRing</B>(int ntris, void *arena);
+
+       void         <B>pfdXformGSet</B>(pfGeoSet *gset, pfMatrix mat);
+
+       void         <B>pfdGSetColor</B>(pfGeoSet *gset,         float r,
+                      float g, float b, float a);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  routines  are  provided  to  conveniently construct
+       pfGeoSets for various geometric  objects.   The  resulting
+       objects are always positioned and sized in canonical ways.
+       The  user  can  then  apply  a  transformation  to   these
+       pfGeoSets to achieve the desired shape and position.
+
+       Some of these routines (such as <B>pfdNewSphere</B>) polygonalize
+       smooth surfaces.  These functions take an  argument  <I>ntris</I>
+       which  specifies  how  many  triangular  faces to use when
+       polygonizing the surface.  All  the  constructor  routines
+       allocate storage in the shared memory arena <I>arena</I>.
+
+       <B>pfdNewCube</B>  creates a new pfGeoSet describing a unit cube.
+
+       <B>pfdNewSphere</B> creates a unit sphere centered at the origin.
+
+       <B>pfdNewCylinder</B>  creates  a  new  cylinder along the Z axis
+       from -1 to 1 with a radius of 1.
+       base of the cone is at Z=0 and has  radius  1.   The  cone
+       extends  to  Z=1.   The  base of the cone is capped with a
+       circle centered at the origin.
+
+       <B>pfdNewPyramid</B> creates a pyramid with a  unit  square  base
+       cap  centered at the origin and extending along the Z axis
+       from Z=0 to Z=1.
+
+       <B>pfdNewArrow</B> constructs an arrow extending along the Z axis
+       from Z=0 to Z=1.
+
+       <B>pfdNewDoubleArrow</B>  constructs  a double-headed arrow.  The
+       arrows extend along the Z axis from Z=0 to Z=1 and Z=-1.
+
+       <B>pfdNewCircle</B> creates a filled unit circle centered at  the
+       origin  in  the XY plane.  The circle is oriented so as to
+       face in the direction of the positive Z axis.
+
+       <B>pfdNewRing</B> also creates a circle, but it is unfilled.  The
+       perimeter of the circle is made up of connected lines.
+
+       <B>pfdXformGSet</B>  transforms  the  coordinates  in  the  given
+       pfGeoSet by the matrix <I>mat</I>.
+
+       <B>pfdGSetColor</B> is a simple convenience routine  for  setting
+       the  global color of a pfGeoSet.  This function only works
+       if the color binding of <I>gset</I> is <B>PFGS_OVERALL</B>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet
+
+
+
+                                                     pfdGSet(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

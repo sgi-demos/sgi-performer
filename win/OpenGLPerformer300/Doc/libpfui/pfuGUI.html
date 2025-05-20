@@ -1,0 +1,423 @@
+<HTML>
+<HEAD>
+<TITLE>pfuGUI</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuGUI</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuGUI(3pf)                                           pfuGUI(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuInitGUI,</B> <B>pfuExitGUI,</B> <B>pfuEnableGUI,</B> <B>pfuUpdateGUI,</B> <B>pfuRe-</B>
+       <B>drawGUI,</B>  <B>pfuGUIViewport,</B>   <B>pfuGetGUIViewport,</B>   <B>pfuInGUI,</B>
+       <B>pfuInitGUICursors,</B> <B>pfuGetGUIChan,</B> <B>pfuGUICursor,</B> <B>pfuGetGUI-</B>
+       <B>Cursor,</B>  <B>pfuGUIHlight,</B>  <B>pfuGetGUIHlight,</B>  <B>pfuGUICursorSel,</B>
+       <B>pfuGetGUICursorSel,</B>   <B>pfuUpdateGUICursor,</B>   <B>pfuFitWidgets,</B>
+       <B>pfuGetGUIScale,</B> <B>pfuGetGUITranslation,</B> <B>pfuNewPanel,</B>  <B>pfuEn-</B>
+       <B>ablePanel,</B>  <B>pfuDisablePanel,</B>  <B>pfuGetPanelOriginSize,</B>  <B>pfu-</B>
+       <B>NewWidget,</B>       <B>pfuDisableWidget,</B>        <B>pfuEnableWidget,</B>
+       <B>pfuIsWidgetOn,</B> <B>pfuHideWidget,</B> <B>pfuGetWidgetType,</B> <B>pfuGetWid-</B>
+       <B>getId,</B>  <B>pfuWidgetDim,</B>   <B>pfuGetWidgetDim,</B>   <B>pfuWidgetLabel,</B>
+       <B>pfuGetWidgetLabelWidth,</B> <B>pfuGetWidgetLabel,</B> <B>pfuWidgetRange,</B>
+       <B>pfuWidgetValue,</B> <B>pfuGetWidgetValue,</B>  <B>pfuWidgetDefaultValue,</B>
+       <B>pfuWidgetActionFunc,</B>  <B>pfuGetWidgetActionFunc,</B> <B>pfuWidgetSe-</B>
+       <B>lectFunc,</B>    <B>pfuGetWidgetSelectFunc,</B>    <B>pfuWidgetDrawFunc,</B>
+       <B>pfuGetWidgetDrawFunc,</B> <B>pfuWidgetSelections,</B> <B>pfuWidgetSelec-</B>
+       <B>tion,</B>  <B>pfuGetWidgetSelection,</B>   <B>pfuWidgetDefaultSelection,</B>
+       <B>pfuWidgetDefaultOnOff,</B>    <B>pfuWidgetOnOff,</B>   <B>pfuWidgetMode,</B>
+       <B>pfuGetWidgetMode,</B> <B>pfuUnhideWidget,</B> <B>pfuResetGUI,</B>  <B>pfuReset-</B>
+       <B>Panel,</B>  <B>pfuResetWidget,</B>  <B>pfuDrawMessage,</B> <B>pfuDrawMessageCI,</B>
+       <B>pfuDrawMessageRGB,</B> <B>pfuDrawTree</B> - High-performance  graphi-
+       cal user interface routines.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void           <B>pfuInitGUI</B>(pfPipeWindow *pipe);
+
+       void           <B>pfuExitGUI</B>(void);
+
+       void           <B>pfuEnableGUI</B>(int en);
+
+       void           <B>pfuUpdateGUI</B>(pfuMouse *mouse);
+
+       void           <B>pfuRedrawGUI</B>(void);
+
+       void           <B>pfuGUIViewport</B>(float l,  float r,  float b,
+                        float t);
+
+       void           <B>pfuGetGUIViewport</B>(float *l,       float *r,
+                        float *b, float *t);
+
+       int            <B>pfuInGUI</B>(int x, int y);
+
+       void           <B>pfuInitGUICursors</B>(void);
+
+       pfChannel *    <B>pfuGetGUIChan</B>(void);
+
+       void           <B>pfuGUICursor</B>(int target, int c);
+
+       int            <B>pfuGetGUICursor</B>(int target);
+
+       void           <B>pfuGUIHlight</B>(pfHighlight *hlight);
+
+       pfHighlight *  <B>pfuGetGUIHlight</B>(void);
+       void           <B>pfuFitWidgets</B>(int val);
+
+       void           <B>pfuGetGUIScale</B>(float *x, float *y);
+
+       void           <B>pfuGetGUITranslation</B>(float *x, float *y);
+
+       pfuPanel *     <B>pfuNewPanel</B>(void);
+
+       void           <B>pfuEnablePanel</B>(pfuPanel *p);
+
+       void           <B>pfuDisablePanel</B>(pfuPanel *p);
+
+       void           <B>pfuGetPanelOriginSize</B>(pfuPanel *p,
+                        float *xo,    float *yo,     float *xs,
+                        float *ys);
+
+       pfuWidget *    <B>pfuNewWidget</B>(pfuPanel *p,         int type,
+                        int id);
+
+       void           <B>pfuDisableWidget</B>(pfuWidget *w);
+
+       void           <B>pfuEnableWidget</B>(pfuWidget *w);
+
+       int            <B>pfuIsWidgetOn</B>(pfuWidget *w);
+
+       void           <B>pfuHideWidget</B>(pfuWidget *w);
+
+       int            <B>pfuGetWidgetType</B>(pfuWidget *w);
+
+       int            <B>pfuGetWidgetId</B>(pfuWidget *w);
+
+       void           <B>pfuWidgetDim</B>(pfuWidget *w, int xo,  int yo,
+                        int xs, int ys);
+
+       void           <B>pfuGetWidgetDim</B>(pfuWidget *w,      int *xo,
+                        int *yo, int *xs, int *ys);
+
+       void           <B>pfuWidgetLabel</B>(pfuWidget *w,
+                        const char *label);
+
+       int            <B>pfuGetWidgetLabelWidth</B>(pfuWidget *w);
+
+       const char *   <B>pfuGetWidgetLabel</B>(pfuWidget *w);
+
+       void           <B>pfuWidgetRange</B>(pfuWidget *w, int printMode,
+                        float min, float max, float val);
+
+       void           <B>pfuWidgetValue</B>(pfuWidget *w, float newval);
+
+       float          <B>pfuGetWidgetValue</B>(pfuWidget *w);
+
+       void           <B>pfuWidgetDefaultValue</B>(pfuWidget *w,
+                        float val);
+
+       void           <B>pfuWidgetActionFunc</B>(pfuWidget *w,   pfuWid-
+                        getActionFuncType func);
+
+       pfuWidgetActionFuncType
+                      <B>pfuGetWidgetActionFunc</B>(pfuWidget *w);
+
+       void           <B>pfuWidgetDrawFunc</B>(pfuWidget *w,  pfuWidget-
+                        DrawFuncType func);
+
+       pfuWidgetDrawFuncType
+                      <B>pfuGetWidgetDrawFunc</B>(pfuWidget *w);
+
+       void           <B>pfuWidgetSelections</B>(pfuWidget *w,
+                        pfuGUIString *selectionList,  int *val-
+                        List,  void (**funcList)(pfuWidget *w),
+                        int numSelections);
+
+       void           <B>pfuWidgetSelection</B>(pfuWidget *w,
+                        int index);
+
+       int            <B>pfuGetWidgetSelection</B>(pfuWidget *w);
+
+       void           <B>pfuWidgetDefaultSelection</B>(pfuWidget *w,
+                        int index);
+
+       void           <B>pfuWidgetDefaultOnOff</B>(pfuWidget * w,
+                        int on);
+
+       void           <B>pfuWidgetOnOff</B>(pfuWidget *w, int on);
+
+       void           <B>pfuWidgetMode</B>(pfuWidget *w,       int mode,
+                        int val);
+
+       int            <B>pfuGetWidgetMode</B>(pfuWidget *w, int mode);
+
+       void           <B>pfuUnhideWidget</B>(pfuWidget *w);
+
+       void           <B>pfuResetGUI</B>(void);
+
+       void           <B>pfuResetPanel</B>(pfuPanel *p);
+
+       void           <B>pfuResetWidget</B>(pfuWidget *w);
+
+       void           <B>pfuDrawMessage</B>(pfChannel *chan,
+                        const char *msg,   int rel,   int just,
+                        float x,       float y,       int size,
+                        int cimode);
+
+       void           <B>pfuDrawMessageCI</B>(pfChannel *chan,
+                        const char *msg,   int rel,   int just,
+                        float x,       float y,       int size,
+                        int textClr, int shadowClr);
+
+       void           <B>pfuDrawMessageRGB</B>(pfChannel *chan,
+                        const char *msg,   int rel,   int just,
+                        float x,       float y,       int size,
+                        pfVec4 textClr, pfVec4 shadowClr);
+
+       void           <B>pfuDrawTree</B>(pfChannel *chan,  pfNode *tree,
+                        pfVec3 panScale);
+
+
+                      typedef void (*pfuWidgetDrawFuncType)(pfuWidget *widget, pfuPanel *panel);
+                      typedef pfuWidget* (*pfuWidgetSelectFuncType)(pfuWidget *widget, pfuPanel *panel);
+                      typedef void (*pfuWidgetActionFuncType)(pfuWidget *widget);
+
+       Call <B>pfuInitGUI</B> to initialize the GUI module.  Call
+       <B>pfuExitGUI</B> on exit to deallocate GUI data structures and
+       print brief frame statistics through <B>pfNotify</B> at notifica-
+       tion level <B>PFNFY_INFO</B>.
+
+       <B>pfuGetGUIChan</B> returns the pfChannel used by the GUI.
+
+       <B>pfuEnableGUI</B> disables or enables GUI processing and GUI
+       panel updates depending on the value of <I>en</I>.  <B>pfuUpdateGUI</B>
+       uses the current mouse data in <I>mouse</I> to draw the GUI
+       according to its current configuration. The mouse data can
+       be collected by your own input handling routines and
+       stored in a pfuMouse structure to give to the GUI or
+       retrieved from the libpfutil input collector using
+       <B>pfuGetMouse</B>.  <B>pfuRedrawGUI</B> redraws the GUI.
+
+       <B>pfuGUIViewport</B> sets the GUI coordinates relative to the
+       GUI window.  <B>pfuGetGUIViewport</B> retrieves the current coor-
+       dinates.
+
+       <B>pfuInGUI</B> returns true if the point <I>(x,</I> <I>y)</I> lies within the
+       GUI.  <I>x</I> and <I>y</I> should be given relative to the window, not
+       the screen.
+
+       Your application should call <B>pfuFitWidgets</B> if you change
+       your panel layout after initialization so that the widgets
+       in the window are accurately scaled and translated to fit
+       inside the window.  This function is called automatically
+       from <B>pfuUpdateGUI</B> if a change in window size is detected.
+       <I>val</I> is currently ignored.
+
+       <B>pfuGetGUIScale</B> can be called to retrieve the relative
+       scale of the GUI to the display window.  Similarly,
+       <B>pfuGetGUITranslation</B> will retrieve the current transla-
+       tion.
+
+       <B>pfuNewPanel</B> allocates and initializes a new GUI panel,
+       <B>pfuEnablePanel</B> is used to enable a panel, and
+       <B>pfuDisablePanel</B> disables a panel.  GUI panels are essen-
+       tially a region containing widgets, rectangular regions
+       which can be customized as buttons, menus, and other
+       interface items.  <B>pfuResetPanel</B> restores the widgets in
+       <I>panel</I> to their default values.  <B>pfuGetPanelOriginSize</B>
+       retrieves the origin and size for <I>panel</I>.
+
+       <B>pfuNewWidget</B> allocates and initializes a new widget of
+       type <I>type</I>. <I>id</I> is the handle by which the new widget is
+       identified.  <B>pfuGetWidgetType</B> returns <I>w</I>'s type while
+       <B>pfuGetWidgetId</B> returns <I>w</I>'s id.  Use <B>pfuEnableWidget</B> and
+       <B>pfuDisableWidget</B> to enable or disable the action of a wid-
+       get <I>w</I>.
+
+       <B>pfuWidgetDim</B> sets <I>w</I>'s lower left corner at <I>(xo,</I> <I>yo)</I> and
+       its top right corner at <I>(xo+xs,</I> <I>yo+ys)</I>. <B>pfuGetWidgetDim</B>
+       returns <I>w</I> in <I>xo</I> and <I>yo</I> and its size in <I>xs</I> and <I>ys</I>.
+
+       <B>pfuWidgetLabel</B> sets <I>label</I> to be the label by which <I>w</I> will
+       be identified. <B>pfuGetWidgetLabelWidth</B> returns the length
+       of <I>w</I>'s label while <B>pfuGetWidgetLabel</B> returns the label
+
+       <B>pfuWidgetValue</B> essentially sets <I>w</I>'s value to <I>newval</I>. The
+       actions are different depending on <I>w</I>'s type.
+
+              <B>PFUGUI_SLIDER</B>
+                   <I>w</I>'s value is set to <I>newval</I>.
+
+              <B>PFUGUI_SLIDER_LOG</B>
+                   <I>w</I>'s value is set to the base-10 logarithm of
+                   <I>newval</I>.
+
+               <B>PFUGUI_SWITCH</B>,
+                   <I>w</I>'s value is set to its minimum possible pro-
+                   vided <I>newval</I> is close to the minimum. Other-
+                   wise, <I>w</I>'s value is set to its maximum possi-
+                   ble.
+
+              <B>PFGUI_BUTTON</B>
+                   <I>w</I> is highlighted if <I>newval</I> is non-zero, other-
+                   wise it is unhighlighted.
+
+              <B>PFUGUI_MENU_BUTTON</B>
+                   <I>w</I>'s value is set to the index of the selection
+                   whose value is close to <I>newval</I>.
+
+              <B>PFUGUI_RADIO_BUTTON</B> or <B>PFUGUI_RADIO_BUTTON_TOGGLE</B>
+                   <I>w</I>'s value is set to the index of the selection
+                   whose value is close to <I>newval</I>.
+
+       <B>pfuGetWidgetValue</B> returns <I>w</I>'s value. <B>pfuWidgetDefaultValue</B>
+       works just like <B>pfuWidgetValue</B> but sets <I>w</I>'s default value
+       to <I>newval</I> instead.
+
+       <B>pfuWidgetActionFunc</B> is used to set the callback function
+       when the mouse button is clicked on the widget.
+       <B>pfuGetWidgetActionFunc</B> will return the widget's action
+       callback function.  <B>pfuWidgetSelectFunc</B> and
+       <B>pfuWidgetDrawFunc</B> are used to set up custom widgets.
+       <B>pfuWidgetSelectFunc</B> is called with a custom selection
+       function in <I>func</I>. <I>func</I> is called when the mouse button is
+       clicked on the widget; <I>func</I> returns a pointer to another
+       widget, whose action function is called instead of the
+       custom widget's action function.  If <B>pfuWidgetDrawFunc</B> is
+       called to set a custom draw function, that function will
+       be called instead of the built-in draw function when that
+       widget needs to be redrawn.  <B>pfuGetWidgetDrawFunc</B> and
+       <B>pfuGetWidgetSelectFunc</B> will return the custom draw and
+       selection callback functions, respectively.
+
+       <B>pfuWidgetSelections</B> sets the selection choices for the
+       widget <I>w</I>, which must be of type <B>PFUGUI_RADIO_BUTTON</B> or
+       <B>PFUGUI_MENU_BUTTON</B>.  <I>val</I> contains a list of the values
+       assigned to each of the selections; if <I>val</I> is NULL, then
+       the selection value will be set to the ordinal index of
+       the selection.  <I>funcList</I> contains a list of action func-
+       tions corresponding to each selection; if <I>funcList</I> is
+       NULL, then the widget's default action function will be
+       used for all of the selections.  Use <B>pfuWidgetSelection</B> to
+       set the current selection.  Use <B>pfuGetWidgetSelection</B> to
+       to setting the widget off or on. Exactly how <I>w</I> is changed
+       depends on its type as follows.
+
+              <B>PFUGUI_SWITCH</B>
+                   If <I>on</I> is 0, <I>w</I>'s value is set to its minimum.
+                   Otherwise, it is set to the maximum possible
+                   value.
+
+              <B>PFUGUI_BUTTON</B>
+                   If <I>on</I> is 1, <I>w</I>'s value is set to 1 and <I>w</I> is
+                   highlighted. If <I>on</I> is 0, <I>w</I>'s value is set to 0
+                   and <I>w</I> is restored to its normal, unhighlighted
+                   state.
+
+              <B>PFUGUI_RADIO_BUTTON</B>
+                   If <I>on</I> is 1, <I>w</I> is set on; otherwise it is set
+                   off.
+
+       <B>pfuWidgetDefaultOnOff</B> works essentially like
+       <B>pfuWidgetOnOff</B>. If <I>w</I> is of type <B>PFUGUI_SWITCH</B>, <I>w</I>'s default
+       value is modified. If <I>w</I> is of type <B>PFUGUI_RADIO_BUTTON</B>,
+       <I>w</I>'s default on value is modified.
+
+       <B>pfuIsWidgetOn</B> returns the status of <I>w</I> - whether it is on
+       or off.
+
+       <B>pfuHideWidget</B> marks widget <I>w</I> to not be displayed in the
+       GUI.  <B>pfuUnhideWidget</B> restores widget <I>w</I> for display.
+
+       <B>pfuWidgetMode</B> sets the specified <I>mode</I> to the given <I>val</I>.
+       Currently only the boolean mode <B>PFUGUI_STICKY_DEFAULT</B> is
+       supported for sliders.  <B>pfuGetWidgetMode</B> returns the value
+       for the specified <I>mode</I>.
+
+       <B>pfuResetWidget</B> resets <I>w</I> to its default values and calls
+       <I>w</I>'s action function if that function has been set.
+
+       <B>pfuDrawMessage</B> draws the message <I>msg</I> justified with
+       respect to (<I>x</I>, <I>y</I>) in a font of size <I>size</I>. <I>x</I> and <I>y</I> must
+       range between 0 and 1 and <I>size</I> should take the value
+       <B>PFU_FONT_SMALL</B>, <B>PFU_FONT_MED</B>, or <B>PFU_FONT_BIG</B>. <I>just</I> speci-
+       fies the justification and can take the value
+       <B>PFU_CENTER_JUSTIFIED</B>, <B>PFU_LEFT_JUSTIFIED</B> or
+       <B>PFU_RIGHT_JUSTIFIED</B>. Set <I>cimode</I> to <B>PFU_CI</B> to use color-
+       indexing mode or <B>PFU_RGB</B> to use direct color mode. <I>rel</I>
+       controls whether <I>x</I> and <I>y</I> are specified as absolute values
+       or relative to <I>chan</I>'s origin.
+
+       <B>pfuDrawMessageCI</B> works just like <B>pfuDrawMessage</B> except
+       that <I>cimode</I> is set to <B>PFU_CI</B>. The color indices are speci-
+       fied in <I>textClr</I> and <I>shadowClr</I>.
+
+       <B>pfuDrawMessageRGB</B> also works just like <B>pfuDrawMessage</B>
+       except that <I>cimode</I> is set to <B>PFU_RGB</B>. The RGB color values
+       are specified in <I>textClr</I> and <I>shadowClr</I>.
+
+       <B>pfuDrawTree</B> draws each node of the subtree of the scene
+       graph rooted at <I>tree</I> inside the view frustum defined by
+       <I>chan</I>.
+
+       <B>pfuGetGUICursor</B> and <B>pfuGUICursor</B> are used to get and set
+       cursor definitions, respectively.  <B>pfuGetGUICursorSel</B> and
+       <B>pfuGUICursorSel</B> are used to get and set the current cur-
+       sor, respectively. <B>pfuUpdateGUICursor</B> is called to load
+       the current cursor bitmap into the display window.
+
+       <B>pfuGUIHlight</B> and <B>pfuGetGUIHlight</B> are used to get and set
+       the <I>pfHighlight</I> definition used to highlight selected
+       geometry.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfuInit</B> should be called before <B>pfConfig</B> to initialize the
+       libpfutil library and C++ classes for multiprocessed
+       access.
+
+       Additionally, the GUI relies on receiving mouse informa-
+       tion via <B>pfuGetMouse</B>.  This input can be collected auto-
+       matically via input handling utilities in libpfutil.  See
+       the <B>pfuInitInput</B> man pages.
+
+       These functions use <B>pfDataPools</B> to store multiply accessed
+       data so as to work well in multiprocessing applications.
+       See "/usr/share/Performer/src/lib/libpfutil/gui.c" for
+       further details.
+
+       Sample source code programs using the GUI utilities
+       include "/usr/share/Performer/src/pguide/libpf/C/detail.c"
+       and the perfly sample application.
+
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDataPool, pfuXFont, pfuCursor, pfuInitInput, pfuInit,
+       pfuGetMouse
+
+
+
+                                                      pfuGUI(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

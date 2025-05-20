@@ -1,0 +1,206 @@
+<HTML>
+<HEAD>
+<TITLE>pfScene</TITLE>
+</HEAD>
+<BODY>
+<H1>pfScene</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfScene(3pf)                                         pfScene(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfScene</B>  -  Create a scene or root node, set and get scene
+       pfGeoState or pfGeoState index.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfScene.h&gt;
+
+                         <B>pfScene::pfScene</B>();
+
+       static pfType *   <B>pfScene::getClassType</B>(void);
+
+       void              <B>pfScene::setGState</B>(pfGeoState *gstate);
+
+       pfGeoState *      <B>pfScene::getGState</B>(void);
+
+       void              <B>pfScene::setGStateIndex</B>(int index);
+
+       int               <B>pfScene::getGStateIndex</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfScene</B>  is  derived  from  the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class <B>pfGroup</B> are also directly  usable  with  objects  of
+       class  <B>pfScene</B>.  This is also true for ancestor classes of
+       class <B>pfGroup</B>.
+
+       int        <B>pfGroup::addChild</B>(pfNode *child);
+       int        <B>pfGroup::insertChild</B>(int index, pfNode *child);
+       int        <B>pfGroup::replaceChild</B>(pfNode *old,         pfN-
+                    ode *new);
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       int        <B>pfGroup::searchChild</B>(pfNode* child);
+       pfNode *   <B>pfGroup::getChild</B>(int index);
+       int        <B>pfGroup::getNumChildren</B>(void);
+       int        <B>pfGroup::bufferAddChild</B>(pfNode *child);
+       int        <B>pfGroup::bufferRemoveChild</B>(pfNode *child);
+
+
+       Since the class <B>pfGroup</B> is itself derived from the  parent
+       class  <B>pfNode</B>,  objects  of class <B>pfScene</B> can also be used
+       with these functions designed for objects of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>, objects of class <B>pfScene</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>, objects of class <B>pfScene</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>gstate</I>  identifies a pfGeoState.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>new</B>  <B>pfScene</B>  creates  and  returns a handle to a pfScene.
+       Like other pfNodes,  pfTexts  are  always  allocated  from
+       shared  memory  and  cannot  be created statically, on the
+       stack or in arrays.   pfScenes  should  be  deleted  using
+       <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfScene::getClassType</B>  returns  the  <B>pfType</B>* for the class
+       <B>pfScene</B>.  The <B>pfType</B>* returned by <B>pfScene::getClassType</B> is
+       the  same  as the <B>pfType</B>* returned by invoking the virtual
+       function  <B>getType</B>  on  any  instance  of  class   <B>pfScene</B>.
+       Because  OpenGL  Performer  allows subclassing of built-in
+       types, when decisions are made based on  the  type  of  an
+       object,  it  is usually better to use  the member function
+       <B>isOfType</B> to test if an object is of a type derived from  a
+       Performer  type rather than to test for strict equality of
+       the <B>pfType</B>*'s.
+
+       OpenGL Performer will automatically  carry  out  the  APP,
+       CULL,  and  DRAW traversals on pfScenes which are attached
+       to pfChannels by <B>pfChanScene</B>.  The CULL and  DRAW  traver-
+       sals are directly or indirectly triggered by <B>pfFrame</B> while
+       the APP traversal is triggered by <B>pfAppFrame</B>.
+
+       Multiple pfChannels may reference  the  same  pfScene  but
+       each pfChannel references only a single pfScene.
+
+       <B>pfScene::setGState</B>  attaches  <I>gstate</I>  to  the pfScene. The
+       pfGeoState of a pfScene defines the "global  state"  which
+       may  be inherited by other pfGeoStates. This state inheri-
+       tance mechanism is further described in the pfGeoState man
+       page.
+
+       The  scene  pfGeoState  is  defined as the global state by
+       <B>pfGeoState::load</B>.  This pfGeoState will be  loaded  before
+       the  pfChannel  DRAW  callback (<B>pfChannel::setTravFunc</B>) is
+       invoked so any  custom  rendering  in  the  callback  will
+       inherit   the   state   set   by   the  scene  pfGeoState.
+       <B>pfScene::getGState</B>   returns   the   directly   referenced
+       pfGeoState of the pfScene or the appropriate pfGeoState in
+       the global table if the pfScene indexes its pfGeoState  or
+       NULL if the index cannot be resolved.
+
+       The scene pfGeoState may be indexed through a global table
+       by assigning an  index  with  <B>pfScene::setGStateIndex</B>  and
+       specifying  the table with <B>pfGeoState::applyTable</B>. Usually
+       this   table   is   provided   by   the    pfChannel    (-
+       <B>pfChannel::setGStateTable</B>).        <B>pfScene::getGStateIndex</B>
+       returns the pfGeoState index of the pfScene or -1  if  the
+       pfScene directly references its pfGeoState.
+
+       It  is not necessary to provide a scene pfGeoState, but it
+       is a convenient way to  specify  the  default  inheritable
+       values for all pfGeoState elements on a per-scene basis.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfGeoState, pfGroup, pfDelete
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

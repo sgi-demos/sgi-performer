@@ -1,0 +1,296 @@
+<HTML>
+<HEAD>
+<TITLE>pfObject</TITLE>
+</HEAD>
+<BODY>
+<H1>pfObject</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfObject(3pf)                                       pfObject(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfObject</B> - pfObject, callback and user data operations
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfObject.h&gt;
+
+       void*                     <B>pfObject::operator</B> <B>new</B>(size_t);
+
+       void*                     <B>pfObject::operator</B>   <B>new</B>(size_t,
+                                   void *arena);
+
+       void*                     <B>pfObject::operator</B>   <B>new</B>(size_t,
+                                   pfFluxMemory *fmem);
+
+       static pfType *           <B>pfObject::getClassType</B>(void);
+
+       void                      <B>pfObject::setUserData</B>(void *data);
+
+       void                      <B>pfObject::setUserData</B>(int slot,
+                                   void *data);
+
+       static
+                                 void               <B>pfObject::setUserData</B>(pfObject *obj,
+                                   void *data);
+
+       static
+                                 void               <B>pfObject::setUserData</B>(pfObject *obj,
+                                   int slot, void *data);
+
+       void*                     <B>pfObject::getUserData</B>(pfObject *obj);
+
+       void*                     <B>pfObject::getUserData</B>(pfObject *obj,
+                                   int slot);
+
+       static void
+                                 *             <B>pfObject::getUserData</B>(pfObject *obj);
+
+       static void
+                                 *             <B>pfObject::getUserData</B>(pfObject *obj,
+                                   int slot);
+
+       int                       <B>pfObject::getNumUserData</B>();
+
+       static
+                                 int                <B>pfObject::getNumUserData</B>(pfObject *obj);
+
+       static
+                                 int                <B>pfObject::getNamedUserDataSlot</B>(const char *name);
+
+       static const
+                                 char*        <B>pfObject::getUserDataSlotName</B>(int slot);
+
+       static
+                                 int                <B>pfObject::getNumNamedUserDataSlots</B>(void);
+
+
+       static pfCopyFuncType     <B>pfObject::getCopyFunc</B>(int slot);
+
+       static
+                                 void               <B>pfObject::setDeleteFunc</B>(pfDeleteFuncType func);
+
+       static
+                                 void               <B>pfObject::setDeleteFunc</B>(int slot,
+                                   pfDeleteFuncType func);
+
+       static pfDeleteFuncType   <B>pfObject::getDeleteFunc</B>(void);
+
+       static
+                                 pfDeleteFuncType   <B>pfObject::getDeleteFunc</B>(int slot);
+
+       static
+                                 void               <B>pfObject::setPrintFunc</B>(pfPrintFuncType func);
+
+       static void               <B>pfObject::setPrintFunc</B>(int slot,
+                                   pfPrintFuncType func);
+
+       static pfPrintFuncType    <B>pfObject::getPrintFunc</B>(void);
+
+       static
+                                 pfPrintFuncType    <B>pfObject::getPrintFunc</B>(int slot);
+
+       static int                <B>pfObject::getGLHandle</B>(void);
+
+       static int                <B>pfObject::deleteGLHandle</B>(void);
+
+
+                                 typedef void (*pfCopyFuncType)(pfObject *dst, const pfObject *src);
+                                 typedef void (*pfDeleteFuncType)(pfObject *obj);
+                                 typedef void (*pfPrintFuncType)(const pfObject *obj, uint which, uint verbose, char *, FILE *);
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfObject</B> is derived from the
+       parent class <B>pfMemory</B>, so each of these member functions
+       of class <B>pfMemory</B> are also directly usable with objects of
+       class <B>pfObject</B>.  This is also true for ancestor classes of
+       class <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which, uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       OpenGL Performer data structures are derived.  pfObject in
+       turn derives from pfMemory which is the basic memory allo-
+       cation unit.  Although pfObjects cannot be created
+       directly, most OpenGL Performer data structures are
+       derived from them and thus inherit the functionality of
+       the pfObject routines described here and those for pfMem-
+       ory.
+
+       <B>new</B>(arena) allocates a pfObject from the specified memory
+       arena, or from the heap if <I>arena</I> is NULL.  <B>new</B> allocates a
+       pfObject from the default memory arena (see
+       <B>pfGetSharedArena</B>).  pfObjects cannot be allocated on the
+       stack, statically or in arrays.  pfObjects allocated with
+       <B>new</B> should be deleted with <B>pfDelete</B> rather than the delete
+       operator.
+
+       <B>pfObject::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfObject</B>.  The <B>pfType</B>* returned by <B>pfObject::getClassType</B>
+       is the same as the <B>pfType</B>* returned by invoking the vir-
+       tual function <B>getType</B> on any instance of class <B>pfObject</B>.
+       Because OpenGL Performer allows subclassing of built-in
+       types, when decisions are made based on the type of an
+       object, it is usually better to use  the member function
+       <B>isOfType</B> to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality of
+       the <B>pfType</B>*'s.
+
+       User data provides a mechanism for associating application
+       specific data with OpenGL Performer objects.  pfObjects
+       have multiple slots for attaching user data.  User data
+       slots can not be used until they are named.  By default
+       only slot 0 is named.
+
+       <B>pfObject::getNamedUserDataSlot</B> will returns a user data
+       slot number associated with <I>name</I>.  If name is not yet
+       associated with a slot, the next unused slot will be named
+       <I>name</I>.  Once a slot has been named its name can never be
+       changed.
+
+       <B>pfObject::getUserDataSlotName</B> returns the name of user
+       data <I>slot</I>.
+
+       <B>pfObject::getNumNamedUserDataSlots</B> returns the number of
+       named user data slots.
+
+       <B>pfObject::setUserData</B> attaches the user-supplied data
+       pointer, <I>data</I>, to user data <I>slot</I> of the pfObject.  If <I>slot</I>
+       is not specified slot 0 is assumed.
+
+
+       Example 2: How to use User Data.
+
+       typedef struct
+       {
+           float coeffFriction;
+           float density;
+           float *dataPoints;
+       }
+       myMaterial;
+       graniteMtl = new pfMaterial;
+
+       graniteMtl-&gt;setUserData(granite);
+
+
+       <B>pfObject::getUserData</B> returns the user-data pointer for
+       <I>slot</I> of the pfObject.  If <I>slot</I> is not specified slot 0 is
+       assumed.
+
+       Note that memory from <B>pfMemory::malloc</B> is not an consid-
+       ered a pfObject so user-data pointers are not provided for
+       pfMalloc'ed memory.
+
+       User data is reference counted if it is a <B>libpr</B>-type
+       object like pfTexture, pfGeoSet, or memory allocated from
+       <B>pfMemory::malloc</B>.  Thus user data is deleted if its refer-
+       ence count reaches 0 when its parent pfObject is deleted.
+
+       <B>pfObject::getNumUserData</B> returns 1 + greatest non-NULL
+       user data slot number of the pfObject, or 0 if no slot
+       contains non-NULL user data.
+
+       <B>pfObject::setDeleteFunc</B>, <B>pfObject::setCopyFunc</B>, and
+       <B>pfObject::setPrintFunc</B> set global function callbacks which
+       are called when deleting, copying, and printing a pfObject
+       with non-NULL user data in <I>slot</I>.  If <I>slot</I> is not specified
+       slot 0 is assumed.  These callbacks are provided so you
+       can change the default behavior of user data.  If a call-
+       back is not specified or is NULL, the default behaviors
+       are:
+
+              1.     Delete: Call <B>pfUnrefDelete</B> on the user data.
+
+              2.     Copy: Decrement the reference count of the
+                     user data attached to the destination pfOb-
+                     ject (but do not delete it), increment the
+                     reference count of the user data attached to
+                     the source pfObject and copy the user data
+                     pointer from the source to the destination
+                     pfObject. In pseudo-code:
+
+                          pfUnref(dst-&gt;userData[slot]);
+                          pfRef(src-&gt;userData[slot]);
+                          dst-&gt;userData[slot] = src-&gt;userData[slot];
+
+
+              3.     Print: Print the address of the user data.
+
+       <B>pfObject::getDeleteFunc</B>, <B>pfObject::getCopyFunc</B>, and
+       <B>pfObject::getPrintFunc</B> return the global deletion, copy,
+       and print callbacks respectively for <I>slot</I>.  If <I>slot</I> is not
+       specified slot 0 is assumed.
+
+       Example 3: How to delete the user data of Example 2.
+
+       void
+       myDeleteFunc(pfObject *obj)
+       {
+           myMaterial *mtl = obj-&gt;getUserData();
+
+       /* bind user data to material */
+       graniteMtl-&gt;setUserData(granite);
+
+       /* set deletion callback */
+       graniteMtl-&gt;setDeleteFunc(myDeleteFunc);
+
+       /*
+        * This will trigger callback only if graniteMtl has
+        * a reference count &lt;= 0.
+        */
+       graniteMtl-&gt;checkDelete();
+
+
+       In the above example, the 'dataPoints' array of the 'myMa-
+       terial' structure would not have been freed without the
+       deletion callback since pfDelete would have simply deleted
+       the myMaterial structure.
+
+       <B>pfObject::getGLHandle</B> is a back-door mechanism for those
+       who need to tweak the graphics library objects which
+       underly many libpr objects.  <B>pfObject::getGLHandle</B> returns
+       the graphics library identifier associated with <I>obj</I> or -1
+       if <I>obj</I> has no associated graphics library handle.
+       <B>pfObject::deleteGLHandle</B> will delete the object's associ-
+       ated GL object.  Currently this is supported only for
+       pfTextures.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfMemory
+
+
+
+                                                    pfObject(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

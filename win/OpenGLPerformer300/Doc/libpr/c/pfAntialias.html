@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+<TITLE>pfAntialias</TITLE>
+</HEAD>
+<BODY>
+<H1>pfAntialias</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfAntialias(3pf)                                 pfAntialias(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfAntialias,</B> <B>pfGetAntialias</B> - Specify antialiasing mode
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfAntialias</B>(int mode);
+
+       int    <B>pfGetAntialias</B>(void);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>mode</I>  is a symbolic constant and is one of:
+
+             <B>PFAA_OFF</B>            Antialiasing will be disabled.
+
+             <B>PFAA_ON</B>             Antialiasing  will  be  enabled.
+                                 The antialiasing mechanism  used
+                                 depends on the machine type.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfAntialias</B> sets the hardware antialiasing mode.  Geometry
+       drawn  subsequent   to   calling   <B>pfAntialias</B>   will   be
+       antialiased according to <I>mode</I>.  The antialiasing mechanism
+       used is machine-dependent: multisampling on  InfiniteReal-
+       ity and RealityEngine systems and non-multisampling on all
+       others.   In  addition,  if  available,  <B>pfAntialias</B>  will
+       enable  a  special  hardware mode that efficiently renders
+       points using multisampled  circles  rather  than  squares.
+       See the <B>SGIS_multisample</B> section of the OpenGL <B>glIntro(3g)</B>
+       man page for more  detailed  information  on  multisampled
+       antialiasing.
+
+       If <I>mode</I> is <B>PFAA_ON</B>, then antialiasing will be enabled.  On
+       machines which do not support multisampling, <B>PFAA_ON</B>  will
+       enable  line  and/or point antialiasing if either are sup-
+       ported in hardware.  Polygons will not be antialiased.  In
+       this  case  it  is recommended that <B>pfAntialias</B> be enabled
+       only for points and lines since it may reduce the speed of
+       polygon  rendering.   Line  or  point  antialiasing can be
+       explicitly enabled by specifying  either  <B>PFAA_LINE_SMOOTH</B>
+       or <B>PFAA_POINT_SMOOTH</B> as the <I>mode</I> for <B>pfAntialias</B>.
+
+       X  windows  cannot have their framebuffer resources recon-
+       figured.  X windows for OpenGL are,  by  default,  created
+       with multisample buffers if they are available in the cur-
+       rent hardware configuration.  The  default  configuration,
+       if  available  will  be  8  subsamples,  24  bits of depth
+       buffer, and 4 bits of stencil.  If this is not  available,
+       1  bit of stencil will be used, and then 4 subsamples will
+       be allocated if 8 are  not  still  available.   The  exact
+       framebuffer  configuration of windows can be specified via
+       <B>pfWinFBConfigAttrs</B>.
+
+       For X windows, if <I>mode</I> is <B>PFAA_OFF</B>, the antialiasing  mode
+       will be disabled but the buffers cannot be deallocated and
+       to  set  the  antialiasing  mode  of a pfGeoState and with
+       <B>pfOverride</B>  to  override  subsequent   antialiasing   mode
+       changes.
+
+       <B>pfAntialias</B>  is  a  display-listable command.  If a pfDis-
+       pList has been opened by <B>pfOpenDList</B>, <B>pfAntialias</B> will not
+       have  immediate  effect but will be captured by the pfDis-
+       pList and will only have effect when  that  pfDispList  is
+       later drawn with <B>pfDrawDList</B>.
+
+       <B>pfGetAntialias</B> returns the current antialiasing mode.
+
+       Example 1:
+
+       /* Set up 'antialiased' pfGeoState */
+       pfGStateMode(gstate, PFSTATE_ANTIALIAS, PFAA_ON);
+
+       /* Attach gstate to gset */
+       pfGSetGState(gset, gstate);
+
+       /* Draw antialiased gset */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       /* Override antialiasing mode to PFAA_OFF */
+       pfAntialias(PFAA_OFF);
+       pfOverride(PFSTATE_ANTIALIAS, PF_ON);
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfQueryFeature</B> can be used to determined what features are
+       available on the current hardware configuration.
+       <B>pfQuerySys</B> can be used to query the exact extent of hard-
+       ware resources, such as number of subsamples available for
+       multisampling.
+
+       When using antialiasing without multisampling, blending is
+       used which may conflict with other transparency modes.
+       Specifically, all geometry will be blended which may cause
+       artifacts and may substantially reduce performance.  For
+       this reason <B>pfAntialias</B> should be used with discretion on
+       all but InfiniteReality and RealityEngine systems.
+
+       In the default framebuffer configurations, the 4 bit of
+       stencil buffer is allocated to support depth complexity
+       fill statistics; see the <B>pfStats</B> man page for more infor-
+       mation.  1 bit of stencil is required for the support of
+       high quality decals; see the <B>pfDecal</B> man page for more
+       information.
+
+       Not all machines support stencil planes and in these
+       cases, stencil bits will not be allocated.  The Extreme
+       graphics platforms only support stencil with reduced depth
+       buffer resolution and so stencil will not be allocated by
+       default.
+
+       If a window has been configured with multisample buffers,
+       undefined.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       blendfunction, glBlendFunc, linesmooth,
+       glHint(GL_LINE_SMOOTH_HINT), pntsmooth,
+       glHint(GL_POINT_SMOOTH_HINT), mssize, multisample, glIn-
+       tro, pfQueryFeature, pfQuerySys, pfWindow, pfChooseFBCon-
+       fig, pfDispList, pfGeoState, pfOverride, pfState
+
+
+
+                                                 pfAntialias(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

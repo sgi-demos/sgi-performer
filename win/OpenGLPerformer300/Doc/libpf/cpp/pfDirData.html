@@ -1,0 +1,196 @@
+<HTML>
+<HEAD>
+<TITLE>pfDirData</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDirData</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDirData(3pf)                                     pfDirData(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfDirData</B> - A class used to associate a set of data with a
+       set of directions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfIBR.h&gt;
+
+       void     <B>pfDirData::setData</B>(int num,   pfVec3 *directions,
+                  void **userData);
+
+       void     <B>pfDirData::getDirData</B>(int *num,   pfVec3 **direc-
+                  tions, void ***userData);
+
+       void     <B>pfDirData::setDirections</B>(int num,  pfVec3 *direc-
+                  tions);
+
+       void     <B>pfDirData::getDirections</B>(int *num,
+                  pfVec3 **directions);
+
+       void     <B>pfDirData::generateDirections</B>(int num,  int type,
+                  float *data);
+
+       void *   <B>pfDirData::findData</B>(pfVec3 *dir, pfVec3 *resDir);
+
+       void *   <B>pfDirData::findData2</B>(pfVec3 *dir, pfVec3 *resDir,
+                  void **resData, float *weight);
+
+       void *   <B>pfDirData::findData3</B>(pfVec3 *dir, pfVec3 *resDir,
+                  void **resData, float *weight);
+
+       void *   <B>pfDirData::findData4</B>(pfVec3 *dir, pfVec3 *resDir,
+                  void **resData, float *weight);
+
+       int      <B>pfDirData::getNumGroups</B>(int *viewsPerGroup);
+
+       int      <B>pfDirData::getGroup</B>(int group, int *views);
+
+       int      <B>pfDirData::getNeighboringViews</B>(int viewIndex,
+                  int **neighbors);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfDirData</B> is derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class  <B>pfDirData</B>.   This is also true for ancestor classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfDirData  is  used  to store directional data, that is
+       data that depend on direction. Most common use is in  case
+       of  image  based  rendering  where a complex object viewed
+       from a certain direction is replaced by a  texture  repre-
+       senting a view from this direction or a close direction.
+
+       A  pfDirData stores an array of directions and an array of
+       (void *) pointers representing the  data  associated  with
+       each  direction.  The directions and data can be set using
+       <B>pfDirData::setData</B>.  Optionally, the user can set only the
+       directions  using  <B>pfDirData::setDirections</B>  in  case  the
+       associated data are defined later or generated  internally
+       by a Performer class (such as pfShadow).
+
+       Directions  can  be  also  generated  automatically  using
+       <B>pfDirData::generateDirections</B>.  The parameter <I>type</I> defines
+       one  of  the default sets of directions and parameter <I>data</I>
+       is used to specify additional values.   At  present  three
+       types of direction distributions are supported.
+
+       When  <I>type</I>  is  set  to PFDD_2D_ROTATE_AROUND_UP parameter
+       <I>data</I> points to a 3D vector that is rotated around  the  up
+       vector, creating <I>num</I> directions.
+
+       When  <I>type</I>  is  set  to PFDD_RINGS_OF_VIEWS parameter <I>data</I>
+       points to an array of 2*<I>num</I> floats that specify <I>num</I>  rings
+       of  views.   The  first  float  specifies the angle of all
+       views in the given ring  from  the  horizontal  plane  (in
+       degrees) and the second float specifes the number of views
+       in the ring. The views are  distributed  uniformly  around
+       the vertical axis.
+
+       When <I>type</I> is set to PFDD_3D_UNIFORM <I>num</I> direction are gen-
+       erated and they are uniformly distributed all around.  The
+       parameter <I>data</I> is ignored.
+
+       <B>pfDirData::findData2</B>,       <B>pfDirData::findData3</B>,      and
+       <B>pfDirData::findData4</B>.  In the  first  case,  the  function
+       finds  the  closest  direction  to the specified direction
+       <I>dir</I>, copies it to the second parameter <I>resDir</I>, and returns
+       the  pointer  to  the  data associated with it.  The input
+       direction has to be normalized.
+
+       The second function finds the two  closest  directions  to
+       the  specified direction <I>dir</I>. It copies the two directions
+       to the second parameter <I>resDir</I> (which should point  to  an
+       array  of two vectors). The two pointers to the data asso-
+       ciated with the two directions are copied to the array  of
+       two  (void  *)  pointers  specified as the third parameter
+       <I>resData</I>. In addition, two  weights  associated  with  each
+       direction  are  copied  to the array <I>weight</I>. These weights
+       are determined based on the distance of the end  point  of
+       the  input  direction  and  each of the two closest direc-
+       tions.
+
+       The third and fourth function  operate  similarly  as  the
+       second  function,  but  they  return 3 or 4 directions and
+       associated weights, respectively.
+
+       Note that <B>pfDirData::findData3</B> should be not be used  when
+       the  directions  are  of  type PFDD_2D_ROTATE_AROUND_UP or
+       PFDD_RINGS_OF_VIEWS. Also, <B>pfDirData::findData4</B> should  be
+       used    only    when    the   directions   are   of   type
+       PFDD_RINGS_OF_VIEWS and more than one  ring  of  views  is
+       specified. Otherwise the result is undefined.
+
+       In case of 3D uniform views and ring of views it is possi-
+       ble to determine how many groups of  views  there  are.  A
+       group is a triplet or quadruplet of views that is returned
+       for an arbitrary view. It maybe desirable to know how many
+       possible groups there are and what directions they consist
+       of.  To obtain this  information,  you  can  use  function
+       <B>pfDirData::getNumGroups</B>   and   <B>pfDirData::getGroup</B>.   All
+       functions <B>findData</B> return the group  the  given  direction
+       falls to.
+
+       Function  <B>pfDirData::getNeighboringViews</B>  returns the list
+       of views that are part of  all  groups  that  contain  the
+       given view.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfObject, pfShadow
+
+
+
+                                                   pfDirData(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

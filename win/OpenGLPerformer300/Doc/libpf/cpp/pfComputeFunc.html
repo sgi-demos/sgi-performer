@@ -1,0 +1,124 @@
+<HTML>
+<HEAD>
+<TITLE>pfComputeFunc</TITLE>
+</HEAD>
+<BODY>
+<H1>pfComputeFunc</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfComputeFunc(3pf)                             pfComputeFunc(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfComputeFunc,</B>    <B>pfGetComputeFunc,</B>    <B>pfAllocComputeData,</B>
+       <B>pfGetComputeData,</B> <B>pfPassComputeData,</B> <B>pfCompute</B> - Set call-
+       back  for compute process, allocate and pass compute data.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void                <B>pfComputeFunc</B>(pfComputeFuncType func);
+
+       pfComputeFuncType   <B>pfGetComputeFunc</B>(void);
+
+       void *              <B>pfAllocComputeData</B>(int bytes);
+
+       void *              <B>pfGetComputeData</B>(void);
+
+       void                <B>pfPassComputeData</B>(void);
+
+       void                <B>pfCompute</B>(void);
+
+
+                           typedef void (*pfComputeFuncType)(void *userData);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <I>func</I> argument to <B>pfComputeFunc</B> specifies the compute
+       callback function.  This function will be invoked by
+       <B>pfFrame</B> and will be passed a pointer to a data buffer
+       allocated by <B>pfAllocComputeData</B>.  If a separate process is
+       allocated for asynchronous computation by the
+       <B>PFMP_FORK_COMPUTE</B> mode to <B>pfMultiprocess</B>, then <B>pfFrame</B>
+       will cause <I>func</I> to be called in the separate (<B>COMPUTE</B>)
+       process.  <B>pfGetComputeFunc</B> returns the compute callback or
+       <B>NULL</B> if none is set.
+
+       The compute function's primary purpose is to provide a
+       place for per-frame asynchronous computation.  The results
+       of such computation may be placed in pfFlux objects for
+       use in the scene graph or by the asynchronous rendering
+       pipeline; see the man page for <B>new</B> <B>pfFlux</B>). The compute
+       process is automatically used by some OpenGL Performer
+       objects, such as pfASD, that require extensive computation
+       that can be done asynchronously and potentially extend
+       beyond the time for a frame.  see <B>new</B> <B>pfASD</B>).
+
+       When the compute function is in a separate process, it
+       will run asynchronously with the rest of the rendering
+       pipeline. Specifically, if the compute function takes more
+       than a frame time, the rendering pipeline will not be
+       affected.
+
+       Unlike the intersection and cull processes, there is no
+       copy of the scene graph in the compute process.  Only
+       pfFlux objects can be safely inspected or edited by the
+       compute process.  It is not valid to look at any pfNode in
+       results are stored in a pfFlux, this should not be neces-
+       sary.
+
+       If a compute function has been specified by <B>pfComputeFunc</B>,
+       it must call <B>pfCompute</B> to carry out default OpenGL Per-
+       former compute processing. <B>pfCompute</B> should only be called
+       from within the <B>COMPUTE</B> callback in the <B>COMPUTE</B> process
+       just like <B>pfCull</B> and <B>pfDraw</B> should only be called in the
+       pfChannel <B>CULL</B> and <B>DRAW</B> callbacks (<B>pfChannel::setTravFunc</B>)
+       respectively. If a compute function has not been specified
+       or is <B>NULL</B>, OpenGL Performer automatically calls <B>pfCompute</B>
+       from <B>pfFrame</B>.
+
+       <B>pfAllocComputeData</B> returns a pointer to a chunk of shared
+       memory of <I>bytes</I> bytes.  This memory buffer may be used to
+       communicate information between the compute function and
+       application.  Compute data should only be allocated once.
+       <B>pfGetComputeData</B> returns the previously allocated compute
+       data.
+
+       When the compute function is forked, <B>pfPassComputeData</B>
+       should be used to copy the compute data into internal
+       OpenGL Performer memory when the next <B>pfFrame</B> is called.
+       Once <B>pfFrame</B> is called, the application may modify data in
+       the compute data buffer without fear of colliding with the
+       forked compute function. However, modifications to the
+       compute data chunk made by the <B>COMPUTE</B> process will not be
+       visible to the <B>APP</B> process, i.e, there is no "upstream"
+       propagation of passthrough data.  For managing sending
+       upstream or asynchronous processes to receive the results
+       of the compute process, you can use pfFlux objects.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfConfig, pfFrame, pfMultiprocess, new, pfFlux, new, pfF-
+       Buffer
+
+
+
+                                               pfComputeFunc(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

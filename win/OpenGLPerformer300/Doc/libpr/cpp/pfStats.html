@@ -1,0 +1,727 @@
+<HTML>
+<HEAD>
+<TITLE>pfStats</TITLE>
+</HEAD>
+<BODY>
+<H1>pfStats</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfStats(3pf)                                         pfStats(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfStats,</B> <B>pfGetCurStats,</B> <B>pfGfxPipeTimestamp,</B> <B>pfGetStatsGfx-</B>
+       <B>PipeTimestampStatus</B> - Maintain statistics on  OpenGL  Per-
+       former operations and system usage
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfStats.h&gt;
+
+                         <B>pfStats::pfStats</B>();
+
+       static pfType *   <B>pfStats::getClassType</B>(void);
+
+       uint              <B>pfStats::setClass</B>(uint enmask, int val);
+
+       uint              <B>pfStats::getClass</B>(uint enmask);
+
+       uint              <B>pfStats::setClassMode</B>(int class,
+                           uint mask, int val);
+
+       uint              <B>pfStats::getClassMode</B>(int class);
+
+       uint              <B>pfStats::open</B>(uint enmask);
+
+       static uint       <B>pfStats::close</B>(uint enmask);
+
+       uint              <B>pfStats::getOpen</B>(uint enmask);
+
+       uint              <B>pfStats::collectGfxPipeStats</B>(uint enmask);
+
+       void              <B>pfStats::setAttr</B>(int attr, float val);
+
+       float             <B>pfStats::getAttr</B>(int attr);
+
+       int               <B>pfStats::getNumGfxPipeTimestamp</B>(void);
+
+       static void       <B>pfStats::setHwAttr</B>(int attr, float val);
+
+       static float      <B>pfStats::getHwAttr</B>(int attr);
+
+       static void       <B>pfStats::enableHw</B>(uint which);
+
+       static void       <B>pfStats::disableHw</B>(uint which);
+
+       static uint       <B>pfStats::getHwEnable</B>(uint which);
+
+       void              <B>pfStats::copy</B>(pfStats *src, uint which);
+
+       void              <B>pfStats::reset</B>(void);
+
+       void              <B>pfStats::clear</B>(uint which);
+
+       void              <B>pfStats::count</B>(pfGeoSet *gset);
+
+       void              <B>pfStats::accumulate</B>(pfStats *src,
+                           uint which);
+
+       int               <B>pfStats::mQuery</B>(uint *which,  void *dst,
+                           int size);
+
+       pfStats *         <B>pfGetCurStats</B>(void);
+
+       void              <B>pfGfxPipeTimestamp</B>(uint flag);
+
+       int               <B>pfGetStatsGfxPipeTimestampStatus</B>(pfStats* stats,
+                           uint stamp);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class  <B>pfStats</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfStats</B>.  This is also true for ancestor classes  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>, objects of class <B>pfStats</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions are used to  collect,  manipulate,  print,
+       and  query  statistics  on state operations, geometry, and
+       graphics and system operations.
+
+
+       <B>pfStats::getClassType</B> returns the <B>pfType</B>*  for  the  class
+       <B>pfStats</B>.  The <B>pfType</B>* returned by <B>pfStats::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking  the  virtual
+       function   <B>getType</B>  on  any  instance  of  class  <B>pfStats</B>.
+       Because OpenGL Performer allows  subclassing  of  built-in
+       types,  when  decisions  are  made based on the type of an
+       object, it is usually better to use  the  member  function
+       <B>isOfType</B>  to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality  of
+       the <B>pfType</B>*'s.
+
+       <B>pfStats::reset</B> will reset that entire statistics structure
+       to its initial state.
+
+       <B>pfStats::clear</B>  takes  a  bitmask  <I>which</I>  specifying   the
+       statistics that are to be cleared to zeroes.
+
+       <B>pfStats::copy</B>  takes  a  pointer  to a pfStats, <I>src</I>, and a
+       bitmask <I>which</I> specifying the statistics  that  are  to  be
+       copied from <I>src</I>.  This function is provided to enable more
+       control over the default pfObject function <B>pfMemory::copy</B>.
+       Note  that  only  statistics  data  is  copied and not any
+       enable/disable settings or modes.
+
+       Since some statistics can be expensive to gather,  and  so
+       might  possibly influence other statistics, statistics are
+       divided into different classes based  on  the  tasks  that
+       they  monitor  and  one may select the specific statistics
+       classes of interest with <B>pfStats::setClass</B>.
+
+       Statistics classes also have different modes of collection
+       so   that  performance-expensive  modes  of  a  particular
+       statistics     class     many     be     disabled     with
+       <B>pfStats::setClassMode</B>.   The  statistics class enables may
+       be used for directing operations on statistics structures,
+       including    statistics    collection,    specified    via
+       <B>pfStats::open</B>, and also for printing,  copying,  clearing,
+       accumulation, and averaging.
+
+       Class  enables  and  disables are specified with bitmasks.
+       Each statistics class has an enable token:  a  <B>PFSTATS_EN*</B>
+       token  that  can  be  OR-ed  with  other statistics enable
+       tokens and the result passed  in  to  enable  and  disable
+       statistics operations.
+
+       Statistics  classes  that require special hardware support
+       have token names that start with <B>PFSTATSHW_</B>.  These tokens
+       are  used  as  class enable tokens in the usual statistics
+       routines, and also to  enable  and  disable  the  hardware
+       statistics    gathering    via    <B>pfStats::enableHw</B>    and
+       <B>pfStats::disableHw</B>.
+
+       Statistics classes also have modes that  select  different
+       elements  of  a class for collection.  These modes are set
+       through  <B>pfStats::setClassMode</B>.   Each  statistics   class
+       starts with a default mode setting.
+
+       The  following  tables  provide  details of the statistics
+       <B>PFSTATSHW_GFXPIPE_FILL</B>$<B>PFSTATSHW_ENGFXPIPE_FILL</B>      CPU$-
+       <B>PFSTATSHW_CPU</B>$<B>PFSTATSHW_ENCPU</B>                    GfxPipe$-
+       <B>PFSTATSHW_GFXPIPE_TIMES</B>$<B>PFSTATSHW_ENGFXPIPE_TIMES</B> _
+
+       This second table defines the statistics classes and their
+       naming token and enable tokens for forming bitmasks.
+
+       center tab($) ; c s s c | c | c l | l |  l  .   Statistics
+       Mode  Table  _  Class$PFSTATS_  Token$Modes  _  Graphics$-
+       <B>PFSTATS_GFX</B>$<B>PFSTATS_GFX_GEOM</B>                   Rendered$$-
+       <B>PFSTATS_GFX_TSTRIP_LENGTHS</B>  $$<B>PFSTATS_GFX_ATTR_COUNTS</B>  $$-
+       <B>PFSTATS_GFX_STATE</B>         $$<B>PFSTATS_GFX_XFORM</B>          $$-
+       <B>PFSTATS_GFX_CULL_SIDEKICK</B>
+
+       Pixel                        Fill$<B>PFSTATSHW_GFXPIPE_FILL</B>$-
+       <B>PFSTATSHW_GFXPIPE_FILL_DEPTHCMP</B>                        $$-
+       <B>PFSTATSHW_GFXPIPE_FILL_TRANSPARENT</B>
+
+       CPU$<B>PFSTATSHW_CPU</B>$<B>PFSTATSHW_CPU_SYS</B> $$<B>PFSTATSHW_CPU_IND</B>
+
+       GfxPipe$<B>PFSTATSHW_GFXPIPE_TIMES</B>$-
+       <B>PFSTATSHW_GFXPIPE_TIMES_TOTAL</B>                          $$-
+       <B>PFSTATSHW_GFXPIPE_TIMES_AUTO_COLLECT</B> _
+
+       The  individual  stats  classes and modes are discussed in
+       more detail in the explanation of the statistics routines.
+
+       <B>pfStats::setClass</B>  will  set  the classes specified in the
+       bitmask, <I>enmask</I>, according to the <I>val</I>, which must  be  set
+       to one of the following:
+
+              <B>PFSTATS_ON</B>               Enables    the   specified
+                                       classes.
+
+              <B>PFSTATS_OFF</B>              Disables   the   specified
+                                       classes.
+
+              <B>PFSTATS_DEFAULT</B>          Resets    the    specified
+                                       classes to default values.
+
+              <B>PFSTATS_SET</B>              Sets   the   entire  class
+                                       enable mask to <I>enmask</I>.
+
+       All stats collection can be set at once to on, off, or the
+       default  by  using  <B>PFSTATS_ALL</B>  for  the  bitmask and the
+       appropriate value for the enable flag.  For  example,  the
+       following  example  disables  all stats classes with their
+       current class mode settings.
+
+       stats.setClass(<B>PFSTATS_ALL</B>, <B>PFSTATS_OFF</B>);
+
+
+       <B>pfStats::getClass</B> takes the statistics classes of interest
+       specified in the bitmask, <I>enmask</I>.  If any of the statis-
+       tics classes specified in <I>enmask</I> are enabled, then
+       <B>pfStats::getClass</B> will return the bitmask of those
+       classes, and otherwise, will return zero.  If classes of
+       an open pfStats structure are disabled, then collection of
+       those classes stop immediately and those classes are con-
+       enabled by default.  Some modes of a statistics class may
+       be somewhat expensive, and therefore they are not enabled
+       by default.  <I>val</I> must be one of:
+
+              <B>PFSTATS_ON</B>               Enable the modes specified
+                                       in <I>mask</I>.
+
+              <B>PFSTATS_OFF</B>              Disable the modes speci-
+                                       fied in <I>mask</I>.
+
+              <B>PFSTATS_DEFAULT</B>          Set modes specified in
+                                       <I>mask</I> to default values.
+
+              <B>PFSTATS_SET</B>              Set class mode mask to the
+                                       specified <I>mask</I>.
+
+       As a convenience, all classes may have all of their modes
+       set to on, off, or their default values by specifying a
+       <I>class</I> of <B>PFSTATS_CLASSES</B>, and a mask of <B>PFSTATS_ALL</B>.
+       These defaults may differ between machines and may change
+       in the future; so, code should not assume the current
+       defaults but query the mode values for a given class where
+       needed.  No statistics for a given mode are accumulated
+       unless the corresponding class has been enabled with
+       <B>pfStats::setClass</B>.  If modes of an open pfStats structure
+       are disabled, then collection of those modes stop immedi-
+       ately.
+
+       <B>Graphics</B> <B>Statistics</B> <B>Modes</B>
+
+              <B>PFSTATS_GFX_GEOM</B>
+                   This counts geometry that is drawn via
+                   <B>pfGeoSet::draw</B>.  Statistics include the number
+                   of pfGeoSets drawn, and the numbers of
+                   pfGeoSets that have each binding of each
+                   attribute, colors, normals, texture coordi-
+                   nates.  The number of each type of pfGeoSet
+                   primitive is counted, as well as the number of
+                   base primitives drawn: total triangles, lines,
+                   and points.  Statistics are also kept on the
+                   number of triangle strips drawn and the number
+                   of the total triangles that were actually in a
+                   triangle strip.  This mode is enabled by
+                   default.
+
+              <B>PFSTATS_GFX_TSTRIP_LENGTHS</B>
+                   The number of triangles in strips whose length
+                   in terms of triangle count is shorter than
+                   <B>PFSTATS_TSTRIP_LENGTHS_MAX</B> is recorded.  Tri-
+                   angles in strips whose triangle count is
+                   greater than or equal to
+                   <B>PFSTATS_TSTRIP_LENGTHS_MAX</B> are all counted
+                   together.  Quads are counted as strips of
+                   length two and independent triangles are
+                   counted as strips of length one.  An average
+                   triangle strip length (that uses all of the
+                   actual lengths) is also maintained.  Keeping
+                   these triangle strip statistics is expensive
+                   for the drawing operation and so this mode is
+                   Keeping attribute statistics is expensive for
+                   the drawing operation and so this mode is not
+                   enabled by default, but must be enabled with
+                   <B>pfStats::setClassMode</B>.
+
+              <B>PFSTATS_GFX_STATE</B>
+                   This mode enables the counting of calls to
+                   state changes, as well as the number of actual
+                   state changes themselves.  Such state changes
+                   include the immediate mode routines such as
+                   <B>pfAntialias</B>, and the application of the state
+                   structures, such as <B>pfTexture::apply</B>.  Also
+                   counted is the number of pfGeoStates encoun-
+                   tered and the number of state stack opera-
+                   tions, such as <B>pfGeoState::load</B>,
+                   <B>pfGeoState::apply</B>, <B>pfPushState</B>, and
+                   <B>pfPopState</B>.  This mode is enabled by default.
+
+              <B>PFSTATS_GFX_XFORM</B>
+                   This mode enables the counting of calls to
+                   transformations, such as <B>pfTranslate</B>, <B>pfScale</B>,
+                   and <B>pfRotate</B>, and graphics matrix stack opera-
+                   tions, such as <B>pfLoadMatrix</B>, etc.  the number
+                   of actual state changes themselves, as well as
+                   the number of pfGeoStates encountered.  This
+                   mode is enabled by default.
+
+              <B>PFSTATS_GFX_CULL_SIDEKICK</B>
+                   This mode enables counting OpenGL primitives
+                   removed by a CULL_SIDEKICK process.
+
+       <B>Graphics</B> <B>Pipe</B> <B>Fill</B> <B>Statistics</B>
+
+       These modes enable the accumulation of fill depth-complex-
+       ity statistics and require the corresponding hardware
+       statistics to be enabled:
+
+       pfStats::enableHw(<B>PFSTATSHW_GFXPIPE_FILL_DEPTHCMP</B>);
+
+
+              <B>PFSTATSHW_GFXPIPE_FILL_DCPAINT</B>
+                   This mode causes <B>pfStats::close</B> to paint the
+                   screen according to the number of times each
+                   pixel is touched.  This mode is enabled by
+                   default.
+
+              <B>PFSTATSHW_GFXPIPE_FILL_DCCOUNT</B>
+                   This  mode causes <B>pfStats::close</B> to read back
+                   the framebuffer for the calculation of fill
+                   depth-complexity statistics.  This mode is
+                   enabled by default.
+
+              <B>PFSTATSHW_GFXPIPE_FILL_DEPTHCMP</B>
+                   By default, only actual pixel writes are
+                   counted with depth complexity stats.  This
+                   mode enables counting of Z compares as well.
+                   This mode is not enabled by default.
+
+              <B>PFSTATSHW_GFXPIPE_FILL_TRANSP</B>
+
+       that the corresponding hardware statistics be enabled:
+
+       pfStats::enableHw(<B>PFSTATSHW_ENCPU</B>);
+
+       The percentage of time CPUs spend idle, busy, in user
+       code, and waiting on the Graphics Pipeline, or on the
+       swapping of memory is calculated.  Counted is the number
+       of context switches (process and graphics), the number of
+       system calls, the number of times the graphics FIFO is
+       found to be full, the number of times a CPU went to sleep
+       waiting on a full graphics FIFO, the number of graphics
+       pipeline IOCTLs issued (by the system), and the number of
+       swapbuffers seen.  All of these statistics are computed
+       over an elapsed period of time, and using an elapsed
+       interval of at least one second is recommended.
+
+              <B>PFSTATSHW_CPU_SYS</B>
+                   This mode enables computation of the above CPU
+                   statistics for the entire system.  This
+                   includes statistics on system usage, cpu-
+                   graphics interactions, and memory.  CPU usage
+                   statistics are summed over all CPUs.  This
+                   mode is enabled by default.
+
+              <B>PFSTATSHW_CPU_IND</B>
+                   This mode enables tracking of CPU statistics
+                   for each individual CPU and is much more
+                   expensive than using just the summed statis-
+                   tics.  It is not enabled by default.
+
+       <B>pfStats::getClassMode</B> takes the name of the class to
+       query,  <I>class</I>.  The return value is the mode of <I>class</I>.
+
+       <B>pfStats::open</B> takes a bitmask specifying the statistics
+       classes that are to be opened for collection in <I>enmask</I>.
+       This statistics structure will become the one and only
+       statistics structure open for collection.  The return
+       value will be the bitmask for all currently open statis-
+       tics classes.  If another pfStats structure is already
+       open, then this call to <B>pfStats::open</B> will be ignored and
+       the return value will be 0.  When statistics classes that
+       use statistics hardware are open for collection,
+       <B>pfStats::open</B> will access that hardware for initializa-
+       tion.  Therefore, for graphics pipe statistics, it is
+       imperative that the statistics hardware only be enabled
+       for the drawing process.  Furthermore, only one process at
+       a time should use statistics hardware since it is a shared
+       global resource.  Finally, for statistics that are actu-
+       ally accumulated in statistics hardware, it is best to let
+       some time elapse before the statistics are collected (in
+       <B>pfStats::close</B>).  Refer the examples at the end of this
+       manual page.
+
+       <B>pfStats::close</B> takes a bitmask <I>which</I> specifying the
+       classes whose collected statistics are to be accumulated
+       into the current <B>pfStats</B> structure.  Further collection of
+       these statistics are then disabled and they will have to
+       be re-opened with <B>pfStats::open</B> for further collection.  A
+       pfStats structure is considered to be open until all
+       graphics pipe statistics, it is imperative that the
+       statistics hardware only be enabled for the drawing pro-
+       cess.  Furthermore, only one processes should be using
+       statistics hardware at a time since it is a shared global
+       resource.
+
+       <B>pfStats::getOpen</B> takes a bitmask <I>enmask</I> specifying the
+       statistics classes that are being queried.  If any of the
+       statistics classes specified in <I>enmask</I> are open for col-
+       lection, then the bitmask of those statistics classes is
+       returned, and otherwise, zero.
+
+       <B>pfGetCurStats</B> returns the currently open statistics struc-
+       ture, or NULL if there is no statistics structure open for
+       accumulation.
+
+       <B>pfGfxPipeTimestamp</B> allows the specification of a
+       <B>PFSTATSHW_TIMETAMP_</B> token for the currently open pfStats
+       structure with <B>PFSTATSHW_GFXPIPE_TIMES</B> enabled. These
+       tokens may be one of the following and must be issued once
+       per collection period and in increasing order.
+
+              <B>PFSTATSHW_TIMESTAMP_START</B>
+                   signal start of drawing.
+
+              <B>PFSTATSHW_TIMESTAMP_END</B>
+                   signal end of drawing.
+
+              <B>PFSTATSHW_TIMESTAMP_FRAME_END</B>
+                   signals end of frame and is automatically fol-
+                   lowed by a <B>PFSTATSHW_TIMESTAMP_FINISH</B> to flush
+                   graphics pipeline.
+
+              <B>PFSTATSHW_TIMESTAMP_FINISH</B>
+                   will flush the graphics pipeline to ensure
+                   that all drawing is including in the timing.
+       The <B>PFSTATSHW_TIMESTAMP_OPEN</B> and <B>PFSTATSHW_TIMESTAMP_CLOSE</B>
+       may be issued only by OpenGL Performer and these are
+       issued automatically when <B>PFSTATSHW_GFXPIPE_TIMES</B> statis-
+       tics are opened and closed.
+
+       <B>pfGetStatsGfxPipeTimestampStatus</B> may be used to find out
+       if a given timestamp for the specified pfStats structure
+       has completed its trip through the graphics pipeline (and
+       has resulting data ready for collection).
+
+       <B>pfCollectGfxPipeStatspfStats::collectGfxPipe</B>  may be used
+       to collect graphics pipeline statistics for a structure
+       after the statistics for that structure have been closed.
+       Graphics pipeline statistics must be gathered in the same
+       order that the timestamps are issued.  If separate collec-
+       tion of graphics pipeline statistics are to be done, the
+       <B>pfStats::setClassMode</B> of
+       <B>PFSTATSHW_GFXPIPE_TIMES_AUTO_COLLECT</B> (which is on by
+       default) must be turned off.
+
+       <B>pfStats::setAttr</B> takes the name of the attribute to set,
+       <I>attr</I>, and the attribute value, <I>val</I>.  Currently, there are
+       no pfStats attributes.  <B>pfStats::getAttr</B> takes a pointer
+       start with <B>PFSTATSHW_*</B>.  Statistics hardware must be
+       enabled for the corresponding classes of statistics to be
+       accumulated.  Having statistics hardware enabled will have
+       some cost to performance; however, in most cases, it pays
+       to leave this hardware enabled if corresponding statistics
+       classes are being frequently enabled and disabled.  When
+       statistics classes that use statistics hardware are open
+       for collection, <B>pfStats::open</B> and <B>pfStats::close</B> will
+       access that hardware.  For graphics pipe statistics, it is
+       therefore imperative that the statistics hardware only be
+       enabled for a process that is connected to the graphics
+       pipeline.  Furthermore, only one processes should be using
+       statistics hardware at a time since it is a shared global
+       resource.
+
+       <B>Graphics</B> <B>Statistics</B> <B>Hardware</B> <B>Enables</B>
+
+              <B>PFSTATSHW_ENGFXPIPE_TIMES</B>
+                   Enables the tracking of timestamps in the
+                   graphics pipeline.  This produces very accu-
+                   rate measurements of elapsed drawing times
+                   with minimal impact.  Timestamps are issued
+                   automatically when statistics are opened and
+                   closed, and additional stamps may be issued
+                   with <B>pfGfxPipeTimestamp</B>.
+
+              <B>PFSTATSHW_ENGFXPIPE_FILL</B>
+                   Enables hardware to support tracking of depth
+                   complexity statistics.  When this mode is
+                   enabled, the framebuffer keeps track of the
+                   number of times each pixel is touched.  This
+                   may require a framebuffer reconfiguration
+                   which can be quite expensive, and which may
+                   not be possible in GLX windows.
+
+              <B>PFSTATSHW_ENCPU</B>
+                   This mode enable gathering of CPU statistics
+                   by the system.  This mode should only be
+                   enabled by one process at a time.
+
+       <B>pfStats::disableHw</B> takes a bitmask <I>which</I> specifying the
+       hardware statistics that should be disabled.
+
+       <B>pfStats::getHwEnable</B> takes a bitmask <I>which</I> specifying the
+       hardware statistics that are being queried.  If any of the
+       hardware statistics classes specified in <I>which</I> have their
+       corresponding hardware enabled, then the bitmask of those
+       statistics classes is returned, and otherwise, zero is
+       returned.
+
+       <B>pfStats::setHwAttr</B> takes the name of the attribute to set,
+       <I>attr</I>, and the attribute value, <I>val</I>.  There is currently
+       one stats hardware attribute:  <B>PFSTATSHW_FILL_DCBITS</B>.  Its
+       value must be an integer value in the range of 1 to 4.
+       The default value is 3.  This attribute sets the maximum
+       number of stencil bits used for tracking fill depth com-
+       plexity.  See the GL manual page for <B>stensize(3g)</B> for more
+       information on stencil bitplanes.
+
+
+       <B>pfStats::query</B> takes a query token in <I>which</I>, and a desti-
+       nation buffer <I>dst</I>.  The size of the expected return data
+       is specified by <I>size</I> and if non-zero, will prevent
+       <B>pfStats::query</B> from writing beyond a buffer that is too
+       small.  The return value is the number of bytes written to
+       the destination buffer.  There are tokens for getting back
+       all of the statistics, entire sub-structures, and individ-
+       ual values.  The exposed query structure types and query
+       tokens are all defined in <I>&lt;Performer/pr/pfStats.h&gt;</I>.  Every
+       structure and field is commented with its corresponding
+       query token.  For example, the exposed structure type pfS-
+       tatsValues can be used to hold the entire contents of a
+       pfStats structure and has corresponding query token
+       <B>PFSTATSVAL_ALL</B>.
+
+       typedef struct pfStatsValues
+       {   /* to get back all stats:       PFSTATSVAL_ALL                 */
+           /* PFSTATS_GFX class:             PFSTATSVAL_GFX               */
+           pfStatsValGeom      geom;        /* PFSTATSVAL_GFX_GEOM        */
+           pfStatsValModes     modeChanges; /* PFSTATSVAL_GFX_MODECHANGES */
+           pfStatsValModes     modeCalls;   /* PFSTATSVAL_GFX_MODECALLS   */
+           pfStatsValState     state;       /* PFSTATSVAL_GFX_STATE       */
+           pfStatsValXforms    xform;       /* PFSTATSVAL_GFX_XFORM       */
+           /* PFSTATSHW_GFXPIPE_FILL class: PFSTATSVAL_GFXPIPE_FILL       */
+           pfStatsValFill      fill;        /* PFSTATSVAL_GFXPIPE_FILL    */
+           /* the PFSTATSHW_CPU class:      PFSTATSVAL_CPU                */
+           pfStatsValCPU       cpu;         /* PFSTATSVAL_CPU             */
+       } pfStatsValues;
+
+
+       The following example will return all of the contents of a
+       pfStats structure into the contents of a structure of the
+       exposed type pfStatsValues.
+
+       pfStats *stats;
+       pfStatsValues *val;
+
+       stats = new pfStats;
+       stats-&gt;query(<B>PFSTATSVAL_ALL</B>, (float *) val, sizeof(pfStatsValues));
+
+       <B>pfStats::mQuery</B> takes a pointer to the start of an array
+       of query tokens in <I>which</I>, and a destination buffer <I>dst</I>.
+       The array <I>which</I> must be terminated with the token PFS-
+       TATSVAL_NULL.  The size of the expected return data is
+       specified by <I>size</I> and if non-zero, will prevent
+       <B>pfStats::mQuery</B> from writing beyond a buffer that is too
+       small.  The return value is the number of bytes written to
+       the destination buffer.
+
+       <B>pfStats::count</B> takes a pointer to a pfGeoSet, <I>gset</I>, whose
+       geometry statistics are to be accumulated into <I>stats</I>.
+
+       <B>pfStats::accumulate</B> takes a pointer to a statistics struc-
+       ture, <I>src</I>, and a bitmask <I>which</I> specifying the statistics
+       that are to be accumulated from <I>src</I>.
+
+       <B>pfStats::average</B> takes a pointer to a statistics struc-
+       ture, <I>src</I>, and a bitmask <I>which</I>, and an integer <I>num</I>. The
+
+              2.   The corresponding statistics class must be
+                   enabled with <B>pfStats::setClass</B>.  No statistics
+                   classes are enabled by default.
+
+              3.   The corresponding statistics class mode must
+                   be enabled with <B>pfStats::setClassMode</B>.  How-
+                   ever, each statistics class has a popular set
+                   of statistics modes enabled by default.
+
+              4.   Any relevant hardware must be enabled via
+                   <B>pfStats::enableHw</B>.
+
+              5.   The statistics class must be opened for col-
+                   lection with <B>pfStats::open</B>.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       This example creates a statistics structure and enabling
+       the graphics statistics class with the triangle-strip
+       statistics enabled.
+
+       pfStats *stats = NULL;
+       stats = new pfStats;
+       stats-&gt;setClass(PFSTATS_ENGFX, PFSTATS_ON);
+       stats-&gt;setClassMode(PFSTATS_GFX, PFSTATS_GFX_TSTRIP_LENGTHS, PFSTATS_ON);
+
+
+       This is an example of collecting CPU statistics over an
+       elapsed period of time.
+
+       pfStats *stats = NULL;
+       double lastTime = 0;
+       stats = new pfStats;
+
+       /* enable the CPU stats class - using the default summed CPU statistics */
+       stats-&gt;setClass(PFSTATSHW, PFSTATS_ON);
+
+       /* enable CPU stats hardware */
+       pfStats::enableHw(PFSTATSHW_ENCPU);
+        :
+       /* snap CPU stats every 2 seconds */
+       if (pfGetTime() - lastTime &gt; 2.0)
+       {
+           if (stats-&gt;getOpen(PFSTATSHW_ENCPU))
+           {
+               /*
+                * final snap of CPU stats is done here and difference
+                * between this and the initial snap is calculated.
+                */
+               stats-&gt;close(PFSTATSHW_ENCPU);
+           }
+           else
+           {
+               /* initial snap of CPU stats is done here */
+               stats-&gt;open(PFSTATSHW_ENCPU);
+           }
+       }
+
+       /* enable fill statistics collection */
+       stats-&gt;setClass(PFSTATSHW_ENGFXPIPE_FILL, PFSTATS_ON);
+
+       /* enable fill stats hardware - put framebuffer in correct configuration */
+       pfStats::enableHw(PFSTATSHW_ENGFXPIPE_FILL);
+
+       /* open fill statistics collection and initialize hardware */
+       stats-&gt;open(PFSTATSHW_ENGFXPIPE_FILL);
+
+       /* draw geometry */
+        :
+       /*
+        * paint window by number of times each pixel was touched in the
+        * previous drawing and read back the framebuffer and
+        * examine the counts
+        */
+       stats-&gt;close(PFSTATSHW_ENGFXPIPE_FILL);
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Fill stats are currently calculated by using stencil tests
+       and therefore require stencil bitplanes to be allocated.
+       Furthermore, the <B>PFSTATSHW_GFXPIPE_FILL_TRANSP</B> mode cur-
+       rently disables modes that reject fully transparent pix-
+       els, such as <B>pfAlphaFunc</B>, which will alter what pixels get
+       written into the zbuffer and therefore should be used in
+       conjunction with <B>PFSTATSHW_GFXPIPE_FILL_DEPTHCMP</B>.
+
+       The pfStats routines, structures, and constants are
+       defined in the &lt;Performer/prstats.h&gt; header file.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       None
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfPrint
+
+
+
+                                                     pfStats(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

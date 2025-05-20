@@ -1,0 +1,142 @@
+<HTML>
+<HEAD>
+<TITLE>pfFilePath</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFilePath</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFilePath(3pf)                                   pfFilePath(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFilePath,</B>   <B>pfFilePathv,</B>   <B>pfGetFilePath,</B>  <B>pfFindFile</B>  -
+       Locate files using a search path.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;unistd.h&gt;
+
+       #include &lt;Performer/pr.h&gt;
+
+       void           <B>pfFilePath</B>(const char *path);
+
+       void           <B>pfFilePathv</B>(const char *s,  ...);
+
+       const char *   <B>pfGetFilePath</B>(void);
+
+       int            <B>pfFindFile</B>(const char *file,
+                        char path[PF_MAXSTRING], int amode);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfFilePath</B>  specifies  one  or more search path locations.
+       These locations are directories to be  searched  for  data
+       files  by OpenGL Performer applications.  This information
+       is used by the <B>pfFindFile</B> function.  The <I>path</I> argument  to
+       <B>pfFilePath</B>  is  a  colon  or  semi-colon separated list of
+       directory pathnames similar to the <B>PATH</B> environment  vari-
+       able.  Here is a simple example:
+
+       pfFilePath("/usr/bin:/usr/sbin:/usr/local/bin");
+
+
+       <B>pfFilePathv</B> performs the same operation as <B>pfFilePath</B> but
+       uses a NULL terminated string in lieu of a colon or semi-
+       colon separated string. Using <B>pfFilePathv</B>, the example
+       above could be re-written as:
+
+       pfFilePathv("/usr/bin", "/usr/sbin", "/usr/local/bin", NULL):
+
+
+       Using <B>pfFilePathv</B> ensures that the proper path separator
+       token gets inserted depending on the target platform. Note
+       that a maximum of 64 paths may be specified using this
+       function.
+
+       <B>pfGetFilePath</B> returns the path list set using <B>pfFilePath</B>
+       or <B>NULL</B> if no path has yet been set.  The string returned
+       is identical in format to the one set via <B>pfFilePath</B>; each
+       of the directory names is colon or semi-colon separated.
+
+       <B>pfFindFile</B> attempts to find <I>file</I> amongst the paths set in
+       the environment variable <B>PFPATH</B> and by <B>pfFilePath</B>.  It
+       also tests the file's access mode against the <I>amode</I> argu-
+       ment.  OpenGL Performer routines which access files use
+       <B>pfFindFile</B>.
+
+       The <B>PFPATH</B> environment variable is interpreted in the same
+
+              1.   First the file is sought exactly as named by
+                   <I>file</I>.  If it exists and passes the subsequent
+                   access test described below, then <I>file</I> will be
+                   returned in the <I>path</I> argument.
+
+              2.   If the file was not found or was not accessi-
+                   ble, then each of the locations defined by the
+                   <B>PFPATH</B> environment variable are prepended to
+                   the <I>file</I> argument and tested.  If it exists
+                   and passes the subsequent access test
+                   described below, then the complete path name
+                   will be returned in the <I>path</I> argument.
+
+              3.   If the file has still not been successfully
+                   located, then each of the locations defined by
+                   the most recent call to <B>pfFilePath</B> will be
+                   prepended to the <I>file</I> argument and tested.  If
+                   it exists and passes the subsequent access
+                   test described below, then the complete path
+                   name will be returned in the <I>path</I> argument.
+
+              4.   If all of these efforts are fruitless, then
+                   <B>pfFindFile</B> will give up and return a NULL
+                   string in the <I>path</I> argument.
+
+       The mere existence of <I>file</I> in one of the indicated direc-
+       tories is not sufficient, the file must also be accessible
+       in the access mode defined by <I>amode</I>.  This mode is a bit-
+       field composed by OR-ing together the permission
+       attributes defined in <I>&lt;unistd.h&gt;</I> and listed in the follow-
+       ing table:
+
+       center tab($) ; c | c | c cB | c | l .  Mode Token$Mode
+       Value$Action _ R_OK$0x4$Read permission W_OK$0x2$Write
+       permission X_OK$0x1$Execute and search F_OK$0x0$Existence
+       of file
+
+       If the bits set in  <I>amode</I> are also set in the file's
+       access permission mode, then the complete path is copied
+       into <I>path</I> and <B>TRUE</B> is returned indicating success.  If the
+       access modes are not similar, then the search continues
+       until there are no more paths to search and <B>FALSE</B> is
+       returned indicating failure.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfCreateFile</B> and <B>pfOpenFile</B> do not use <B>pfFindFile</B>.  This
+       is because the search implied can be unpredictably slow
+       when remote directories are present in the search path.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       access
+
+
+
+                                                  pfFilePath(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

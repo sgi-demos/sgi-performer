@@ -1,0 +1,166 @@
+
+/*
+ * Copyright 1995, Silicon Graphics, Inc.
+ * ALL RIGHTS RESERVED
+ *
+ * This source code ("Source Code") was originally derived from a
+ * code base owned by Silicon Graphics, Inc. ("SGI")
+ * 
+ * LICENSE: SGI grants the user ("Licensee") permission to reproduce,
+ * distribute, and create derivative works from this Source Code,
+ * provided that: (1) the user reproduces this entire notice within
+ * both source and binary format redistributions and any accompanying
+ * materials such as documentation in printed or electronic format;
+ * (2) the Source Code is not to be used, or ported or modified for
+ * use, except in conjunction with OpenGL Performer; and (3) the
+ * names of Silicon Graphics, Inc.  and SGI may not be used in any
+ * advertising or publicity relating to the Source Code without the
+ * prior written permission of SGI.  No further license or permission
+ * may be inferred or deemed or construed to exist with regard to the
+ * Source Code or the code base of which it forms a part. All rights
+ * not expressly granted are reserved.
+ * 
+ * This Source Code is provided to Licensee AS IS, without any
+ * warranty of any kind, either express, implied, or statutory,
+ * including, but not limited to, any warranty that the Source Code
+ * will conform to specifications, any implied warranties of
+ * merchantability, fitness for a particular purpose, and freedom
+ * from infringement, and any warranty that the documentation will
+ * conform to the program, or any warranty that the Source Code will
+ * be error free.
+ * 
+ * IN NO EVENT WILL SGI BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT
+ * LIMITED TO DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
+ * ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THE
+ * SOURCE CODE, WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT OR
+ * OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM,
+ * OR AROSE OUT OF USE OR RESULTS FROM USE OF, OR LACK OF ABILITY TO
+ * USE, THE SOURCE CODE.
+ * 
+ * Contact information:  Silicon Graphics, Inc., 
+ * 1600 Amphitheatre Pkwy, Mountain View, CA  94043, 
+ * or:  http://www.sgi.com
+ */
+///////////////////////////////////////////////////////////////////////////////
+
+#include <Performer/pfv/pfvViewer.h>
+#include <Performer/pfdu.h>
+#include <Performer/pf/pfLightSource.h>
+
+///////////////////////////////////////////////////////////////////////////////
+
+void SetPathToNavigatorDso()
+{
+#if defined(__linux__)
+    pfvModule::setLoadPath( "../modules/pfvmNavigator/OPT.I386/:"
+                            "../modules/pfvmNavigator/DBG.I386/");
+#elif defined(WIN32)
+    pfvModule::setLoadPath( "../modules/pfvmNavigator/Release/:"
+                            "../modules/pfvmNavigator/Debug/");
+#elif defined(O32)
+    pfvModule::setLoadPath( "../modules/pfvmNavigator/OPT.O32/:"
+                            "../modules/pfvmNavigator/DBG.O32/");
+#elif defined(N32)
+    pfvModule::setLoadPath( "../modules/pfvmNavigator/OPT.N32/:"
+                            "../modules/pfvmNavigator/DBG.N32/");
+#elif defined(N64)
+    pfvModule::setLoadPath( "../modules/pfvmNavigator/OPT.N64/:"
+                            "../modules/pfvmNavigator/DBG.N64/");
+#else
+    pfNotify(PFNFY_WARN, PFNFY_PRINT, 
+        "Failed to determine appropriate module load path");
+#endif
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+int
+main (int argc, char *argv[])
+{
+    int i, n=argc-1;
+
+    if(n<1)
+    {
+        printf("Usage: %s filenames\n", argv[0]);
+        exit(1);
+    }
+	
+    pfInit();
+    pfvViewer* viewer = new pfvViewer;
+	
+    for(i=0;i<n;i++)
+    {
+        pfdInitConverter(argv[i+1]);
+
+        pfvView* view = (pfvView*)(viewer->createView());
+        pfvWorld* world = viewer->createWorld();
+        view->setTargetWorld(world);
+
+        SetPathToNavigatorDso();
+
+        pfvModule*m = pfvModule::load("pfvmNavigator");
+        PFASSERTALWAYS(m);
+        viewer->addModule(m, PFV_SCOPE_VIEW);
+	   
+        pfvModule::setLoadPath( "../modules/" );
+
+#ifdef __linux__	
+        m = pfvModule::load("pfvmPicker",
+	    "pfvmPicker/OPT.I386/libpfvmPicker.so");
+        if(m==NULL)
+            m = pfvModule::load("pfvmPicker",
+	        "pfvmPicker/DBG.I386/libpfvmPicker.so");
+#elif defined(WIN32)
+        m = pfvModule::load("pfvmPicker",
+	    "pfvmPicker/Release/libpfvmPicker.dll");
+        if(m==NULL)
+            m = pfvModule::load("pfvmPicker",
+	        "pfvmPicker/Debug/libpfvmPicker.dll");
+#elif defined(O32)
+        m = pfvModule::load("pfvmPicker",
+            "pfvmPicker/OPT.O32/libpfvmPicker.so");
+        if(m==NULL)
+            m = pfvModule::load("pfvmPicker",
+	        "pfvmPicker/DBG.O32/libpfvmPicker.so");
+#elif defined(N32)
+        m = pfvModule::load("pfvmPicker",
+            "pfvmPicker/OPT.N32/libpfvmPicker.so");
+        if(m==NULL)
+            m = pfvModule::load("pfvmPicker",
+	        "pfvmPicker/DBG.N32/libpfvmPicker.so");
+#elif defined(N64)
+        m = pfvModule::load("pfvmPicker",
+            "pfvmPicker/OPT.N64/libpfvmPicker.so");
+        if(m==NULL)
+            m = pfvModule::load("pfvmPicker",
+	        "pfvmPicker/DBG.N64/libpfvmPicker.so");
+#endif
+        PFASSERTALWAYS(m);
+        viewer->addModule(m, PFV_SCOPE_VIEW);
+    }
+
+    pfFilePath(".:/usr/share/Performer/data");
+
+    viewer->config();
+    
+    for(i=0;i<n;i++)
+    {
+        pfvView* view = viewer->getView(i);
+        pfvWorld* world = viewer->getWorld(i);
+	
+        world->addNode(new pfLightSource);
+	
+        pfNode *root = pfdLoadFile(argv[i+1]);
+        if(root) 
+            world->addNode(root);
+
+        view->autoPos();
+    }
+	
+    viewer->run(500.0f);  
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+

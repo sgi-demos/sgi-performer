@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>pfInit</TITLE>
+</HEAD>
+<BODY>
+<H1>pfInit</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfInit(3pf)                                           pfInit(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfInit,</B>  <B>pfIsInited,</B>  <B>pfExit</B>  -  Initialize  and terminate
+       OpenGL Performer processes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       int    <B>pfInit</B>(void);
+
+       int    <B>pfIsInited</B>(void);
+
+       void   <B>pfExit</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfInit</B> initializes internal OpenGL Performer  data  struc-
+       tures  and  must  be the first OpenGL Performer call in an
+       application except for the following:
+
+              pfNotifyLevel
+
+              pfSharedArenaSize
+
+              pfSharedArenaBase
+
+              pfTmpDir
+
+
+       <B>pfInit</B> is required by all Performer  applications  whether
+       they  use libpf or not.  But <B>pfInit</B> has slightly different
+       behavior applications that  only  use  libpr  and  do  not
+       include pf.h.  for these applications, <B>pfInit</B> does not set
+       up  any  shared  memory  arenas.   If  shared  memory   is
+       required,  it  should  be  explicitly  set  up  by calling
+       <B>pfInitArenas</B> before <B>pfInit</B>.  <B>pfInit</B> returns a value  of  1
+       if  successful and -1 if an error is detected.  <B>pfIsInited</B>
+       returns a value of  1  if  <B>pfInit</B>  has  successfully  been
+       called and 0 otherwise.
+
+       <B>pfExit</B> closes graphics windows, frees all OpenGL Performer
+       data structures, deletes all OpenGL Performer shared  mem-
+       ory  arenas  (see  <B>pfGetSharedArena</B>),  kills  all  spawned
+       OpenGL Performer processes, then returns  control  to  the
+       application.   <B>pfExit</B>  also  turns  off  the video retrace
+       clock (see <B>pfVClock</B>).  After calling <B>pfExit</B> an application
+       may restart OpenGL Performer with <B>pfInit</B>.
+
+       User  processes  forked  or sproced after <B>pfConfig</B> will be
+       terminated by <B>pfExit</B>.   Those  forked  or  sproced  before
+       <B>pfConfig</B> will be sent a <B>SIGCLD</B> signal.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Since  <B>pfExit</B> deletes all shared memory arenas, any memory
+       used by the application that was  created  out  of  OpenGL
+       Performer shared memory is now invalid.
+
+       pfConfig, pfGetSharedArena, pfMalloc, pfVClock
+
+
+
+                                                      pfInit(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

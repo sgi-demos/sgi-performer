@@ -1,0 +1,207 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.79C-SGI [en] (X11; I; IRIX64 6.5-ALPHA-1278534820 IP30) [Netscape]">
+   <title>OpenGL Performer 3.0 Developer Release Notes</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<center>
+<h1>
+<img SRC="ban_openglperformer.gif" ALT="OpenGL Performer Banner" height=68 width=515><br>
+<font face="Helvetica, Arial, sans-serif">OpenGL Performer 3.0 for Microsoft&reg;
+Windows&reg;<br>
+Developer Release Notes</font></h1></center>
+
+<hr width="100%" size="2"><font face="Helvetica, Arial, sans-serif">This
+document explains how to develop applications using OpenGL Performer on
+Microsoft Windows NT&reg;, Windows 2000&reg;, and Windows XP&reg;.&nbsp;
+All developers should also familiarize themselves with the <a href="UserReleaseNotes.html">user
+release notes</a>.</font>
+<p><font face="Helvetica, Arial, sans-serif">The following topics are covered
+in this document:</font>
+<ul>
+<li>
+<font face="Helvetica, Arial, sans-serif"><a href="#Status_of_libraries">Status
+of libraries</a></font></li>
+
+<li>
+<font face="Helvetica, Arial, sans-serif"><a href="#Development_toolssettings_include">Development
+tools/settings (include paths, libraries, etc.)</a></font></li>
+
+<li>
+<font face="Helvetica, Arial, sans-serif"><a href="#Building_samples">Building
+samples</a></font></li>
+
+<li>
+<font face="Helvetica, Arial, sans-serif"><a href="#pfFilePath_notes">pfFilePath()
+notes</a></font></li>
+
+<li>
+<font face="Helvetica, Arial, sans-serif"><a href="#Man_pages">Man pages</a></font></li>
+
+<li>
+<font face="Helvetica, Arial, sans-serif"><a href="#General_notes_about_porting_applications">General
+notes about porting applications to Windows NT</a></font></li>
+</ul>
+
+<hr width="100%" size="2">
+<h2>
+<a NAME="Status_of_libraries"></a><font face="Helvetica, Arial, sans-serif">Status
+of libraries</font></h2>
+
+<blockquote><font face="Helvetica, Arial, sans-serif">All OpenGL Performer
+libraries have been ported to the WIN32 API.</font>
+<p><font face="Helvetica, Arial, sans-serif">The most notable difference
+between the OpenGL&nbsp;Performer libraries on Microsoft Windows platforms
+and those on systems running IRIX&reg; or Linux&reg; has to do with the
+fact that <b>libpfdu and libpfutil have been combined into a single library
+named libpfdu-util.</b>&nbsp; Microsoft Windows does not allow DLL's to
+have unresolved symbols and since <b>libpfdu</b> and <b>libpfutil</b> are
+interdependent, they had to be merged.</font>
+<p><font face="Helvetica, Arial, sans-serif">OpenGL&nbsp;Performer 3.0
+supports single-process (</font><font face="Courier New, Courier, monospace">PFMP_APPCULLDRAW)
+</font><font face="Helvetica, Arial, sans-serif">mode only.</font>
+<p><font face="Helvetica, Arial, sans-serif">All OpenGL&nbsp;Performer
+3.0 libraries on Microsoft Windows provide the same API calls as on the
+IRIX and Linux operating systems. Internal differences in the windowing
+and event handling systems there is no multiscreen support in the&nbsp;
+all function calls dealing with the DISPLAY environment variable are ignored
+and the <b>pfCalligraphic</b>and <b>pfVideoChannel</b> classes will have
+no effect on rendering operations.</font></blockquote>
+
+<h2>
+<a NAME="Development_toolssettings_include"></a><font face="Helvetica, Arial, sans-serif">Development
+tools/settings (include paths, libraries, etc.)</font></h2>
+
+<blockquote><font face="Helvetica, Arial, sans-serif">In order to develop
+applications with OpenGL Performer on Microsoft Windows&nbsp; you must
+specify the following include directives:</font>
+<ul>
+<li>
+<tt>-I%PFROOT%/Include</tt></li>
+
+<li>
+<tt>-I%PFROOT%/Include/Performer</tt></li>
+</ul>
+<font face="Helvetica, Arial, sans-serif">No other compilation flags are
+required (assuming you're using Microsoft&nbsp; Visual C++, which defines<tt>
+_WIN32</tt>.)&nbsp; All samples shipped with Performer are know to build
+using <b>Microsoft's Visual Studio 6.0</b> with Service Pack 5 installed.
+No other compilers were tested. The </font><font face="Courier New, Courier, monospace">PFROOT</font><font face="Helvetica, Arial, sans-serif">
+environment variable is automatically set up by the Performer installer.</font>
+<p><font face="Helvetica, Arial, sans-serif">In addition to include directives,
+the following libraries need to be specified on the link line:</font>
+<ul>
+<li>
+<tt>libpf.lib</tt></li>
+
+<li>
+<tt>opengl32.lib</tt></li>
+
+<li>
+<tt>glu32.lib</tt></li>
+</ul>
+<font face="Helvetica, Arial, sans-serif">And if needed:</font>
+<ul>
+<li>
+<tt>libpfui.lib</tt></li>
+
+<li>
+<tt>libpfdu-util.lib</tt></li>
+
+<li>
+<tt>libpfv.lib</tt></li>
+</ul>
+</blockquote>
+
+<h2>
+<a NAME="Building_samples"></a><font face="Helvetica, Arial, sans-serif">Building
+samples</font></h2>
+
+<blockquote><font face="Helvetica, Arial, sans-serif">In order to build
+the samples which currently ship with OpenGL Performer 3.0, the Microsoft
+development environment has to be initialized by running the <tt>VCVARS32.BAT
+</tt>batch
+file provided by Microsoft Visual Studio and then the following command
+should be issued in a command prompt:</font>
+<ul>
+<li>
+<tt>cd "%PFROOT%/Src"</tt></li>
+
+<li>
+<tt>nmake</tt></li>
+</ul>
+</blockquote>
+
+<h2>
+<a NAME="pfFilePath_notes"></a><font face="Helvetica, Arial, sans-serif">pfFilePath()
+notes</font></h2>
+
+<blockquote><font face="Helvetica, Arial, sans-serif">In order to make
+it easier to write cross platform code there is a new function in OpenGL
+Performer 3.0 which provides a method for specifying an arbitrary number
+of paths via <tt>pfFilePathv()</tt>. Paths on Windows systems are semi-colon
+separated whereas on UNIX they are colon separated. This function hides
+this difference by making it possible to specify a list of directories
+without specifying delimiters. So for example if you used <tt>pfFilePath()</tt>in
+the following manner in your UNIX program:</font>
+<blockquote><tt>pfFilePath("data:data/town");</tt></blockquote>
+<font face="Helvetica, Arial, sans-serif">then using </font><tt>pfFilePathv()</tt><font face="Helvetica, Arial, sans-serif">you
+would write:</font>
+<blockquote><tt>pfFilePathv("data", "data/town");</tt></blockquote>
+</blockquote>
+
+<h2>
+<a NAME="Man_pages"></a><font face="Helvetica, Arial, sans-serif">Man pages</font></h2>
+
+<blockquote><font face="Helvetica, Arial, sans-serif">Man pages have been
+converted to HTML for the Windows release since the "man" command is not
+natively available on Windows.</font></blockquote>
+
+<h2>
+<a NAME="General_notes_about_porting_applications"></a><font face="Helvetica, Arial, sans-serif">General
+notes about porting applications to Windows</font></h2>
+
+<blockquote><font face="Helvetica, Arial, sans-serif">The OpenGL Performer
+library presents all of the same interfaces on Windows as it presents on
+IRIX and Linux. Because this is the case, the only real effort involved
+in porting code from a UNIX code base to Windows involves your own UNIX
+specific code. As an example, perfly has only a few conditional compilation
+statements for Windows and they are for determining the number of processors
+available on the system.</font>
+<p><font face="Helvetica, Arial, sans-serif">The biggest problem you're
+likely to run into when porting to Windows will probably be porting your
+Makefiles. There is a suite of GNU tools known as Cygwin which provide
+a unix portability layer on Windows which you may find helpful. Cygwin
+is located at <a href="http://www.cygwin.com">www.cygwin.com</a>.</font>
+<p><font face="Helvetica, Arial, sans-serif">There are a tremendous number
+of possible OpenGL driver and video card combinations under the Microsoft
+Windows family of operating systems. OpenGL Performer's visual selection
+strategy is very general so it should work with most drivers and most video
+cards. If the visual selection does fail, however, it is possible to specify
+a fallback visual with the environment variable <b>PF_FALLBACK_PIXELFORMAT
+</b>by
+setting its value to the numerical ID of a valid PixelFormat. When this
+variable is set, Performer will go about visual selection as it does normally,
+but in the case of visual selection failure, the specified PixelFormat
+will be used. To help you select a visual, we've implemented a utility
+named </font><font face="Courier New, Courier, monospace">wglinfo.exe</font><font face="Helvetica, Arial, sans-serif">,
+which you can find in </font><font face="Courier New, Courier, monospace">%PFROOT%/Bin.</font>
+<p><font face="Arial,Helvetica">One final note of interest is that due
+to the lack of </font><tt>fork()</tt><font face="Arial,Helvetica">on MS
+Windows, you cannot modify any global variables which would normally be
+in a separate process (comp, draw, cull_sidekick.)</font>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;</blockquote>
+
+<blockquote>&nbsp;</blockquote>
+
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+</body>
+</html>

@@ -1,0 +1,61 @@
+PROGRAM_LINK_FLAGS=$(COMMON_LINK_FLAGS) $(COMMON_LIBS) $(COMMONLIB_FLAGS) $(EXTRALINKFLAGS)
+DLL_LINK_FLAGS=$(COMMON_LINK_FLAGS) /DLL $(COMMON_LIBS) $(COMMONLIB_FLAGS)) $(EXTRALINKFLAGS)
+
+CFLAGS=$(COMMON_COMPILE_FLAGS) $(EXTRACFLAGS)
+CXXFLAGS=$(COMMON_COMPILE_FLAGS) $(EXTRACFLAGS) $(EXTRACXXFLAGS)
+
+all:: $(PROGRAMS) $(SUBDIRS) $(LIBS)
+
+# the following rule doesn't quite work ...
+!if "$(SUBDIRS)" != ""
+$(SUBDIRS):
+	@echo making in $* subdirectory
+	@cd $*
+	@$(MAKE) $(MAKEFLAGS)
+	@cd ..
+!endif
+
+# the following rule does not work ...
+.zzz{$(INTDIR)}.lib::
+	echo making clean lib for cfg = $(CFG) and lib = $*
+# followed by erase of .dll, .lib, .exp, .pdb, etc ... 
+
+clean:
+	-@echo making clean for $(CFG)
+	@if exist "$(OUTDIR)"\*.obj erase /f "$(OUTDIR)"\*.obj
+	@if exist "$(OUTDIR)"\*.exe erase /f "$(OUTDIR)"\*.exe
+	@if exist "$(OUTDIR)"\*.exp erase /f "$(OUTDIR)"\*.exp
+	@if exist "$(OUTDIR)"\*.lib erase /f "$(OUTDIR)"\*.lib
+	@if exist "$(OUTDIR)"\*.ilk erase /f "$(OUTDIR)"\*.ilk
+	@if exist "$(OUTDIR)"\*.pdb erase /f "$(OUTDIR)"\*.pdb
+	@if exist "$(OUTDIR)"\*.dll erase /f "$(OUTDIR)"\*.dll
+#	@$(MAKE) /nologo $(LIBS:.lib=.zzz)
+
+clobber:
+	-@echo making clobber ...
+	-@$(MAKE) $(MAKEFLAGS) /nologo CFG="dbg" clean
+	-@$(MAKE) $(MAKEFLAGS) /nologo CFG="opt" clean
+	-@if exist "Debug" rmdir Debug
+	-@if exist "Release" rmdir Release
+
+"$(OUTDIR)":
+	@if not exist "$(OUTDIR)/" mkdir "$(OUTDIR)"
+
+
+.c{$(OUTDIR)}.obj:
+	-@$(MAKE) $(MAKEFLAGS) /C /nologo "$(OUTDIR)"
+	$(CC) $(CFLAGS) -c $<
+	-@if exist "$(OUTDIR)\$(@F)" erase $(OUTDIR)\$(@F)
+	@move $(@F) "$(OUTDIR)\$(@F)"
+
+.cpp{$(OUTDIR)}.obj:
+	-@$(MAKE) $(MAKEFLAGS) /C /nologo "$(OUTDIR)"
+	$(CC) $(CXXFLAGS) -c $<
+	-@if exist "$(OUTDIR)\$(@F)" erase $(OUTDIR)\$(@F)
+	@move $(@F) $(OUTDIR)\$(@F)
+
+.cxx{$(OUTDIR)}.obj:
+	-@$(MAKE) $(MAKEFLAGS) /C /nologo "$(OUTDIR)"
+	$(CC) $(CXXFLAGS) -c $<
+	-@if exist "$(OUTDIR)\$(@F)" erase $(OUTDIR)\$(@F)
+	@move $(@F) $(OUTDIR)\$(@F)

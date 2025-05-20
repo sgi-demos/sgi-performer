@@ -1,0 +1,172 @@
+<HTML>
+<HEAD>
+<TITLE>pfISL</TITLE>
+</HEAD>
+<BODY>
+<H1>pfISL</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfISL(3pf)                                             pfISL(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfShaderTexCoordFunc,</B>  <B>pfShaderTexApplyFunc,</B>  <B>pfShaderTex-</B>
+       <B>ComputeFunc,</B>   <B>pfAppearanceChanged,</B>   <B>pfShaderChanged</B>    -
+       OpenGL|Shader Integration
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfShaderTexCoordFunc</B>(islAppearance *appearance,
+                pfTexCoordCallbackType func, void *udata);
+
+       void   <B>pfShaderTexApplyFunc</B>(islAppearance *appearance,
+                pfTexApplyCallbackType func, void *udata);
+
+       void   <B>pfShaderTexComputeFunc</B>(islAppearance *appearance,
+                pfTexComputeCallbackType func, void *udata);
+
+       void   <B>pfAppearanceChanged</B>(islAppearance *appearance);
+
+       void   <B>pfShaderChanged</B>(islAppearance *appearance,
+                islShader *shader);
+
+
+              typedef int (*pfTexApplyCallbackType)(const islAppearance *app,
+                                                    const char *texName,
+                                                    void *userData);
+              typedef void (*pfTexComputeCallbackType)(pfISLTexCoordData *d,
+                                                       const char *texName,
+                                                       void *userData);
+              typedef pfVec2* (*pfTexCoordCallbackType)(pfISLTexCoordData *d,
+                                                        const float texCoordID,
+                                                        void *userData);
+
+
+              void void pfDefaultTextureComputeCallback(pfISLTexCoordData *d,
+                                                        const char *texName,
+                                                        void *userData);
+
+              int pfDefaultTextureApplyCallback(const islAppearance *app,
+                                                const char *texName,
+                                                void *userData);
+
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions provide a mechanism for using OpenGL
+       Shader objects within Performer. As of Performer 3.0,
+       OpenGL Shader objects can be used natively in Performer
+       applications with very little API duplication on the Per-
+       former side. To this end, the shader support introduced in
+       Performer 2.4 has been removed from this and future
+       releases.
+
+       OpenGL Shader encapsulates the description of the appear-
+       ance of an object in the islAppearance class. Performer
+       islAppearances coming into view.
+
+       OpenGL Shader integration is not completely transparent,
+       however, since Performer must use its own callbacks as
+       hooks into the OpenGL Shader library. Since any user spec-
+       ified callbacks are lost and users have no access to Per-
+       former's islShape and islDrawAction classes, Performer
+       provides a set of its own callbacks that can be used in
+       place of OpenGL Shader's.
+
+       <B>pfShaderTexCoordFunc</B> is used to register a texture coordi-
+       nate generation callback. When rendering objects with an
+       islDrawAction, OpenGL Shader asks for geometry to be drawn
+       with a specified texture coordinate identification code.
+       These codes are user defined, so Performer must pass the
+       task of generating the corresponding texture coordinates
+       to the user. The <B>appearance</B> parameter specifies which
+       islAppearance the callbacks applies to. The <B>func</B> parameter
+       is a pointer to the user callback and the <B>udata</B> parameter
+       is a user data pass through pointer. The user callback
+       must be of type <B>pfTexCoordCallbackType</B>. If <I>appearance</I> is
+       NULL, all currently registered islAppearances will be
+       updated to use the specified callback and user data.
+
+
+       In the texture coordinate callback function, the
+       <B>pfISLTexCoordData</B> pointer refers to a class which contains
+       useful information for computing the requested texture
+       coordinates, such as the pfGeoSet being rendered, its
+       islAppearance and the pfGeoSet's modelview matrix.  The
+       <B>texCoordID</B> parameter is the pass-through texture coordi-
+       nate identification from an islShader and the <B>userData</B>
+       parameter points to the user data specified when register-
+       ing the callback.
+
+       The user callback must return a set of Performer texture
+       coordinates for rendering the specified pfGeoSet.
+
+       <B>pfShaderTexApplyFunc</B> is used to register a texture appli-
+       cation callback. This callback is invoked whenever OpenGL
+       Shader asks for a specific named texture to be applied.
+       The callback function is passed the islAppearance that
+       requested the texture bind, the texture name, and any user
+       data specified when the callback is registered. The return
+       value from the user callback is the number of dimensions
+       in the texture; 1, 2 or 3. If <I>appearance</I> is NULL, all cur-
+       rently registered islAppearances will be updated to use
+       the specified callback and user data.
+
+       By default, Performer registers the
+       <B>pfDefaultTextureApplyCallback</B> function with each islAp-
+       pearance that is installed on a pfGeoSet. This default
+       callback is a useful utility that assumes that the texture
+       name is the name of a file and it tries to load that file
+       from disk and applies it.
+
+       <B>pfShaderTexComputeFunc</B> is used to register a texture com-
+       putation callback. Often, it is necessary to use procedu-
+       ral textures for shading and and it is most efficient to
+       modelview matrix.  If <I>appearance</I> is NULL, all currently
+       registered islAppearances will be updated to use the spec-
+       ified callback and user data.
+
+       By default, Performer registers the
+       <B>pfDefaultTextureComputeCallback</B> with each islAppearance
+       that is added to a pfGeoSet. This default callback loads
+       the specified texture and stores it in a global lookup
+       table. When the pfDefaultTextureApplyCallback is invoked
+       as described above, it applies a texture from this lookup
+       table.
+
+       <B>pfShaderChanged</B> should be called whenever any shader
+       parameters of any islShader have been modified. The
+       <I>appearance</I> parameter specifies which islAppearance con-
+       tains the shader that has changed and the <I>shader</I> parameter
+       specifies specifically which shader has been changed.
+
+       <B>pfAppearanceChanged</B> should be called whenever an islAp-
+       pearance that Performer references has been changed by
+       adding or removing a shader.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfISLTexCoordData, islAppearance, islShader, pfGeoSet
+
+
+
+                                                       pfISL(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

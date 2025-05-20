@@ -1,0 +1,188 @@
+<HTML>
+<HEAD>
+<TITLE>pfSphere</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSphere</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSphere(3pf)                                       pfSphere(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfSphere</B> - Set, transform and extend a sphere
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoMath.h&gt;
+
+       void*   <B>pfSphere::operator</B> <B>new</B>(size_t);
+
+       void*   <B>pfSphere::operator</B> <B>new</B>(size_t, void *arena);
+
+               <B>pfSphere::pfSphere</B>();
+
+               <B>pfSphere</B>(const pfVec3&amp; _center, float _radius);
+
+       void    <B>pfSphere::makeEmpty</B>(void);
+
+       void    <B>pfSphere::extendBy</B>(const pfVec3 &amp;pt);
+
+       void    <B>pfSphere::extendBy</B>(const pfSphere* sph);
+
+       void    <B>pfSphere::extendBy</B>(const pfCylinder* cyl);
+
+       void    <B>pfSphere::around</B>(const pfVec3 *pts, int npt);
+
+       void    <B>pfSphere::around</B>(const pfSphere **sphs, int nsph);
+
+       void    <B>pfSphere::around</B>(const pfBox **boxes, int nbox);
+
+       void    <B>pfSphere::around</B>(const pfCylinder **cyls,
+                 int ncyl);
+
+       int     <B>pfSphere::contains</B>(const pfVec3 &amp;pt);
+
+       int     <B>pfSphere::contains</B>(const pfSphere *sph2);
+
+       int     <B>pfSphere::contains</B>(const pfCylinder *cyl);
+
+       int     <B>pfSphere::contains</B>(const pfBox *box);
+
+       int     <B>pfSphere::isect</B>(const pfSeg* seg,       float* d1,
+                 float* d2);
+
+       void    <B>pfSphere::orthoXform</B>(const pfSphere *sph,
+                 const pfMatrix &amp;xform);
+
+
+               struct pfSphere
+               {
+                   pfVec3 center;
+                   float radius;
+               };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfSphere represents a sphere as a <I>center</I> and a <I>radius</I>.
+       initialize the center and radius of the pfSphere.
+       <B>new</B>(arena) allocates a pfSphere from the specified memory
+       arena, or from the heap if <I>arena</I> is NULL.  <B>new</B> allocates a
+       pfSphere from the default memory arena (see
+       <B>pfGetSharedArena</B>).  pfSpheres can also be created automat-
+       ically on the stack or statically.  pfSpheres allocated
+       with <B>new</B> can be deleted with <B>delete</B> or <B>pfDelete</B>.
+
+       <B>pfSphere::makeEmpty</B> sets the pfSphere so that it appears
+       empty to extend and around operations.
+
+       <B>pfSphere::extendBy(const</B> <B>pfVec3</B> <B>pt)</B>,
+       <B>pfSphere::extendBy(const</B> <B>pfSphere</B> <B>*sph)</B>, and
+       <B>pfSphere::extendBy(const</B> <B>pfCylinder</B> <B>*cyl)</B> set the pfSphere
+       to a sphere which contains both the pfSphere and the point
+       <I>pt</I>, the sphere <I>sph</I> or the cylinder <I>cyl</I>, respectively.
+
+       <B>pfSphere::around(const</B> <B>pfVec3</B> <B>*,</B> <B>int)</B>,
+       <B>pfSphere::around(const</B> <B>pfBox</B> <B>**,</B> <B>int)</B>,
+       <B>pfSphere::around(const</B> <B>pfSphere</B> <B>**,</B> <B>int)</B> and
+       <B>pfCylinder::around(const</B> <B>pfCylinder</B> <B>**,</B> <B>int)</B> set the
+       pfSphere to a sphere which contains a set of points,
+       boxes, spheres or cylinders, respectively.  These routines
+       are passed the address of an array of pointers to the
+       objects being bounded along with the number of objects.
+
+       <B>pfSphere::contains(const</B> <B>pfVec3</B> <B>pt)</B>, returns <B>TRUE</B> or <B>FALSE</B>
+       depending on whether the point <I>pt</I> is in the interior of
+       the specified sphere.
+
+       <B>pfSphere::contains(const</B> <B>pfSphere</B> <B>*)</B>,
+       <B>pfSphere::contains(const</B> <B>pfCylinder</B> <B>*)</B> and
+       <B>pfSphere::contains(const</B> <B>pfBox</B> <B>*)</B> test whether the sphere
+       contains a non-empty portion of the volume specified by
+       the  argument, a sphere, a cylinder or a box, respec-
+       tively.
+
+       The return value from the these functions is the OR of one
+       or more bit fields.  The returned value may be:
+
+              <B>PFIS_FALSE</B>:
+                   The intersection of the  argument and the
+                   sphere is empty.
+
+              <B>PFIS_MAYBE</B>:
+                   The intersection of the  argument and the
+                   sphere might be non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+                   The intersection of the argument and the
+                   sphere is  definitely non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+                   The argument is non-empty and lies entirely
+                   inside the sphere.
+
+       <B>pfSphere::isect</B> intersects the line segment <I>seg</I> with the
+       volume of the pfSphere <I>sphere</I>.  The possible return values
+       are:
+                   interior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_END_IN</B>:
+                   The ending point of <I>seg</I> lies in the interior.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B> |
+              <B>PFIS_START_IN</B> | <B>PFIS_END_IN</B>:
+                   Both end points of <I>seg</I> lie in the interior.
+
+       If <I>d1</I> and <I>d2</I> are non-NULL, on return from <B>pfSphere::isect</B>
+       they contain the starting and ending positions of the line
+       segment (0 &lt;= d1 &lt;= d2 &lt;= seg-&gt;length) intersected with
+       the sphere.
+
+       <B>pfSphere::orthoXform</B> sets the pfSphere to be the sphere
+       <I>sph</I> transformed by the orthogonal transform <I>xform</I>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The bit fields returned by the contains functions are
+       structured so that bitwise AND-ing the results of sequen-
+       tial tests can be used to compute composite results, e.g.
+       testing exclusion against a number of half spaces.
+
+       Some of the extend and around operations are time consum-
+       ing and should be used sparingly.  In general, the quality
+       of a bound generated by a series of extend operations will
+       be no better, and sometimes much worse, than a bound gen-
+       erated by a single around operation.
+
+       C++ does not support array deletion (i.e. <B>delete[]</B>) for
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfVec3[n].
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfCylinder, pfSeg, pfVec3
+
+
+
+                                                    pfSphere(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

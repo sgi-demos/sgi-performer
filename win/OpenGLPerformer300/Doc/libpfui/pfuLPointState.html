@@ -1,0 +1,175 @@
+<HTML>
+<HEAD>
+<TITLE>pfuLPointState</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuLPointState</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuLPointState(3pf)                           pfuLPointState(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuMakeLPStateShapeTex,</B>  <B>pfuMakeLPStateRangeTex</B>  -  Sample
+       functions to derive a texture image from light point spec-
+       ifications.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuMakeLPStateShapeTex</B>(pfLPointState *lps,   pfTex-
+                ture *tex, int size);
+
+       void   <B>pfuMakeLPStateRangeTex</B>(pfLPointState *lps,   pfTex-
+                ture *tex, int size, pfFog *fog);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfMakeLPStateRangeTex</B>  and  <B>pfMakeLPStateShapeTex</B> are pro-
+       vided to compute a texture image which  accurately  mimics
+       certain characteristics of <B>pfLightPoints</B>.  These functions
+       are provided as sample code in <B>libpfutil</B>.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       The following example illustrates how to build  a  compre-
+       hensive light point structure that uses texture mapping to
+       accelerate directionality computations. The  texture  maps
+       are  generated  using the <B>pfuMakeLPStateShapeTex</B> described
+       here.
+
+
+       /*
+        * Create pfLPointState and pfGeoState.
+        */
+       pfGeoState     *gst = pfNewGState(arena);
+       pfLPointState  *lps = pfNewLPState(arena);
+       pfGStateMode(gst, PFSTATE_ENLPOINTSTATE, 1);
+       pfGStateAttr(gst, PFSTATE_LPOINTSTATE, lps);
+
+       /*
+        * Light point projected diameter is computed on CPU. Real world
+        * size is 0.07 database units and projected size is clamped be
+        * between 0.25 and 4 pixels.
+        */
+       pfLPStateMode(lps, PFLPS_SIZE_MODE, PFLPS_SIZE_MODE_ON);
+       pfLPStateVal(lps, PFLPS_SIZE_MIN_PIXEL, 0.25f);
+       pfLPStateVal(lps, PFLPS_SIZE_ACTUAL, 0.07f);
+       pfLPStateVal(lps, PFLPS_SIZE_MAX_PIXEL, 4.0f);
+
+       /*
+        * Light points become transparent when their projected diameter is
+        * &lt; 2 pixels. The transparency falloff rate is linear with
+        * projected size with a scale factor of 0.6. The transparency
+        * multiplier, NOT the light point transparency, is clamped to 0.1.
+        */
+       pfLPStateVal(lps, PFLPS_TRANSP_PIXEL_SIZE, 2.0f);
+        */
+       pfLPStateVal(lps, PFLPS_FOG_SCALE, 0.25f);
+
+       /* Range to light points computed on CPU is true range */
+       pfLPStateMode(lps, PFLPS_RANGE_MODE, PFLPS_RANGE_MODE_TRUE);
+
+       /*
+        * Light points are bidirectional but have different (magenta)
+        * back color. Front color is provided by pfGeoSet colors.
+        */
+       pfLPStateMode(lps, PFLPS_SHAPE_MODE, PFLPS_SHAPE_MODE_BI_COLOR);
+       pfLPStateBackColor(lps, 1.0f, 0.0f, 1.0f, 1.0f);
+
+       /*
+        * 60 degrees horizontal and 30 degrees vertical envelope.
+        * Envelope is rotated -25 degrees about the light point
+        * direction. Falloff rate is linear and ambient intensity is 0.1.
+        */
+       pfLPStateShape(lps, 60.0f, 30.0f, -25.0f, 1.0f, 0.1f);
+
+       /*
+        * Specify that light points should use texturing hardware to simulate
+        * directionality and use CPU to compute light point transparency and
+        * fog punch-through. Note that if light points are omnidirectional,
+        * you should use PFLPS_TRANSP_MODE_TEX and PFLPS_FOG_MODE_TEX instead.
+        */
+       pfLPStateMode(lps, PFLPS_DIR_MODE, PFLPS_DIR_MODE_TEX);
+       pfLPStateMode(lps, PFLPS_TRANSP_MODE, PFLPS_TRANSP_MODE_ALPHA);
+       pfLPStateMode(lps, PFLPS_FOG_MODE, PFLPS_FOG_MODE_ALPHA);
+
+       /*
+        * Make directionality environment map of size 64 x 64 and attach
+        * it to the light point pfGeoState. We assume that a pfTexEnv of
+        * type PFTE_MODULATE has been globally applied with pfApplyTEnv.
+        */
+       tex = pfNewTex(arena);
+       <B>pfuMakeLPStateShapeTex</B>(lps, tex, 64);
+       pfGStateAttr(gst, PFSTATE_TEXTURE, tex);
+       pfGStateMode(gst, PFSTATE_ENTEXTURE, 1);
+
+       /*
+        * Make SPHERE_MAP pfTexGen and attach to light point pfGeoState.
+        * pfGeoSet normals define the per-light light point direction.
+        */
+       tgen = pfNewTGen(arena);
+       pfTGenMode(tgen, PF_S, PFTG_SPHERE_MAP);
+       pfTGenMode(tgen, PF_T, PFTG_SPHERE_MAP);
+       pfGStateAttr(gst, PFSTATE_TEXGEN, tgen);
+       pfGStateMode(gst, PFSTATE_ENTEXGEN, 1);
+
+       /*
+        * Configure light point transparency. Use PFTR_BLEND_ALPHA for high
+        * quality transparency. Set pfAlphaFunc so that light points are not
+        * drawn unless their alphas exceed 1 when using 8-bit color resolution.
+        */
+       pfGStateMode(gst, PFSTATE_TRANSPARENCY, PFTR_BLEND_ALPHA);
+       pfGStateVal(gst, PFSTATE_ALPHAREF, 1.0/255.0);
+       pfGStateMode(gst, PFSTATE_ALPHAFUNC, PFAF_GREATER);
+
+        * emissive.
+        */
+       pfGStateMode(gst, PFSTATE_ENLIGHTING, 0);
+
+       /*
+        * Attach the pfGeoState to a pfGeoSet of type PFGS_POINTS and
+        * you've got light points!
+        */
+       pfGSetPrimType(gset, PFGS_POINTS);
+       pfGSetGState(gset, gst);
+
+
+       For further details, see the <B>libpr</B> routines
+       <B>pfMakeLPStateShapeTex</B> and <B>pfMakeLPStateRangeTex</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfLPointState, pfMakeLPStateShapeTex, pfMakeLPStateRange-
+       Tex
+
+
+
+                                              pfuLPointState(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

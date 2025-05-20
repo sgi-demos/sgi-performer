@@ -1,0 +1,442 @@
+<HTML>
+<HEAD>
+<TITLE>pfMPClipTexture</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMPClipTexture</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMPClipTexture(3pf)                         pfMPClipTexture(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMPClipTexture,</B>  <B>pfGetMPClipTexture</B> - Create, modify, and
+       query a libpf multiprocessing shadow for pfClipTextures
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfMPClipTexture.h&gt;
+
+                      <B>pfMPClipTexture::pfMPClipTexture</B>()
+
+       pfType *       <B>pfMPClipTexture::getClassType</B>(void);
+
+       void           <B>pfMPClipTexture::setClipTexture</B>(pfClipTexture *clip);
+
+       pfClipTexture *
+                      <B>pfMPClipTexture::getClipTexture</B>(void);
+
+       void           <B>pfMPClipTexture::setCenter</B>(int s,    int t,
+                        int r);
+
+       void           <B>pfMPClipTexture::getCenter</B>(int *s,  int *t,
+                        int *r);
+
+       void           <B>pfMPClipTexture::setInvalidBorder</B>(int border);
+
+       int            <B>pfMPClipTexture::getInvalidBorder</B>(void);
+
+       void           <B>pfMPClipTexture::setVirtualLODOffset</B>(int offset);
+
+       int            <B>pfMPClipTexture::getVirtualLODOffset</B>(void);
+
+       void           <B>pfMPClipTexture::setNumEffectiveLevels</B>(int levels);
+
+       int            <B>pfMPClipTexture::getNumEffectiveLevels</B>(void);
+
+       void           <B>pfMPClipTexture::setMaster</B>(pfMPClipTexture *master);
+
+       pfMPClipTexture *
+                      <B>pfMPClipTexture::getMaster</B>(void);
+
+       void           <B>pfMPClipTexture::setShareMask</B>(uint mask);
+
+       uint           <B>pfMPClipTexture::getShareMask</B>(void);
+
+       void           <B>pfMPClipTexture::setLODRange</B>(float min,
+                        float max);
+
+       void           <B>pfMPClipTexture::getLODRange</B>(float *min,
+                        float *max);
+
+       void           <B>pfMPClipTexture::setMagFilter</B>(uint filter);
+
+       uint           <B>pfGetMPClipTexture::getMagFilter</B>(void);
+
+       void           <B>pfMPClipTexture::setLODBias</B>(float biasS,
+                        float biasT, float biasR);
+
+       void           <B>pfMPClipTexture::setDTRFadeCount</B>(int count);
+
+       int            <B>pfMPClipTexture::getDTRFadeCount</B>(void);
+
+       void           <B>pfMPClipTexture::setDTRMode</B>(pfClipTexture *tex,
+                        uint DTRMode);
+
+       uint           <B>pfMPClipTexture::getDTRMode</B>(pfClipTexture *tex);
+
+       void           <B>pfMPClipTexture::setTexLoadTime</B>(float time);
+
+       float          <B>pfMPClipTexture::getTexLoadTime</B>(void);
+
+       float          <B>pfMPClipTexture::getCurTexLoadTime</B>(void);
+
+       pfList *       <B>pfMPClipTexture::getSlaves</B>(void);
+
+       void           <B>pfMPClipTexture::setTexLoadTimeFrac</B>(float fraction);
+
+       float          <B>pfMPClipTexture::getTexLoadTimeFrac</B>(void);
+
+       void           <B>pfMPClipTexture::setDTRBlurMargin</B>(float margin);
+
+       float          <B>pfMPClipTexture::getDTRBlurMargin</B>(void);
+
+       void           <B>pfMPClipTexture::setLODOffsetLimit</B>(int lo,
+                        int hi);
+
+       void           <B>pfMPClipTexture::getLODOffsetLimit</B>(int *lo,
+                        int *hi);
+
+       void           <B>pfMPClipTexture::setNumEffectiveLevelsLimit</B>(int lo,
+                        int hi);
+
+       void           <B>pfMPClipTexture::getNumEffectiveLevelsLimit</B>(int *lo,
+                        int *hi);
+
+       void           <B>pfMPClipTexture::setMinLODLimit</B>(float lo,
+                        float hi);
+
+       void           <B>pfMPClipTexture::getMinLODLimit</B>(float *lo,
+                        float *hi);
+
+       void           <B>pfMPClipTexture::setMaxLODLimit</B>(float lo,
+                        float hi);
+
+       void           <B>pfMPClipTexture::getMaxLODLimit</B>(float *lo,
+                        float *hi);
+
+       void           <B>pfMPClipTexture::setLODBiasLimit</B>(float Slo,
+                        float Shi,     float Tlo,    float Thi,
+                        float Rlo, float Rhi);
+
+       void           <B>pfMPClipTexture::getLODBiasLimit</B>(float *Slo,
+                        float *Shi,   float *Tlo,   float *Thi,
+                        float *Rlo, float *Rhi);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfMPClipTexture</B> can  also
+       be used with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfMPClipTexture is a libpf wrapper used to allow for the
+       multi-process operation of a pfClipTexture.   A  pfMPClip-
+       Texture allows user to center the pfClipTexture (or change
+       its invalid border) in the app, have all of  the  work  to
+       determine  the  necessary disk and texture loading done in
+       the cull, and have all  of  texture  loads  applied  frame
+       accurately  in  the draw.  After setting up a pfMPClipTex-
+       ture, it should be attached to a  pfPipe  via  the  pfPipe
+       routine  <B>pfAddMPClipTexture</B>. This will force the pfPipe to
+       automatically  perform  all  necessary  applying  of   the
+       pfClipTexture at the correct times and in the correct pro-
+       cesses.   Therefore,  normal  users  of   pfMPClipTextures
+       should   NOT   call   nor   have   any   reason   to  call
+       <B>pfMPClipTexture::apply</B>  Note  that  all  of  the  settable
+       fields on a pfMPClipTexture mirror a subset of those found
+       on a pfClipTexture.  Thus, see the <B>pfClipTexture</B> man  page
+       for more detailed description of these fields.
+
+       <B>new</B> <B>pfMPClipTexture</B> creates and returns a handle to a pfM-
+       PClipTexture.  pfMPClipTextures are always allocated  from
+       shared  memory  and  cannot  be created statically, on the
+       stack, or in arrays.  pfMPClipTextures should  be  deleted
+       Performer allows subclassing of built-in types, when deci-
+       sions are maded based on the type of an object, it is usu-
+       ally better to use  the member function <B>isOfType</B>  to  test
+       if  an  object  is of a type derived from a Performer type
+       rather than to test for strict equality of the  <B>pfType</B>*'s.
+
+       <B>pfMPClipTexture::setClipTexture</B>  sets the libpr pfClipTex-
+       ture that this pfMPClipTexture should multiprocess.   Thus
+       for  all pfMPClipTextures, a libpr pfClipTexture should be
+       created and configured and the attached to a  pfMPClipTex-
+       ture.   <B>pfMPClipTexture::getClipTexture</B>  returns the libpr
+       pfClipTexture that this pfMPClipTexture is driving  safely
+       through Performer's multiprocessed environment.
+
+       <B>pfMPClipTexture::setCenter</B>  sets  the center to be applied
+       to the shadowed libpr pfClipTexture in  a  frame  accurate
+       manner  based  on Performer's current multiprocessing con-
+       figuration <B>pfMPClipTexture::getCenter</B> returns the  current
+       center  set for the pfMPClipTexture.  Any of the arguments
+       s,t,r may be NULL in which case it will be ignored.
+
+       <B>pfMPClipTexture::setInvalidBorder</B> sets the invalid  border
+       to  be  used by libpr pfClipTexture for the current frame.
+       This invalid border is  used  for  load  management.   See
+       <B>pfClipTextureInvalidBorder</B>  and  the  <B>notes</B> section of the
+       libpr   <B>pfClipTexture</B>   man   page   for   more   details.
+       <B>pfMPClipTexture::getInvalidBorder</B> returns the invalid bor-
+       der which will currently be used for this frame.
+
+       <B>pfMPClipTexture::setVirtualLODOffset</B>
+       <B>pfMPClipTexture::getVirtualLODOffset</B>  returns  the virtual
+       LOD Offset currently being used by the pfMPClipTexture.
+
+       <B>pfMPClipTexture::setNumEffectiveLevels</B>
+       <B>pfMPClipTexture::getNumEffectiveLevels</B>  returns the number
+       of effective levels currently being used by the  pfMPClip-
+       Texture.
+
+       <B>pfMPClipTexture::setMaster</B>   establishes   a  master/slave
+       relationship between two mpcliptextures.  It  also  estab-
+       lishes  the same relationship between both mpcliptextures'
+       corresponding cliptextures and image caches. The pfMPClip-
+       Texture  that  is called becomes a slave to the mpcliptex-
+       ture  given  as  an  argument.   See  the  description  of
+       <B>pfClipTextureMaster</B>  and  the  <B>notes</B>  section of the libpr
+       <B>pfClipTexture</B>    man    page     for     more     details.
+       <B>pfMPClipTexture::getMaster</B> returns the master pfMPClipTex-
+       ture of this pfMPClipTexture, if this pfMPClipTexture is a
+       slave.  If  the pfMPClipTexture is not a slave, it returns
+       NULL.
+
+       <B>pfMPClipTexture::getSlaves</B> returns a pointer to a  pfList.
+       If the mpcliptexture is a master, the list contains point-
+       ers to pfMPClipTextures that are slaves  of  this  master.
+       If  the  mpcliptexture  isn't  a master, the pointer value
+       returned is NULL.
+
+       <B>pfMPClipTexture::setShareMask</B> is used  to  set  a  bitwise
+       "and" of the control flags used to determine the amount of
+       will  get  updated  whenever  the  master  gets its center
+       changed. Changing slave centers will  be  ignored  by  the
+       slave, and will have no effect on the master. Center shar-
+       ing can be individually toggled on  each  slave.  Changing
+       the  status of center sharing on the master has no effect.
+
+       Sharing mask values have no effect  pfMPClipTextures  that
+       aren't masters or slaves.
+
+       <B>pfMPClipTexture::getShareMask</B>  returns the share mask cur-
+       rently being used by a slave  pfMPClipTexture.  The  value
+       returned by the master is meaningless.
+
+       <B>pfMPClipTexture::setLODRange</B>  sets the minimum and maximum
+       LOD range to be used in the virtual mpcliptextures.  These
+       values  are  clamped  by the current effective levels set-
+       ting. The minimum and maximum LOD range values are defined
+       in  terms of the virtual texture; so they are not affected
+       by the value of virtual LOD offset.
+
+       See the description of <B>pfLODRange</B> in the  libpr  <B>pfTexture</B>
+       man page for more details.
+
+       <B>pfMPClipTexture::getLODRange</B>  returns  the  LOD Range cur-
+       rently being used by the pfMPClipTexture.  Either  of  the
+       arguments  min,max  may  be  NULL in which case it will be
+       ignored.
+
+       <B>pfMPClipTexture::getPipe</B> returns  the  a  pointer  to  the
+       pfPipe  that the pfMPClipTexture has been added to. If the
+       pfMPClipTexture   currently  connected  to  any  pipe,  it
+       returns NULL.
+
+       <B>pfMPClipTexture::setMagFilter</B>   sets  the  pfMPClipTexture
+       magnification filter type.  See  the  <B>pfTexture::setFilter</B>
+       man   page   for   details   on   the   <I>filter</I>   argument.
+       <B>pfMPClipTexture::getMagFilter</B> returns the current magnify-
+       ing filter type for the pfMPClipTexture.
+
+       <B>pfMPClipTexture::setLODBias</B>  sets the pfMPClipTexture tex-
+       ture bias parameters. These parameters are used  to  alter
+       the    level    of    detail    computations.    See   the
+       <B>pfTexture::setLODBias</B> man page for  more  details  on  the
+       <I>biasS</I>,  <I>biasT</I>, and <I>biasR</I> arguments.  <B>pfTexture::getLODBias</B>
+       gets the current LOD Bias values in  the  pfMPClipTexture.
+       Any  of  the  arguments  biasS,biasT,biasR  may be NULL in
+       which case it will be ignored.
+
+       <B>pfMPClipTexture::setDTRFadeCount</B> is  used  to  adjust  the
+       number  of  frames  it takes to fade in a new level of the
+       cliptexture. DTR (clip texture load control)  adjusts  the
+       sharpest  visible  level  based  on which levels have tile
+       files available and have the draw process time to download
+       them  into texture memory. When a new, finer level becomes
+       available, DTRFadeCount is used to keep the new level from
+       appearing  too abruptly. It fades in the new level or lev-
+       els over the number of frames specified  by  DTRFadeCount.
+       The  default  fade  count  is  5. This call can be used to
+       change the fade count to any non-negative  value.  If  the
+       <B>pfMPClipTexture::setDTRMode</B>  Is  used   to   control   DTR
+       (dynamic texture resolution) or clip texture load control.
+       Clip texture DTR consists of a number of independent  load
+       control  modes, control by the DTRMode bitmask, and a num-
+       ber of user-settable parameters, all of which have reason-
+       able default values. Currently, the DTR bitmask can be any
+       combination  of  the   following   bits:   PF_DTR_MEMLOAD,
+       PF_DTR_TEXLOAD,   PF_DTR_READSORT,   and   PF_DTR_TEXSIZE.
+       PF_DTR_MEMLOAD uses image tile availability to adjust load
+       control,  PF_DTR_TEXLOAD  uses  estimated  texture subload
+       time to adjust  load  control,  PF_DTR_READSORT  turns  on
+       sorting  in  the image tile read queue, and PF_DTR_TEXSIZE
+       allows adjustment of the effective  clipsize  (changed  by
+       adjusting  the  invalid  border)  to  allow  finer levels,
+       albeit at a smaller than normal size, when choosing  which
+       cliptexture levels to make visible. These modes can be set
+       singly or  in  any  combination.   The  default  value  is
+       PF_DTR_MEMLOAD|PF_DTR_TEXLOAD|PF_DTR_READSORT.
+       <B>pfMPClipTexture::getDTRMode</B> can be used to  get  the  cur-
+       rently set DTR mode.
+
+       <B>pfMPClipTexture::setTexLoadTime</B>  sets  the time allowed to
+       download all of the cliptexture updates for  a  particular
+       cliptexture.  DTR (Dynamic Texture Resolution) has a mode,
+       PF_DTR_TEXLOAD, where it estimates the amount of time nec-
+       essary to perform the texture subloads to update the clip-
+       texture for the current frame. This time is summed up over
+       all the subloads in all the clipped levels of the cliptex-
+       ture. The estimate uses the size of the texture  downloads
+       and  a  cost table, which contains download times for dif-
+       ferent size subregions. There  are  multiple  cost  tables
+       available.  The  one  appropriate to the machine in use is
+       chosen. As the cost of the downloads necessary  to  update
+       the  cliptexture are computed, level by level, from coars-
+       est to finest, the running total is compared  against  the
+       maximum  allowed  cost. When a level is reached that would
+       cause the total to exceed the maximum  allowed  cost,  DTR
+       shrinks  all  the levels or gives up and blurs down to the
+       next lower level, depending on whether  PF_DTR_TEXSIZE  is
+       set  in  the  mode bit (see minClipSizeRatio for details).
+       This way the time in the DRAW process  is  rationed.  This
+       call  can  adjust the maximum allowed time for cliptexture
+       downloads. The default value is 6. The value is a non-neg-
+       ative  floating  point  amount of milliseconds. This value
+       has no effect unless PF_DTR_TEXLOAD is set. If it  is  not
+       set,       there      is      no      time      rationing.
+       <B>pfMPClipTexture::getTexLoadTime</B> is used to  get  the  cur-
+       rently  set  maximum download time. Since the value is set
+       in the CULL process, and the effects will be seen  in  the
+       DRAW process, there may be a delay of up to 1 frame before
+       changes take effect.
+
+
+       <B>pfMPClipTexture::getCurTexLoadTime</B>  return  the  tex  load
+       time  actually  being used by the pfMPClipTexture DTR load
+       control system. This value is either the tex load time set
+       on  the pfMPClipTexture, or if no value was set their, the
+       total tex load time  set  on  the  pfMPClipTexture's  pipe
+       scaled by the normalized down load time frac value, set by
+       download time to use with its DTR load control system.
+
+       The tex load time frac values for all the pfMPClipTextures
+       attached to a given pfPipe are summed together and normal-
+       ized.  The  normalization  factor is applied when the frac
+       value is used to compute a pfMPClipTexture's texture down-
+       load time.
+
+       <B>pfMPClipTexture::getTexLoadTimeFrac</B>.   returns the current
+       value of the pfMPClipTexture's tex download time fraction.
+       The default value is 1.
+
+       <B>pfMPClipTexture::setDTRBlurMargin</B>.   sets  the blur margin
+       value used to control DTR load control  hysteresis.   This
+       hysterisis  controls  LOD  flickering  when  the remaining
+       download time is nearly equal to the time it will take  to
+       download the next finer level.
+
+       The  blur margin value is used by DTR to compute a cushion
+       of extra time that must be available before sharpening  to
+       the next level. This cushion of time helps average out the
+       small differences in download  time  caused  by  different
+       tile  boundary  alignments  from frame to frame. The pfMP-
+       ClipTexture will show the image at  a  constant,  blurrier
+       level,  rather  then  oscillate between that level and the
+       next finest one. The larger the  blur  margin  value,  the
+       more  cushion.  An  excessive blur margin value will cause
+       DTR to show a blurrier level than necessary  for  a  given
+       center speed.
+
+       <B>pfMPClipTexture::getDTRBlurMargin</B>.    return  the  current
+       blur margin value being used by DTR.  The default value is
+       .5.
+
+       The  functions    <B>setLODOffsetLimit,</B> <B>setNumEffectiveLevel-</B>
+       <B>sLimit,</B>  <B>setMinLODLimit,</B>  <B>setMaxLODLimit,</B>  <B>setLODBiasLimit</B>
+       and  corresponding query functions <B>getLODOffsetLimit,</B> <B>get-</B>
+       <B>NumEffectiveLevelsLimit,</B>  <B>getMinLODLimit,</B>  <B>getMaxLODLimit,</B>
+       <B>getLODBiasLimit</B>  are  analogous to the corresponding func-
+       tions of pfClipTexture (see the pfClipTexture man page for
+       more  details).   The  limits are passed down from the APP
+       process to the CULL process and stored in  the  pfClipTex-
+       ture  at  the  beginning  of the CULL's frame, so callback
+       functions in the CULL can frame-accurately query the  val-
+       ues  from either the pfMPClipTexture or the pfClipTexture.
+       This technique is used by clip texture scene loaders  such
+       as  .spherepatch  and .ct to communicate with applications
+       such as the clipfly program (see the  sample  source  code
+       for clipfly and these loaders for details.)
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       ClipTexture functionality is not supported under Linux.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       <B>pfMPClipTextures</B>  do  not  work (they should be no-ops) in
+       Performer's CULLoDRAW multiprocessing mode.
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

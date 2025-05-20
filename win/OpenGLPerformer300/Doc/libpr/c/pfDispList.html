@@ -1,0 +1,379 @@
+<HTML>
+<HEAD>
+<TITLE>pfDispList</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDispList</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDispList(3pf)                                   pfDispList(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewDList,</B>   <B>pfGetDListClassType,</B>  <B>pfOpenDList,</B>  <B>pfReset-</B>
+       <B>DList,</B> <B>pfCloseDList,</B> <B>pfGetDListSize,</B> <B>pfGetDListType,</B> <B>pfAd-</B>
+       <B>dDListCmd,</B>  <B>pfAppendDList,</B>  <B>pfDListCallback,</B>  <B>pfDrawDList,</B>
+       <B>pfCompileDList,</B>  <B>pfPreprocessDList,</B>  <B>pfDListMode,</B>   <B>pfGet-</B>
+       <B>DListMode,</B> <B>pfDrawGLObj,</B> <B>pfGetCurDList</B> - Create and control
+       a display list
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfDispList *   <B>pfNewDList</B>(int type,              int size,
+                        void *arena);
+
+       pfType *       <B>pfGetDListClassType</B>(void);
+
+       void           <B>pfOpenDList</B>(pfDispList *dlist);
+
+       void           <B>pfResetDList</B>(pfDispList *dlist);
+
+       void           <B>pfCloseDList</B>(void);
+
+       int            <B>pfGetDListSize</B>(const pfDispList *dlist);
+
+       int            <B>pfGetDListType</B>(const pfDispList *dlist);
+
+       void           <B>pfAddDListCmd</B>(int cmd);
+
+       int            <B>pfAppendDList</B>(pfDispList* dlist,
+                        const pfDispList *src);
+
+       void           <B>pfDListCallback</B>(pfDListFuncType callback,
+                        int nbytes, void *data);
+
+       int            <B>pfDrawDList</B>(pfDispList *dlist);
+
+       int            <B>pfCompileDList</B>(pfDispList *dlist);
+
+       int            <B>pfPreprocessDList</B>(pfDispList *dlist,
+                        int flag);
+
+       void           <B>pfDListMode</B>(pfDispList *dlist,    int mode,
+                        int value);
+
+       int            <B>pfGetDListMode</B>(pfDispList *dlist,
+                        int mode);
+
+       void           <B>pfDrawGLObj</B>(GLOBJECT obj);
+
+       pfDispList *   <B>pfGetCurDList</B>(void);
+
+
+                      typedef void (*pfDListFuncType)(void *data);
+
+
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj, int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfDispList</B> can also be
+       used with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>dlist</I>  identifies a pfDispList.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfDispList is a reusable display list that captures cer-
+       tain libpr commands.  <B>pfNewDList</B> creates and returns a
+       handle to a new pfDispList.  The arguments specify the
+       type and size of the display list.  pfDispLists can be
+       deleted with <B>pfDelete</B>.
+
+       <I>type</I> is a symbolic token that specifies a type of pfDis-
+       pList and is either <B>PFDL_FLAT</B> or <B>PFDL_RING</B>.  A <B>PFDL_FLAT</B>
+       display list is a linear list of commands and data while a
+       <B>PFDL_RING</B> is configured as a ring buffer (FIFO).  A ring
+       buffer is provided for multiprocessed paired producer and
+       consumer applications where the producer writes to the
+       buffer while the consumer simultaneously reads from, and
+       draws the buffer.  OpenGL Performer automatically ensures
+       ring buffer consistency by providing synchronization and
+       mutual exclusion to processes on ring buffer full or empty
+       decisions are made based on the type of an object, it is
+       usually better to use <B>pfIsOfType</B>to test if an object is of
+       a type derived from a Performer type rather than to test
+       for strict equality of the <B>pfType</B>*'s.
+
+       The <I>size</I> argument to <B>pfNewDList</B> gives a hint in words
+       about how much storage the pfDispList will require.  If
+       more storage is required, OpenGL Performer will automati-
+       cally grow the pfDispList by <I>size</I> words at a time.  <I>arena</I>
+       specifies the malloc arena out of which the pfDispList is
+       allocated or NULL for allocation off the heap.
+       <B>pfGetDListSize</B> returns the size of <I>dlist</I> that was
+       requested by <B>pfNewDList</B>, not its current size.
+
+       <B>pfOpenDList</B> opens <I>dlist</I> for appending and puts the calling
+       process into display list mode.  When in display list
+       mode, display-listable <B>libpr</B> commands are recorded in the
+       currently active display list rather than being executed
+       immediately.  libpr commands that may be recorded in a
+       pfDispList say so in their respective man pages.  Only one
+       pfDispList may be open at a time.  <B>pfGetCurDList</B> returns
+       the currently active display list or <B>NULL</B> if the calling
+       process is in immediate mode.
+
+       The currently active pfDispList is a global value but is
+       stored in the PRDA process header so that <I>share</I> <I>group</I> <I>pro-</I>
+       <I>cesses</I> (see <B>sproc</B>) need not share the same currently
+       active pfDispList.
+
+       The contents of one pfDispList may be appended to a second
+       pfDispList with the function <B>pfAppendDList</B>.  All pfDis-
+       pList elements in <I>src</I> are appended to the pfDispList
+       <I>dlist</I>.
+
+       Each pfDispList maintains head and tail pointers that
+       indicate where in the list commands are to be appended and
+       evaluated respectively.  Commands entered into the display
+       list are appended after the head pointer and increment the
+       head pointer appropriately.  Commands drawn by <B>pfDrawDList</B>
+       increment the tail pointer but do not remove commands from
+       the list.  In the <B>PFDL_RING</B> case, OpenGL Performer ensures
+       that the tail pointer does not overrun the head pointer
+       and vice versa by spinning processes.
+
+       Both head and tail pointers are reset to the beginning of
+       the pfDispList by <B>pfResetDList</B> so that any additions to
+       the current pfDispList will overwrite previously entered
+       commands.  The tail pointers of flat lists are automati-
+       cally reset by <B>pfDrawDList</B> when the tail pointer reaches
+       the head pointer so that the pfDispList may be rendered
+       again from the beginning.
+
+       <B>pfCloseDList</B> 'closes' the active pfDispList and returns
+       the application to immediate mode.
+
+       For <B>PFDL_FLAT</B> display lists, <B>pfDrawDList</B> traverses <I>dlist</I>
+       from the tail to the head pointer, and then resets the
+       tail pointer to the beginning of <I>dlist</I>.  If the pfDispList
+       is a <B>PFDL_RING</B>, <B>pfDrawDList</B> will continually draw the dis-
+       executes libpr state routines that in turn execute graph-
+       ics library commands that send command tokens down the
+       graphics pipeline.  <B>pfDrawDList</B> is itself a display-
+       listable command provided <I>dlist</I> is not the currently
+       active pfDispList.  The return value is the end of frame,
+       <B>PFDL_END_OF_FRAME</B>, forced return <B>PFDL_RETURN</B>, or end of
+       list <B>PFDL_END_OF_LIST</B> token will be returned or else -1 if
+       an error is encountered.  If the current pfDispList mode
+       is <B>PFDL_MODE_COMPILE_GL</B>, the <B>PFDL_END_OF_LIST</B> token will
+       be returned.
+
+       <B>pfCompileDList</B> will compile a pfDispList into a GL display
+       list. The return value is that from <B>pfDrawDList</B> and will
+       be -1 if an error is encountered.  Note that user callback
+       functions in pfDispLists are only exectued upon display
+       list creation.
+
+       <B>pfDListMode</B> sets the specified <I>mode</I> to the given value.
+       The supported mode is <B>PFDL_MODE_COMPILE_GL</B> and when set to
+       1, this causes the associated GL display list to be drawn
+       when <B>pfDrawDList</B> is called and a new GL display list will
+       be auto-created if one does not exist or of the current
+       display list is dirty. By default, <B>PFDL_MODE_COMPILE_GL</B> is
+       false.  User callback functions in pfDispLists are only
+       exectued upon display list creation.  <B>pfGetDListMode</B>
+       returns the current value of <I>mode</I>.
+
+       The following example draws a pfGeoSet into a pfDispList
+       and then subsequently draws the pfDispList:
+
+       /* Open DList and append GSet */
+       pfOpenDList(dlist);
+       pfEnable(PFEN_WIREFRAME);
+       pfDrawGSet(gset);
+
+       /* Close DList and return to immediate mode */
+       pfCloseDList();
+
+       /* Draw 'gset' in wireframe */
+       pfDrawDList(dlist);
+
+
+       <B>pfDListCallback</B> allows custom rendering in the middle of a
+       display list by putting a function callback and data in
+       the current display list.  Up to 64 bytes of user-data may
+       be copied into the display list.  <I>nbytes</I> specifies the
+       length of data that <I>data</I> references.  When a callback
+       token is encountered while drawing a display list, the
+       function <I>callback</I> will be called with a pointer to the
+       user data that is cached in the display list.  A callback
+       may call <B>pfPushState</B> upon entering and <B>pfPopState</B> when
+       leaving to ensure that any state changes made in the call-
+       back will be not inherited by subsequent geometry.
+
+       <B>pfAddDListCmd</B> adds <I>cmd</I> to the currently active display
+       list.  <I>cmd</I> is one of the following symbolic tokens, both
+       of which return control to the application but indicate
+       different situations.
+              <B>PFDL_RETURN</B>
+
+       OpenGL Performer optimizes pfDispList's when they are
+       being built by eliminating redundant mode changes and by
+       unwinding pfGeoStates into their component parts.  As a
+       result, modifications to objects after they are placed in
+       a pfDispList may be ignored by the pfDispList.  To be
+       safe, do not modify any objects that were placed in one or
+       more pfDispLists.
+
+       Here is an example of this phenomenon:
+
+       /* Attach gstate0 to gset */
+       pfGSetGState(gset, gstate0);
+
+       /* Open dlist as current pfDispList */
+       pfOpenDList(dlist);
+       pfDrawGSet(gset);
+
+       /* Return to immediate mode */
+       pfCloseDList();
+
+       /* Attach gstate1 to gset */
+       pfGSetGState(gset, gstate1);
+
+       /*
+        * dlist will use gstate0 and not be aware that gset was modified to
+        * use gstate1.
+        */
+       pfDrawDList(dlist);
+
+
+
+   <B>Preprocessing</B> <B>a</B> <B>Display</B> <B>List</B>
+       The following routines are useful in <B>libpr</B>-only applica-
+       tions; <B>libpf</B> applications do not need to call these rou-
+       tines.  Preprocessing of the light point display list is
+       automatically managed by the <B>libpf</B> Light Point process
+       (see <B>pfConfig</B>).
+
+       <B>pfPreprocessDList</B> is used to preprocess  the <I>dlist</I> display
+       list in order to accelerate it's handling in the draw pro-
+       cess.  This call must be encapsulated between the open and
+       close of another pfDispList.  It is just like drawing a
+       pfDispList into another one.
+
+       The <I>flag</I> is a bit field that indicates which preprocessing
+       is to be done. Currently only <B>PFDL_PREPROCESS_LPSTATE</B>
+       (which computes the appearance of each light point) is
+       defined. See <B>pfLPointState</B> and <B>pfCalligraphic</B> for further
+       information.
+
+       Preprocessing makes sense only if it is done in a separate
+       process, so that these computations can be done while the
+       Draw Process is drawing other display lists. Typically,
+       the Draw Process will draw the polygons of the scene while
+       the Preprocessing process is performing the light point
+       computations. This is what the Light Point Process does in
+       libpf.
+
+
+       /* set the performer View Matrix */
+       /* used to compute the intensity of each light */
+       pfViewMat(viewMat);
+       /* can be obtain from pfInvertOrthoNMatMat.invertOrthoN(viewMat,invViewMat); */
+       /* and also not mandatory. Will be computed from viewMat if not given */
+       /* used to do the 3D-&gt;2D projection for the calligraphics lights points */
+       pfInvViewMat(invViewMat);
+       pfNearPixDist(nearPixDist);
+       /* can use getGLProjMat from a Frustum to get this matrix */
+       pfProjMat(projMat);
+       /* Open the Draw RING Display List */
+       pfOpenDList(lpointDrawDList);
+       /* preprocess the LPoint FLAT Display List */
+       pfPreprocessDList(lpointPreprocessDList,PFDL_PREPROCESS_LPSTATE);
+       /* Post an end of frame token in the ring Dlist */
+       pfAddDListCmd(PFDL_END_OF_FRAME);
+       /* Close the Draw RING Display List */
+       pfCloseDList();
+
+
+       Note that pfSelectCalligraphic, pfViewMat, pfInvViewMat,
+       pfNearPixDist and pfProjMat are all Display List-able, and
+       should not go in the lpointDrawDList, as they are needed
+       to configure the preprocessing.
+
+       Also, processing of pfLPointState requires that the
+       <B>pfModelMat()</B> matrix are stored in the lpointPreprocess-
+       DList each time the model matrix changes before drawing a
+       pfGeoSet. This is done automatically by the Culler in a
+       <B>libpf</B> application.
+
+       So, the Draw Process simply looks like this:
+
+       /* do usual Channel settings */
+       /* including pfPixScale if using DVR */
+       pfPixScale(scale);
+       /* draw the polygons */
+       pfDrawDList(polygonDList);
+       /* draw the light point Draw Ring DLIST */
+       pfDrawDList(lpointDrawDList);
+       /* will exit at the EndOfFrame token */
+       /* whatever */
+       /* then swapbuffer */
+
+
+       Note that in the case of calligraphic light points it is
+       mandatory that the lpoints are the last geometric elements
+       sent to the graphic pipe.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfCalligraphic, pfDelete, pfGeoState, pfLPointState, pfOb-
+       ject, pfState, callobj, sproc
+
+
+
+                                                  pfDispList(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

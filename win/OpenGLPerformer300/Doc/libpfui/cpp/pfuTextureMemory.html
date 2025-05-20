@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>pfuTextureMemory</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuTextureMemory</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuTextureMemory(3pf)                       pfuTextureMemory(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuShowTextureMemory,</B>  <B>pfuClearTextureMemory</B>  -  Utilities
+       for texture memory on Infinte Reality.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuShowTextureMemory</B>(PipeWindow *pw,
+                pfList *texList, int format);
+
+       void   <B>pfuClearTextureMemory</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Get  a  snap  shot  of Infinte Reality texture memory with
+       <B>pfuShowTextureMemory</B>  and  clear   texture   memory   with
+       <B>pfuClearTextureMemory</B>.
+
+       <B>pw</B>  is  the  pfPipeWindow  where the texture banks will be
+       displayed.
+
+       <B>texList</B> is a list of all textures thought to be loaded  in
+       texture memory, such as returned by <B>pfuMakeTexList</B>.
+
+
+
+       <B>format</B> may be any of <B>PFTEX_RGB_5</B> <B>PFTEX_RGB_4</B> <B>PFTEX_RGB5_A1</B>
+       <B>PFTEX_RGBA_4</B> <B>PFTEX_IA_8</B> <B>PFTEX_I_12A_4</B> <B>PFTEX_I_8</B> <B>PFTEX_I_16</B>
+       <B>PFTEX_IA_12</B> <B>PFTEX_RGBA_8</B> <B>PFTEX_RGB_12</B> <B>PFTEX_RGBA_12</B>
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfuMakeTexList, pfPipeWindow, pfTexture
+
+
+
+                                            pfuTextureMemory(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

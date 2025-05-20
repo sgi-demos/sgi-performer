@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>pfiPick</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiPick</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiPick(3pf)                                         pfiPick(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiGetPickClassType,</B>  <B>pfiNewPick,</B> <B>pfiPickMode,</B> <B>pfiGetPick-</B>
+       <B>Mode,</B> <B>pfiPickHitFunc,</B> <B>pfiGetPicktHitFunc,</B>  <B>pfiAddPickChan,</B>
+       <B>pfiInsertPickChan,</B>  <B>pfiRemovePickChan,</B>  <B>pfiGetPickNumHits,</B>
+       <B>pfiGetPickNode,</B>  <B>pfiGetPickGSet,</B>  <B>pfiSetupPickChans,</B>  <B>pfi-</B>
+       <B>DoPick,</B> <B>pfiResetPick</B> - pfiPick functions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfType *     <B>pfiGetPickClassType</B>(void);
+
+       pfiPick *    <B>pfiNewPick</B>(void *arena);
+
+       void         <B>pfiPickMode</B>(pfiPick *pick,          int mode,
+                      int val);
+
+       int          <B>pfiGetPickMode</B>(pfiPick *pick, int mode);
+
+       void         <B>pfiPickHitFunc</B>(pfiPick *pick,    pfiPickFunc-
+                      Type func, void *data);
+
+       void         <B>pfiGetPicktHitFunc</B>(pfiPick *pick,    pfiPick-
+                      FuncType *func, void **data);
+
+       void         <B>pfiAddPickChan</B>(pfiPick *pick,         pfChan-
+                      nel *chan);
+
+       void         <B>pfiInsertPickChan</B>(pfiPick *pick,   int index,
+                      pfChannel *chan);
+
+       void         <B>pfiRemovePickChan</B>(pfiPick *pick,      pfChan-
+                      nel *chan);
+
+       int          <B>pfiGetPickNumHits</B>(pfiPick *pick);
+
+       pfNode *     <B>pfiGetPickNode</B>(pfiPick *pick);
+
+       pfGeoSet *   <B>pfiGetPickGSet</B>(pfiPick *pick);
+
+       void         <B>pfiSetupPickChans</B>(pfiPick *pick);
+
+       int          <B>pfiDoPick</B>(pfiPick *pick, int x, int y);
+
+       void         <B>pfiResetPick</B>(pfiPick *pick);
+
+
+                    typedef int (*pfiPickFuncType)(pfiPick *, void *);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiPick</B> functions.
+
+       The pfiPick has a complete C++ API following the conven-
+       tions of general OpenGL Performer C++ API; C++ methods are
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+                                                     pfiPick(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

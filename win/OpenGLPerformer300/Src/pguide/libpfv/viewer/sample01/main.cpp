@@ -1,0 +1,111 @@
+
+/*
+ * Copyright 1995, Silicon Graphics, Inc.
+ * ALL RIGHTS RESERVED
+ *
+ * This source code ("Source Code") was originally derived from a
+ * code base owned by Silicon Graphics, Inc. ("SGI")
+ * 
+ * LICENSE: SGI grants the user ("Licensee") permission to reproduce,
+ * distribute, and create derivative works from this Source Code,
+ * provided that: (1) the user reproduces this entire notice within
+ * both source and binary format redistributions and any accompanying
+ * materials such as documentation in printed or electronic format;
+ * (2) the Source Code is not to be used, or ported or modified for
+ * use, except in conjunction with OpenGL Performer; and (3) the
+ * names of Silicon Graphics, Inc.  and SGI may not be used in any
+ * advertising or publicity relating to the Source Code without the
+ * prior written permission of SGI.  No further license or permission
+ * may be inferred or deemed or construed to exist with regard to the
+ * Source Code or the code base of which it forms a part. All rights
+ * not expressly granted are reserved.
+ * 
+ * This Source Code is provided to Licensee AS IS, without any
+ * warranty of any kind, either express, implied, or statutory,
+ * including, but not limited to, any warranty that the Source Code
+ * will conform to specifications, any implied warranties of
+ * merchantability, fitness for a particular purpose, and freedom
+ * from infringement, and any warranty that the documentation will
+ * conform to the program, or any warranty that the Source Code will
+ * be error free.
+ * 
+ * IN NO EVENT WILL SGI BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT
+ * LIMITED TO DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
+ * ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THE
+ * SOURCE CODE, WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT OR
+ * OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM,
+ * OR AROSE OUT OF USE OR RESULTS FROM USE OF, OR LACK OF ABILITY TO
+ * USE, THE SOURCE CODE.
+ * 
+ * Contact information:  Silicon Graphics, Inc., 
+ * 1600 Amphitheatre Pkwy, Mountain View, CA  94043, 
+ * or:  http://www.sgi.com
+ */
+///////////////////////////////////////////////////////////////////////////////
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <Performer/pf.h>
+#include <Performer/pr.h>
+
+#include <Performer/pf/pfScene.h>
+
+#include <Performer/pfutil.h>
+#include <Performer/pfdu.h>
+
+#include <Performer/pf/pfLightSource.h>
+
+#include <Performer/pfv/pfvDisplay.h>
+#include <Performer/pfv/pfvViewer.h>
+
+///////////////////////////////////////////////////////////////////////////////
+
+int
+main (int argc, char *argv[])
+{
+    if(argc!=2)
+    {
+	printf("Usage: %s filename\n", argv[0]);
+	exit(1);
+    }
+    
+    pfInit();
+    pfvViewer* viewer = new pfvViewer;
+
+    pfdInitConverter(argv[1]);
+
+    pfFilePath(".:/usr/share/Performer/data");
+
+    viewer->config();
+
+    printf("viewer->config() returned\n");
+    pfScene *scene = viewer->getWorld(0)->getScene();
+    printf("scene=%x\n", scene );
+
+    scene->addChild(new pfLightSource);
+    
+    pfNode *root = pfdLoadFile(argv[1]);
+    if(root)
+	scene->addChild(root);
+
+    pfBox box;
+    pfuTravCalcBBox( scene, &box );
+    pfVec3 xyz;
+    xyz.combine(0.5f,box.min,0.5f,box.max);
+    xyz[1]-=(2.0*(box.max[1]-box.min[1]));
+    pfVec3 hpr(0.0f,0.0f,0.0f);
+
+    pfvDisplayMngr::getMngr()->getView(0)->setEye(xyz,hpr);
+
+    viewer->run(20.0f);
+    
+    pfExit();
+    exit(0);
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+

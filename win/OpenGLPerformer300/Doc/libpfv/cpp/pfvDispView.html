@@ -1,0 +1,207 @@
+<HTML>
+<HEAD>
+<TITLE>pfvDispView</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvDispView</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvDispView(3pf)                                 pfvDispView(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvDispView</B>  -  Configure one or more views through an XML
+       file or API calls. .
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvDisplay.h&gt;
+
+       virtual int    <B>pfvDispView::config</B>();
+
+       virtual int    <B>pfvDispView::setXmlField</B>(pfvXmlNode* xml);
+
+       int            <B>pfvDispView::getNumChans</B>();
+
+       pfvDispChan*   <B>pfvDispView::getChan</B>(int i);
+
+       pfvDispChan*   <B>pfvDispView::findChan</B>(char* _name);
+
+       virtual int    <B>pfvDispView::addChan</B>(pfvDispChan* chan);
+
+       uint64_t       <B>pfvDispView::getChanMask</B>();
+
+       pfChannel*     <B>pfvDispView::getMasterChan</B>();
+
+       virtual
+                      int    <B>pfvDispView::setMasterChan</B>(pfvDispChan* chan);
+
+       virtual
+                      int    <B>pfvDispView::setMasterChan</B>(pfChannel* chan);
+
+       virtual uint   <B>pfvDispView::setChanShare</B>(uint mask);
+
+       uint           <B>pfvDispView::getChanShare</B>();
+
+       virtual int    <B>pfvDispView::setScene</B>(pfScene* _scene);
+
+       pfScene*       <B>pfvDispView::getScene</B>();
+
+       virtual void   <B>pfvDispView::setEye</B>( pfVec3&amp; xyz,
+                        pfVec3&amp; hpr );
+
+       void           <B>pfvDispView::getEye</B>( pfVec3&amp;xyz,
+                        pfVec3&amp;hpr );
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfvDispView</B> is derived from the
+       parent  class <B>pfvObject</B>, so each of these member functions
+       of class <B>pfvObject</B> are also directly usable  with  objects
+       of  class  <B>pfvDispView</B>.   This  is  also true for ancestor
+       classes of class <B>pfvObject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfvDispView</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvDispView class is used to group one or  more  chan-
+       nels  together in applications based on the pfvDisplayMngr
+       class. Channels belonging to the same view are intended to
+       always  display  the  same scene from a common view point.
+       Channels may belong to multiple  pipewindows  on  multiple
+       pipes,  and each channel may have its own view offset val-
+       ues.  Note that multiple views can be created and  managed
+       within a single application.
+
+       <B>pfvDispView::config</B>  will set up master-slave relationship
+       between its channels (see man page  for  pfChannel::attach
+       and  pfChannel::setShare).   Note that <B>pfvDispView::config</B>
+       is automatically called from within pfvDisplayMngr::config
+       and should not usually be called by application code.
+
+       <B>pfvDispView::setXmlField</B>  will look at the name of the xml
+       node passed as an argument, and will configure the  corre-
+       sponding  attribute of the pfvDispView object based on the
+       contents of the pfvXmlNode.  Currently,  only  the  &lt;chan&gt;
+       tag will be recognized by <B>pfvDispView::setXmlField</B>. &lt;chan&gt;
+       tags may be passed on to <B>pfvDispView::setXmlField</B> in order
+       to  assign  an  existing  pfvDispChan to this pfvDispView.
+
+       <B>pfvDispView::getNumChans</B> returns the number of pfvDis-
+       pChannels currently assigned to view.
+
+       <B>pfvDispView::getChan</B> returns a handle to the ith channel
+       in view's chan-list if i is a valid index, NULL otherwise.
+
+       <B>pfvDispView::findChan</B> returns a handle to the first chan-
+       nel in view's chan-list whose name matches _name. If no
+       channel in view's chan-list matches, NULL is returned.
+
+       <B>pfvDispView::addChan</B> adds channel chan to view's chan-
+       list. If channel is already in view's chan-list, it will
+       not be added again. Method returns 1 if channel was added
+       to view's list, 0 otherwise.
+
+       <B>pfvDispView::getChanMask</B> returns a uint64_t bitmask indi-
+       cating which channels are part of this view. Each bit in
+       returned value represents a pfvDisplayChan. The ith chan-
+       nel in Display Manager's global chan-list will correspond
+       to bit with value (1&lt;&lt;chanindex).
+
+       <B>pfvDispView::getMasterChan</B> returns the pfChannel handle
+       associated with the master pfvDispChannel of a view.
+
+       <B>pfvDispView::setMasterChan(pfvDispChan*</B> <B>chan)</B> is used to
+       specify which of the channels belonging to a view will act
+       as master. By default, the first channel in view's chan-
+       list will be the master channel. chan must be one of the
+       channels already associated to view.  Method returns 1 if
+       chan was found in view's chan-list, 0 otherwise.
+
+       <B>pfvDispView::setMasterChan(pfChannel*</B> <B>chan)</B> allows the
+       master channel for a view to be specified by passing a
+       handle to a pfChannel object. The provided pointer must
+       point to a pfChannel associated with one of the pfvDis-
+       pChans already associated to view.  Method returns 1 if
+       chan argument was valid, 0 otherwise.
+
+       The mask argument to <B>pfvDispView::setChanShare</B> specifies
+       which attributes are shared by the channels belonging to
+       view. See man page for pfChannel::setShare.
+
+       <B>pfvDispView::getChanShare</B> returns the share mask of the
+       channel group associated with this view. See man page for
+       pfChannel::getShare.
+
+       <B>pfvDispView::setScene</B> set the pfScene that all channels in
+       view will cull and draw. See man page for pfChan-
+       nel::setScene.
+
+       <B>pfvDispView::getScene</B> returns the scene currently associ-
+       ated with all channels in view's chan-list.
+
+       <B>pfvDispView::setEye</B> sets the viewing position and orienta-
+       tion for view.  See man page for pfChannel::setView.
+
+       <B>pfvDispView::getEye</B> may be used to retreive the current
+       viewing position and orientation for channels in view. See
+       pfChannel
+
+
+
+                                                 pfvDispView(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

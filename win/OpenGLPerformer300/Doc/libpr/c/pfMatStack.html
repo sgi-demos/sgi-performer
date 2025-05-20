@@ -1,0 +1,204 @@
+<HTML>
+<HEAD>
+<TITLE>pfMatStack</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMatStack</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMatStack(3pf)                                   pfMatStack(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewMStack,</B> <B>pfGetMStackClassType,</B> <B>pfResetMStack,</B> <B>pfPushM-</B>
+       <B>Stack,</B>  <B>pfPopMStack,</B>  <B>pfPreMultMStack,</B>   <B>pfPostMultMStack,</B>
+       <B>pfLoadMStack,</B>  <B>pfGetMStack,</B>  <B>pfGetMStackTop,</B>  <B>pfGetMStack-</B>
+       <B>Depth,</B>  <B>pfPreTransMStack,</B>  <B>pfPostTransMStack,</B>   <B>pfPreRotM-</B>
+       <B>Stack,</B>  <B>pfPostRotMStack,</B>  <B>pfPreScaleMStack,</B>  <B>pfPostScaleM-</B>
+       <B>Stack</B> - Create and manipulate a matrix stack.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfMatStack *   <B>pfNewMStack</B>(int size, void *arena);
+
+       pfType *       <B>pfGetMStackClassType</B>(void);
+
+       void           <B>pfResetMStack</B>(pfMatStack *stack);
+
+       int            <B>pfPushMStack</B>(pfMatStack *stack);
+
+       int            <B>pfPopMStack</B>(pfMatStack *stack);
+
+       void           <B>pfPreMultMStack</B>(pfMatStack *stack,
+                        const pfMatrix m);
+
+       void           <B>pfPostMultMStack</B>(pfMatStack *stack,
+                        const pfMatrix m);
+
+       void           <B>pfLoadMStack</B>(pfMatStack *stack, const pfMa-
+                        trix m);
+
+       void           <B>pfGetMStack</B>(const pfMatStack *stack,  pfMa-
+                        trix m);
+
+       pfMatrix *     <B>pfGetMStackTop</B>(const pfMatStack *stack);
+
+       int            <B>pfGetMStackDepth</B>(const pfMatStack *stack);
+
+       void           <B>pfPreTransMStack</B>(pfMatStack *stack,
+                        float x, float y, float z);
+
+       void           <B>pfPostTransMStack</B>(pfMatStack *stack,
+                        float x, float y, float z);
+
+       void           <B>pfPreRotMStack</B>(pfMatStack *stack,
+                        float degrees,     float x,    float y,
+                        float z);
+
+       void           <B>pfPostRotMStack</B>(pfMatStack *stack,
+                        float degrees,     float x,    float y,
+                        float z);
+
+       void           <B>pfPreScaleMStack</B>(pfMatStack *stack,
+                        float xs, float ys, float zs);
+
+       void           <B>pfPostScaleMStack</B>(pfMatStack *stack,
+       to an object of class <B>pfObject</B> is taken care of  automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfMatStack</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  routines  allow  the creation and manipulation of a
+       stack of 4x4 matrices.
+
+       <B>pfNewMStack</B> creates and returns a handle to a  pfMatStack.
+       <I>arena</I> specifies a malloc arena out of which the pfMatStack
+       is allocated or <B>NULL</B> for allocation off the process  heap.
+       pfMatStacks  can  be  deleted  with <B>pfDelete</B>.  <I>size</I> is the
+       number of pfMatrix's in the  matrix  stack.   The  initial
+       depth is 1 and the top of stack is the identity matrix.
+
+       <B>pfGetMStackClassType</B>  returns  the  <B>pfType</B>*  for the class
+       <B>pfMatStack</B>.  The <B>pfType</B>* returned by  <B>pfGetMStackClassType</B>
+       is  the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of class <B>pfMatStack</B>.  Because OpenGL  Per-
+       former  allows  subclassing  of built-in types, when deci-
+       sions are made based on the type of an object, it is  usu-
+       ally better to use <B>pfIsOfType</B> to test if an object is of a
+       duplicating  the  top.  <B>pfPopMStack</B> pops the matrix stack.
+       Attempting to pop a matrix stack containing only a  single
+       element or pushing past the maximum depth causes a warning
+       and leaves the stack unchanged.
+
+       <B>pfPreMultMStack</B> pre-multiplies the top of the stack by the
+       matrix  <I>m</I> and replaces the top of the stack with the prod-
+       uct.  Thus if <I>T</I> is the top of  the  stack,  the  operation
+       replaces  <I>T</I> with <I>m</I>*<I>T</I>.  This order corresponds to that used
+       by OpenGL's <I>glMultMatrix</I>.  <B>pfPostMultMStack</B> operates simi-
+       larly   but  using  post-multiplication,  calculating  <I>T</I>*<I>m</I>
+       instead.
+
+       <B>pfLoadMStack</B> replaces the top of the stack with the matrix
+       <I>m</I>.
+
+       <B>pfGetMStack</B>  copies  the top of the matrix into the matrix
+       <I>m</I>.  <B>pfGetMStackTop</B> returns a pointer to  the  top  of  the
+       matrix stack.
+
+       <B>pfGetMStackDepth</B>  returns  the current depth of the stack.
+       Initially the depth is <I>1</I>.
+
+       The following transformations pre- and post- multiply  the
+       top of the matrix stack:
+
+       <B>pfPreTransMStack</B>  and  <B>pfPostTransMStack</B> respectively pre-
+       and post- multiply the top of  the  matrix  stack  by  the
+       translation  matrix  generated by the coordinates <I>x</I>, <I>y</I> and
+       <I>z</I>.  (See <B>pfMakeTransMat</B>).
+
+       <B>pfPreRotMStack</B> and <B>pfPostRotMStack</B> respectively  pre-  and
+       post- multiply the top of the matrix stack by the rotation
+       by <I>degrees</I> about the axis defined  by  (<I>x</I>,  <I>y</I>,  <I>z</I>).   (See
+       <B>pfMakeRotMat</B>).   The  results  are undefined if the vector
+       (<I>x</I>, <I>y</I>, <I>z</I>) is not normalized.
+
+       <B>pfPreScaleMStack</B> and <B>pfPostScaleMStack</B>  respectively  pre-
+       and  post- multiply the top of the matrix stack by a scal-
+       ing matrix.  (See <B>pfMakeScaleMat</B>).  The matrix scales by <I>x</I>
+       in  the  X direction, <I>y</I> and the Y direction and <I>z</I> in the Z
+       direction.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfPreRotMStack</B> and <B>pfPostRotMStack</B> use pfSinCos  which  is
+       faster than the libm counterpart, but has less resolution.
+
+       pfMatStack is not related to the GL matrix stack.
+
+       IMPORTANT: The argument order of degrees and axis  to  the
+       <B>pfPreRotMStack</B>  are  not  the same as to the corresponding
+       routine <B>pfRotMStack</B> in the IRIS  Performer  1.0  and  IRIS
+       Performer  1.1  releases. This change was first introduced
+       in the IRIS Performer 1.2 release and is present in subse-
+       quent releases of OpenGL Performer.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete,  pfMakeRotMat,  pfMakeScaleMat,  pfMakeTransMat,
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

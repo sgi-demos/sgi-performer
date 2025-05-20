@@ -1,0 +1,1558 @@
+<HTML>
+<HEAD>
+<TITLE>pfGeoSet</TITLE>
+</HEAD>
+<BODY>
+<H1>pfGeoSet</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfGeoSet(3pf)                                       pfGeoSet(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGeoSet,</B>  <B>pfFluxedGSetInit</B>  -  Create,  modify  and query
+       geometry set objects
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoSet.h&gt;
+
+                         <B>pfGeoSet::pfGeoSet</B>()
+
+       static pfType *   <B>pfGeoSet::getClassType</B>(void);
+
+       void              <B>pfGeoSet::compile</B>(void);
+
+       void              <B>pfGeoSet::draw</B>(void);
+
+       void              <B>pfGeoSet::drawHlightOnly</B>(void);
+
+       void              <B>pfGeoSet::setNumPrims</B>(int num);
+
+       int               <B>pfGeoSet::getNumPrims</B>(void);
+
+       void              <B>pfGeoSet::setPrimType</B>(int type);
+
+       int               <B>pfGeoSet::getPrimType</B>(void);
+
+       void              <B>pfGeoSet::setPrimLengths</B>(int *lengths);
+
+       int *             <B>pfGeoSet::getPrimLengths</B>(void);
+
+       int *             <B>pfGeoSet::getPrimLength</B>(int i);
+
+       void              <B>pfGeoSet::setAttr</B>(int attr,    int bind,
+                           void *alist, ushort *ilist);
+
+       int               <B>pfGeoSet::getAttrBind</B>(int attr);
+
+       void              <B>pfGeoSet::getAttrLists</B>(int attr,
+                           void **alist, ushort **ilist);
+
+       int               <B>pfGeoSet::getAttrRange</B>(int attr,
+                           int *minIndex, int *maxIndex);
+
+       void              <B>pfGeoSet::setMultiAttr</B>(int attr,
+                           int index,  int bind,   void *alist,
+                           ushort *ilist);
+
+       int               <B>pfGeoSet::getMultiAttrBind</B>(int attr,
+                           int index);
+
+       void              <B>pfGeoSet::getMultiAttrLists</B>(int attr,
+                           int index,             void **alist,
+                           ushort **ilist);
+
+       int               <B>pfGeoSet::getMultiAttrRange</B>(int attr,
+                           int index,            int *minIndex,
+
+       void              <B>pfGeoSet::setDecalPlane</B>(pfPlane *plane);
+
+       pfPlane *         <B>pfGeoSet::getDecalPlane</B>(int mode);
+
+       void              <B>pfGeoSet::setGState</B>(pfGeoState *gstate);
+
+       pfGeoState *      <B>pfGeoSet::getGState</B>(void);
+
+       void              <B>pfGeoSet::setGStateIndex</B>(int id);
+
+       int               <B>pfGeoSet::getGStateIndex</B>(void);
+
+       void              <B>pfGeoSet::setLineWidth</B>(float width);
+
+       float             <B>pfGeoSet::getLineWidth</B>(void);
+
+       void              <B>pfGeoSet::setPntSize</B>(float size);
+
+       float             <B>pfGeoSet::getPntSize</B>(void);
+
+       void              <B>pfGeoSet::setHlight</B>(pfHighlight *hlight);
+
+       pfHighlight *     <B>pfGeoSet::getHlight</B>(void);
+
+       void              <B>pfGeoSet::setDrawBin</B>(short bin);
+
+       int               <B>pfGeoSet::getDrawBin</B>(void);
+
+       void              <B>pfGeoSet::setDrawOrder</B>(unsigned int order);
+
+       unsigned int      <B>pfGeoSet::getDrawOrder</B>(void);
+
+       static void       <B>pfGeoSet::setPassFilter</B>(uint mask);
+
+       static uint       <B>pfGeoSet::getPassFilter</B>(void);
+
+       void              <B>pfGeoSet::hideStripPrim</B>(int i);
+
+       void              <B>pfGeoSet::unhideStripPrim</B>(int i);
+
+       int               <B>pfGeoSet::isStripPrimHidden</B>(int i);
+
+       int               <B>pfGeoSet::query</B>(uint which, void* dst);
+
+       int               <B>pfGeoSet::mQuery</B>(uint* which,
+                           void* dst);
+
+       void              <B>pfGeoSet::setBound</B>(pfBox *bbox,
+                           int mode);
+
+       int               <B>pfGeoSet::getBound</B>(pfBox *bbox);
+
+       void              <B>pfGeoSet::setBoundFlux</B>(pfFlux *flux);
+
+       pfFlux*           <B>pfGeoSet::getBoundFlux</B>(void);
+
+       void              <B>pfGeoSet::setIsectMask</B>(uint mask,
+                           int setMode, int bitOp);
+
+       pfPassList*       <B>pfGeoSet::getPassList</B>();
+
+       void              <B>pfGeoSet::updateCteRefs</B>(void);
+
+       void              <B>pfGeoSet::calcTexBBox</B>(void);
+
+       void              <B>pfGeoSet::setTexBBox</B>(uint centerS,
+                           uint centerT,        uint halfwidth,
+                           uint halfheight);
+
+       void              <B>pfGeoSet::setTexBBox</B>(float minS,
+                           float maxS, float minT, float maxT);
+
+       int               <B>pfGeoSet::getTexBBox</B>(uint* centerS,
+                           uint* centerT,      uint* halfwidth,
+                           uint* halfheight);
+
+       int               <B>pfGeoSet::getTexBBox</B>(float* minS,
+                           float* maxS,            float* minT,
+                           float* maxT);
+
+       void              <B>pfGeoSet::setCteAttr</B>(int which,
+                           void* val);
+
+       void*             <B>pfGeoSet::getCteAttr</B>(int which);
+
+       void              <B>pfGeoSet::setAppearance</B>(islAppearance *appearance);
+
+       islAppearance *   <B>pfGeoSet::getAppearance</B>(void);
+
+       int               <B>pfGeoSet::isShaded</B>(void);
+
+       void              <B>pfGeoSet::quickCopy</B>(pfGeoSet *src);
+
+       void              <B>pfGeoSet::quickSetAttr</B>(int _attr,
+                           void* _alist,
+                           unsigned short* _ilist);
+
+       void              <B>pfGeoSet::quickSetMultiAttr</B>(int _attr,
+                           int _index,            void* _alist,
+                           unsigned short* _ilist);
+
+       void              <B>pfGeoSet::quickSetPrimLengths</B>(int *_lengths);
+
+       void              <B>pfGeoSet::quickReset</B>(int extRefOnly);
+
+       void              <B>pfGeoSet::setOptimize</B>(int _state);
+
+       int               <B>pfGeoSet::getOptimize</B>(void);
+
+       int               <B>pfFluxedGSetInit</B>(pfFluxMemory *fmem);
+
+
+                         struct pfSegSet
+                         {
+                             int        mode;
+                             void* userData;
+                             pfSeg segs[PFIS_MAX_SEGS];
+                             uint  activeMask;
+
+       The OpenGL Performer class <B>pfGeoSet</B> is derived from the
+       parent class <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfGeoSet</B>.  This is also true for ancestor classes of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfGeoSet</B> can also be used
+       with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which, uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>attr</I>  is a symbolic token that identifies a specific
+             attribute type and is one of:
+
+             <B>PFGS_COLOR4</B>              <I>alist</I> must be list of
+                                      pfVec4 colors
+
+             <B>PFGS_NORMAL3</B>             <I>alist</I> must be list of
+                                      pfVec3 normals,
+
+             <B>PFGS_TEXCOORD2</B>           <I>alist</I> must be list of
+                                      pfVec2 texture coordinates,
+
+             <B>PFGS_COORD3</B>              <I>alist</I> must be list of
+                                      pfVec3 coordinates.
+
+                                      the entire pfGeoSet,
+
+             <B>PFGS_PER_PRIM</B>            <I>attr</I> is specified once per
+                                      primitive,
+
+             <B>PFGS_PER_VERTEX</B>          <I>attr</I> is specified once per
+                                      vertex.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfGeoSet (short for "Geometry Set") is a fundamental
+       OpenGL Performer data structure.  Each pfGeoSet is a col-
+       lection of geometry with one primitive type, such as
+       points, lines, triangles.  Each pfGeoSet also has a single
+       combination of texture, normal, and color attribute bind-
+       ings, such as "untextured with colors per vertex and nor-
+       mals per primitive".  A pfGeoSet forms primitives out of
+       lists of attributes which may or may not be indexed.  An
+       indexed pfGeoSet uses a list of unsigned shorts to index
+       an attribute list.
+
+       Indexing provides a more general mechanism for specifying
+       geometry than hardwired attribute lists and also has the
+       potential for substantial memory savings due to shared
+       attributes.  Nonindexed pfGeoSet's are sometimes easier to
+       construct and may save memory in situations where vertex
+       sharing is not possible since index lists are not
+       required.  Nonindexed pfGeoSet's also require fewer CPU
+       cycles to traverse and may exhibit better caching behav-
+       ior.  A pfGeoSet must be either completely indexed or non-
+       indexed; hybrid pfGeoSets that have some attributes
+       indexed and others non-indexed are not supported. For the-
+       ses cases, simply construct an identity-map index list and
+       specify it with each "non-indexed" pfGeoSet attribute
+       array.
+
+       <B>new</B>(arena) allocates a pfGeoSet from the specified memory
+       arena, or from the process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfGeoSet from the default memory arena (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfGeoSets cannot
+       be created statically, automatically on the stack or in
+       arrays.  pfGeoSets should be deleted with <B>pfDelete</B> rather
+       than the delete operator.
+
+
+   <B>pfGeoSet</B> <B>Attributes</B>
+       <B>pfGeoSet::setAttr</B> sets a pfGeoSet attribute binding type,
+       attribute list, and attribute index list. These pfGeoSet
+       attributes include vertex coordinate, color specification,
+       normal vector, texture coordinate, or packed attribute
+       array which is supplied in list form to the pfGeoSet.
+
+       The optional attribute index list is a list of unsigned
+       short integers which index the attribute list. The
+       attribute binding type specifies how the lists are inter-
+       preted to define geometry, specifying for example, that
+       the color attribute list provides a color for each vertex
+       (PFGS_PER_VERTEX) or just an overall color for the entire
+       pfGeoSet (PFGS_OVERALL).
+
+       coordinate arrays on a <B>pfGeoSet</B>.  <B>pfGeoSet</B> uses these
+       arrays on graphic hardware supporting the OpenGL multi-
+       texture extension.
+
+       <I>index</I> can be in the range 0 to (<B>PF_MAX_TEXTURES</B>-1). These
+       value correspond to hardware multi-texture units with the
+       same indices. At run-time, <B>pfGeoSet</B> rejects <I>index</I> values
+       if the current hardware does not have enough multi-texture
+       units.  <B>pfGeoSet</B> recognizes all multi-value attributes
+       from (<I>index</I> == 0) to the first index with a NULL
+       attribute. For example, when setting the <B>PFGS_TEXCOORD2</B>
+       multi-value attribute at index 0, 1, and 3, <B>pfGeoSet</B>
+       ignores the setting for (<I>index</I> == 3) because the attribute
+       with (<I>index</I> == 2) is NULL.
+
+       Calling <B>pfGeoSet::setAttr</B> with attribute <B>PFGS_TEXCOORD2</B>
+       and <B>PFGS_TEXCOORD3</B> is equivalent to calling
+       <B>pfGeoSet::setMultiAttr</B> on the same attributes with (<I>index</I>
+       == 0).
+
+       Only certain combinations of attributes and binding types
+       make sense.  For example, vertices clearly must be speci-
+       fied per-vertex and the utility of texture coordinates
+       specified other than per-vertex is questionable.
+
+       The following table shows the allowed combinations for the
+       normal attribute arrays:
+
+       center tab($) ; c | c s s s c | c s s s c | cB cB cB cB lB
+       | c c c c .  Binding$Attribute Type $_ $COLOR4$NOR-
+       MAL3$TEXCOORD2$COORD3 _ PFGS_OFF$yes$yes$yes$no PFGS_OVER-
+       ALL$yes$yes$no$no PFGS_PER_PRIM$yes$yes$no$no
+       PFGS_PER_VERTEX$yes$yes$yes$yes
+
+       In conjunction with specifying a vertex binding for a
+       given vertex attributes, packed attribute arrays may set
+       with the <B>PFGS_PACKED_ATTRS</B>.  Packed attribute arrays must
+       include all of the per-vertex data for the normal
+       attributes the single array, according to the packed
+       attribute format that is set as the <B>PFGS_PACKED_ATTRS</B>
+       binding type. Only <B>PFGS_OFF</B>, <B>PFGS_OVERALL</B> and
+       <B>PFGS_PER_VERTEX</B> attribute bindings may be used for the
+       normal vertex attributes when using the packed attribute
+       arrays. The format of the <B>PFGS_PACKED_ATTRS</B> may be one of:
+
+              <B>PFGS_PA_C4UBN3ST2FV3F</B>
+                     the packed attribute array contains all cur-
+                     rently bound per-vertex attributes, includ-
+                     ing the vertex coordinates.  Colors must be
+                     packed into one unsigned byte with RGBA byte
+                     ordering, normals must be shorts scaled to
+                     the range [-32767, 32767], texture coordi-
+                     nates and vertex coordinates are floats.
+                     Each attribute for each vertex must start on
+                     a 32-bit word boundary.
+
+              <B>PFGS_PA_C4UBN3ST2F</B>
+                     the packed attribute array contains all cur-
+                     rently bound per-vertex attributes, except
+                     <B>PFGS_COORD3</B> attribute.  Each attribute for
+                     each vertex must start on a 32-bit word
+                     boundary.
+
+              <B>PFGS_PA_C4UBT2F</B>
+                     the packed attribute array contains colors
+                     as unsigned bytes and 2D texture coordinates
+                     as floats. The vertex coordinates will be
+                     taken from the normal vertex attribute array
+                     specified with the <B>PFGS_COORD3</B> attribute and
+                     normals will be taken from the normal
+                     attribute array specified with <B>PFGS_NORMAL3</B>.
+
+              <B>PFGS_PA_C4UBN3ST2SV3F</B>, <B>PFGS_PA_C4UBN3ST2S</B>,
+              <B>PFGS_PA_C4UBT2S</B>
+                     the packed attribute array contains the
+                     specified currently bound per-vertex
+                     attributes.  Colors are packed into unsigned
+                     bytes, normals are signed shorts in the
+                     range [-32767, 32767] and texture coordi-
+                     nates are unsigned shorts in the range [0,
+                     65536].  A texture matrix should be used to
+                     rescale the texture coordinates into the
+                     proper range.  A texture matrix can be spec-
+                     ified for a pfGeoSet through its pfGeoState.
+                     See the set <B>pfGStateAttr(3pf)</B> man page and
+                     the <B>PFSTATE_TEXMAT</B> attribute.
+
+              <B>PFGS_PA_C4UBN3ST3FV3F</B>, <B>PFGS_PA_C4UBN3ST3F</B>,
+              <B>PFGS_PA_C4UBT3F</B>
+                     the packed attribute array contains the
+                     specified currently bound per-vertex
+                     attributes as above.  Texture coordinates
+                     are floats and are 3D texture coordinates,
+                     specifying s, t, and r.
+                     <B>PFGS_PA_C4UBN3ST3SV3F</B>, <B>PFGS_PA_C4UBN3ST3S</B>,
+                     <B>PFGS_PA_C4UBT3S</B> the packed attribute array
+                     contains the specified currently bound per-
+                     vertex attributes as above.  Texture coordi-
+                     nates are unsigned shorts and are 3D texture
+                     coordinates, specifying s, t, and r.
+
+       When only using packed attribute arrays, you may specify a
+       NULL for the redundant attribute data arrays for the indi-
+       vidual attributes, such as the colors, normals,, and tex-
+       ture coordinates.  The normal vertex attribute arrays is
+       required if intersections are to be done with the
+       pfGeoSet. For examples of using <B>PFGS_PACKED_ATTRS</B>, see the
+       example below, as well as the example in
+       <B>/usr/share/Performer/src/pguide/libpr/C/vertexarray.c</B>.
+       There are also utility routines in libpfutil for creating
+       the packed attribute arrays; see the
+       <B>pfuTravCreatePackedAttrs</B> and <B>pfuFillGSetPackedAttrs</B> man
+       pages for more information.
+
+       An <B>OVERALL</B> binding requires an index list of length 1 for
+       indexed pfGeoSets.  The value of <I>bind</I> is unimportant for
+       <I>attr</I> = <B>PFGS_COORD3</B> since vertices are always specified on
+       a per-vertex basis.  Default bindings are OFF for all
+       If any attribute's binding is not <B>PFGS_OFF</B> and the corre-
+       sponding <I>ilist</I> is defined as NULL, the pfGeoSet is consid-
+       ered to be non-indexed and ALL other specified index lists
+       will be ignored.  Nonindexed interpretation of an
+       attribute list is equivalent to using an index list whose
+       elements are 0,1,2,...,N-1.  Consequently it is possible
+       to emulate a pfGeoSet with mixed indexed and non-indexed
+       attributes by using an index array whose elements are
+       0,1,2,...,N-1 with N being the largest possible index.
+
+       If attribute and index lists are allocated from the
+       <B>pfMalloc</B> routines, <B>pfGeoSet::setAttr</B> will correctly update
+       the reference counts of the lists.  Specifically,
+       <B>pfGeoSet::setAttr</B> will decrement the reference counts of
+       the old lists and increment the reference counts of the
+       new lists.  It will not free any lists whose reference
+       counts reach 0.  When a pfGeoSet is deleted with <B>pfDelete</B>,
+       all pfMalloc'ed lists will have their reference counts
+       decremented by one and will be freed if their count
+       reaches 0.
+
+       When pfGeoSets are copied with <B>pfCopy</B>, all pfMalloc'ed
+       lists of the source pfGeoSet will have their reference
+       counts incremented by one and those pfMalloc'ed lists of
+       the destination pfGeoSet will have their reference counts
+       decremented by one.  <B>pfCopy</B> copies lists only by reference
+       (only the pointer is copied) and will not free any lists
+       whose reference counts reach 0.
+
+       Attribute lists may be any of the following types of mem-
+       ory:
+
+              1.   Data allocated with <B>pfMalloc</B>. This is the
+                   usual, and recommended memory type for
+                   pfGeoSet index and attribute arrays.
+
+              2.   Static, malloc(), amalloc(), usmalloc() etc,
+                   data subsequently referred to as non-pfMal-
+                   loc'ed data.  This type of memory is not gen-
+                   erally recommended since it does not support
+                   reference counting or other features provided
+                   by <B>pfMalloc</B>.  In particular, the use of static
+                   data is highly discouraged and may result in
+                   segmentation violations.
+
+              3.   pfFlux memory.  In a pipelined, multiprocess-
+                   ing environment, a pfFlux provides multiple
+                   data buffers which allow frame-accurate data
+                   modifications to pfGeoSet attribute arrays
+                   like coordinates (facial animation), and tex-
+                   ture coordinates (ocean waves, surf).
+                   <B>pfGeoSet::setAttr</B> will accept a pfFlux* or
+                   pfFluxMemory* for the attribute list (index
+                   lists do not support pfFlux) and the pfGeoSet
+                   will select the appropriate buffer when ren-
+                   dered or intersected with.  See pfFlux for
+                   more details.
+
+              4.   pfCycleBuffer and pfCycleMemory.  However
+
+       <B>pfGeoSet::getAttrLists</B> returns the attribute and index
+       list base pointers. If the gset is non-indexed, send down
+       a dummy ushort pointer instead of NULL as ilist.
+
+       Similarly, <B>pfGeoSet::getMultiAttrBind</B> returns the binding
+       type of <I>attr</I> at the <I>index</I>'th position, and
+       <B>pfGeoSet::getMultiAttrLists</B> returns the attribute and
+       index list base pointers at the <I>index</I>'th position.
+
+       <B>pfGeoSet::getAttrRange</B> returns the range of attributes in
+       the attribute list identified by <I>attr</I> that are used by the
+       pfGeoSet.  (The total size, in bytes, of the list may be
+       queried through <B>pfGetSize</B> if the list was allocated by
+       <B>pfMalloc</B>.)  If the list is non-indexed,
+       <B>pfGeoSet::getAttrRange</B> returns the number of contiguous
+       attributes accessed by the pfGeoSet (the range implicitly
+       beginning at 0).  If the list is indexed,
+       <B>pfGeoSet::getAttrRange</B> returns the same value as in the
+       non-indexed case but also copies the minimum and maximum
+       indices into <I>minIndex</I> and <I>maxIndex</I>.  If the attribute list
+       is non-indexed, or the attribute binding type is
+       <B>PFGSS_OFF</B>, 0 and -1 are returned in <I>minIndex</I> and <I>maxIndex</I>.
+       <B>NULL</B> may be passed instead of <I>minIndex</I> and/or <I>maxIndex</I>
+       when the min/max index is not required.
+
+       <B>pfGeoSet::getAttrRange</B> is typically used to allocate a new
+       attribute array when cloning a pfGeoSet:
+
+       int numVerts = gset-&gt;getAttrRange(PFGS_COORD3, NULL, &amp;max);
+       numVerts = PF_MAX2(numVerts, max + 1);
+       newVerts = (pfVec3*) pfMalloc(sizeof(pfVec3) * numVerts, arena);
+
+
+       Similarly, <B>pfGeoSet::getMultiAttrRange</B> returns the range
+       of attributes in the attribute list identified by <I>attr</I> for
+       a multi-valued attribute at position <I>index</I>.
+
+
+   <B>pfGeoSet</B> <B>Primitive</B> <B>Types</B>
+       <B>pfGeoSet::setPrimType</B> specifies the type of primitives
+       found in a pfGeoSet.  <I>type</I> is a symbolic token and is one
+       of:
+
+              <B>PFGS_POINTS</B>
+              <B>PFGS_LINES</B>
+              <B>PFGS_LINESTRIPS</B>
+              <B>PFGS_FLAT_LINESTRIPS</B>
+              <B>PFGS_TRIS</B>
+              <B>PFGS_QUADS</B>
+              <B>PFGS_TRISTRIPS</B>
+              <B>PFGS_FLAT_TRISTRIPS</B>
+              <B>PFGS_TRIFANS</B>
+              <B>PFGS_FLAT_TRIFANS</B>
+              <B>PFGS_POLYS</B>
+
+       The primitive type dictates how the coordinate and coordi-
+       nate index lists are interpreted to form geometry.  See
+       below for a description of primitive types.
+       <B>pfGeoSet::getPrimType</B> returns the primitive type of the
+
+       A single line strip, triangle strip, or polygon is consid-
+       ered to be a primitive so a pfGeoSet may contain multiple
+       strips of differing lengths or multiple polygons with dif-
+       fering number of sides.  Therefore, for strip primitives
+       and <B>PFGS_POLYS</B>, a separate array is necessary which speci-
+       fies the number of vertices in each strip or polygon.
+       This array is set by <B>pfGeoSet::setPrimLengths</B>.  <I>lengths</I> is
+       an array of vertex counts such that lengths[0] = number of
+       vertices in strip/polygon 0, lengths[1] = number of ver-
+       tices in strip/polygon 1,..., lengths[n-1] = number of
+       vertices in strip/polygon n-1 where n is the number of
+       primitives set by <B>pfGeoSet::setNumPrims</B>.
+       <B>pfGeoSet::getPrimLengths</B> returns a pointer to the lengths
+       array of the pfGeoSet.  <B>pfGeoSet::getPrimLength</B> returns
+       the positive length for the <I>i</I>th primitive of the pfGeoSet.
+
+       As of OpenGL Performer 2.2, the negative of the proper
+       length may be specified for an individual length of a
+       strip prmitive in the lengths array to indicate that this
+       pfGeoSet primitive should be "hidden" from drawing.  The
+       primitive will however be counted in drawing statistics (-
+       <B>pfStats</B>) and will be used in intersections and bounding
+       box computations and all other pfGeoSet processing.
+       <B>pfGeoSet::hideStripPrim</B> will force the length of the <I>i</I>'th
+       primitive of a stripped pfGeoSet to be the negative of its
+       proper length; <B>pfGeoSet::unhideStripPrim</B> will set the
+       primitive length to be the positive value.
+       <B>pfGeoSet::isStripPrimHidden</B> will return 1 if the <I>i</I>th prim-
+       itive of the pfGeoSet is negative and 0 otherwise.
+       <B>pfGeoSet::getPrimLength</B> always returns a positive length
+       for the <I>i</I>th primitive of the pfGeoSet and can be used
+       wherever the lengths of pfGeoSets of unknown source must
+       be inspected to protect against negative values in the
+       lengths array.
+
+
+       Assuming the coordinate index list is an array V indexed
+       by i, <I>num</I> is the number of primitives, <I>lengths</I> is the
+       array of strip or polygon lengths and Nv the size of the
+       coordinate index list, the primitive type interprets V in
+       the following ways:
+
+              <B>PFGS_POINTS</B>
+                   The pfGeoSet is a set of <I>num</I> points.  Each
+                   V[i] is a point, i = 0, 1, 2, ..., <I>num</I>-1.  Nv
+                   = <I>num</I>.
+
+              <B>PFGS_LINES</B>
+                   The pfGeoSet is a set of <I>num</I> disconnected line
+                   segments.  Each line segment is drawn from
+                   V[i] to V[i+1], i = 0, 2, ..., 2*(<I>num</I>-1).  Nv
+                   = 2 * <I>num</I>.
+
+              <B>PFGS_LINESTRIPS</B>
+                   The pfGeoSet is a set of <I>num</I> line strips (also
+                   known as polylines).  Linestrip[i] is drawn
+                   between V[p+j], j = 0, 1, ..., <I>lengths</I>[i]-1,
+                   where p is sum of all <I>lengths</I>[k], 0 &lt;= k &lt; i.
+                   between V[p+j], j = 0, 1, ..., <I>lengths</I>[i]-1,
+                   where p is sum of all <I>lengths</I>[k], 0 &lt;= k &lt; i.
+                   Nv = sum of all <I>lengths</I>[k], k = 0, 1, ...,
+                   <I>num</I>-1.  Note that all <I>lengths</I>[i] value should
+                   be &gt;= 2.
+
+              <B>PFGS_TRIS</B>
+                   The pfGeoSet is a set of <I>num</I> independent tri-
+                   angles.  Each triangle is V[i], V[i+1],
+                   V[i+2], i = 0, 3, 6, ..., 3*(<I>num</I>-1).  Nv = 3 *
+                   <I>num</I>.
+
+              <B>PFGS_QUADS</B>
+                   The pfGeoSet is a set of <I>num</I> independent
+                   quads.  Each quad is V[i], V[i+1], V[i+2],
+                   V[i+3], i = 0, 4, 8, ..., 4*(<I>num</I>-1).  Nv = 4 *
+                   <I>num</I>.
+
+              <B>PFGS_TRISTRIPS</B>
+                   The pfGeoSet is a set of <I>num</I> triangle strips.
+                   Tristrip[i] is drawn between V[p+j], j = 0, 1,
+                   ..., <I>lengths</I>[i]-1, where p is sum of all
+                   <I>lengths</I>[k], 0 &lt;= k &lt; i.  Nv = sum of all
+                   <I>lengths</I>[k], k = 0, 1, ..., <I>num</I>-1.  Note that
+                   all <I>lengths</I>[i] values should be &gt;= 3.
+
+              <B>PFGS_FLAT_TRISTRIPS</B>
+                   The pfGeoSet is a set of <I>num</I> triangle strips.
+                   Tristrip[i] is drawn between V[p+j], j = 0, 1,
+                   ..., <I>lengths</I>[i]-1, where p is sum of all
+                   <I>lengths</I>[k], 0 &lt;= k &lt; i.  Nv = sum of all
+                   <I>lengths</I>[k], k = 0, 1, ..., <I>num</I>-1.  Note that
+                   all <I>lengths</I>[i] should be &gt;= 3.  The FLAT indi-
+                   cates that the strips should be flat shaded
+                   and that additional attributes for the first
+                   two vertices are not specified.
+
+              <B>PFGS_TRIFANS</B>
+                   The pfGeoSet is a set of <I>num</I> triangle fans.
+                   Each trifan[i] is a set of <I>lengths</I>[i] trian-
+                   gles.  The fan starts with the center vertex
+                   V[0], with the remaining <I>lengths</I>[i]-1 vertices
+                   specifying the outside points.
+
+              <B>PFGS_FLAT_TRIFANS</B>
+                   The pfGeoSet is a set of <I>num</I> triangle fans.
+                   Each trifan[i] is a set of <I>lengths</I>[i] trian-
+                   gles.  The fan starts with the center vertex
+                   V[0], with the remaining <I>lengths</I>[i]-1 vertices
+                   specifying the outside points.  The FLAT indi-
+                   cates that the strips should be flat shaded
+                   and that additional attributes for the first
+                   two vertices are not specified.
+
+              <B>PFGS_POLYS</B>
+                   The pfGeoSet is a set of <I>num</I> polygons.  Poly-
+                   gon[i] is the convex hull of the vertices
+                   V[p+j], j = 0, 1, ..., <I>lengths</I>[i]-1 where p is
+                   sum of all <I>lengths</I>[k], 0 &lt;= k &lt; i.  Nv = sum
+
+              1.   Always render in wireframe mode if
+                   <B>PFEN_WIREFRAME</B> mode is enabled through
+                   <B>pfGeoSet::setDrawMode</B>.
+
+              2.   Use the wireframe mode set by the attached
+                   pfGeoState, if any, as described in
+                   <B>pfGeoSet::setGState</B> below.
+
+              3.   Use the wireframe mode set by <B>pfEnable</B> or
+                   <B>pfDisable</B> with the <B>PFEN_WIREFRAME</B> argument.
+
+       A <B>PFGS_PER_VERTEX</B> binding for <B>PFGS_COLOR4</B> and <B>PFGS_NORMAL3</B>
+       is interpreted differently for <B>PFGS_FLAT_LINESTRIPS</B> and
+       <B>PFGS_FLAT_TRISTRIPS</B> primitive types.  With flat-shaded
+       strip primitives, only the last vertex in each primitive
+       defines the shading of the primitive (see <B>pfShadeModel</B>.)
+       Thus the first vertex in a FLAT_LINESTRIP and the first
+       two vertices in a FLAT_TRISTRIP do not require normals or
+       colors.  Consequently when specifying a <B>PFGS_PER_VERTEX</B>
+       binding for either colors or normals, you should not spec-
+       ify a color or normal for the first vertex of a line strip
+       or for the first 2 vertices of a triangle strip.
+       <B>pfGeoSet::draw</B> will automatically set the shading model to
+       <B>FLAT</B> before rendering <B>PFGS_FLAT_</B> primitives.
+
+       Example 1:
+
+       /* Set up a non-indexed, FLAT_TRISTRIP pfGeoSet */
+       gset = new pfGeoSet;
+       gset-&gt;setPrimType(PFGS_FLAT_TRISTRIPS);
+       gset-&gt;<B>setNumPrims(2)</B>;
+       lengths[0] = 4;
+       lengths[1] = 3;
+       gset-&gt;setPrimLengths(lengths);
+
+       /* Only need 3 colors: 2 for 1st strip and 1 for 2nd */
+       colors = (pfVec4*) pfMalloc(sizeof(pfVec4) * 3, NULL);
+
+       gset-&gt;setAttr(PFGS_COLOR4, PFGS_PER_VERTEX, colors, NULL);
+       gset-&gt;setAttr(PFGS_COORD3, PFGS_PER_VERTEX, coords, NULL);
+
+
+
+   <B>pfGeoSet</B> <B>Special</B> <B>Rendering</B> <B>Characteristics</B>
+       When colortable mode is enabled, either through <B>pfEnable</B>
+       or through <B>pfGeoState::apply</B>, a pfGeoSet will not use its
+       local color array but will use the color array supplied by
+       the currently active pfColortable (See the <B>pfColortable</B>
+       and <B>pfEnable</B> manual pages). pfColortables will affect both
+       indexed and non-indexed pfGeoSets.
+
+       A pfGeoSet of type <B>PFGS_POINTS</B> will be rendered with the
+       special characteristics of light points if a pfLPointState
+       has been applied.  Light point features include:
+
+
+              1. Perspective size.
+
+
+       See pfLPointState for more details.
+
+       <B>pfGeoSet::setPntSize</B> and <B>pfGeoSet::setLineWidth</B> set the
+       point size and line width of the pfGeoSet.  Point size has
+       effect only when the primitive type is <B>PFGS_POINTS</B> and
+       line width is used only for primitive types <B>PFGS_LINES</B>,
+       <B>PFGS_LINESTRIPS</B>, <B>PFGS_FLAT_LINESTRIPS</B> and for all primi-
+       tives drawn in wireframe mode.  A pfGeoSet sets point size
+       and line width immediately before rendering only if the
+       size/width is greater than zero. Otherwise it will inherit
+       size/width through the Graphics Library.
+
+       <B>pfGeoSet::getPntSize</B> and <B>pfGeoSet::getLineWidth</B> return
+       <I>gset</I>'s point size and line width respectively.
+
+       <B>pfGeoSet::setDrawMode</B> further characterizes a pfGeoSet's
+       primitive type as flat-shaded, wireframe or compiled.
+       <I>mode</I> is a symbolic token specifying the mode to set and is
+       one of:
+
+              <B>PFGS_FLATSHADE</B>           Always render the pfGeoSet
+                                       with a flat shading model.
+
+              <B>PFGS_WIREFRAME</B>           Always render and inter-
+                                       sect the pfGeoSet in wire-
+                                       frame. For rendering in
+                                       wireframe and intersection
+                                       with solid geometry,
+                                       enable wireframe on an
+                                       attached pfGeoState (See
+                                       <B>pfGSetGState</B>).
+
+              <B>PFGS_COMPILE_GL</B>          At the next draw for each
+                                       pfState, compile the
+                                       pfGeoSet's geometry into a
+                                       GL display list and subse-
+                                       quently render the display
+                                       list.
+
+              <B>PFGS_DRAW_GLOBJ</B>          Select the rendering of an
+                                       already created display
+                                       list and do not force a
+                                       compile.
+
+              <B>PFGS_PACKED_ATTRS</B>        Use the  the pfGeoSet's
+                                       packed attribute arrays,
+                                       set with the
+                                       <B>PFGS_PACKED_ATTRS</B> to
+                                       <B>pfGeoSet::setAttr</B>, to ren-
+                                       der geometry with GL ver-
+                                       tex arrays.  This mode is
+                                       only available under
+                                       OpenGL operation.
+
+       <I>val</I> is <B>PF_ON</B> or <B>PF_OFF</B> to enable/disable the mode.
+
+       If a pfGeoSet has very few primitives, the CPU overhead in
+       <B>pfGeoSet::draw</B> may become noticeable.  In this situation,
+                   into the display list, thus duplicating the
+                   pfGeoSet's attribute arrays.  Additionally, GL
+                   display lists cannot index and so do not bene-
+                   fit from vertex sharing.
+
+                   While it is possible to delete the attribute
+                   arrays after the pfGeoSet has been compiled to
+                   free up some memory, it will no longer be pos-
+                   sible to intersect with the pfGeoSet's geome-
+                   try (see <B>pfGSetIsectSegs</B>).
+
+
+              Flexibility
+                   Once in a GL display list, attributes like
+                   coordinates and normals may not be modified.
+                   This precludes dynamic geometry like water and
+                   facial animation.
+
+              Coherency
+                   If any attribute of the pfGeoSet changes then
+                   the burden is on the user to regenerate the GL
+                   display list through <B>pfGeoSet::setDrawMode</B>.
+
+       In summary, applications with many very small pfGeoSets
+       each of which defines static unchanging geometry may be
+       suitable for pfGeoSet compilation into GL display lists.
+
+       The mechanism of <B>PFGS_COMPILE_GL</B> is illustrated in the
+       following example:
+
+       /* We assume 'gset' is already "built" by this point */
+
+       /* Enable GL display list compilation and rendering */
+       gset-&gt;setDrawMode(PFGS_COMPILE_GL, PF_ON);
+
+       /*
+        * The first pfDrawGSet after pfGSetDrawMode will compile
+        * the pfGeoSet into a GL display list.  Note that this is
+        * a very slow procedure and is generally done at
+        * initialization time.
+        */
+       gset-&gt;draw();
+        :
+       /* This time we draw the GL display list */
+       gset-&gt;draw();
+        :
+       /* Disable GL display list mode */
+       gset-&gt;setDrawMode(PFGS_COMPILE_GL, PF_OFF);
+
+       /* Free the GL display list and render 'gset' in immediate mode */
+       gset-&gt;draw();
+
+       Deciding which shading model to used when draw a pfGeoSet
+       is performed with the following decision hierarchy:
+
+              1.   Use flat shading if pfGeoSet consists of
+                   either <B>PFGS_FLAT_TRISTRIPS</B> or
+                   <B>PFGS_FLAT_LINESTRIPS</B> or if the mode
+                   <B>PFGS_FLATSHADE</B> is enabled with
+
+              3.   Use the shading model set by <B>pfShadeModel</B>.
+
+       <B>pfGeoSet::getDrawMode</B> returns the value of <I>mode</I> or -1 if
+       <I>mode</I> is an unknown mode.
+
+
+   <B>pfGeoSets</B> <B>(Geometry)</B> <B>and</B> <B>pfGeoStates</B> <B>(Appearance)</B>
+       A pfGeoState is an encapsulation of libpr graphics modes
+       and attributes (see <B>pfState</B>).  For example, a pfGeoState
+       representing a glass surface may reference a shiny pfMate-
+       rial and enable transparency.  A pfGeoState does not
+       inherit state from other pfGeoStates.  Consequently, when
+       attached to a pfGeoSet via <B>pfGeoSet::setGState</B>, the
+       pfGeoSet will always be rendered with the state encapsu-
+       lated by <I>gstate</I>, regardless of the order in which
+       pfGeoSet/pfGeoState pairs are rendered.  This behavior
+       greatly eases the burden of managing graphics state in the
+       graphics library. A pfGeoSet may directly reference or
+       indirectly index a pfGeoState through a global table.
+
+       <B>pfGeoSet::setGState</B> "attaches" <I>gstate</I> to the pfGeoSet so
+       that the pfGeoSet may be drawn with a certain graphics
+       state.  When drawn by <B>pfGeoSet::draw</B>, a pfGeoSet will
+       apply its pfGeoState (if it has one) with
+       <B>pfGeoState::apply</B> and the graphics library will be ini-
+       tialized to the proper state for drawing the pfGeoSet.  A
+       <I>gstate</I> value of <B>NULL</B> will remove any previous pfGeoState
+       and cause the pfGeoSet to inherit whatever graphics state
+       is around at the time of rendering.
+
+       <B>pfGeoSet::setGStateIndex</B> allows a pfGeoSet to index its
+       pfGeoState.  Indexing is useful for efficiently managing a
+       single database with multiple appearances, e.g., a normal
+       vs. an infrared view of a scene would utilize 2 pfGeoState
+       tables, each referencing a different set of pfGeoStates.
+
+       Indexed pfGeoStates use a global table of pfGeoState*
+       specified by <B>pfGeoState::applyTable</B>.  When indexing a
+       pfGeoState, <B>pfGeoSet::draw</B> calls <B>pfGeoState::apply</B> with
+       the <I>index</I>th entry of this table if the index can be prop-
+       erly resolved. Otherwise no pfGeoState is applied.
+       <B>pfGeoSet::getGStateIndex</B> returns the pfGeoState index of
+       the pfGeoSet or -1 if the pfGeoSet directly references its
+       pfGeoState.
+
+       <B>pfGeoSet::setGState</B> increments the reference count of the
+       new pfGeoState by one and decrements the reference count
+       of the previous pfGeoState by one but does not delete the
+       previous pfGeoState if its reference count reaches zero.
+       <B>pfGeoSet::setGStateIndex</B> does not affect pfGeoState refer-
+       ence counts.
+
+       It is important to understand and remember that any
+       pfGeoSet without an associated pfGeoState will <B>not</B> be ren-
+       dered with the global, default state but will be drawn
+       with the current state.  To inherit the global state, a
+       pfGeoState which inherits all state elements should be
+       attached to the pfGeoSet. pfGeoSets should share like
+       return the result or <B>NULL</B> if it cannot resolve the refer-
+       ence.
+
+
+       <B>pfGeoSet::setDecalPlane</B> sets <I>plane</I> to be the reference
+       plane used for the the pfGeoSet when the current decal
+       mode has <B>PFDECAL_PLANE</B> selected.  Setting a decal plane on
+       a pfGeoSet (as opposed to a pfGeoState) may add a small
+       amount of overhead to the drawing of that pfGeoSet which
+       may be visible for small pfGeoSets.  However, this may be
+       preferable to breaking up pfGeoStates for handling many
+       different reference planes.  Reference planes are only
+       supported under OpenGL operation and require the refer-
+       ence_plane SGI extension to the OpenGL.  The
+       <B>PFQFTR_DECAL_PLANE</B> to <B>pfQueryFeature</B> can be used for run-
+       time queries for the support of decal reference planes.
+       See the <B>pfDecal</B> man page for more information.
+
+       <B>pfGeoSet::setHlight</B> sets <I>hlight</I> to be the highlighting
+       structure used for the pfGeoSet.  When this flag is not
+       <B>PFHL_OFF</B>, this gset will be drawn as highlighted unless
+       highlighting has been overridden as off with <B>pfOverride</B>.
+       See the <B>pfHighlight</B> manual page for information of creat-
+       ing and configuring a highlighting state structure.
+       <B>pfGeoSet::getHlight</B> returns the current GeoSet highlight
+       definition.
+
+       <B>pfGeoSet::drawHlightOnly</B> is a convenience routine for
+       drawing ONLY the highlighting stage of the pfGeoSet,
+       according to the currently active highlighting structure.
+
+
+   <B>Drawing</B> <B>pfGeoSets</B>
+       <B>pfGeoSet::draw</B> is a display-listable command.  If a pfDis-
+       pList has been opened by <B>pfDispList::open</B>, <B>pfGeoSet::draw</B>
+       will not have immediate effect but will be captured by the
+       pfDispList and will only have effect when that pfDispList
+       is later drawn with <B>pfDispList::draw</B>.
+
+       If <I>gset</I> has an attached pfGeoState, then <B>pfGeoSet::draw</B>
+       first calls <B>pfGeoState::apply</B> before rendering the
+       pfGeoSet geometry, as shown in the following examples.
+
+       Example 3a:
+
+       /* Make sure 'gset' has not attached pfGeoState */
+       gset-&gt;setGState(NULL);
+
+       /* Apply graphics state encapsulated by 'gstate' */
+       gstate-&gt;apply();
+
+       /* Draw 'gset' with graphics state encapsulated by 'gstate' */
+       gset-&gt;draw();
+
+
+       Example 3b:
+
+       /* Attach 'gstate' to 'gset' */
+       gset-&gt;setGState(gstate);
+       /* Use indexed pfGeoState */
+       gset-&gt;<B>setGStateIndex(2)</B>;
+
+       /* Set up and apply pfGeoState table */
+       list-&gt;set(2, gstate);
+       list-&gt;applyTable();
+
+       /* Draw 'gset' with graphics state encapsulated by 'gstate' */
+       gset-&gt;draw();
+
+
+       Examples 3a, 3b, and 3c are equivalent methods for drawing
+       the same thing.  Method 3b is recommended though since the
+       pfGeoState and pfGeoSet pair can be set up at database
+       initialization time.
+
+       <B>pfGeoSet::setDrawBin</B> sets the pfGeoSet's draw bin identi-
+       fier to <I>bin</I>.  <I>bin</I> identifies a drawing bin to which the
+       pfGeoSet belongs and is used for controlling the rendering
+       order of a database.  The pfGeoSet draw bin is currently
+       used only by <B>libpf</B> applications (see
+       <B>pfChannel::setBinOrder</B>) and is ignored by <B>libpr</B>-only
+       applications. The default pfGeoSet draw bin identifier is
+       -1. <B>::getDrawBin</B> returns the draw bin identifier of <I>gset</I>.
+
+       <B>pfGeoSet::setDrawOrder</B> sets the pfGeoSet's <I>order</I> in the
+       bin if the bin sort order is PFSORT_DRAW_ORDER.  It is
+       necessary to set the Draw Order of each pfGeoSet that con-
+       tains calligraphic light points (see pfCalligraphic man
+       pages). Do not set the DrawBin for those pfGeoSets, as
+       they will automatically go in the light point display list
+       if a LPoint Process has been started.
+
+       The <I>mask</I> argument to <B>pfGeoSet::setPassFilter</B> is a bitmask
+       which specifies a pfGeoSet drawing "filter". Only
+       pfGeoSets which pass the filter test are rendered by
+       <B>pfGeoSet::draw</B>.  <I>mask</I> consists of the logical OR of the
+       following:
+
+
+              <B>PFGS_TEX_GSET</B>
+                   Draw only textured pfGeoSets
+
+              <B>PFGS_NONTEX_GSET</B>
+                   Draw only non-textured pfGeoSets
+
+              <B>PFGS_EMISSIVE_GSET</B>
+                   Draw only pfGeoSets which use an emissive
+                   pfMaterial or pfLPointState.
+
+              <B>PFGS_NONEMISSIVE_GSET</B>
+                   Draw only non-emissive pfGeoSets
+
+              <B>PFGS_LAYER_GSET</B>
+                   Draw only pfGeoSets which are layer (as
+                   opposed to base) geometry.
+
+              <B>PFGS_NONLAYER_GSET</B>
+                   Draw only pfGeoSets which are not layer geome-
+
+       <B>pfGeoSet::compile</B> will force the immediate creation of a
+       GL display list for the pfGeoSet in the current graphics
+       context but will not draw or select display list renderin
+       for the pfGeoSet.  This routine is usefull for the prepro-
+       cessing of pfGeoSets, possibly in a sproced non-rendering
+       process for OpenGL, for future GL display list rendering.
+       Since <B>pfGeoSet::compile</B> does not execute the pfGeoSet dis-
+       play list, the display list will not affect or be down-
+       loaded to the graphics pipeline.  <B>pfGeoSet::compile</B> is not
+       a display-listable command.
+
+
+   <B>Intersecting</B> <B>with</B> <B>pfGeoSets</B>
+       <B>pfGeoSet::setIsectMask</B> enables intersections and sets the
+       intersection mask for the pfGeoSet.  <I>mask</I> is a 32-bit mask
+       used to determine whether a particular pfGeoSet should be
+       examined during a particular intersection request.  A non-
+       zero bit-wise AND of the pfGeoSet's mask with the mask of
+       the intersection request (<B>pfGeoSet::isect</B>) indicates that
+       the pfGeoSet should be tested.  The default mask is all
+       1's, i.e.  0xffffffff.
+
+       <B>pfGeoSet::getIsectMask</B> returns the intersection mask of
+       the specified pfGeoSet.
+
+       Intersections for geometry whose vertex coordinates don't
+       change are more efficient when information is cached for
+       each pfGeoSet to be intersected with.  When setting the
+       mask or changing caching, <B>PFTRAV_SELF</B> should always be
+       part of <I>setMode</I>.  OR-ing <B>PFTRAV_IS_CACHE</B> into <I>setMode</I>
+       causes the creation or update of the cache.  Because cre-
+       ating the cache requires a moderate amount of computation,
+       it is best done at setup time.
+
+       For objects whose geometry changes only occasionally,
+       additional calls to <B>pfGeoSet::setIsectMask</B> with
+       <B>PFTRAV_IS_CACHE</B> OR-ed into <I>setMode</I> will recompute the
+       cached information.  Alternately, OR-ing <B>PFTRAV_IS_UNCACHE</B>
+       into <I>setMode</I> will disable caching.
+
+       The <I>bitOp</I> argument is one of <B>PF_AND</B>, <B>PF_OR</B>, or <B>PF_SET</B> and
+       indicates, respectively, whether the new mask is derived
+       from AND-ing with the old mask, OR-ing with the old mask
+       or simply set.
+
+       <B>pfGeoSet::setBound</B> sets the bounding volume of the
+       pfGeoSet.  Each pfGeoSet has an associated bounding volume
+       used for culling and intersection testing and a bounding
+       mode, either static or dynamic.  By definition, the bound-
+       ing volume of a node encloses all the geometry parented by
+       node, which means that the node and all its children fit
+       within the node's bounding volume.
+
+       The <I>mode</I> argument to <B>pfGeoSet::setBound</B> specifies whether
+       or not the bounding volume for <I>node</I> should be recomputed
+       when an attribute of the pfGeoSet is changed.  If the mode
+       is <B>PFBOUND_STATIC</B>, OpenGL Performer will not modify the
+       bound once it is set or computed.  If the mode is
+       <B>PFBOUND_DYNAMIC</B>, OpenGL Performer will recompute the bound
+       new bounding volume information, as a result, a geoset
+       will not propagate new bounding information up the tree.
+       Call <B>pfNode::setBound</B> on the parent Geode to recompute the
+       bounding volume.
+
+       <B>pfGeoSet::getBound</B> copies the bounding box of the pfGeoSet
+       into <I>bbox</I> and returns the current bounding mode.
+
+       <B>pfGeoSet::setBoundFlux</B> and <B>pfGeoSet::getBoundFlux</B> set and
+       get a pfFlux that can be used to contain the bounding box
+       of a pfGeoSet.
+
+       <B>pfGeoSet::isect</B> tests for intersection between the
+       pfGeoSet the pfGeoSet and the group of line segments spec-
+       ified in <I>segSet</I>. The resulting intersections (if any) are
+       returned in <I>hits</I>.  The return value of <B>pfGeoSet::isect</B> is
+       the number of segments that intersected the pfGeoSet.
+
+       <I>hits</I> is an empty array supplied by the user through which
+       results are returned.  The array must have an entry for
+       each segment in <I>segSet</I>.  Upon return, <I>hits</I>[i][0] is a
+       pfHit* which gives the intersection result for the <I>i</I>th
+       segment in <I>segSet</I>.  The pfHit objects come from an inter-
+       nally maintained pool and are reused on subsequent
+       requests.  Hence, the contents are only valid until the
+       next invocation of <B>pfGSetIsectSegs</B> in the current process.
+       They should not be freed by the application.
+
+       <I>segSet</I> is a pfSegSet public structure specifying the
+       intersection request.  In the structure, <I>segs</I> is an array
+       of line segments to be intersected against the pfGeoSet.
+       <I>activeMask</I> is a bit vector specifying which segments in
+       the SegSet are to be active for the current request.  If
+       the i'th bit is set to 1, it indicates the corresponding
+       segment in the <I>segs</I> array is active.
+
+       The bit vector <I>mode</I> specifies the behavior of the inter-
+       section process and is a bitwise OR of the following:
+
+              <B>PFTRAV_IS_PRIM</B>                Intersect with primi-
+                                            tives (quads or tri-
+                                            angles)
+
+              <B>PFTRAV_IS_GSET</B>                Intersect with
+                                            pfGeoSet bounding
+                                            boxes
+
+              <B>PFTRAV_IS_NORM</B>                Return normal in the
+                                            pfHit structure
+
+              <B>PFTRAV_IS_CULL_BACK</B>           Ignore backfacing
+                                            polygons
+
+              <B>PFTRAV_IS_CULL_FRONT</B>          Ignore front-facing
+                                            polygons
+
+       The bit fields <B>PFTRAV_IS_PRIM</B> and <B>PFTRAV_IS_GSET</B>, indicate
+       the level at which intersections should be evaluated and
+       discriminator callbacks, if any, invoked.  Note that if
+       bounding volume around the set of segments.  Currently,
+       the only supported volume is a cylinder.  To use a bound-
+       ing cylinder, bitwise OR <B>PFTRAV_IS_BCYL</B> into the <I>mode</I>
+       field of the pfSegSet and assign the pointer to the bound-
+       ing volume to the <I>bound</I> field.  <B>pfCylinder::around</B> will
+       construct a cylinder around the segments.
+
+       When a bounding volume is supplied, the bounding volume is
+       tested against the pfGeoSet bounding box before examining
+       the individual segments.  The largest improvement is for
+       groups of at least several segments which are closely
+       grouped segments.  Placing a bounding cylinder around
+       small groups or widely dispersed segments can decrease
+       performance.
+
+       The <I>userData</I> pointer allows an application to associate
+       other data with the pfSegSet.  Upon return and in discrim-
+       inator callbacks, the pfSegSet's <I>userData</I> pointer can be
+       obtained from the returned pfHit with the virtual function
+       <B>pfObject::getUserData</B>.
+
+       <I>discFunc</I> is a user supplied callback function which pro-
+       vides a more powerful means for controlling intersections
+       than the simple mask test.  The function acts as a dis-
+       criminating function which examines information about can-
+       didate intersections and judges their validity.  When a
+       candidate intersection occurs, the <I>discFunc</I> callback is
+       invoked with a pfHit structure containing information
+       about the intersection.
+
+       The callback may then return a value which indicates
+       whether and how the intersection should continue.  This
+       value is composed of the following major action specifica-
+       tions with additional modifiers bitwise-OR-ed in as
+       explained below.
+
+              <B>PFTRAV_CONT</B>
+                   Indicates that the process should continue
+                   traversing the primitive list.
+
+              <B>PFTRAV_PRUNE</B>
+                   Stops further testing of the line segment
+                   against the current pfGeoSet.
+
+              <B>PFTRAV_TERM</B>
+                   Stops further testing of the line segment com-
+                   pletely.
+
+       To have <B>PFTRAV_TERM</B> or <B>PFTRAV_PRUNE</B> apply to all segments,
+       <B>PFTRAV_IS_ALL_SEGS</B> can be OR-ed into the discriminator
+       return value.  This causes the entire traversal to be ter-
+       minated or pruned.
+
+       The callback may OR into the status return value any of:
+
+              <B>PFTRAV_IS_IGNORE</B>
+                   Indicates that the current intersection should
+                   be ignored, otherwise the intersection is
+                   taken as valid.
+
+              <B>PFTRAV_IS_CLIP_END</B>
+                   Indicates that for pruned and continued
+                   traversals that before proceeding the segment
+                   should be clipped to end at the current inter-
+                   section point.
+
+       If <I>discFunc</I> is NULL, the behavior is the same as if the
+       discriminator returned (<B>PFTRAV_CONT</B> | <B>PFTRAV_IS_CLIP_END</B>),
+       so that the intersection nearest the start of the segment
+       will be returned.
+
+       A pfHit object also conveys information to the discrimina-
+       tor callback, if any.    The following table lists the
+       information which can be obtained from an pfHit.
+
+       center tab($) ; c | c | c lB | l | l .  Query$Type$Con-
+       tents _ PFQHIT_FLAGS$int$Status flags PFQHIT_SEG-
+       NUM$int$Index of segment in pfSegSet PFQHIT_SEG$pfSeg$Seg-
+       ment, as clipped PFQHIT_POINT$pfVec3$Intersection point
+       PFQHIT_NORM$pfVec3$Normal at intersection point
+       PFQHIT_VERTS$pfVec3[3]$Vertices of intersected triangle
+       PFQHIT_TRI$int$Index of triangle in pfGeoSet primitive
+       PFQHIT_PRIM$int$Index of primitive in pfGeoSet
+       PFQHIT_GSET$pfGeoSet *$Pointer to intersected pfGeoSet
+       PFQHIT_NODE$pfNode *$Pointer to pfGeode PFQHIT_NAME$char
+       *$Name of pfGeode PFQHIT_XFORM$pfMatrix$Transformation
+       matrix PFQHIT_PATH$pfPath *$Path within scene graph
+
+       <B>pfGeoSet::query</B> is a convenience routine for determining
+       the values of implicit pfGeoSet parameters.  The <I>which</I>
+       argument is a token which selects the parameter from the
+       set <B>PFQGSET_NUM_TRIS</B> and <B>PFQGSET_NUM_VERTS</B>.  The result is
+       written to the address indicated by <I>dst</I>.  The number of
+       bytes written to <I>dst</I> is returned as the value of
+       <B>pfGeoSet::query</B>.  <B>pfGeoSet::mQuery</B> is similar but copies a
+       series of items sequentially into the buffer specified by
+       <I>dst</I>.  The items and their order are defined by a NULL-ter-
+       minated array of query tokens pointed to by <I>which</I>. For
+       both functions, the return value is the number of bytes
+       written to the destination buffer.
+
+       <B>pfGeoSet::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfGeoSet</B>.  The <B>pfType</B>* returned by <B>pfGeoSet::getClassType</B>
+       is the same as the <B>pfType</B>* returned by invoking the vir-
+       tual function <B>getType</B> on any instance of class <B>pfGeoSet</B>.
+       Because OpenGL Performer allows subclassing of built-in
+       types, when decisions are made based on the type of an
+       object, it is usually better to use the member function
+       <B>isOfType</B> to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality of
+       the <B>pfType</B>*'s.
+
+       <B>pfGeoSet::setPassList</B> and <B>pfGeoSet::getPassList</B> set and
+       get a <B>pfPassList</B> pointer on a <B>pfGeoSet</B>. A <B>pfPassList</B> is an
+       object generated by <B>pfShader</B>. It changes the way in which
+       a <B>pfGeoSet</B> is drawn. Instead of drawing the <B>pfGeoSet</B> using
+       its <B>pfGeoState</B> once, it draws the <B>pfGeoSet</B> multiple times
+       using <B>pfGeoSet</B> and <B>pfFBState</B> pointers from the <B>pfPassList</B>.
+       This API is used to implement multi-pass rendering algo-
+       the texture attr of the pfGeoState associated with the
+       pfGeoSet. If so, texture coordinate bounds are computed
+       and stored. If not, then any previously allocated texture
+       bounds data is freed.  This should be called after chang-
+       ing the texture attr (or the tex enable flag) on a
+       pfGeoState that has already been assigned to a pfGeoSet.
+       Note that <B>pfGeoSet::setGState</B> automatically calls
+       <B>pfGeoSet::updateCteRefs</B>.
+
+       <B>pfGeoSet::calcTexBBox</B> forces the recomputation of a
+       pfGeoSet's texture coordinate bounds, used for cliptexture
+       emulation.  This should be called after changing texcoords
+       values for a pfGeoSet if this is to be rendered with an
+       emulated cliptexture.  Note that this has no effect on
+       pfGeoSets that have not been identified as using an emu-
+       lated cliptexture by a previous call to
+       <B>pfGeoSet::updateCteRefs</B>.  Note also that
+       <B>pfGeoSet::updateCteRefs</B> automatically calls
+       <B>pfGeoSet::calcTexBBox</B>.
+
+
+       <B>pfGeoSet::setTexBBox(uint,uint,uint,uint)</B> and
+       <B>pfGeoSet::setTexBBox(float,float,float,float)</B> allow to
+       explicitly set texture coordinate bounds for a <B>pfGeoSet</B>.
+       TexCoord bounds may be set as four floats, indicating min-
+       imum and maximum texture coordinate values for s and t, or
+       as four integers, as follows:
+
+       for a cliptexture with virtual size V, and texture coord
+       bounding box of minS, maxS, minT, maxT:
+
+
+            centerS = V*(minS+maxS)/2;
+            centerT = V*(minT+maxT)/2;
+            halfwidth = V*(maxS-minS)/2;
+            halfheight = V*(maxT-minT)/2;
+
+
+       Note that this has no effect on pfGeoSets that have not
+       been identified as using an emulated cliptexture by a pre-
+       vious call to <B>pfGeoSet::updateCteRefs</B>.  Note also that
+       pfGeoSet's texture coordinate bounds are internally stored
+       in the integer representation, so using the integer method
+       is faster.
+
+       <B>pfGeoSet::getTexBBox(uint*,uint*,uint*,uint*)</B> and
+       <B>pfGeoSet::getTexBBox(float*,float*,float*,float*)</B> may be
+       used to retrieve the texture coordinate bounds for a
+       pfGeoSet which has been identified as using an emulated
+       cliptexture by a previous call to <B>pfGeoSet::updateCteRefs</B>.
+       Note that both functions return FALSE if pfGeoSet has not
+       been identified as using an emulated cliptexture, or TRUE
+       otherwise.
+
+
+       <B>pfGeoSet::setCteAttr</B> and <B>pfGeoSet::getCteAttr</B> will be used
+       to set and get cliptexture emulation specific parameters
+       in future releases, and have currently no effect.
+
+       Shader integration, please see the <B>pfISL</B> man page. The
+       specified islAppearance should be compiled. Performer will
+       compile uncompiled appearances, but this is an expensive
+       process, so there may be performance glitches when
+       pfGeoSets with uncompiled islAppearances come into view.
+       OpenGL Shader is a C++ only api, so the C api functions
+       accept and return opaque void* pointers.
+
+       <B>pfGeoSet::getAppearance</B> are used to query the islAppear-
+       ance on a pfGeoSet. If the pfGeoSet is using a pfGeoState
+       to represent its appearance, the return value will be
+       NULL, otherwise it will be an islAppearance pointer. Since
+       islAppearance is not in the arena, this pointer is only
+       valid within the APP process.
+
+       <B>pfGeoSet::isShaded</B> returns 0 when a pfGeoSet is being ren-
+       dered using a pfGeoState and non-zero when it is being
+       rendered with an islAppearance.
+
+
+   <B>Quick</B> <B>manipulation</B> <B>of</B> <B>temporary</B> <B>pfGeoSets</B>
+       When assigning a <B>pfGeoSet</B> with various attribute arrays,
+       it keeps ownership of these arrays by changing their ref-
+       erence counts. It also updates internal state variables
+       tracking what attributes are set and how they should be
+       rendered.  <B>pfGeoSet</B> provides a few methods for bypassing
+       this standard reference counting and internal state vari-
+       ables. These should only be used on temporary <B>pfGeoSet</B>s
+       obtained from a <B>pfDispListOptimizer</B>. Using them on
+       <B>pfGeoSet</B>s obtained using <B>new(arena)</B> <B>pfGeoSet</B> may result in
+       incorrect memory management (memory corruption, incorrect
+       malloc/free, etc). For clarity, all bypass methods contain
+       the keyword <B>quick</B>.
+
+       <B>pfGeoSet::quickCopy</B> copies the contents of pfGeoSet <I>src</I>
+       onto <I>this</I>. Unlike <B>pfGeoSet::copy</B>, this function ignores
+       the previous contents of the source and target <B>pfGeoSet</B>s.
+       It doesn't increase/decrease any reference counts. It
+       should be used for copying a <B>pfGeoSet</B> onto a temporary
+       pfGeoSet as described above.
+
+       <B>pfGeoSet::quickSetAttr</B> sets a <B>pfGeoSet</B> attribute array
+       similar to <B>pfGeoSet::setAttr</B>.  However,
+       <B>pfGeoSet::quickSetAttr</B> doesn't perform any reference count
+       increase/decrease on the attribute arrays. It also doesn't
+       recompute any internal <B>pfGeoSet</B> state variables.  It
+       should be used for quickly replacing an existing attribute
+       array of a temporary <B>pfGeoSet</B> as mentioned above.
+
+       <B>pfGeoSet::quickSetMultiAttr</B> is similar to
+       <B>pfGeoSet::quickSetAttr</B>. It enables quick setting of
+       <B>pfGeoSet</B> multi-value attributes. See the description of
+       <B>pfGeoSet::setMultiAttr</B> for more information about multi-
+       value attributes.
+
+       <B>pfGeoSet::quickSetPrimLengths</B> is similar to
+       <B>pfGeoSet::setPrimLengths</B>. Much like
+       <B>pfGeoSet::quickSetAttr</B>, it ignores reference counts and
+       <B>pfGeoSet</B> internal state variables.
+       internal <B>pfGeoSet</B> variables to their default values.
+
+       For more information about temporary <B>pfGeoSet</B>s and about
+       using the <B>quick</B> methods, see <B>pfDispListOptimizer</B>.
+
+       <B>pfGeoSet::setOptimize</B> controls whether a <B>pfGeoSet</B> is opti-
+       mized by a <B>pfDispListOptimizer</B> (from within a
+       <B>CULL_SIDEKICK</B> process). If <B>_</B><I>state</I> is 0, a
+       <B>pfDispListOptimizer</B> skips this <B>pfGeoSet</B> entirely.
+       <B>pfGeoSet::getOptimize</B> returns the current optimization
+       state of a <B>pfGeoSet</B>. The default optimization state of a
+       <B>pfGeoSet</B> is 1.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The following example shows one way to create a pfGeoSet
+       defining a hexahedron, which is also known as a cube.
+
+       static pfVec3 coords[] =
+       {
+           {-1.0, -1.0,  1.0},
+           { 1.0, -1.0,  1.0},
+           { 1.0,  1.0,  1.0},
+           {-1.0,  1.0,  1.0},
+           {-1.0, -1.0, -1.0},
+           { 1.0, -1.0, -1.0},
+           { 1.0,  1.0, -1.0},
+           {-1.0,  1.0, -1.0}
+       };
+
+       static ushort cindex[] =
+       {
+           0, 1, 2, 3,     /* front  */
+           0, 3, 7, 4,     /* left   */
+           4, 7, 6, 5,     /* back   */
+           1, 5, 6, 2,     /* right  */
+           3, 2, 6, 7,     /* top    */
+           0, 4, 5, 1 /* bottom */
+       };
+
+       static pfVec3 norms[] =
+       {
+           { 0.0,  0.0,  1.0},
+           { 0.0,  0.0, -1.0},
+           { 0.0,  1.0,  0.0},
+           { 0.0, -1.0,  0.0},
+           { 1.0,  0.0,  0.0},
+           {-1.0,  0.0,  0.0}
+       };
+
+       static ushort nindex[] =
+       {
+           0,
+           5,
+           1,
+           4,
+           2,
+           3
+       };
+           return data;
+       }
+
+       /* Set up an indexed PFGS_QUADS pfGeoSet */
+       gset = new pfGeoSet;
+       gset-&gt;setPrimType(PFGS_QUADS);
+       gset-&gt;<B>setNumPrims(6)</B>;
+       gset-&gt;setAttr(PFGS_COORD3,  PFGS_PER_VERTEX,
+            memdup(coords, sizeof(coords), NULL),
+            (ushort*)memdup(cindex, sizeof(cindex), NULL));
+
+       gset-&gt;setAttr(PFGS_NORMAL3, PFGS_PER_PRIM,
+            memdup(norms, sizeof(norms), NULL),
+            (ushort*)memdup(nindex, sizeof(nindex), NULL));
+
+       The following example shows one way to create a pfGeoSet
+       with packed attribute arrays.
+
+       /* declare some template arrays of data */
+       pfVec3  stripcoords[4][4] ={{{-1.0f,  -1.0f,  1.0f }, {-1.0f,  1.0f,   1.0f },
+                     {-0.5f,  -1.0f,  1.0f }, {-0.5f,  1.0f,   1.0f }},
+                     {{-0.5f,  -1.0f,  1.0f }, {-0.5f,  1.0f,   1.0f },
+                      {0.0f,  -1.0f,  1.0f }, {0.0f,  1.0f,   1.0f }},
+                     {{0.0f,  -1.0f,  1.0f }, {0.0f,  1.0f,   1.0f },
+                      {0.5f,  -1.0f,  1.0f }, {0.5f,  1.0f,   1.0f }, },
+                     {{0.5f,  -1.0f,  1.0f }, {0.5f,  1.0f,   1.0f },
+                      { 1.0f,  -1.0f,  1.0f }, { 1.0f,  1.0f,   1.0f }}};
+       int lengths[5] = {4, 4, 4, 4};
+
+       uint    pcolors[] = {0xffffffff, 0x0000ffff, 0xff0000ff, 0x00ff00ff};
+       short     pnorms[][4] = { {0, 0, -MAX_SHORT, 0},
+                      {0, 0, -MAX_SHORT, 0},
+                      {0, 0, -MAX_SHORT, 0},
+                      {0, 0, -MAX_SHORT, 0} };
+
+       float     ptexcoords[][2] = { {0, 0}, {1.0f, 0}, {1.0f, 1.0f}, {0, 1.0f} };
+
+            ...
+
+           /* allocate an array for the packed vertex data */
+           stripp = strip = (void *)pfCalloc(4, 4*12 * sizeof(float), NULL);
+           /* pack the data into the packed attr array for the PFGS_PA_C4UBN3ST2FV3F format
+            * and for all attributes with per-vertex binding
+            */
+           for (j=0; j &lt; 4; j++)
+           {
+               for (i=0; i &lt; 4; i++)
+            {
+            switch(i)
+            {
+                case 0: t = 0; break;
+                case 1: t = 3; break;
+                case 2: t = 1; break;
+                case 3: t = 2; break;
+            }
+            *((long*)stripp) = pcolors[i];
+            stripp = (void*) (((char*)stripp) + sizeof(int));
+            *((short*)stripp) = pnorms[i][0];
+            stripp = (void*) (((char*)stripp) + sizeof(short));
+            *((float*)stripp) = ptexcoords[t][1];
+            stripp = (void*) (((char*)stripp) + sizeof(float));
+            *((float*)stripp) = stripcoords[j][i][0];
+            stripp = (void*) (((char*)stripp) + sizeof(float));
+            *((float*)stripp) = stripcoords[j][i][1];
+            stripp = (void*) (((char*)stripp) + sizeof(float));
+            *((float*)stripp) = stripcoords[j][i][2];
+            stripp = (void*) (((char*)stripp) + sizeof(float));
+            }
+           }
+
+
+           gset = new pfGeoSet;
+           gset-&gt;setPrimType(PFGS_TRISTRIPS);
+           gset-&gt;setPrimLengths(lengths);
+           gset-&gt;<B>setNumPrims(4)</B>;
+           gset-&gt;setAttr(PFGS_PACKED_ATTRS, PFGS_PA_C4UBN3ST2FV3F, strip, NULL);
+           gset-&gt;setAttr(PFGS_COLOR4, PFGS_PER_VERTEX, NULL, NULL);
+           gset-&gt;setAttr(PFGS_TEXCOORD2, PFGS_PER_VERTEX, NULL, NULL);
+           gset-&gt;setAttr(PFGS_NORMAL3, PFGS_PER_VERTEX, NULL, NULL);
+           gset-&gt;setDrawMode(PFGS_PACKED_ATTRS, 1);
+
+
+       pfGeoSets using with <B>PFGS_PACKED_ATTRS</B> for <B>PFGS_TRISTRIPS</B>,
+       <B>PFGS_FLAT_TRISTRIPS</B>, <B>PFGS_TRIFANS</B>, and <B>PFGS_FLAT_TRIFANS</B>
+       primitive types and whose standard coordinate attribute
+       array is NULL do not draw the standard full wireframe for
+       the <B>PFGS_WIREFRAME</B> draw mode but instead draw a faster
+       quick-wireframe based on the exact vertex ordering in the
+       <B>PFGS_PACKED_ATTRS</B> attribute array.
+
+       pfGeoSets using with <B>PFGS_PACKED_ATTRS</B> for <B>PFGS_QUADS</B>
+       primitives will be drawn with as GL quads instead of as
+       triangle strips as is done with normal pfGeoSet rendering.
+
+       pfGeoSets drawn with <B>PFGS_COMPILE_GL</B> and <B>PFGS_PACKED_ATTRS</B>
+       will ignore subsequent changes to pfLPointStates.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfApplyGState, pfColortable, pfCopy, pfCycleBuffer, pfDe-
+       cal, pfDelete, pfDisable, pfDispList, pfEnable, pfFlux,
+       pfFluxMemory, pfGSetDrawMode, pfGeoState, pfHit, pfISL,
+       pfLPointState, pfMalloc, pfMaterial, pfNewHlight, pfOb-
+       ject, pfGSetIsectSegs, pfShadeModel, pfState, pfuFillGSet-
+       PackedAttrs, pfuTravCreatePackedAttrs, pfDispListOptimizer
+
+
+
+                                                    pfGeoSet(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

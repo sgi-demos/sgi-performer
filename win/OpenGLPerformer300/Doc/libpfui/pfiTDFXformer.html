@@ -1,0 +1,281 @@
+<HTML>
+<HEAD>
+<TITLE>pfiTDFXformer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiTDFXformer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiTDFXformer(3pf)                             pfiTDFXformer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiNewTDFXformer,</B>  <B>pfiGetTDFXformerClassType,</B> <B>pfiCreateTD-</B>
+       <B>FXformer,</B> <B>pfiTDFXformerStartMotion,</B> <B>pfiGetTDFXformerStart-</B>
+       <B>Motion,</B>    <B>pfiTDFXformerFastClickTime,</B>   <B>pfiGetTDFXformer-</B>
+       <B>FastClickTime,</B> <B>pfiTDFXformerTrackball,</B> <B>pfiTDFXformerDrive,</B>
+       <B>pfiTDFXformerFly,</B>  <B>pfiGetTDFXformerTrackball,</B>  <B>pfiGetTDFX-</B>
+       <B>formerDrive,</B>  <B>pfiGetTDFXformerFly,</B>   <B>pfiProcessTDFXformer-</B>
+       <B>MouseEvents,</B>   <B>pfiProcessTDFXformerMouse,</B>   <B>pfiProcessTDF-</B>
+       <B>TrackballMouse,</B> <B>pfiProcessTDFTravelMouse</B> - Performer util-
+       ity  module  used  by  perfly for managing a collection of
+       motion models with a default user interface.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfiTDFXformer *            <B>pfiNewTDFXformer</B>(void* arena);
+
+       pfType*                    <B>pfiGetTDFXformerClassType</B>(void);
+
+       pfiXformer
+                                  *               <B>pfiCreateTDFXformer</B>( pfiInputXformTrackball *tb,
+                                    pfiInputXformDrive *drive,
+                                    pfiInputXformFly *fly,
+                                    void *arena);
+
+       void                       <B>pfiTDFXformerStartMotion</B>(pfiTDFXformer* xf,
+                                    float startSpeed,
+                                    float startAccel,
+                                    float accelMult);
+
+       void                       <B>pfiGetTDFXformerStartMotion</B>(pfiTDFXformer* xf,
+                                    float *startSpeed,
+                                    float *startAccel,
+                                    float *accelMult);
+
+       void                       <B>pfiTDFXformerFastClickTime</B>(pfiTDFXformer* xf,
+                                    float msecs);
+
+       float                      <B>pfiGetTDFXformerFastClickTime</B>(pfiXformer* xf);
+
+       void                       <B>pfiTDFXformerTrackball</B>(pfiTDFXformer *xf,
+                                    pfiInputXformTrack-
+                                    ball *tb);
+
+       void                       <B>pfiTDFXformerDrive</B>(pfiTDFXformer *xf,
+                                    pfiInputXformDrive *tb);
+
+       void                       <B>pfiTDFXformerFly</B>(pfiTDFXformer *xf,
+                                    pfiInputXformFly *tb);
+
+       pfiInputXformTrackball
+                                  *   <B>pfiGetTDFXformerTrackball</B>(pfiTDFXformer *xf);
+
+       pfiInputXformDrive
+                                  *       <B>pfiGetTDFXformerDrive</B>(pfiTDFXformer *xf);
+
+       void                       <B>pfiProcessTDFXformerMouse</B>(pfiTDFXformer *xf,
+                                    pfuMouse *mouse,    pfChan-
+                                    nel *inputChan);
+
+       void                       <B>pfiProcessTDFTrackballMouse</B>(pfiTDFXformer *xf,
+                                    pfiInputXformTrack-
+                                    ball *trackball,       pfu-
+                                    Mouse *mouse);
+
+       void                       <B>pfiProcessTDFTravelMouse</B>(pfiTDFXformer *xf,
+                                    pfiInputXformTravel *tr,
+                                    pfuMouse *mouse);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiTDFXformer</B> is a facility developed using the pfiXformer
+       to provide a convenient utility for managing motion models
+       derived from  pfiInputXformTrackball,  pfiInputXformDrive,
+       and  pfiInputXformFly  and providing a default user inter-
+       face for  such  motion  models  based  on  input  received
+       through  a  pfuMouse  structure.   This utility is used by
+       OpenGL Performer sample programs, such as perfly, in  con-
+       junction  with  the  libpfutil  input collection utilities
+       (see the <B>pfuInitInput</B> reference  page  for  more  informa-
+       tion).
+
+       A  pfiTDFXformer is a child of the pfiXformer class and so
+       pfiXformer routines may be called  with  a  pfiTDFXformer.
+       See  the  pfiXformer and pfiInputXform reference pages for
+       information on other general functionality.  Functionality
+       specific to the pfiXformer are discussed here The pfiTDFX-
+       former has a complete C++ API following the conventions of
+       general OpenGL Performer C++ API; C++ methods are declared
+       in /usr/include/Performer/pfui/pfiXformer.h.  This  refer-
+       ence page only discusses the C API.
+
+       <B>pfiInit</B>  should  be  called  once before any pfiTDFXformer
+       routines and before the forked creation of any  additional
+       processes that will be calling pfiXformer routines.
+
+       <B>pfiGetTDFXformerClassType</B>   returns  the  <B>pfType</B>*  for the
+       class <B>pfiXformer</B>.  Because OpenGL  Performer  allows  sub-
+       classing  of built-in types, when decisions are made based
+       on the type of an object, it  is  usually  better  to  use
+       <B>pfIsOfType</B>  to test if an object is of a type derived from
+       a Performer type rather than to test for  strict  equality
+       of the <B>pfType</B>*'s.
+
+       <B>pfiNewTDFXformer</B>  creates  a new <B>pfiTDFXformer</B> data struc-
+       ture as described above and  returns  a  pointer  to  that
+       structure.   <I>arena</I>  should specify the shared arena handle
+       returned by <B>pfGetSharedArena</B> or from the  process  dynamic
+       memory area.
+
+       <B>pfiProcessTDFXformerMouse</B>  is  the default update function
+       used by the pfiTDFXformer and implements a interface based
+       on  input  from  pfuMouse  and  pfChannel  specified  with
+       <B>pfiXformerAutoInput</B>. The type of  the  currently  selected
+       motion  model  (selected with <B>pfiSelectXformerModel</B>) is to
+
+       <B>TRACKBALL</B>
+            Motion  models  derived  from  <B>pfiInputXformTrackball</B>
+            will get the  <B>TRACKBALL</B>  mouse  mapping.   This  mode
+            causes the transformation matrix to be transformed as
+            if the user was using the mouse  pointer  to  spin  a
+            virtual trackball that surrounds the scene.  The cen-
+            ter of the  scene  is  the  computed  center  of  the
+            database supplied by <B>pfiXformerNode</B>, or the center of
+            the    supplied    database    bounding    box    via
+            <B>pfiXformerLimits</B>  or <B>pfiIXformDBLimits</B> in world-space
+            coordinates.  Trackball motion is intended to applied
+            to  the matrix of a pfDCS transforming the database..
+            This can be done automatically if the pfDCS was  sup-
+            plied   with  <B>pfiXformerAutoPosition</B>.  The  trackball
+            transformation  matrix  can  be  requested  from  the
+            pfiTDFXformer  with <B>pfiGetXformerModelMat</B>.  Collision
+            detection is disabled in trackball mode.   Two  kinds
+            of motion are possible in this mode.
+
+            <B>ROTATION</B>
+                 The  user  can  "spin"  the virtual trackball by
+                 holding down the middle mouse button and  moving
+                 the  cursor relative to where it was at the time
+                 the middle button was pressed.  Thus,  when  the
+                 middle  mouse  button is down, moving the cursor
+                 horizontally on the screen will  cause  rotation
+                 around  Performer's  world-space  Z-axis,  while
+                 moving the cursor vertically will cause rotation
+                 around  Performer's world-space X-axis.  Releas-
+                 ing the middle mouse  button  while  moving  the
+                 cursor  will cause the <B>pfiXformer</B> to continue to
+                 rotate the transformation matrix at the  current
+                 rate.  Holding  down  both  the middle and right
+                 mouse buttons will cause  rotation  around  Per-
+                 former's world-space Y-axis.
+
+            <B>TRANSLATION</B>
+                 The  user  can  "move"  or translate the virtual
+                 trackball in the XZ plane in Performer's  world-
+                 space  (the  plane  of  the screen when the view
+                 into the <B>pfChannel</B> is directed down the Y-axis -
+                 the  default in <B>perfly</B>) by holding down the left
+                 mouse button and moving the cursor  relative  to
+                 its  position  at the time the left mouse button
+                 was pressed.  The user can "zoom"  or  translate
+                 the  virtual  trackball  on  the  Y axis in Per-
+                 former's world-space by holding down  the  right
+                 (or  both  left  and  right) mouse buttons while
+                 moving the cursor vertically on the screen.
+       center tab($) ; C | C L | L .  Mouse Action$Motion  Effect
+       _  Left  mouse  down$Translation  in  X and Z Middle mouse
+       down$Rotation around the X and Z axis  Middle+Right  mouse
+       down$Rotation  about  Y axis Right mouse down: Translation
+       along Y axis (zoom) Middle+Right mouse down$Translation in
+       along  Y  axis  (zoom)  No  mouse  down$mouse  position is
+       ignored.  If the motion model is changed from  the  track-
+       ball model to a moving viewpoint model, pfiInputXformDrive
+       or pfiInputXformFly, the corresponding  final  transforma-
+            transformation matrix to be  transformed  as  if  the
+            user  were  using the mouse to control a car or other
+            land-based vehicle.  In this mode the cursor's  posi-
+            tion  relative  to the center of the screen will con-
+            tinue to cause relative turning of the transformation
+            matrix.   Moving  the  cursor  to  the right causes a
+            right turn.  Moving the cursor to the left  causes  a
+            left  turn.   Keeping  the cursor in the middle keeps
+            the transformation "facing" the same direction.   The
+            left and right mouse buttons control acceleration and
+            deceleration, respectively. If  moving  forward,  the
+            right  mouse  button will decelerate until eventually
+            you start moving backward.  The left and  right  but-
+            tons together will set your current speed to zero but
+            allow you to control viewing direction.  So,  if  you
+            are  moving  forwards  and  you desire to be going in
+            reverse immediately, hit the  right  and  left  mouse
+            buttons together, then release the left mouse button.
+            The middle mouse button  allows  control  of  viewing
+            direction while maintaining a constant speed, or will
+            maintain the  current  position  if  the  viewer  was
+            stopped  when  the  middle  mouse  button was pushed.
+            Additionally,  when  the  middle  mouse   button   is
+            pressed, the driving height may be altered by holding
+            down a ctrl-key and moving the mouse up and down.   A
+            single fast middle-mouse click anywhere on the screen
+            will cause motion  to  stop.   Additionally,  if  all
+            three mouse buttons are down, motion will stop.  When
+            no mouse buttons are  down,  the  mouse  position  is
+            ignored;  motion  in progress when mouse buttons were
+            pressed will continue at a constant speed.
+
+            The mouse buttons are the same as are interpreted  as
+            follows:
+
+            center  tab($)  ;  C | C L | L .  Mouse Action$Motion
+            Effect _ Left mouse  down$Accelerate  forward  motion
+            and  steer  Right mouse down$Decelerate motion direc-
+            tion and steer  Middle  mouse  down$Maintain  current
+            motion and and steer Left and Right down$Halt current
+            motion and steer Fast middle click$Halt all motion No
+            mouse down$mouse position is ignored.
+
+
+       <B>FLY</B>  Motion  models derived from <B>pfiInputXformFly</B> will get
+            the <B>FLY</B> mouse mapping.  This mode causes  the  trans-
+            formation  matrix  to  be  transformed as if the user
+            were using the mouse to direct flight  in  3D  space.
+            The  viewer  position will follow the mouse: vertical
+            motion of the mouse will direct motion up  and  down.
+            The  behavior  in this mode is different from that of
+            classic flight  models  where  moving  the  mouse  up
+            pushes  the  nose  of  the aircraft up and moving the
+            mouse down pushes the nose down. Here  the  pitch  of
+            the  aircraft follows the mouse.  Motion controls are
+            analogous to the pfiInputXformDrive model.  The  left
+            and  right  buttons do acceleration and deceleration,
+            middle mouse directs heading  and  maintains  current
+            motion  at  a  constant speed.  Keeping the cursor in
+            motion and and steer Left and Right down$Halt current
+            motion and steer Fast middle click$Halt all motion No
+            mouse down$mouse position is ignored.
+
+       <B>pfiTDFXformerFastClickTime</B> will set the maximum time for a
+       mouse button to be down and still to qualify  as  a  "fast
+       click"  for  <I>xf</I> to be <I>msecs</I>. If <I>msecs</I> is less than 0, fast
+       click checking will be disabled and no such clicks will be
+       recognized.   The  default  fast  click  time is 300msecs.
+       <B>pfiGetTDFXformerFastClickTime</B> returns the fast click  time
+       for <I>xf</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+                                               pfiTDFXformer(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,324 @@
+<HTML>
+<HEAD>
+<TITLE>pfLightPoint</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLightPoint</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLightPoint(3pf)                               pfLightPoint(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewLPoint,</B>  <B>pfGetLPointClassType,</B>  <B>pfGetNumLPoints,</B> <B>pfL-</B>
+       <B>PointSize,</B>  <B>pfGetLPointSize,</B>  <B>pfLPointColor,</B>  <B>pfGetLPoint-</B>
+       <B>Color,</B> <B>pfLPointRot,</B> <B>pfGetLPointRot,</B> <B>pfLPointShape,</B> <B>pfGetL-</B>
+       <B>PointShape,</B>  <B>pfLPointFogScale,</B>  <B>pfGetLPointFogScale,</B>  <B>pfL-</B>
+       <B>PointPos,</B>  <B>pfGetLPointPos,</B>  <B>pfGetLPointGSet</B>  - Set and get
+       pfLightPoint size, color, shape, rotation and position.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfLightPoint *   <B>pfNewLPoint</B>(int num);
+
+       pfType *         <B>pfGetLPointClassType</B>(void);
+
+       int              <B>pfGetNumLPoints</B>(const pfLightPoint *lpoint);
+
+       void             <B>pfLPointSize</B>(pfLightPoint *lpoint,
+                          float size);
+
+       float            <B>pfGetLPointSize</B>(const pfLightPoint *lpoint);
+
+       void             <B>pfLPointColor</B>(pfLightPoint *lpoint,
+                          int index, pfVec4 clr);
+
+       void             <B>pfGetLPointColor</B>(const pfLightPoint *lpoint,
+                          int index, pfVec4 clr);
+
+       void             <B>pfLPointRot</B>(pfLightPoint *lpoint,
+                          float azim, float elev, float roll);
+
+       void             <B>pfGetLPointRot</B>(const pfLightPoint *lpoint,
+                          float *azim,             float *elev,
+                          float *roll);
+
+       void             <B>pfLPointShape</B>(pfLightPoint *lpoint,
+                          int dir,    float henv,   float venv,
+                          float falloff);
+
+       void             <B>pfGetLPointShape</B>(const pfLightPoint *lpoint,
+                          int *dir,  float *henv,  float *venv,
+                          float *falloff);
+
+       void             <B>pfLPointFogScale</B>(pfLightPoint *lpoint,
+                          float onsetScale, float opaqueScale);
+
+       void             <B>pfGetLPointFogScale</B>(const pfLightPoint *lpoint,
+                          float *onsetScale,     float *opaque-
+                          Scale);
+
+       void             <B>pfLPointPos</B>(pfLightPoint *lpoint,
+                          int index, pfVec3 pos);
+
+       void             <B>pfGetLPointPos</B>(const pfLightPoint *lpoint,
+                          int index, pfVec3 pos);
+
+       class  <B>pfLightPoint</B>.    Casting   an   object   of   class
+       <B>pfLightPoint</B> to an object of class <B>pfNode</B> is taken care of
+       automatically.  This is also true for casts to objects  of
+       ancestor classes of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>, objects of class <B>pfLightPoint</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>lpoint</I>  identifies a pfLightPoint.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfLightPoint is now obsoleted in favor of the <B>libpr</B> primi-
+       tive pfLPointState. <B>pfGetLPointGSet</B> returns the underlying
+       pfGeoSet of <I>lpoint</I> from which  the  pfLPointState  can  be
+       found:
+
+
+       gset = pfGetLPointGSet(lpoint);
+       gstate = pfGetGSetGState(gset);
+       lpstate = pfGetGStateAttr(gstate, PFSTATE_LPOINTSTATE);
+
+
+       A pfLightPoint is a pfNode that contains one or more light
+       points.  The light point node is quite different from a
+       pfLightSource; it is visible as one or more self-illumi-
+       nated small points but these points do not illuminate sur-
+       rounding objects. In contrast to this, a pfLightSource
+       does illuminate scene contents but is itself not a visible
+       object.  All the light points in a pfLightPoint node share
+       all their attributes except point location and color.
+
+       <B>pfNewLPoint</B> creates and returns a handle to a pfLight-
+       Point.  Like other pfNodes, pfLightPoints are always allo-
+       cated from shared memory and can be deleted using
+       <B>pfDelete</B>.  <I>num</I> specifies the maximum number of individual
+       light points the node may contain. The function
+       <B>pfGetNumLPoints</B> returns this maximum number of light
+       points that the pfLightPoint node <I>lpoint</I> can hold.  This
+       is the value set when the light point node was created
+       using <B>pfNewLPoint</B> and is the size of the internal position
+       and color arrays used to represent the light points.
+
+       <B>pfGetLPointClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfLightPoint</B>.  The <B>pfType</B>* returned by
+       <B>pfGetLPointClassType</B> is the same as the <B>pfType</B>* returned
+       by invoking <B>pfGetType</B> on any instance of class
+       <B>pfLightPoint</B>.  Because OpenGL Performer allows subclassing
+       in <I>lpoint</I>.  <I>size</I> is specified in pixels and is used as the
+       argument to <B>pntsizef</B>.  Whenever possible, antialiased
+       points are used but the actual representation of a light
+       point depends on the hardware being used.  See the
+       <B>pntsizef</B> man page for a description of available light
+       point sizes on OpenGL hardware.  <B>pfGetLPointSize</B> returns
+       the size of <I>lpoint</I>.
+
+       <B>pfLPointColor</B> sets the color of light point <I>index</I> in
+       <I>lpoint</I> to <I>clr</I>.  The actual color displayed depends on
+       light point direction, shape, position, and fog.  <I>clr</I>
+       specifies red, green, blue and alpha in the range 0.0 to
+       1.0.  A pfLightPoint is turned off with an alpha of 0.0
+       since it will be rendered as completely transparent.
+       <B>pfGetLPointColor</B> copies the <I>index</I>th color into <I>clr</I>.
+
+       <B>pfLPointRot</B> is used for directional lights.  The direction
+       of all light points in <I>lpoint</I> is the positive Y axis,
+       rotated about the X axis by <I>elev</I> then rotated about the Z
+       axis by <I>azim</I>.  <I>roll</I> only affects the light envelope as
+       described below.  The direction vector is rotated by any
+       transformations (see pfSCS, pfDCS) above <I>lpoint</I> in the
+       hierarchy.
+
+       <B>pfGetLPointRot</B> copies <I>lpoint</I>'s rotation into <I>azim</I>, <I>elev</I>,
+       and <I>roll</I>.
+
+       <B>pfLPointShape</B> describes the intensity distribution of a
+       light point about its direction vector.  <I>dir</I> is a symbolic
+       token:
+
+              <B>PFLP_OMNIDIRECTIONAL</B>
+                   <I>lpoint</I> will be drawn as omnidirectional light
+                   points.  Light distribution is equal in all
+                   directions.  All other arguments are ignored.
+
+              <B>PFLP_UNIDIRECTIONAL</B>
+                   <I>lpoint</I> will be drawn as unidirectional point
+                   lights.  Light distribution is an elliptical
+                   cone centered about the light direction vec-
+                   tor.
+
+              <B>PFLP_BIDIRECTIONAL</B>
+                   <I>lpoint</I> will be drawn as bidirectional light
+                   points.  Light distribution is two elliptical
+                   cones centered about the positive and negative
+                   light direction vectors.
+
+       <I>henv</I> and <I>venv</I> are total angles (not half-angles) in
+       degrees which specify the horizontal and vertical
+       envelopes about the direction vector.  An envelope is a
+       symmetric angular spread in a specific plane about the
+       light direction vector.  The default direction is along
+       the positive Y axis so the horizontal envelope is in the X
+       plane and the vertical in the Z plane.  Both direction and
+       envelopes are rotated by the <B>pfLPointRot</B> and any inherited
+       transformations.  The default envelope angles are 360.0
+       degrees which is equivalent to an omnidirectional light.
+
+       intensity.  A value of 0 indicates that there is no
+       falloff and values &gt; 0 increase the falloff rate.  The
+       default <I>falloff</I> is 4.  As intensity decreases, the light
+       point's transparency increases.
+
+       <B>pfGetLPointShape</B> copies <I>lpoint</I>'s shape parameters into
+       <I>dir</I>, <I>henv</I>, <I>venv</I>, and <I>falloff</I>.
+
+       In general, the real world intensity of emissive light
+       points is much greater than that of reflective surfaces.
+       Consequently, when fog is active, light points should be
+       more visible through the fog.  <B>pfLPointFogScale</B> sets the
+       fog range scale factors that affects all light points in
+       <I>lpoint</I>.  <I>onsetScale</I> and <I>opaqueScale</I> multiply the onset and
+       opaque ranges (<B>pfFogRange</B>) of the currently active fog.
+       Thus if the scale factors are greater than 1.0, the light
+       points will be more visible through fog than reflective
+       surfaces.  The default fog scale factors are both 4.0.
+       <B>pfGetLPointFogScale</B> copies the fog scale factors of <I>lpoint</I>
+       into <I>onsetScale</I> and <I>opaqueScale</I>.
+
+       <B>pfLPointPos</B> sets the position of light point with index
+       <I>index</I> to <I>pos</I>.  <I>index</I> is clamped to the range [0, <I>num</I>-1].
+       All positions are transformed by any inherited transforma-
+       tions.  The final position and orientation of a light
+       point <I>i</I> is transformed by <B>R</B> <B>*</B> <B>T[index]</B> <B>*</B> <B>M</B> where <B>R</B> is a
+       rotation matrix defined by <B>pfLPointRot</B>, <B>T[i]</B> is the posi-
+       tion of light point <I>i</I>, and <B>M</B> is the transformation inher-
+       ited by <I>lpoint</I> from its hierarchy.
+
+       <B>pfGetLPointPos</B> copies the <I>index</I>th position into <I>pos</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Light point processing in OpenGL Performer has been sub-
+       sumed by the new <B>pfLPointState</B> mechanism, which is both
+       more powerful and more efficient. Application developers
+       are encouraged to transition to these new light point
+       facilities.
+
+       <B>pfLightPoint</B> nodes, unlike <B>pfLPointState</B> GeoSets, do not
+       provide size or intensity modulation based on distance to
+       the viewer and the viewport size. Also, directional lights
+       are significantly more expensive to cull than omnidirec-
+       tional lights.
+
+       Falloff distribution is cosine(incidence angle) ^ falloff.
+
+       When sorting is enabled (see <B>pfChanTravMode</B> and
+       <B>PFCULL_SORT</B>), light points are drawn after opaque geometry
+       unless the pfLightPoint node has a pre-draw or post-draw
+       callback (see <B>pfNodeTravFuncs</B>).
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfLookupNode, pfNode, pfLPointState
+
+
+
+                                                pfLightPoint(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

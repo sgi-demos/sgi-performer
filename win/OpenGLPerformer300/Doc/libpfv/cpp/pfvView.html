@@ -1,0 +1,143 @@
+<HTML>
+<HEAD>
+<TITLE>pfvView</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvView</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvView(3pf)                                         pfvView(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvView</B>  -  Configure one or more Viewer views through XML
+       file or API calls.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvViewer.h&gt;
+
+                     <B>pfvView::pfvView</B>();
+
+       virtual int   <B>pfvView::setXmlField</B>( pfvXmlNode*xml );
+
+       pfvWorld*     <B>pfvView::getCurWorld</B>();
+
+       int           <B>pfvView::setTargetWorld</B>( pfvWorld* w );
+
+       int           <B>pfvView::setTargetWorld</B>( char* wName );
+
+       int           <B>pfvView::setTargetWorld</B>( int wIndex );
+
+       pfvWorld*     <B>pfvView::getTargetWorld</B>();
+
+       char*         <B>pfvView::getTargetWorldName</B>();
+
+       void          <B>pfvView::autoPos</B>();
+
+       int           <B>pfvView::addNode</B>(pfNode*node);
+
+       pfGroup*      <B>pfvView::getRootNode</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The pfvView class extends the pfvDispView class  by  being
+       able  to be directed to a pfvWorld, and by managing a list
+       of  scoped  pfvModules.   Additionally,  geometry  can  be
+       assigned to pfvViews (as opposed to assigning it to a pfv-
+       World), in order to achieve complex  multiview  configura-
+       tions.
+
+       A pfvView object cannot be created through its constructor
+       (which is private). Instead, a  pfvView  must  be  created
+       through  the pfvViewer::createView method. Note that since
+       class pfvViewer is derived from pfDisplayMngr, and create-
+       View  is  a  virtual  method  on  class pfDisplayMngr, the
+       return pointer for createView is pfDispView*, even if view
+       is  actually a pfvView. Casting the returned pointer takes
+       care of this, as shown below:
+
+       Eg:
+
+         pfvViewer* viewer = new pfvViewer;
+         pfvView* view = (pfvView*)(viewer-&gt;createView());
+
+
+       A pfvView must be directed to a pfvWorld for viewing
+       before the first call to pfvViewer::frame. If this is not
+       done explicitly, pfvViewer will direct view to world0
+       For this reason, pfvView objects hold two pointers to pfv-
+       World: one is the current world (ie the world that view is
+       viewing this frame), the other one is the target world
+       (world that will be viewed next frame).
+
+       <B>pfvView::getCurWorld()</B> returns a pointer to view's current
+       world, while <B>pfvView::getTargetWorld()</B> returns a pointer
+       to the pfvWorld scheduled to be viewed by view on next
+       frame.
+
+       When a new view is created, both its current world and its
+       target world pointers are set to NULL.
+
+       A view is then directed to a pfvWorld by calling
+       <B>pfvView::setTargetWorld()</B>.
+
+       As this world switch will be cached until the start of
+       next frame, the pointer returned by <B>pfvView::getCurWorld()</B>
+       will not change immediately after calling
+       <B>pfvView::setTargetWorld()</B>.
+
+       Method <B>pfvView::getTargetWorld()</B> however, will return a
+       pointer to the world scheduled to be viewed by view on
+       next frame, and this will change immediately after a call
+       to <B>pfvView::setTargetWorld()</B>.
+
+       It is also legal to direct a pfvView to a pfvWorld that
+       has not yet been created, by providing the target world's
+       name thorough method <B>pfvView::setTargetWorld(char*wName)</B>.
+       The world name will be stored until pfvViewer::config is
+       called, by which time a pfvWorld is expected to exist with
+       the specified name.
+
+       Note that <B>pfvView::setTargetWorld(int</B> <B>wIndex)</B> can also be
+       used to set target world, but index must be valid at the
+       time of this call, and an invalid index will not be
+       cached.
+
+       <B>pfvView::autoPos()</B> computes new eye position based on the
+       position and size of the geometry currently being viewed
+       by view. Note that auto-positioning of eye will happen by
+       default on first frame for all views for which an eye
+       point was not set explicitely.
+
+       <B>pfvView::addNode()</B> allows geometry to be associated with a
+       specific view (instead of with a pfvWorld). view-geometry
+       is intended to be visible in channels belonging to this
+       view only, even when other views are viewing the same pfv-
+       World. This is achieved through the pfvSetNodeChanMask
+       function declared in pfvDisplay.h. Note that this method
+       cannot be called before modules' POSTCONFIG callbacks are
+       called by viewer.
+
+       <B>pfvView::getRootNode()</B> returns a pointer to the group node
+       to which all geometry assigned to a view through
+       <B>pfvView::addNode()</B> is added.  This node is created by
+       pfvViewer just before modules' POSTCONFIG callbacks are
+       called, so this method will return NULL until then.
+
+
+                                                     pfvView(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

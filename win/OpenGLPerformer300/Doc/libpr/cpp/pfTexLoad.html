@@ -1,0 +1,299 @@
+<HTML>
+<HEAD>
+<TITLE>pfTexLoad</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTexLoad</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTexLoad(3pf)                                     pfTexLoad(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfTexLoad</B> - Create, modify, and apply a texture load. Sev-
+       eral sources can be loaded into a GL texture  (pfTexture).
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfTexLoad.h&gt;
+
+                         <B>pfTexLoad::pfTexLoad</B>();
+
+       static pfType *   <B>pfTexLoad::getClassType</B>();
+
+       void              <B>pfTexLoad::setSrcOrg</B>(int s,       int t,
+                           int r);
+
+       void              <B>pfTexLoad::getSrcOrg</B>(int *s,     int *t,
+                           int *r);
+
+       void              <B>pfTexLoad::setDstOrg</B>(int s,       int t,
+                           int r);
+
+       void              <B>pfTexLoad::getDstOrg</B>(int *s,     int *t,
+                           int *r);
+
+       void              <B>pfTexLoad::setSrc</B>(void *src);
+
+       void *            <B>pfTexLoad::getSrc</B>(void);
+
+       void              <B>pfTexLoad::setSrcLevel</B>(int lvl);
+
+       int               <B>pfTexLoad::getSrcLevel</B>(void);
+
+       void              <B>pfTexLoad::setDst</B>(void *tex);
+
+       void *            <B>pfTexLoad::getDst</B>(void);
+
+       void              <B>pfTexLoad::setDstLevel</B>(int lvl);
+
+       int               <B>pfTexLoad::getDstLevel</B>(void);
+
+       void              <B>pfTexLoad::setSize</B>(int w, int h, int d);
+
+       void              <B>pfTexLoad::getSize</B>(int *w,       int *h,
+                           int *d);
+
+       void              <B>pfTexLoad::setFrame</B>(int frameCount);
+
+       int               <B>pfTexLoad::getFrame</B>(void);
+
+       int               <B>pfTexLoad::getPrevLoadedTexels</B>(void);
+
+       int               <B>pfTexLoad::getDirty</B>(void);
+
+       int               <B>pfTexLoad::setDirty</B>(int dirtmask);
+
+       int               <B>pfTexLoad::getStatus</B>(void);
+       int               <B>pfTexLoad::getMode</B>(int mode);
+
+       void              <B>pfTexLoad::setVal</B>(int which, float val);
+
+       float             <B>pfTexLoad::getVal</B>(int which);
+
+       int               <B>pfTexLoad::apply</B>();
+
+       int               <B>pfTexLoad::apply</B>(int texels);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfTexLoad</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfTexLoad</B>.  This is also true for  ancestor  classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of  class <B>pfTexLoad</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfTexLoad</B> is used to  control  the  mapping  from  texture
+       images  external  to  the  GL  to texture images currently
+       loaded into the GL.  Each <B>pfTexLoad</B> defines a  load  of  a
+       certain  size from the origin of one of several sources to
+       allocates  a  pfTexLoad from the default memory arena (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfTexLoads  can-
+       not  be  created statically, automatically on the stack or
+       in arrays and should be deleted with <B>pfDelete</B> rather  than
+       the delete operator.
+
+       <B>pfTexLoad::getClassType</B>  returns the <B>pfType</B>* for the class
+       <B>pfTexLoad</B>.       The       <B>pfType</B>*       returned       by
+       <B>pfTexLoad::getClassType</B>   is   the  same  as  the  <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>  on  any
+       instance  of  class  <B>pfTexLoad</B>.   When  decisions are made
+       based on the type of an object, it is usually better to us
+       the  member function <B>isOfType</B> to test if an object is of a
+       type derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>'s.
+
+       The <B>pfTexLoad::setMode</B> and <B>pfTexLoad::getMode</B> routines set
+       and get the modes of operation for a  pfTexLoad.   Current
+       modes include:
+
+              <B>PFTLOAD_SOURCE</B>
+              <B>PFTLOAD_DEST</B>
+              <B>PFTLOAD_SYNC</B>
+              <B>PFTLOAD_SYNC_SOURCE</B>
+              <B>PFTLOAD_AUTOREF</B>
+
+       <B>PFTLOAD_SOURCE</B> defines the nature of the source of imagery
+       for the texture download.  The  only  currently  supported
+       value is:
+
+              <B>PFTLOAD_SOURCE_IMAGETILE</B>
+
+       but  in future releases the following sources will be sup-
+       ported:
+
+              <B>PFTLOAD_SOURCE_IMAGEARRAY</B>
+              <B>PFTLOAD_SOURCE_IMAGETILE</B>
+              <B>PFTLOAD_SOURCE_TEXTURE</B>
+              <B>PFTLOAD_SOURCE_VIDEO</B>
+              <B>PFTLOAD_SOURCE_FRAMEBUFFER</B>
+
+       <B>PFTLOAD_DEST</B>     currently     only      supports      the
+       <B>PFTLOAD_DEST_TEXTURE</B> as a destination type.
+
+       <B>PFTLOAD_SYNC</B>  defines  when  the  pfTexLoad  needs to take
+       place.  Currently the only supported value for  this  mode
+       is  <B>PFTLOAD_SYNC_IMMEDIATE</B>  -  meaning the download should
+       take place immediately.
+
+       <B>PFTLOAD_SYNC_SOURCE</B>  defines  whether  the   load   should
+       require  confirmation of valid data from the source before
+       loading.  Possible values are PF_ON  and  PF_OFF  where  a
+       value  of  PF_ON means the load will only take place after
+       valid data is available from the load source.  A value  of
+       PF_OFF  will  cause the pfTexLoad to complete its download
+       with whatever data is available from the source regardless
+       of its validity.
+
+       <B>PFTLOAD_AUTOREF</B>  defines  whether  pfTexLoads  should  use
+
+       <B>PFTLOAD_SOURCE</B> and <B>PFTLOAD_DEST</B> allow the user to  specify
+       the   source  and  destination  for  a  pfTexLoad.   These
+       attributes are equivalent to making  respective  calls  to
+       <B>pfTLoadSrc</B> and <B>pfTLoadDst</B>.
+
+       <B>pfTexLoad::setVal</B>  allows  the  user to specify all of the
+       values associated with a pfTexLoad.  This is redundant api
+       allowing  for the generic setting of values that otherwise
+       have individual explicit sets/gets associated  with  them.
+       Current value tokens:
+
+              <B>PFTLOAD_SOURCE_LEVEL</B>
+              <B>PFTLOAD_SOURCE_S</B>
+              <B>PFTLOAD_SOURCE_T</B>
+              <B>PFTLOAD_SOURCE_T</B>
+              <B>PFTLOAD_SOURCE_R</B>
+              <B>PFTLOAD_DEST_LEVEL</B>
+              <B>PFTLOAD_DEST_S</B>
+              <B>PFTLOAD_DEST_T</B>
+              <B>PFTLOAD_DEST_R</B>
+              <B>PFTLOAD_WIDTH</B>
+              <B>PFTLOAD_HEIGHT</B>
+              <B>PFTLOAD_DEPTH</B>
+
+       <B>pfTexLoad::setSrc</B>  sets the source data for the pfTexLoad.
+       Currently the only supported source type for pfTexLoads is
+       PFTLOAD_SOURCE_IMAGETILE  and therefore <B>_</B><I>src</I> must point to
+       a pfImageTile.  <B>pfTexLoad::getSrc</B> returns the pointer  (if
+       any) to the source data for the pfTexLoad.
+
+       <B>pfTexLoad::setDst</B>  sets  the  destination  texture for the
+       pfTexLoad.  <B>pfTexLoad::getDst</B> returns  a  pointer  to  the
+       pfTexture destination.
+
+       <B>pfTexLoad::setDstLevel</B> sets a specific mipmap level in the
+       destination   pfTexture    for    this    texture    load.
+       <B>pfTexLoad::getDstLevel</B>  returns  the  currently  specified
+       target mipmap level for the pfTexLoad.
+
+       <B>pfTexLoad::setSrcLevel</B> sets a specific level from which to
+       get  data  from the source object.  This value will not be
+       used until  pfTexture's  are  supported  as  source's  for
+       pfTexLoads.   <B>pfTexLoad::getSrcLevel</B>  will return the cur-
+       rent source level from which to retrieve load data if  the
+       source type is <B>PFTLOAD_SOURCE_TEXTURE</B>.
+
+       <B>pfTexLoad::setSize</B>  sets the size of the pfTexLoad.  <I>w</I>*<I>h</I>*<I>d</I>
+       texels will be downloaded when the pfTexLoad  is  applied.
+       <B>pfTexLoad::getSize</B>  returns  the currently configured size
+       of the pfTexLoad.
+
+       <B>pfTexLoad::setSrcOrg</B> sets the origin inside a larger image
+       from  which  to  retrieve the imagery that should be down-
+       loaded.  <B>pfTexLoad::getSrcOrg</B> returns the  origin  of  the
+       download data within the possibly larger source imagery.
+
+       <B>pfTexLoad::setDstOrg</B>  sets  the origin inside the destina-
+       tion pfTexture where the pfTexLoad should place its  rect-
+       the destination 512x512x1  texture,  <B>pfTLoadSrc</B>  would  be
+       called  with  a  pfImageTile  representing the 2048x1024x1
+       source data, <B>pfTLoadDst</B> would be called with the appropri-
+       ate  512x512x1 pfTexture, <B>pfTLoadSize</B> would be called with
+       parameters 256,256,1. <B>pfTLoadSrcOrg</B> would be called with a
+       value of 1792,768,0 and <B>pfTLoadDstOrg</B> would be called with
+       a value of 128,128,0.
+
+       <B>pfTexLoad::apply</B> causes the preconfigured texture download
+       to  take  place.   If there is a current pfDispList active
+       then the pfTexLoad will place itself into  the  pfDispList
+       and  the  pfTexLoad  apply which will perform the download
+       will happen when the pfDispList is drawn.   Otherwise  the
+       texture download will happen immediately.
+
+       <B>pfTexLoad::apply(int</B>  <B>nTexels)</B>  acts  just like the normal
+       apply except that <I>nTexels</I> is used to describe a subset  of
+       texels  to  download  in the current apply.  Note that the
+       actual apply can only download on row  boundaries  and  so
+       the actual downloaded number of texels may differ slightly
+       from that dictated by the user.   Partial  applies  always
+       start  at  the bottom, lower left-hand corner of the image
+       and count to the right and then up where each row must  be
+       loaded before the next is started. For example in the case
+       of a 4x4 texture, a partial  download  of  4  texels  will
+       cause  the  bottom row of the texture to be downloaded and
+       not the bottom left 2x2 region. A subsequent call  causing
+       another  partial  download  of 4 texels would download the
+       2nd row, and so on.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfTexture, pfImageTile, glTexImage2D, glTexSubImage2DEXT
+
+
+
+                                                   pfTexLoad(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

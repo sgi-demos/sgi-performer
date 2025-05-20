@@ -1,0 +1,378 @@
+<HTML>
+<HEAD>
+<TITLE>pfFrame</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFrame</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFrame(3pf)                                         pfFrame(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFrameRate,</B>  <B>pfGetFrameRate,</B> <B>pfFieldRate,</B> <B>pfGetFieldRate,</B>
+       <B>pfVideoRate,</B> <B>pfGetVideoRate,</B> <B>pfSync,</B> <B>pfFrame,</B>  <B>pfAppFrame,</B>
+       <B>pfGetFrameCount,</B>   <B>pfFrameTimeStamp,</B>  <B>pfGetFrameTimeStamp,</B>
+       <B>pfGetFrameTimeFlux,</B> <B>pfPhase,</B> <B>pfGetPhase</B> - Set and get sys-
+       tem  frame  and  video rate, phase, and frame count.  Syn-
+       chronize and initiate frame.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       float     <B>pfFrameRate</B>(float rate);
+
+       float     <B>pfGetFrameRate</B>(void);
+
+       int       <B>pfFieldRate</B>(int fields);
+
+       int       <B>pfGetFieldRate</B>(void);
+
+       void      <B>pfVideoRate</B>(float vrate);
+
+       float     <B>pfGetVideoRate</B>(void);
+
+       int       <B>pfSync</B>(void);
+
+       int       <B>pfFrame</B>(void);
+
+       int       <B>pfAppFrame</B>(void);
+
+       int       <B>pfGetFrameCount</B>(void);
+
+       void      <B>pfFrameTimeStamp</B>(double time);
+
+       double    <B>pfGetFrameTimeStamp</B>(void);
+
+       pfFlux*   <B>pfGetFrameTimeFlux</B>(void);
+
+       void      <B>pfPhase</B>(int phase);
+
+       int       <B>pfGetPhase</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL Performer is designed to run at a fixed frame rate.
+       The  <I>rate</I>  argument  to  <B>pfFrameRate</B> specifies the desired
+       rate in units of frames per second.  The actual rate  used
+       is  based  on  the  video  timing of the display hardware.
+       <I>rate</I> is rounded to the nearest  frame  rate  which  corre-
+       sponds to an integral multiple of video fields.
+
+       For  a  60Hz  video rate, possible frame rates are (in Hz)
+       60.0, 30.0, 20.0, 15.0, 12.0, 10.0, 8.57, 7.5,  6.67,  and
+       6.0.  These rates would mean that the number of fields per
+       frame would range from 1  (for  60Hz)  to  10  (for  6Hz).
+       <B>pfFrameRate</B>  returns the actual frame rate used or -1.0 if
+       it is called before <B>pfConfig</B>.
+
+       <B>pfGetVideoRate</B> returns the video timing in number of video
+       fields per second or -1.0 if it is called before the video
+       rate  has  been  determined.   The  OpenGL Performer video
+       clock (see <B>pfInitVClock</B>) runs at this video field rate and
+       is initialized to 0 by <B>pfConfig</B>.
+
+       An  alternate  way  of  specifying a desired frame rate is
+       <B>pfFieldRate</B>.  <I>fields</I> is the number  of  video  fields  per
+       simulation  frame.  The corresponding frame rate will then
+       be the video field rate (see  <B>pfGetVideoRate</B>)  divided  by
+       <I>fields</I>.  <B>pfGetFieldRate</B> returns the number of video fields
+       per simulation frame.
+
+       Frame rate is a per-machine metric  and  is  used  by  all
+       pfPipes.   It  controls  the rate at which multiprocessing
+       pipelines run and affects computed system load and related
+       stress  metrics  (see  <B>pfChannel::setStress</B>).  Since frame
+       rate is global it follows that all hardware pipelines used
+       by  a  single  OpenGL Performer application should be gen-
+       locked, i.e., the video signals are synchronized by  hard-
+       ware.   Otherwise  the  video signals of the pipes will be
+       out of phase, reducing graphics throughput and  increasing
+       latency.   Genlock  is crucial for proper multipipe opera-
+       tion and requires some simple,  platform-specific  cabling
+       and software configuration through the <B>setmon</B> call.
+
+       Depending  on the phase as is discussed below, <B>pfSync</B> syn-
+       chronizes the application  process  with  the  frame  rate
+       specified  by  <B>pfFrameRate</B>  (when phase is <B>PFPHASE_LOCK</B> or
+       <B>PFPHASE_FLOAT</B>), or to  the  system  rendering  rate  (when
+       phase is <B>PFPHASE_FREE_RUN</B> or <B>PFPHASE_LIMIT</B>).  In the first
+       case, <B>pfSync</B> sleeps until the next  frame  boundary,  then
+       awakens  and  returns  control to the application.  In the
+       second case, <B>pfSync</B> sleeps until the draw  process  begins
+       rendering a new frame or returns immediately if in single-
+       process operation.  <B>pfSync</B> returns the current frame count
+       and  should only be called by the application process when
+       multiprocessing.
+
+       <B>pfFrame</B> initiates a new frame of OpenGL Performer process-
+       ing by doing the following:
+
+
+              1.   Calls  <B>pfFlux::syncComplete()</B>  to complete any
+                   pfFlux sync groups that are ready for  comple-
+                   tion.
+
+              2.   Triggers  all  processing stages that are con-
+                   figured as a separate process.
+
+              3.   Inlines all processing  stages  that  are  not
+                   configured as a separate process.
+
+              4.   Sets     the    current    flux    frame    (-
+                   <B>pfFlux::setFrame</B>).
+
+              5.   Sets the current, global  pfCycleBuffer  index
+                   (see   <B>pfCycleBuffer::setCurIndex</B>)   which  is
+                   been requested (<B>pfGetFrameTimeFlux</B>).
+
+       <B>pfFrame</B> triggers all OpenGL Performer processing stages (-
+       <B>APP</B>, <B>ISECT</B>, <B>DBASE</B>, <B>CULL</B>, <B>DRAW</B>, and the  optional  <B>LPOINT</B>).
+       If a stage is partitioned into a separate process, <B>pfFrame</B>
+       will allow that process to run.  Otherwise, <B>pfFrame</B> itself
+       will  carry  out the processing associated with the stage.
+       <B>pfFrame</B> will directly invoke all user callbacks  that  are
+       in  the same process as that which called <B>pfFrame</B>.  Other-
+       wise, a callback will be invoked by the process  of  which
+       it  is a part, e.g., the <B>ISECT</B> callback will be invoked by
+       the <B>ISECT</B> process if <B>PFMP_FORK_ISECT</B> is set in  the  argu-
+       ment to <B>pfMultiprocess</B>.
+
+       All OpenGL Performer stage callbacks have a block of asso-
+       ciated data known as "user data." User data is  passed  as
+       an  argument  to the stage callback. To simplify data flow
+       in a multiprocessing environment, OpenGL Performer  copies
+       user  data  into  internal buffers and propagates the data
+       down multiprocessing pipelines. To restrict  data  copying
+       to  only  those frames in which user data changes, use the
+       <B>pfPass&lt;*&gt;Data</B>   and   pfChannel::passChanData   functions.
+       <B>pfPass&lt;*&gt;Data</B> and pfChannel::passChanData signify that the
+       user data has changed and needs to be copied. <B>pfFrame</B> will
+       then  copy the data into its internal buffer and the stage
+       callback will receive the updated user data.  Stage  call-
+       backs and user data functions are listed below.
+
+       center  tab($)  ;  c | c | c | c .  Stage$Callback$Alloca-
+       tion$Pass  _  APP$pfChannel::setTravFunc$pfChannel::alloc-
+       ChanData$pfChannel::passChanData$ CULL$pfChannel::setTrav-
+       Func$pfChannel::allocChanData$pfChannel::passChanData$
+       DRAW$pfChannel::setTravFunc$pfChannel::allocChan-
+       Data$pfChannel::passChanData$  ISECT$pfIsectFunc$pfAllocI-
+       sectData$pfPassIsectData   DBASE$pfDBaseFunc$pfAllocDBase-
+       Data$pfPassDBaseData
+
+       <B>pfFrame</B> triggers the APP, CULL  and  DRAW  stages  of  all
+       pfPipes  so it must be called every frame a new display is
+       desired.  OpenGL Performer will attempt to cull  and  draw
+       all active pfChannels on all pfPipes within a single frame
+       period.  Multiple pfChannels on a single  pfPipe  will  be
+       processed  in  the  order  they  were added to the pfPipe.
+       <B>pfFrame</B> returns the current frame count and should only be
+       called by the application process when multiprocessing.
+
+       If   specified,  pfChannel  cull  and  draw  callbacks  (-
+       <B>pfChannel::setTravFunc</B>) will be invoked by the appropriate
+       process  which  may  or  may  not be the same process that
+       called <B>pfFrame</B>.  If these  callbacks  are  not  specified,
+       <B>pfCull</B>  and  <B>pfDraw</B>  will  be  called  instead.  pfChannel
+       passthrough data which is  passed  to  pfChannel  function
+       callbacks  (see  <B>pfChannel::passChanData</B>)  is  copied into
+       internal memory at <B>pfFrame</B> time.
+
+       If the light points process is used, pfFrame  will  invoke
+       the   corresponding   callback   if   one   is  set  using
+       <B>pfChannel::setTravFunc</B>.   If  no  callback  is  specified,
+       <B>pfLPoint</B> will be called instead. The light points callback
+       time  will  be  applied to the current frame so latency is
+       reduced for these updates.   Updates  made  after  <B>pfFrame</B>
+       will  be  applied  to the next frame.  <B>pfFrame</B> returns the
+       current frame count.
+
+       <B>pfFrame</B> will automatically call <B>pfSync</B> if the  application
+       did  not  call  <B>pfSync</B> before calling <B>pfFrame</B>.  This means
+       the application need not call <B>pfSync</B>.
+
+       It is crucial to keep the time spent  in  the  application
+       process  less  than  a frame's time so the system can meet
+       the  desired  frame  rate.   If  the  application  process
+       exceeds  a single frame's time, <B>pfFrame</B> will not be called
+       often enough to meet the frame rate.
+
+       The following code fragment is an example of  an  applica-
+       tion's main processing loop:
+
+       Example 1: Main simulation loop.
+
+       pfFrameRate(30.0f);     /* Set desired frame rate to 30Hz */
+
+       while (!done)
+       {
+           app_funcs();        /* Perform application-specific functions */
+           update_positions(); /* Update moving models for frame N */
+
+           pfSync();           /* Sleep until next frame boundary */
+
+           update_view();      /* Set view for frame N */
+           pfFrame();          /* Trigger cull and draw for frame N */
+       }
+
+
+       <B>pfAppFrame</B> triggers a traversal that updates the state of
+       the scene graph for the next frame.  This includes updat-
+       ing the state of pfSequence nodes and invoking APP call-
+       backs on nodes in the scene graph.  If <B>pfAppFrame</B> is not
+       invoked directly, <B>pfSync</B> or <B>pfFrame</B> invokes it automati-
+       cally.  Note that when the view is not set until after
+       <B>pfSync</B>, as in the example above, the view point in the
+       channel during the application traversal contains the eye
+       point from the previous frame.
+
+       <B>pfGetFrameCount</B> returns the current frame count.  The
+       frame count is initialized to 0 by <B>pfConfig</B> and is incre-
+       mented by each call to <B>pfFrame</B>.
+
+       <B>pfGetFrameRate</B> returns the current system frame rate (pos-
+       sibly rounded) previously set by <B>pfFrameRate</B>.  Note that
+       this is not necessarily the same as the achieved frame
+       rate.
+
+       <B>pfSync</B> synchronizes the application process to a particu-
+       lar rate.  This rate may be fixed, for example a steady
+       20Hz or may vary with the rendering rate.  In addition,
+       the drawing process may be synchronized to either a steady
+       or a varying rate.  <B>pfPhase</B> specifies the synchronization
+       methods used by <B>pfSync</B> and the drawing process (if it is a
+                   swaps its rendering buffers only at fixed
+                   frame boundaries.
+
+              <B>PFPHASE_FLOAT</B>
+                   <B>pfSync</B> synchronizes to the next frame boundary
+                   but the drawing process can begin drawing and
+                   swap its rendering buffers at non-frame bound-
+                   aries.
+
+              <B>PFPHASE_FREE_RUN</B>
+                   <B>pfSync</B> synchronizes to the rendering rate so
+                   the application runs at its peak (and usually
+                   non-constant) capability.
+
+              <B>PFPHASE_LIMIT</B>
+                   <B>pfSync</B> synchronizes to the rendering rate but
+                   the rendering rate is limited to that frame
+                   rate specified by <B>pfFrameRate</B>.
+
+       Additionally, the modifier <B>PFPHASE_SPIN_DRAW</B> may be or-ed
+       in with the main phase mode from the above list.
+
+       <B>pfPhase</B> is a global mode so all pfPipes in the system are
+       forced to run with the same phase.
+
+       If running in locked phase, the drawing process will swap
+       buffers only on frame boundaries.  A benefit of locking is
+       that such pipelines are self-regulating so synchronizing
+       two pfPipes together is simple, even across different
+       machines.  Another benefit is that latency is minimized
+       and predictable.  The major drawback is that if a view
+       takes slightly longer than a frame to render (it has
+       'frame-extended'), then an entire frame is skipped rather
+       than a single vertical retrace period.  However, if mini-
+       mal distraction is crucial, the phase can float so that
+       buffer swapping may happen on non-frame boundaries.  In
+       this case it is not guaranteed that the windows on pfPipes
+       will swap together; they may get out of phase resulting in
+       inconsistent images if the displays are adjacent and are
+       displaying the same scene.
+
+       The difference between phase lock and phase float becomes
+       less apparent with increasing frame rate.  At a rate equal
+       to the vertical retrace rate, there is no difference.
+       Also, if pfPipes do not 'frame extend', then there is no
+       difference.
+
+       Applications which do not require a fixed frame rate may
+       use <B>PFPHASE_FREE_RUN</B> or <B>PFPHASE_LIMIT</B>.  <B>PFPHASE_FREE_RUN</B>
+       essentially disables OpenGL Performer's fixed frame rate
+       mechanisms and will cause the application to run at its
+       rendering rate so it slows down when rendering complex
+       scenes and speeds up when rendering simple scenes.  In
+       this case, the frame rate specified by <B>pfFrameRate</B> no
+       longer affects the system frame rate but is still used to
+       compute system load and stress.  Additionally, if the APP,
+       CULL, and/or DRAW stages are in separate processes, they
+       will run in lock step and each stage will wait for the
+       downstream stage to get its results and likewise, down-
+       that the application can go no faster than the frame rate
+       specified by <B>pfFrameRate</B> although it may go slower.  Thus
+       fixed frame rate behavior is achieved if the time required
+       to process a frame never takes longer than that specified
+       by <B>pfFrameRate</B>.
+
+       <B>PFPHASE_SPIN_DRAW</B> allows forked draw processes to redraw
+       the previous frame if an upstream stage slowed down an
+       missed a frame.  This only affects locked and float phase
+       modes.  The default behavior is without <B>PFPHASE_SPIN_DRAW</B>,
+       in which case a forked draw process will wait for new
+       results from an upstream stage before continuing.  In
+       locked or float modes, the draw process will only check
+       for new upstream results on frame boundaries.
+
+       <B>pfPhase</B> may be called any time after <B>pfConfig</B>.
+
+       <B>pfGetPhase</B> returns the current phase. The default phase is
+       <B>PFPHASE_FREE_RUN</B>.
+
+       <B>pfFrameTimeStamp</B> sets the time stamp of the current frame
+       to <I>time</I>.  The frame time stamp is used when evaluating all
+       pfSequences. Normally, <B>pfFrame</B> sets the frame time stamp
+       immediately before returning control to the application
+       although the application may set it to account for varying
+       latency in a non-constant frame rate situation.  Time is
+       relative to <B>pfInit</B> when the system clock is initialized to
+       0.
+
+       <B>pfGetFrameTimeStamp</B> returns the frame time stamp of the
+       current frame.
+
+       <B>pfGetFrameTimeFlux</B> returns the global frame time flux.
+       The frame time flux is a pfFlux that is updated with the
+       frame time stamp of the current frame whenever it changes.
+       By default the frame time flux is configured with the
+       <B>PFFLUX_PUSH</B> mode set to <B>PF_ON</B>.  The frame time flux is
+       useful for automatically driving pfEngine animations.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       To achieve a steady frame rate synchronized with the
+       graphics display in an otherwise non-graphical applica-
+       tion, a screen must be set on the first pfPipe with
+       <B>pfPipeScreen</B> and <B>pfFrame</B> should be used in the main loop
+       which will indirectly call <B>pfSync</B> to obey the current
+       phase.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfPipeWindow, pfConfig, pfIsectFunc, pfInitV-
+       Clock, pfCycleBuffer, pfGetTime
+
+
+
+                                                     pfFrame(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

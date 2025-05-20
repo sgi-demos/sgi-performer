@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<TITLE>pfSinCos</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSinCos</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSinCos(3pf)                                       pfSinCos(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfSinCos,</B>  <B>pfTan,</B>  <B>pfArcTan2,</B> <B>pfArcSin,</B> <B>pfArcCos,</B> <B>pfSqrt</B> -
+       Fast math routines sin, cos, sqrt
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void    <B>pfSinCos</B>(float arg, float* sin, float* cos);
+
+       float   <B>pfTan</B>(float arg);
+
+       float   <B>pfArcTan2</B>(float y, float x);
+
+       float   <B>pfArcSin</B>(float arg);
+
+       float   <B>pfArcCos</B>(float arg);
+
+       float   <B>pfSqrt</B>(float arg);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfSinCos</B> returns sine and cosine of  <I>arg</I>  degrees  in  the
+       locations  pointed to by <I>sin</I> and <I>cos</I>.  The routine is less
+       accurate than that provided in libm, but faster.  It  also
+       loses precision earlier for large arguments.  For accuracy
+       within an error tolerance of 1/1000, the argument must  be
+       in the range -7500 to +7500 degrees.
+
+       <B>pfTan</B> returns the tangent of <I>arg</I> degrees.
+
+       <B>pfArcTan2</B> returns the arc tangent of <I>y</I>/<I>x</I> in the range -180
+       to +180 degrees using  the  signs  of  both  arguments  to
+       determine the quadrant of the return value.
+
+       <B>pfArcSin</B>  returns  the arc sine of <I>arg</I> in the range -90 to
+       +90 degrees.
+
+       <B>pfArcCos</B> returns the arc sine of <I>arg</I> in the range 0 to 180
+       degrees.
+
+       <B>pfSqrt</B> returns the square root of <I>arg</I>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>Performance:</B>  The current Performer math routines are sim-
+       ply wrappers that call the routines in math.h from libm or
+       libfastm.   The routines may be changed in the future, but
+       they should always perform as well or better than the cor-
+       responding routines in libm and libfastm.
+
+       <B>Linking</B> Currently for maximum performance, programs should
+       be linked to libfastm.  Please refer to the  libfastm  man
+       page  for  a  description  of  the impact this may have on
+       accuracy.
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,265 @@
+<HTML>
+<HEAD>
+<TITLE>pfSprite</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSprite</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSprite(3pf)                                       pfSprite(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewSprite,</B>  <B>pfGetSpriteClassType,</B>  <B>pfSpriteMode,</B>  <B>pfGet-</B>
+       <B>SpriteMode,</B> <B>pfSpriteAxis,</B> <B>pfGetSpriteAxis,</B>  <B>pfBeginSprite,</B>
+       <B>pfEndSprite,</B> <B>pfPositionSprite,</B> <B>pfGetCurSprite</B> - Create and
+       update sprite transformation primitive.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfSprite *   <B>pfNewSprite</B>(void *arena);
+
+       pfType *     <B>pfGetSpriteClassType</B>(void);
+
+       void         <B>pfSpriteMode</B>(pfSprite *sprite,     int which,
+                      int val);
+
+       int          <B>pfGetSpriteMode</B>(const pfSprite *sprite,
+                      int which);
+
+       void         <B>pfSpriteAxis</B>(pfSprite *sprite,       float x,
+                      float y, float z);
+
+       void         <B>pfGetSpriteAxis</B>(pfSprite *sprite,   float *x,
+                      float *y, float *z);
+
+       void         <B>pfBeginSprite</B>(pfSprite *sprite);
+
+       void         <B>pfEndSprite</B>(void);
+
+       void         <B>pfPositionSprite</B>(float x, float y, float z);
+
+       pfSprite *   <B>pfGetCurSprite</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfSprite</B> is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfSprite</B>.  Casting an object of class <B>pfSprite</B> to an
+       object of class <B>pfObject</B> is taken care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>sprite</I>  identifies a pfSprite.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A "sprite" is a term borrowed from the video game industry
+       and refers to  a  movable  graphical  object  that  always
+       appears  orthogonal  to the viewer. In 2D, a sprite can be
+       implemented by simply drawing an  image  that  is  aligned
+       with   the  screen,  a  technique  called  "bit-blitting".
+       pfSprite extends this support to 3D geometry  by  rotating
+       the  geometry appropriately based on the viewer and object
+       locations to achieve a consistent  screen  alignment.   In
+       this  respect,  pfSprite  is not really a graphical object
+       itself, rather it is an intelligent transformation and  is
+       logically  grouped  with other libpr transformation primi-
+       tives like <B>pfMultMatrix</B>.
+
+       Sprite  transformations  (subsequently  referred   to   as
+       sprites)  are  useful for complex objects that are roughly
+       symmetrical about an axis or a  point.   By  rotating  the
+       model  about  the  axis or point, the viewer only sees the
+       "front" of the model so complexity is saved in  the  model
+       by  omitting  the  "back" geometry.  A further performance
+       enhancement is to incorporate visual complexity in a  tex-
+       ture  map rather than in geometry.  Thus, on machines with
+       fast texture mapping, sprites  can  present  very  complex
+       images with very little geometry. Classic examples of tex-
+       tured sprites use a single quadrilateral that when rotated
+       about  a  vertical  axis  simulate  trees and when rotated
+       about a point simulate clouds or puffs of smoke.
+
+       <B>pfNewSprite</B> creates and returns a handle  to  a  pfSprite.
+       <I>arena</I>  specifies  a malloc arena out of which the pfSprite
+       is allocated or <B>NULL</B> for allocation off the process  heap.
+       pfSprites can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetSpriteClassType</B>  returns  the  <B>pfType</B>*  for the class
+       <B>pfSprite</B>.  The <B>pfType</B>* returned by <B>pfGetSpriteClassType</B> is
+       the  same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfSprite</B>.  Because OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+           1. The viewer location.
+
+           2. The sprite location.
+
+           3. The sprite mode/axis.
+
+       The viewer's coordinate system is specified with <B>pfViewMat</B>
+       whose  last row is the viewer's location. The sprite loca-
+       tion   in   object   coordinates   is    specified    with
+       <B>pfPositionSprite</B>. This location is transformed by the cur-
+       rent modeling matrix (<B>pfModelMat</B>) into "world" coordinates
+       before computing the rotation based on the sprite mode.
+
+       <B>pfSpriteMode</B>  sets the <I>which</I> mode of <I>sprite</I> to <I>val</I>.  <I>which</I>
+       identifies a particular mode and is one of:
+
+              <B>PFSPRITE_ROT</B> <I>val</I> specifies the rotation constraints
+              of <I>sprite</I> and is one of:
+
+              <B>PFSPRITE_AXIAL_ROT</B>
+                     The +Z object coordinate axis of geometry is
+                     the axis of rotation,  i.e.  the  +Z  object
+                     axis is rotated onto the sprite axis defined
+                     by  <B>pfSpriteAxis</B>  in  eye  space,  then  the
+                     transformed  -Y  axis  is  rotated about the
+                     sprite axis to face the viewer as nearly  as
+                     possible.
+
+              <B>PFSPRITE_POINT_ROT_EYE</B>
+                     The sprite rotation is constrained to rotate
+                     about  the  sprite  location  specified   by
+                     <B>pfPositionSprite</B>.    The   object's   -Y  is
+                     rotated to the eye's -Y (front vector),  and
+                     then  the  objects's Z axis is rotated about
+                     the front vector to point toward the  sprite
+                     axis  (in eye coordinates) as nearly as pos-
+                     sible.  In particular, if the sprite axis is
+                     +Z   (the  default),  the  object  +Z  stays
+                     upright on the screen.
+
+              <B>PFSPRITE_POINT_ROT_WORLD</B>
+                     This mode is identical to <B>PFSPRITE_AXIAL_ROT</B>
+                     except  that  the sprite axis is interpreted
+                     as world coordinates rather than eye coordi-
+                     nates.
+
+              The      default      <B>PFSPRITE_ROT</B>      mode     is
+              <B>PFSPRITE_AXIAL_ROT</B>.
+
+              <B>PFSPRITE_MATRIX_THRESHOLD</B>
+                     pfGeoSets which contain a number of vertices
+                     less than <I>val</I> will  be  transformed  on  the
+                     CPU,   rather   than  through  the  Graphics
+                     Library transformation stack. If  <I>sprite</I>  is
+                     to  affect  non-pfGeoSet  geometry, then <I>val</I>
+                     should be &lt;= 0 in which  case  the  Graphics
+                     Library  transformation stack will always be
+                     used.  Specifically, <B>pfBeginSprite</B> will push
+                     the matrix stack, <B>pfPositionSprite</B> will mod-
+
+       <B>pfGetSpriteMode</B>  returns  the value of the mode identified
+       by <I>which</I>.
+
+       <B>pfSpriteAxis</B>  sets   <I>sprite</I>'s   axis   to   (<I>x</I>,   <I>y</I>,   <I>z</I>).
+       <B>pfGetSpriteAxis</B> returns the axis of <I>sprite</I> in <I>x</I>, <I>y</I>, <I>z</I>.
+
+       <B>pfBeginSprite</B>   makes  <I>sprite</I>  the  current  pfSprite  and
+       applies its effects to subsequently  drawn  pfGeoSets  and
+       non-pfGeoSet  geometry  if <I>sprite</I>'s matrix threshold value
+       is &lt;= 0.  <B>pfPositionSprite</B> specifies the sprite origin and
+       <B>pfEndSprite</B>  sets  the  current pfSprite to <B>NULL</B> and exits
+       "sprite mode".  <B>pfPositionSprite</B>  may  be  called  outside
+       <B>pfBeginSprite/pfEndSprite</B>  and  any number of times within
+       <B>pfBeginSprite/pfEndSprite</B> to  render  geometry  with  many
+       different  origins  but which share the characteristics of
+       <I>sprite</I>.
+
+       Example 1: Draw trees as axial sprites which rotate  about
+       +Z.
+
+
+       pfVec3         treeOrg[NUMTREES];
+       pfGeoSet  *trees[NUMTREES];
+
+       sprite = pfNewSprite(arena);
+       pfBeginSprite(sprite);
+
+       for (i=0; i&lt;NUMTREES; i++)
+       {
+           pfPositionSprite(treeOrg[i][0], treeOrg[i][1], treeOrg[i][1]);
+           pfDrawGSet(trees[i]);
+       }
+
+       pfEndSprite();
+
+
+       <B>pfBeginSprite</B>, <B>pfEndSprite</B>, and <B>pfPositionSprite</B> are all
+       display-listable commands.   If a pfDispList has been
+       opened by <B>pfOpenDList</B>, these commands will not have imme-
+       diate effect but will be captured by the pfDispList and
+       will only have effect when that pfDispList is later drawn
+       with <B>pfDrawDList</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Both <B>PFSPRITE_AXIAL_ROT</B> and <B>PFSPRITE_POINT_ROT_WORLD</B>
+       sprites may "spin" about the Y axis of the pfGeoSet when
+       viewed along the rotation or alignment axis.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfGeoSet, pfModelMat, pfState,
+       pfViewMat
+
+
+
+                                                    pfSprite(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

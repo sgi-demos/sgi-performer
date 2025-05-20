@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<TITLE>pfuRandom</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuRandom</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuRandom(3pf)                                     pfuRandom(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuRandomize,</B>  <B>pfuRandomLong,</B>  <B>pfuRandomFloat,</B>  <B>pfuRandom-</B>
+       <B>Color</B> - Set up and generate random numbers and colors.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void    <B>pfuRandomize</B>(int seed);
+
+       long    <B>pfuRandomLong</B>(void);
+
+       float   <B>pfuRandomFloat</B>(void);
+
+       void    <B>pfuRandomColor</B>(pfVec4 color,       float minColor,
+                 float maxColor);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  functions  set up a random number generator and use
+       it to return uniformly distributed random numbers and col-
+       ors.
+
+       <B>pfuRandomize</B>  initializes the random number generator with
+       <I>seed</I>.
+
+       <B>pfuRandomLong</B> returns a random number of type  <B>long</B>  while
+       <B>pfuRandomFloat</B> returns a random number of type <B>float</B>.
+
+       <B>pfuRandomColor</B>  returns  a random color in <I>color</I>. The <I>r</I>, <I>g</I>
+       and <I>b</I> values of <I>color</I> are  random  numbers  in  the  range
+       [minColor,  maxColor].  The alpha value of <I>color</I> is set to
+       the fully opaque value 1.
+
+       See the <B>srandom</B> and <B>random</B> man pages for further  informa-
+       tion on the random number generator used.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       random, srandom
+
+
+
+                                                   pfuRandom(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

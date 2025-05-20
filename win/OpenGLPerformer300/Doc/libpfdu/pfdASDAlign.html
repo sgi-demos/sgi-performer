@@ -1,0 +1,111 @@
+<HTML>
+<HEAD>
+<TITLE>pfdASDAlign</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdASDAlign</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+
+</PRE>
+<H2>pfdAlignVerticpfdAlignVerticesToASD,tpfdProjectVerticesOnASD(3pf)</H2><PRE>
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdAlignVerticesToASD,</B>  <B>pfdProjectVerticesOnASD</B> - Align an
+       array of vertices to pfASD geometry.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       void   <B>pfdAlignVerticesToASD</B>( pfASD *asd,      pfVec3 *_v,
+                int _nofVertices,  float *_base,  float *_down,
+                float *_azimuth,         unsigned long _opcode,
+                pfVec3 *_v_aligned);
+
+       void   <B>pfdProjectVerticesOnASD</B>(pfASD *asd,     pfVec3 *_v,
+                int _nofVertices,           float *_projection,
+                float *_down, pfVec3 *_v_projected);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdAlignVerticesToASD</B>  takes  an  array of vertices <B>_</B><I>v</I> and
+       returns an array of vertices  <B>_</B><I>v</I><B>_</B><I>aligned</I>.  The  two  array
+       pointers may points to the same array.
+
+       <B>pfdAlignVerticesToASD</B>  starts  by  projecting <B>_</B><I>base</I> on the
+       pfASD finest level of detail, in direction <B>_</B><I>down</I>. The pro-
+       jection  point (<B>p</B>) and the surface normal (<B>n</B>) at the point
+       are used to align the input points.
+
+       <B>pfdAlignVerticesToASD</B> supports a number of  operations  on
+       the  input  vertics. <B>_</B><I>opcode</I> specifies a bitwise OR of the
+       desired operation.  It may contain the bits:
+
+
+              <B>PR_ALIGN_TRANSLATE</B>
+                   - Translate all the points by <B>p</B>.
+
+              <B>PR_ALIGN_NORMAL</B>
+                   - Rotate all input points to bring the Z  axis
+                   to  <B>n</B>,  and  the  X  axis to the projection of
+                   <B>_</B><I>azimuth</I> on the plane of <B>n</B>.   This  is  useful
+                   for  aligning  objects that follow the surface
+                   (e.g. cars on terrain).
+
+              <B>PR_ALIGN_AZIMUTH</B>
+                   - Rotate all input points to bring the Z  axis
+                   to <B>(-</B> <B>_down)</B>, and the X axis to the projection
+                   of <B>_</B><I>azimuth</I> on the plane of <B>(-</B>  <B>_down)</B>.   This
+                   is useful for aligning objects with a fixed UP
+                   orientation (e.g.  buildings on terrain).
+
+              <B>PR_ALIGN_AXIS_BILLBOARD</B>
+                   - Rotate all input points to bring the Z  axis
+                   to <B>(-</B> <B>_down)</B>, and the Y axis to the projection
+                   of <B>_</B><I>azimuth</I> on the plane of <B>(-</B>  <B>_down)</B>.   This
+                   is  useful  for  aligning  pfBillboard objects
+                   with a fixed UP  orientation  (e.g.  trees  on
+                   terrain).
+
+       of  vertices,  <B>_</B><I>v</I>  and <B>_</B><I>v</I><B>_</B><I>projected</I>, may point to the same
+       array. <B>pfdProjectVerticesOnASD</B> uses the  direction  vector
+       <B>_</B><I>down</I>  to  determine whether a vertex falls under the sur-
+       face. Such vertices are clamped to the surface, and  their
+       projection  is  set  to the clampped point. <B>_</B><I>projection</I> is
+       the direction for projecting all the input vertices.
+
+       The    combination    of     <B>pfdAlignVerticesToASD</B>     and
+       <B>pfdProjectVerticesOnASD</B>  is  useful for casting the shadow
+       of geometry on pfASD surfaces.  The  results  of  inviking
+       these routines in a row on some geomtry is an outline of a
+       shadow.  This outline may then be used as pfASD query tri-
+       angles (see pfASD man page)..
+
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfASD, pfTerrain, pfdExtractGraphTriangles
+
+
+
+              pfdAlignVerticesToASD, pfdProjectVerticesOnASD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

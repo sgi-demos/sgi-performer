@@ -1,0 +1,266 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="GENERATOR"
+ content="Mozilla/4.7C-SGI [en] (X11; I; IRIX64 6.5 IP30) [Netscape]">
+  <title>OpenGL Performer 3.0 User Release Notes</title>
+</head>
+<body text="#000000" bgcolor="#ffffff" link="#0000ee" vlink="#551a8b"
+ alink="#ff0000">
+<div align="right"><img src="ban_openglperformer.gif"
+ alt="OpenGL Performer Banner" height="68" width="515"></div>
+<center>
+<h1> <font face="Helvetica, Arial, sans-serif">User Release Notes for
+OpenGL Performer<sup><small><small><small>TM</small></small></small></sup>
+3.0</font></h1>
+</center>
+<hr width="100%" size="2">
+<p><font face="Helvetica, Arial, sans-serif">This document is intended
+to answer the most common questions regarding the use of OpenGL
+Performer 3.0 for Microsoft&reg; Windows NT</font><font
+ face="Helvetica, Arial, sans-serif">&reg;, Windows</font><font
+ face="Helvetica, Arial, sans-serif">&reg;</font><font
+ face="Helvetica, Arial, sans-serif"> 2000</font><font
+ face="Helvetica, Arial, sans-serif">, and Windows</font><font
+ face="Helvetica, Arial, sans-serif">&reg; XP</font><font
+ face="Helvetica, Arial, sans-serif">. <br>
+</font></p>
+<p><font face="Helvetica, Arial, sans-serif">For anything not covered
+here please contact your support provider or <a
+ href="#reporting_problems">performer-feedback@sgi.com</a>.</font> </p>
+<p><font face="Helvetica, Arial, sans-serif">The following topics are
+covered in this document:</font> </p>
+<ul>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#SupportedPlatforms">Supported platforms</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#Hardware_configurations_tested">Hardware configurations tested</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#Environment_variables">Environment variables and
+installation/uninstallation process</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#Directory_structureshipped_source">Directory structure/shipped
+source, data, etc.</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#List_of_unsupported_features">List of unsupported features</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#List_of_file_loaders_currently_ported">File Loaders</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a href="#Known_bugs_">Known
+bugs</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#Obtaining%20license%20key">Obtaining license key</a></font></li>
+  <li> <font face="Helvetica, Arial, sans-serif"><a
+ href="#reporting_problems">Reporting problems</a></font></li>
+</ul>
+<hr width="100%" size="2">
+<blockquote>&nbsp;</blockquote>
+<h2> <a name="SupportedPlatforms"></a><font
+ face="Helvetica, Arial, sans-serif">Supported platforms</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">OpenGL Performer
+3.0 for Microsoft Windows supports Microsoft Windows NT 4.0, Microsoft
+Windows 2000 and Microsoft Windows XP. &nbsp;The release has been
+tested with the latest patch level of each release; Windows NT 4.0
+Service Pack 6, Windows 2000 Service Pack 3, and Windows XP Service
+Pack 1 respectively.</font></blockquote>
+<h2> <a name="Hardware_configurations_tested"></a><font
+ face="Helvetica, Arial, sans-serif">Hardware configurations tested</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">Our tests were
+conducted on <a href="http://support.sgi.com/nt/product/330">Silicon
+Graphics 330 Visual Workstations</a> running both Microsoft Windows 2000
+and XP with the latest service packs installed and latest BIOS images.</font></blockquote>
+<h2> <a name="Environment_variables"></a><font
+ face="Helvetica, Arial, sans-serif">Environment variables and
+installation/uninstallation process</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">During the
+installation of OpenGL Performer, the following environment variables
+are registered for both the current user environment and for the system
+environment:</font>
+  <ul>
+    <li> <tt>PFROOT</tt></li>
+    <li> <tt>PFPATH</tt></li>
+  </ul>
+  <font face="Helvetica, Arial, sans-serif">These are removed from the
+system upon uninstallation. Note that the <tt>PATH </tt>environment
+variable is also modified such that it contains the two following
+additional entries:</font>
+  <ul>
+    <li> <tt>%PFROOT%\Bin</tt></li>
+    <li> <tt>%PFROOT%\Lib</tt></li>
+  </ul>
+</blockquote>
+<h2> <font face="Helvetica, Arial, sans-serif">Directory
+structure/shipped source, data, etc</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">On systems
+running IRIX</font><font face="Helvetica, Arial, sans-serif">&reg;</font><font
+ face="Helvetica, Arial, sans-serif"> or Linux</font><font
+ face="Helvetica, Arial, sans-serif">&reg;</font><font
+ face="Helvetica, Arial, sans-serif">, OpenGL Performer libraries are
+shipped in <tt>/usr/lib</tt> and all source and data can be found in
+the <tt>/usr/share/Performer</tt> directory. On Microsoft Windows,
+everything is placed relative to the installation directory which also
+corresponds to the environment variable</font> <tt>PFROOT</tt>.
+  <p><font face="Helvetica, Arial, sans-serif">The directory structure
+mapping looks like this:</font> <br>
+  <table border="1" cellspacing="2" cellpadding="2" width="100%">
+    <caption>&nbsp; <br>
+    </caption><tbody>
+    </tbody><tbody>
+    </tbody> <tbody>
+      <tr>
+        <td valign="top"><br>
+        </td>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">IRIX/Linux</font></td>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">Windows</font></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">Optimized
+Libraries</font></td>
+        <td valign="top"><tt>/usr/lib[32|64]</tt></td>
+        <td valign="top"><tt>%PFROOT%/Lib</tt></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">Debug
+Libraries</font></td>
+        <td valign="top"><tt>/usr/lib[32|64]/Performer/Debug</tt></td>
+        <td valign="top"><tt>%PFROOT%/Lib/Debug</tt></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">Sample
+Source</font></td>
+        <td valign="top"><tt>/usr/share/Performer/src</tt></td>
+        <td valign="top"><tt>%PFROOT%/Src</tt></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">Sample
+Data</font></td>
+        <td valign="top"><tt>/usr/share/Performer/data</tt></td>
+        <td valign="top"><tt>%PFROOT%/Data</tt></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">File
+Loaders (opt)</font></td>
+        <td valign="top"><tt>/usr/lib[32|64]/libpfdb</tt></td>
+        <td valign="top"><tt>%PFROOT%/Lib/libpfdb</tt></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">File
+Loaders (dbg)</font></td>
+        <td valign="top"><tt>/usr/lib[32|64]/Performer/Debug/libpfpfb</tt></td>
+        <td valign="top"><tt>%PFROOT%/Lib/Debug/libpfdb</tt></td>
+      </tr>
+      <tr>
+        <td valign="top"><font face="Helvetica, Arial, sans-serif">Binaries
+(executables)</font></td>
+        <td valign="top"><tt>/usr/sbin</tt></td>
+        <td valign="top"><tt>%PFROOT%/Bin</tt></td>
+      </tr>
+      <tr>
+        <td><font face="Arial,Helvetica">License file</font></td>
+        <td><tt>/usr/share/Performer/license.dat</tt></td>
+        <td><tt>%PFROOT%/license.dat</tt></td>
+      </tr>
+    </tbody>
+  </table>
+  </p>
+</blockquote>
+<h2> <a name="List_of_unsupported_features"></a><font
+ face="Helvetica, Arial, sans-serif">List of currently unsupported
+features</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">The list of
+features not supported on Microsoft Windows is a superset of the list
+of unsupported features on Linux platforms. In addition, this version
+of OpenGL Performer for Microsoft Windows supports single-process
+operation only (PFMP_APPCULLDRAW).</font>
+  <p><font face="Helvetica, Arial, sans-serif">IRIX specific features
+which are not supported are support for calligraphic light point
+boards, real-time features, datapools, direct file I/O, and multi-pipe
+/ multi screen capability.</font></p>
+</blockquote>
+<h2> <a name="List_of_file_loaders_currently_ported"></a><font
+ face="Helvetica, Arial, sans-serif">List of file loaders currently
+ported</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">Most file loaders
+have been ported, with the exception of the following:</font></blockquote>
+<blockquote>
+  <ul>
+    <li> <font face="Helvetica, Arial, sans-serif">.pfso: Performer
+shared object</font></li>
+    <li> <font face="Helvetica, Arial, sans-serif">.rgb: SGI rgb image
+loader</font></li>
+    <li> <font face="Helvetica, Arial, sans-serif">.ptu: Performer
+Terrain Utility Format</font></li>
+    <li><font face="Helvetica, Arial, sans-serif">.iv: Open Inventor</font><font><sup><small><small><small><font
+ face="Helvetica, Arial, sans-serif"><small><small><small>TM</small></small></small></font></small></small></small></sup></font></li>
+    <li><font face="Helvetica, Arial, sans-serif">.s1k: U.S. Army SIMNET</font></li>
+    <li> <font face="Helvetica, Arial, sans-serif">.stm: Simple Terrain
+Model</font></li>
+  </ul>
+</blockquote>
+<blockquote><font face="Helvetica, Arial, sans-serif">During the
+installation process all model file formats that OpenGL Performer can
+read will be associated with <span style="font-style: italic;">perfly</span>,
+if no other association already exists.</font></blockquote>
+<h2> <a name="Known_bugs_"></a><font face="Helvetica, Arial, sans-serif">Known
+bugs</font></h2>
+<blockquote>
+  <ul>
+    <li> <font face="Helvetica, Arial, sans-serif">pop-up menus in
+perfly don't show up since </font><font
+ face="Courier New, Courier, monospace">pup.c</font><font
+ face="Helvetica, Arial, sans-serif"> in <b>libpfutil </b>is not yet
+ported. The menu buttons do toggle state if they are clicked on, just
+the pop-up selectors are unavailable.</font></li>
+  </ul>
+</blockquote>
+<h2> <a name="Obtaining license key"></a><font face="Arial,Helvetica">Obtaining
+a license key</font></h2>
+<blockquote><font face="Arial,Helvetica">From the Start Menu select
+"SGI&nbsp;OpenGL&nbsp;Performer -&gt;&nbsp;Get
+HostID&nbsp;Key"&nbsp;and give this information to your salesperson.</font></blockquote>
+<h2> <a name="reporting_problems"></a><font
+ face="Helvetica, Arial, sans-serif">Reporting problems to your support
+provider</font></h2>
+<blockquote><font face="Helvetica, Arial, sans-serif">When sending a
+report please be sure to include the following information:</font>
+  <p><font face="Helvetica, Arial, sans-serif">Hardware configuration:</font> </p>
+  <blockquote> <li> <font face="Helvetica, Arial, sans-serif">processor
+count/type/speed</font></li>
+    <li> <font face="Helvetica, Arial, sans-serif">video card</font></li>
+  </blockquote>
+  <font face="Helvetica, Arial, sans-serif">Software configuration:</font>
+  <blockquote> <li> <font face="Helvetica, Arial, sans-serif">Operating
+system and service pack level</font></li>
+    <li> <font face="Helvetica, Arial, sans-serif">Display depth and
+resolution</font></li>
+    <li> <font face="Helvetica, Arial, sans-serif">Version of video
+driver used</font></li>
+  </blockquote>
+  <font face="Helvetica, Arial, sans-serif">In addition, please run
+your programs with the following environment variable setup:</font>
+  <blockquote> <li> <b><tt>PFNFYLEVEL = 7</tt></b></li>
+    <li> <b><tt>_PF_DISPLAY_LOADED_MODULES = 1</tt></b></li>
+  </blockquote>
+  <font face="Helvetica, Arial, sans-serif">Also please include the
+output from running the command 'set' at a DOS prompt. This will help
+us verify that the following environment variables have been set
+properly:</font>
+  <blockquote> <li> <b><tt>PFROOT</tt></b></li>
+    <li> <b><tt>PATH</tt></b></li>
+    <li> <b><tt>PFPATH</tt></b></li>
+  </blockquote>
+  <font face="Helvetica, Arial, sans-serif">You may also want to try
+setting your </font><b><tt>PATH</tt></b><font
+ face="Helvetica, Arial, sans-serif"> to use the debug versions of the
+libraries. In a DOS shell type the following commands:</font>
+  <blockquote> <li> <b><tt>set
+PATH=%PFROOT%\Lib\Debug;%PFROOT%\Lib\Debug\libpfdb;%PATH%</tt></b></li>
+  </blockquote>
+  <font face="Helvetica, Arial, sans-serif"></font></blockquote>
+<br>
+&nbsp; <br>
+&nbsp; <br>
+&nbsp;
+</body>
+</html>

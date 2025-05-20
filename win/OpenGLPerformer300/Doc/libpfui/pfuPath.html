@@ -1,0 +1,204 @@
+<HTML>
+<HEAD>
+<TITLE>pfuPath</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuPath</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuPath(3pf)                                         pfuPath(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuNewPath,</B>   <B>pfuClosePath,</B>   <B>pfuCopyPath,</B>   <B>pfuSharePath,</B>
+       <B>pfuPrintPath,</B>   <B>pfuFollowPath,</B>   <B>pfuAddArc,</B>   <B>pfuAddDelay,</B>
+       <B>pfuAddFile,</B> <B>pfuAddFillet,</B> <B>pfuAddPath,</B> <B>pfuAddSpeed</B> - Simple
+       path-following utility
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfuPath *   <B>pfuNewPath</B>(void);
+
+       pfuPath *   <B>pfuClosePath</B>(pfuPath *path);
+
+       pfuPath *   <B>pfuCopyPath</B>(pfuPath *copy);
+
+       pfuPath *   <B>pfuSharePath</B>(pfuPath *share);
+
+       int         <B>pfuPrintPath</B>(pfuPath *path);
+
+       int         <B>pfuFollowPath</B>(pfuPath *path,    float seconds,
+                     pfVec3 where, pfVec3 orient);
+
+       int         <B>pfuAddArc</B>(pfuPath *path,        pfVec3 center,
+                     float radius, pfVec2 angles);
+
+       int         <B>pfuAddDelay</B>(pfuPath *path, float delay);
+
+       int         <B>pfuAddFile</B>(pfuPath *path, char *name);
+
+       int         <B>pfuAddFillet</B>(pfuPath *path, float radius);
+
+       int         <B>pfuAddPath</B>(pfuPath *path,        pfVec3 start,
+                     pfVec3 final);
+
+       int         <B>pfuAddSpeed</B>(pfuPath *path,      float desired,
+                     float rate);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfuPath</B> functions provide a simple way to move one  or
+       more  simulated  vehicles  or eyepoints along a mathemati-
+       cally defined path.  The path is a general series of  arcs
+       and line segments.  Once a path is created, it can be fol-
+       lowed each simulation frame to provide position and orien-
+       tation information.
+
+       <B>pfuNewPath</B>  allocates and initializes a new <B>pfuPath</B> struc-
+       ture.  Once the path is opened,  segments  (both  straight
+       and   curved)  can  be  added  using  the  <B>pfuAddPath</B>  and
+       <B>pfuAddArc</B> commands as described below.  The  initial  path
+       speed is set at 1.0 database units per second.
+
+       <B>pfuClosePath</B>  connects  the end point of the final segment
+       of path <I>path</I> with the start point of the path's first seg-
+       ment.   This creates a closed (also known as looping) path
+       that can be followed endlessly. Paths can be  either  open
+       the original path definition.
+
+       <B>pfuSharePath</B> creates a new <B>pfuPath</B> structure,  but  causes
+       the  linked  list  of  path segments in the path structure
+       <I>path</I> to be shared by both old  and  new  path  structures.
+       This  allows multiple simulated objects to follow the same
+       path without the redundant allocation of path storage, and
+       also  allows  changes  to  the  path segment definition to
+       effect all <B>pfuPath</B> structures that share it.
+
+       <B>pfuPrintPath</B> prints the path following control information
+       for  path  object  <I>path</I>, and then prints the definition of
+       each segment in the path  itself.  All  printing  is  done
+       using  the  OpenGL  Performer  <B>pfNotify</B>  mechanism  with a
+       severity level of <B>PFNFY_DEBUG</B>.
+
+       <B>pfuFollowPath</B> performs the actual simulation of moving  an
+       object along the path indicated by <I>path</I>. The <I>seconds</I> argu-
+       ment specifies the simulated duration, and  internal  data
+       in  the  <B>pfuPath</B>  structure  supplies the speed. From this
+       time and speed information, the vehicle's  simulated  dis-
+       tance  of  travel  is computed. Then, the vehicle is moved
+       this distance along the path segments defined  within  the
+       <B>pfuPath</B>   object.  The  resulting  simulated  position  is
+       returned in the <B>pfVec3</B> argument <I>where</I> and the  orientation
+       of the vehicle is returned in <I>orient</I>.
+
+       <B>pfuAddArc</B>  adds a circular arc path segment to the <B>pfuPath</B>
+       structure <I>path</I>. The arc  is  defined  by  the  <I>center</I>  and
+       <I>radius</I>  values,  and  a  pair  of <I>angles</I>. The first angle,
+       <I>angle[0]</I>, is the start angle for the path, and is a  point
+       on  the circle defined by <I>center</I> and <I>radius</I> with the indi-
+       cated counterclockwise angle from  the  positive  X  axis.
+       The second angle, <I>angle[1]</I>, represents the turn angle, the
+       angle between the arc's start and end points  as  measured
+       from  the  designated  center  point. Positive turn angles
+       indicate counterclockwise turns, and negative angles  rep-
+       resent  clockwise turns. An arc from the +X axis to the +Y
+       axis would be defined with a start angle of 0 degrees  and
+       a  turn  angle of 90 degrees. The same arc in the opposite
+       direction of travel is defined by  a  start  angle  of  90
+       degrees and a turn angle of -90 degrees.
+
+       <B>pfuAddDelay</B> adds a zero-length segment to <I>path</I> that causes
+       the simulated vehicle to stop for  the  <I>delay</I>  seconds  at
+       that  point  in  the  path.  Once this much simulated time
+       elapses, the simulation will continue with the  next  seg-
+       ment  in  the path. Delay segments can be used to simulate
+       motor vehicles paused waiting for traffic signals and sim-
+       ilar latent delay sources along a path.
+
+       <B>pfuAddFile</B>  adds  a  series  of path segments defined by a
+       simple ASCII file format to the  <B>pfuPath</B>  structure  <I>path</I>.
+       This  function provides an easy way to load user specified
+       paths for vehicles into simulation  applications,  and  is
+       used  in  the  popular  SGI "Performer Town" demonstration
+       program to load the paths for the truck into the  program.
+
+       <B>pfuAddFillet</B> is used to create circular arcs that join two
+
+              2.   A  fillet request is added using <B>pfuAddFillet</B>.
+                   The fillet's radius is defined in this call.
+
+              3.   A second straight segment is added, again with
+                   <B>pfuAddPath</B>.  This segment must start where the
+                   segment of step one ended.
+
+       When the second segment is added in step three, a test  is
+       performed  to see if the first point in the second segment
+       has the same X, Y, and Z values as the last point  in  the
+       previous  segment. If so, and if there is a fillet request
+       between the two segments, then a matching  fillet  of  the
+       specified  radius  is computed. In addition, the endpoints
+       (and thus  lengths)  of  the  two  straight  segments  are
+       adjusted so as to match with the fillet endpoints.
+
+       For example, the request
+
+              line from (0,0) to (1,0)
+              fillet of radius 0.25
+              line from (1,0) to (1,1)
+
+       will  cause  the fillet arc and line segment lengths to be
+       automatically computed as
+
+              line from (0,0) to (0.75,0)
+              fillet of radius 0.25 with center  (0.75,0.25)  and
+              angles 270 and 90.
+              line from (1,0.25) to (1,1)
+
+       This automatic fillet construction is seen to be very con-
+       venient once the alternative manual fillet construction is
+       attempted.  When  the  fillet radius is too large to allow
+       the arc to be created (as would be the case in the example
+       above  with  a  radius  greater than one), a fillet is not
+       constructed and a sharp turn will exist in the path.
+
+       <B>pfuAddPath</B> adds a straight line segment to <I>path</I>. The  line
+       segment  is  defined  as extending from <I>start</I> to <I>final</I>. As
+       mentioned above, if the segment preceding the line segment
+       is  an unevaluated fillet, and the value of <I>start</I> is equal
+       to that of the <I>final</I> point of the segment before the  fil-
+       let,  then  an automatic fillet will be constructed if the
+       fillet's radius specification  is  sufficiently  small  to
+       allow it.
+
+       <B>pfuAddSpeed</B> adds a speed changing segment to <I>path</I>. The new
+       speed is indicated by <I>desired</I> and the rate  of  adjustment
+       from  the  current path speed to the new speed is given by
+       <I>rate</I>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code  and  documentation
+       are  provided  as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

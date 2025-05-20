@@ -1,0 +1,406 @@
+<HTML>
+<HEAD>
+<TITLE>pfFeature</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFeature</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFeature(3pf)                                     pfFeature(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfQueryFeature,</B> <B>pfMQueryFeature,</B> <B>pfFeature</B> - Graphics fea-
+       ture availability routines
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       int    <B>pfQueryFeature</B>(int which, int *dst);
+
+       int    <B>pfMQueryFeature</B>(int *which, int *dst);
+
+       void   <B>pfFeature</B>(int which, int val);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL Performer make runtime determinations regarding the
+       existence  and relative speed of certain graphics features
+       for the underlying graphics library (OpenGL) on  the  cur-
+       rent  hardware configuration.  These functions provide the
+       ability to both query these results, and to  override  the
+       existence  of a given feature.  OpenGL Performer makes use
+       of the following useful routines in determining its infor-
+       mation:         <B>getgdesc(3g)</B>,        <B>XGetVisualInfo(3X11)</B>,
+       <B>glGetString(3g)</B>,     <B>glXQueryExtensionsString(3g)</B>,     and
+       <B>getinvent(3)</B>.
+
+       <B>pfQueryFeature</B>  takes a <B>PFQFTR_</B> token and returns in <I>dst</I> a
+       token that indicates whether or not  that  feature  exists
+       and  whether  the  feature is reasonable to use in a real-
+       time application.  The return value is the number of bytes
+       successfully written.  The tokens are documented below and
+       special note is made  where  performance  is  commonly  an
+       issue.  These <B>pfQueryFeature</B> return values will be one of:
+
+              <B>PFQFTR_FALSE</B>
+                     indicates that the feature is not  available
+                     on the current hardware configuration.
+
+              <B>PFQFTR_TRUE</B>
+                     indicates  that  the feature is available on
+                     the current hardware configuration.
+
+              <B>PFQFTR_FAST</B>
+                     indicates that the feature is reasonable for
+                     real-time on the current hardware configura-
+                     tion.
+
+       The <B>pfQueryFeature</B> tokens must be one of:
+
+              <B>PFQFTR_VSYNC</B>
+                     queries the status  of  the  graphics  video
+                     clock.   See  the  <B>pfInitVClock</B> man page for
+                     more information.
+
+              <B>PFQFTR_VSYNC_SET</B>
+                     queries the write-ability  of  the  graphics
+                     simultaneously.   See  the  <B>pfChanShare</B>  man
+                     page for more information.
+
+              <B>PFQFTR_HYPERPIPE</B>
+                     queries the support for hyperpipe  hardware.
+                     See the <B>pfHyperpipe</B> man page for more infor-
+                     mation.
+
+              <B>PFQFTR_STEREO_IN_WINDOW</B>
+                     queries the support for  doing  stereo  with
+                     multiple  buffers  in  a single window.  See
+                     the OpenGL  <B>glDrawBufferMode(3g)</B>  man  pages
+                     for more information.
+
+              <B>PFQFTR_PBUFFER</B>
+                     queries the support for OpenGL pbuffer draw-
+                     ables for  off-screen  rendering.   See  the
+                     OpenGL/X   <B>glXCreateGLXPbufferSGIX(3g)</B>   man
+                     page for more information on pbuffers.
+
+              <B>PFQFTR_MULTISAMPLE</B>
+                     queries the support and relative performance
+                     of   multisampled   antialiasing.   See  the
+                     <B>pfAntialias</B> man page for more information.
+
+              <B>PFQFTR_MULTISAMPLE_TRANSP</B>
+                     queries the support and relative performance
+                     of   multisampled   transparency.   See  the
+                     <B>pfTransparency</B> man page  for  more  informa-
+                     tion.
+
+              <B>PFQFTR_MULTISAMPLE_ROUND_POINTS</B>
+                     queries the support and relative performance
+                     of round multisampled light points.
+
+              <B>PFQFTR_MULTISAMPLE_STENCIL</B>
+                     queries the support and relative performance
+                     of multisampled stencil.
+
+              <B>PFQFTR_COLOR_ABGR</B>
+                     queries the support and relative performance
+                     of image data in the ABGR format.  This for-
+                     mat  may  be  slow  or  unsupported  in some
+                     OpenGL implementations.  This is relevant to
+                     the OpenGL <B>glDrawPixels(3g)</B> command.
+
+              <B>PFQFTR_DISPLACE_POLYGON</B>
+                     queries the support for polygon displacement
+                     in screen Z used for doing decals.  See  the
+                     <B>pfDecal</B> man page for more information.
+
+              <B>PFQFTR_POLYMODE</B>
+                     queries  the support for polygon fill modes.
+                     See the OpenGL <B>glPolygonMode(3g)</B>  man  pages
+                     for more information.
+
+              <B>PFQFTR_TRANSPARENCY</B>
+                     queries the support for and relative perfor-
+                     mance of transparency.
+                     performance of antialiased points.
+
+              <B>PFQFTR_FOG_SPLINE</B>
+                     queries the support for spline fog.  See the
+                     <B>pfFog</B> man page for more information.
+
+              <B>PFQFTR_FOG_LAYERED</B>
+                     queries  the  support  for layered fog using
+                     special OpenGL extensions.
+
+              <B>PFQFTR_ALPHA_FUNC</B>
+                     queries the  support  for  alpha  functions.
+                     See  the <B>pfAlphaFunc</B> man page and the OpenGL
+                     <B>glBlendFunc(3g)</B> man pages for more  informa-
+                     tion.
+
+              <B>PFQFTR_ALPHA_FUNC_COMPARE_REF</B>
+                     queries  the  support  for comparative alpha
+                     functions.  See the <B>pfAlphaFunc</B> man page for
+                     more information.
+
+              <B>PFQFTR_BLENDCOLOR</B>
+                     queries  the  support for specification of a
+                     blend color to  use  with  alpha  functions.
+                     Refer     to     the     OpenGL    extension
+                     <B>glBlendColor(3g)</B> for more information.
+
+              <B>PFQFTR_BLEND_FUNC_SUBTRACT</B>
+                     queries the support for  additional  differ-
+                     encing alpha blending functions.
+
+              <B>PFQFTR_BLEND_FUNC_MINMAX</B>
+                     queries  the  support for additional min/max
+                     alpha blending functions.
+
+              <B>PFQFTR_GLSPRITE</B>
+                     queries the  existence  of  GL  support  for
+                     sprites  (billboards).  This can mean faster
+                     billboard drawing and also allows  for  cor-
+                     rect  rendering  of billboards in GL display
+                     lists.  See the pfSprite and pfBillboard man
+                     pages for more information.
+
+              <B>PFQFTR_DVR</B>
+                     queries the support for dynamic video resiz-
+                     ing, useful for load management of fill lim-
+                     ited       applications.        See      the
+                     <B>pfPipeVideoChannel</B> man page for more  infor-
+                     mation.
+
+              <B>PFQFTR_TEXTURE</B>
+                     queries the support and relative performance
+                     of texture mapping.
+
+              <B>PFQFTR_TEXTURE_16BIT_IFMTS</B>
+                     queries the support and relative performance
+                     of 16-bit texel formats.  These formats take
+                     up less texture memory  and  can  provide  a
+                     significant  performance  improvement at the
+
+              <B>PFQFTR_TEXTURE_TRILINEAR</B>
+                     queries the support for trilinear MIPmapping
+                     for minification filtering of texture  maps.
+
+              <B>PFQFTR_TEXTURE_DETAIL</B>
+                     queries  the support for detailing of magni-
+                     fied texture maps.  See the <B>pfTexFilter</B>  and
+                     <B>pfTexDetail</B>  man pages for more information.
+
+              <B>PFQFTR_TEXTURE_SHARPEN</B>
+                     queries the support for sharpening of magni-
+                     fied  texture maps.  See the <B>pfTexFilter</B> man
+                     page for more information.
+
+              <B>PFQFTR_TEXTURE_3D</B>
+                     queries the  support  for  three-dimensional
+                     textures.
+
+              <B>PFQFTR_TEXTURE_5551</B>
+                     queries  whether  graphics hardware supports
+                     the        5551        texture        format
+                     (PFTEX_UNSIGNED_SHORT_5_5_5_1).
+
+              <B>PFQFTR_TEXTURE_PROJECTIVE</B>
+                     queries  the  support for projected textures
+                     (lights). Projected shadows  also  need  the
+                     TEXTURE_SHADOW feature.
+
+              <B>PFQFTR_TEXTURE_MINFILTER_BILINEAR_CMP</B>
+                     queries  the  support  for  special bilinear
+                     LEQUAL/GEQUAL minification filters for doing
+                     real-time  shadows.   <B>PPFQFTR_TEXTURE_SHADOW</B>
+                     queries  the  support  for  shadow   texture
+                     extension.
+
+              <B>PPFQFTR_SHADOW_AMBIENT</B>
+                     queries   support  for  the  shadow  ambient
+                     color. This corresponds to  the  PFLS_INTEN-
+                     SITY value on a pfLightSource.
+
+              <B>PFQFTR_TEXTURE_CLIPMAP</B>
+                     queries  the support of clipmapping, or vir-
+                     tual MIPmapping, for the  minification  fil-
+                     tering of very large textures.
+
+              <B>PFQFTR_TEXTURE_LOD_RANGE</B>
+                     queries  the  support  of  texture LOD range
+                     control for selecting which  texture  levels
+                     are to be used.
+
+              <B>PFQFTR_TEXTURE_LOD_BIAS</B>
+                     queries the support of texture LOD bias con-
+                     trol.
+
+              <B>PFQFTR_READ_MSDEPTH_BUFFER</B>
+                     queries the support for reading  the  multi-
+                     sample depth buffer.
+
+
+              <B>PFQFTR_COPY_TEXTURE_MEMORY</B>
+                     queries the support for copying to/from tex-
+                     ture memory.
+
+              <B>PFQFTR_MTL_CMODE</B>
+                     queries the support and  speed  of  material
+                     color mode. On most graphics platforms, this
+                     mode yields significant performance improve-
+                     ments  for management of multiple materials.
+                     However, on some older low-end platforms, it
+                     can  have  additional cost and should not be
+                     used if multiple materials are not in  used.
+
+              <B>PFQFTR_LIGHT_ATTENUATION</B>
+                     queries the support for light attenuation on
+                     the  light.   This  is  OpenGL  style  light
+                     attenuation.        See      the      OpenGL
+                     <B>glLightModel(3g)</B> man page for more  informa-
+                     tion.
+
+              <B>PFQFTR_LIGHT_CLR_SPECULAR</B>
+                     queries  the support for specular color com-
+                     ponents on lights.  This is  only  supported
+                     in  OpenGL.   See the OpenGL <B>glLight(3g)</B> man
+                     page for more information.
+
+              <B>PFQFTR_CALLIGRAPHIC</B>
+                     queries the support  for  calligraphic  sup-
+                     port.  This is to know if the Graphic Pipe Z
+                     buffer can be used for  calligraphics  light
+                     points,  but  it doesn't tell you if a board
+                     is connected to the system.
+
+              <B>PFQFTR_DECAL_PLANE</B>
+                     queries  the  support  for  decal  reference
+                     planes  for  use  with  pfLayers and pfDecal
+                     geometry.
+
+              <B>PFQFTR_PIPE_STATS</B>
+                     queries the hardware  support  for  graphics
+                     pipeline  statistics.   The  InfiniteReality
+                     graphics subsystem supports time  stamps  in
+                     the graphics pipeline.
+
+              <B>PFQFTR_TEXTURE_ANISOTROPIC</B>
+                     queries the hardware support for anisotropic
+                     texture filtering.
+
+
+              <B>PFQFTR_STIPPLE</B>
+                     queries the  hardware  for  stipple  pattern
+                     support.  All  OpenGL platforms provide this
+                     feature, but it is a huge performance hit on
+                     some.  Performer  will return <B>PFQFTR_FAST</B> on
+                     platforms where this feature is known to  be
+                     cheap and <B>PFQFTR_TRUE</B> otherwise.
+
+              <B>PFQFTR_REGISTER_COMBINERS</B>
+
+       successfully written.  This routine is more efficient than
+       <B>pfQueryFeature</B> if multiple queries are desired.
+
+       <B>pfFeature</B> takes a <B>PFFTR_</B> token <I>which</I> and a  boolean  value
+       <I>val</I> and allows the overriding of OpenGL Performer's deter-
+       mination of the existence of certain features.   This  can
+       force  OpenGL  Performer  to use, or to stop using, a spe-
+       cific feature.  This is useful for running on new graphics
+       platforms  that  may  have considerations that OpenGL Per-
+       former did not predict, or for making one  machine  behave
+       like  another for a specific feature.  Note that if a par-
+       ticular feature is forced on and  it  happens  to  require
+       hardware  support that does not exist, the program may not
+       run.  The features that may be set are:
+
+              <B>PFFTR_VSYNC</B>
+
+              <B>PFFTR_VSYNC_SET</B>
+
+              <B>PFFTR_MULTISAMPLE</B>
+
+              <B>PFFTR_MULTISAMPLE_ROUND_POINT</B>
+
+              <B>PFFTR_ALPHA_FUNC_ALL</B>
+
+              <B>PFFTR_DISPLACE_POLYGON</B>
+
+              <B>PFFTR_POLYMODE</B>
+
+              <B>PFFTR_FOG_SPLINE</B>
+
+              <B>PFFTR_FOG_LAYERED</B>
+
+              <B>PFFTR_GANGDRAW</B>
+
+              <B>PFFTR_HYPERPIPE</B>
+
+              <B>PFFTR_PBUFFER</B>
+
+              <B>PFFTR_DVR</B>
+
+              <B>PFFTR_FAST_TRANSPARENCY</B>
+
+              <B>PFFTR_FAST_AALINES</B>
+
+              <B>PFFTR_FAST_AAPOINTS</B>
+
+              <B>PFFTR_TEXTURE_FAST</B>
+
+              <B>PFFTR_TEXTURE_16BIT_IFMTS</B>
+
+              <B>PFFTR_TEXTURE_SUBTEXTURE</B>
+
+              <B>PFFTR_TEXTURE_3D</B>
+
+              <B>PFFTR_TEXTURE_5551</B>
+
+              <B>PFFTR_TEXTURE_DETAIL</B>
+
+
+              <B>PFFTR_TEXTURE_CLIPMAP</B>
+
+              <B>PFFTR_DECAL_PLANE</B>
+
+              <B>PFFTR_PIPE_STATS</B>
+
+              <B>PFFTR_STIPPLE</B>
+
+              <B>PFFTR_REGISTER_COMBINERS</B>
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfQueryWin</B> can be used to query the configuration  parame-
+       ters of a given pfWindow.  <B>pfQuerySys</B> can be used to query
+       the specific configuration parameters of the current hard-
+       ware configuration.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       getgdesc,  XGetVisualInfo, glGetString, glXQueryExtension-
+       sString, getinvent
+
+
+
+                                                   pfFeature(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

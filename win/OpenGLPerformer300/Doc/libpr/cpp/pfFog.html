@@ -1,0 +1,268 @@
+<HTML>
+<HEAD>
+<TITLE>pfFog</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFog</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFog(3pf)                                             pfFog(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFog,</B>  <B>pfGetCurFog</B> - Create, modify and query fog defini-
+       tion
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfFog.h&gt;
+
+                         <B>pfFog::pfFog</B>()
+
+       static pfType *   <B>pfFog::getClassType</B>(void);
+
+       void              <B>pfFog::setFogType</B>(int type);
+
+       int               <B>pfFog::getFogType</B>(void);
+
+       void              <B>pfFog::setColor</B>(float r,        float g,
+                           float b);
+
+       void              <B>pfFog::getColor</B>(float *r,      float *g,
+                           float *b);
+
+       void              <B>pfFog::setRange</B>(float onset,
+                           float opaque);
+
+       void              <B>pfFog::getRange</B>(float *onset,
+                           float *opaque);
+
+       void              <B>pfFog::setOffsets</B>(float onset,
+                           float opaque);
+
+       void              <B>pfFog::getOffsets</B>(float *onset,
+                           float *opaque);
+
+       void              <B>pfFog::setRamp</B>(int points, float *range,
+                           float *density, float bias);
+
+       void              <B>pfFog::getRamp</B>(int *points,
+                           float *range,        float *density,
+                           float *bias);
+
+       float             <B>pfFog::getDensity</B>(float range);
+
+       void              <B>pfFog::apply</B>(void);
+
+       pfFog *           <B>pfGetCurFog</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL Performer class <B>pfFog</B> is derived from the par-
+       ent class <B>pfObject</B>, so each of these member  functions  of
+       class  <B>pfObject</B>  are  also directly usable with objects of
+       class <B>pfFog</B>.  This is also true for  ancestor  classes  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfFog</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfFog</B> is used to simulate atmospheric  phenomena  such  as
+       fog  and  haze  and  for  depthcueing.   The  fog color is
+       blended with the color that is computed for rendered geom-
+       etry based on the geometry's range from the eyepoint.  Fog
+       effects may be computed at  geometric  vertices  and  then
+       interpolated  or  computed  precisely  at  each individual
+       pixel.
+
+       <B>new</B>(arena) allocates a pfFog  from  the  specified  memory
+       arena,  or  from  the  process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfFog  from  the  default  memory  arena  (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfFogs cannot be
+       created statically,  automatically  on  the  stack  or  in
+       arrays and should be deleted with <B>pfDelete</B> rather than the
+       delete operator.
+
+       <B>pfFog::getClassType</B> returns  the  <B>pfType</B>*  for  the  class
+       <B>pfFog</B>.  The <B>pfType</B>* returned by <B>pfFog::getClassType</B> is the
+       same as the <B>pfType</B>* returned by invoking the virtual func-
+       tion  <B>getType</B>  on any instance of class <B>pfFog</B>.  When deci-
+       sions are made based on the type of an object, it is  usu-
+       ally better to use  the member function <B>isOfType</B>to test if
+       an object is of a  type  derived  from  a  Performer  type
+       rather  than to test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfFog::setFogType</B> sets the fog type to be used  when  this
+       pfFog is applied.  <I>type</I> must be one of:
+              <B>PFFOG_VTX_LIN</B>
+              <B>PFFOG_VTX_EXP</B>
+              <B>PFFOG_VTX_EXP2</B>
+
+       <B>PFFOG_PIX_SPLINE</B>.   This  is  an  advanced  fog  type that
+       allows  the  user   to   define   fog   densities   as   a
+       <B>PFFOG_MAXPOINTS</B>   point   spline  curve  as  described  in
+       <B>pfFog::setRamp</B>.  When fog type <B>PFFOG_PIX_SPLINE</B> is  speci-
+       fied  the internal fog ramp table will be recomputed using
+       the current values of fog  range,  fog  offsets,  and  fog
+       ramp.    The   default   fog   type   is   <B>PFFOG_PIX_EXP2</B>.
+       <B>pfFog::getFogType</B> returns the fog type as its value.
+
+       <B>pfFog::setColor</B> specifies the color to be used as the  fog
+       blend  color.   The  default fog color is white, whose RGB
+       value is [1.0, 1.0, 1.0].  <B>pfFog::getColor</B> returns the fog
+       color in the variables specified.
+
+       <B>pfFog::setRange</B>  sets the onset and opaque ranges in world
+       coordinate distances.  The onset is the range at which fog
+       blending  first  occurs.  The opaque range is the distance
+       at which scene elements are completely opaque  and  appear
+       as  the  fog  color.   For  the  fog  types <B>PFFOG_VTX_EXP,</B>
+       <B>PFFOG_VTX_EXP2,</B>  <B>PFFOG_PIX_EXP,</B>  <B>PFFOG_PIX_EXP2</B>  only  the
+       opaque range is significant; the onset range is always 0.0
+       in world coordinates.  If the fog type is <B>PFFOG_PIX_SPLINE</B>
+       then  the internal fog ramp table will be recomputed when-
+       ever the ranges are  specified.   <B>pfFog::getRange</B>  returns
+       the current fog range values.
+
+       <B>pfFog::setOffsets</B>  sets  the  individual  onset and opaque
+       range offsets used to modify the fog range.  These offsets
+       are  added  to  the  fog  range  values  when the pfFog is
+       applied.  Calling  this  function  with  offsets  of  zero
+       causes  the  ranges  defined by <B>pfFog::setRange</B> to be used
+       directly.  If the fog type is  <B>PFFOG_PIX_SPLINE</B>  then  the
+       internal  fog  ramp  table will be recomputed whenever the
+       offsets are specified.  <B>pfFog::getOffsets</B> returns the cur-
+       rent fog offset values.
+
+       <B>pfFog::setRamp</B> defines the fog density curve using a table
+       rather than as an algebraic function of  range.   The  fog
+       ramp  table  is  only  used  with the <B>PFFOG_PIX_SPLINE</B> fog
+       type.  From four to  PFFOG_MAXPOINTS  control  points  are
+       used  to  describe this curve.  If fewer than four control
+       points are given, the last point  will  be  replicated  to
+       create  four  points.   Each point consists of a range and
+       fog density pair.  These are given in ascending  order  in
+       the  arrays  <I>range</I> and <I>density</I>.  The range value is speci-
+       fied in a normalized form in  the  numeric  range  [0..1],
+       with  0.0  corresponding to the fog onset range (plus off-
+       set) and 1.0 the fog opaque  range  (plus  offset).   This
+       allows the ranges to be changed while maintaining the same
+       fog density curve.  The fog density at  each  range  point
+       must  also be in the [0..1] range, where 1.0 represents no
+       fog and 0.0 means opaque  fog,  using  the  OpenGL-  style
+       interpretation. A Catmull-Rom spline interpolation is used
+       to create hardware fog tables from this  fog  ramp  table.
+       If  the fog type is <B>PFFOG_PIX_SPLINE</B> then the internal fog
+       ramp table will be recomputed whenever the fog  ramp,  fog
+       range, or fog offsets are specified.  The default fog ramp
+       table defines a linear interpolation between the onset and
+       opaque  ranges.   Currently, the <I>bias</I> value must be set to
+       parameters  encapsulated  by  the  pfFog.   Only  the most
+       recently applied pfFog is active although  any  number  of
+       pfFog  definitions  may  be created.  Fogging must also be
+       enabled  (<B>pfEnable</B>(<B>PFEN_FOG</B>))  for  this  pfFog  to   take
+       effect.   Modifications  made  to  this  pfFog do not have
+       effect until <B>pfFog::apply</B> is called.  If a pfDispList  has
+       been opened by <B>pfDispList::open</B>, <B>pfFog::apply</B> will be cap-
+       tured by the pfDispList and will  only  have  effect  when
+       that pfDispList is later drawn with <B>pfDispList::draw</B>.
+
+       The  fog  state  element  is identified by the <B>PFSTATE_FOG</B>
+       token.  Use this token with <B>pfGeoState::setAttr</B> to set the
+       fog  mode  of a pfGeoState and with <B>pfOverride</B> to override
+       subsequent fog changes:
+
+       Example 1:
+
+       /* Set up 'fogged' pfGeoState */
+       gstate-&gt;setMode(PFSTATE_ENFOG, PFFOG_ON);
+       gstate-&gt;setAttr(PFSTATE_FOG, fog);
+
+       /* Attach gstate to gset */
+       gset-&gt;setGState(gstate);
+
+       /* Draw fogged gset */
+       gset-&gt;draw();
+
+
+       Example 2:
+
+       /* Override so that all geometry is fogged with 'fog' */
+       pfEnable(PFEN_FOG);
+       fog-&gt;apply();
+       pfOverride(PFSTATE_FOG | PFSTATE_ENFOG, PF_ON);
+
+
+       <B>pfGetCurFog</B> returns the currently active pfFog.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       PFFOG_PIX_SPLINE and PFFOG_PTX* fog modes are not cur-
+       rently supported under Linux.
+
+       <B>PFFOG_PIX_SPLINE</B> is only effective on InfiniteReality and
+       RealityEngine graphics systems.  The visual quality of
+       per-pixel fogging is influenced by the ratio of the dis-
+       tances from the eye to the far and the eye to the near
+       clipping planes.  This ratio should be minimized for best
+       results.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       <B>pfFog::getDensity</B> does not properly evaluate
+       <B>PFFOG_PIX_SPLINE</B>; instead it linearly interpolates the
+       spline points.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDispList, pfEnable, pfGeoState, pfObject, pfOverride,
+       fogvertex, lsetdepth, perspective, glFog
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

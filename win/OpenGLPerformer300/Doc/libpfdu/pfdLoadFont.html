@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<TITLE>pfdLoadFont</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdLoadFont</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdLoadFont(3pf)                                 pfdLoadFont(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdLoadFont,</B>  <B>pfdLoadFont_type1</B>  -  Utilities  for loading
+       fonts into Performer applications
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfFont *   <B>pfdLoadFont</B>(char *ext,      char *fontFileName,
+                    int style);
+
+       pfFont *   <B>pfdLoadFont_type1</B>(char *fontName, int style);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdLoadFont</B>  tries  to  load a font of specific type using
+       the <I>ext</I> to find a routine that is capable of building this
+       type  of  font.   The routine name is of the form pfdLoad-
+       Font_ext.  This routine will then use <I>fontFileName</I> to find
+       a  file  containing the font description and try to create
+       the pfFont using this description  and  the  <I>style</I>  token.
+       Current   font  style  tokens  include:  <B>PFDFONT_TEXTURED</B>,
+       <B>PFDFONT_OUTLINED</B>,  <B>PFDFONT_FILLED</B>,  <B>PFDFONT_EXTRUDED</B>,  and
+       <B>PFDFONT_VECTOR</B>.  Although only some of these styles may be
+       available for any particular font.
+
+       <B>pfdLoadFont_type1</B> is one instance of a  font  loader.   It
+       loads Haeberli font definitions into Performer structures.
+       Valid styles are all of the above except <B>PFDFONT_VECTOR</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFont, pfString, pfText
+
+
+
+                                                 pfdLoadFont(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,194 @@
+<HTML>
+<HEAD>
+<TITLE>cfly</TITLE>
+</HEAD>
+<BODY>
+<H1>cfly</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+cfly(3pf)                                               cfly(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>cfly</B> - OpenGL Performer scene viewer for PC clusters
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>cfly</B> [ options ] file ...
+
+       <B>run_all_cfly</B> [ options ] file ...
+
+       <B>run_cfly</B> daemon_hostname [ options ] file ...
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>cfly</B>  is  one  of the sample programs distributed with the
+       OpenGL Performer high-performance graphics library.   <B>cfly</B>
+       is  an implementation of <B>perfly</B> for SGI PC-clusters.  <B>cfly</B>
+       treats each PC screen in the cluster as a graphic pipe  on
+       a multi-pipe SGI workstation.
+
+       <B>cfly</B>  brings  up a window (or full screen) on each cluster
+       console. By default, it breaks the field of view  horizon-
+       tally  starting  the leftmost portion on the first cluster
+       host and advancing towards the right.  All program  events
+       are  read  on the first host. In other words, you can only
+       control cfly (GUI, mouse events, keyboard events) from the
+       leftmost console.
+
+       <B>cfly</B>  is  a sample implementation demonstrating how to use
+       the <B>DataSync</B> API for writing multi-screen cluster applica-
+       tions.   The <B>DataSync</B> daemon <B>dsyncd</B> must be running on one
+       of the cluster nodes before starting <B>cfly</B>.
+
+
+   <B>Starting</B> <B>cfly</B>
+       For the sake of the discussion, we assume the master  node
+       of the cluster is <B>master-channel</B>.
+
+       Each  one  of  the cluster nodes runs an identical copy of
+       the program cfly. You can either run cfly manually on each
+       node,  or  use a script that runs them from a single node.
+       The following section demonstrates each one of these oper-
+       ation modes using the data file: town_ogl.pfb.
+
+       If  you  wish  to run each node separately, enter (on each
+       node):
+
+
+           % setenv PFSERVER master-channel
+           % cfly town_ogl.pfb
+
+
+       Start at the leftmost node and advance to the right. As
+       new nodes start, cfly breaks the viewer field of view
+       among all the available nodes from left to right in the
+       order that they were activated.
+
+       If you wish to start cfly from a single node, first make
+       channel:
+
+
+           % run_all_cfly town_ogl.pfb
+
+
+       <B>run_all_cfly</B> start up ImageSync video synchronization,
+       brings up a remote shell on each on each cluster node and
+       runs a script for setting environment variables and run-
+       ning cfly.  Here is the contents of the script
+       <B>run_all_cfly</B>:
+
+
+           #!/bin/csh
+
+           # start ImageSync.
+           /usr/share/ImageSync/bin/imagesync -v
+
+           # Start cfly application on all channels listed in /etc/channel_list
+           # Channels should be listed from left to right to ensure correct
+           # breakup of the cfly field of view.
+           set list=`cat /etc/channel_list`
+
+           # assume DataSync server runs on master node (this host)
+           set server=`hostname`
+
+           set c=0
+           set i=2
+
+           while ( $c &lt;  $list[1] )
+             rsh $list[$i] /usr/bin/X11/run_cfly $server $* &amp;
+
+             @ c = ($c + 1)
+             @ i = ($i + 1)
+             sleep 3
+           end
+
+
+       The script <B>run_cfly</B> reads:
+
+
+           #!/bin/csh
+
+           setenv PFSERVER $1
+           setenv DISPLAY :0
+           setenv __GL_SYNC_TO_VBLANK 1
+
+           shift
+           /usr/bin/X11/cfly $*
+
+
+       Note that <B>run_all_cfly</B> uses /etc/channel_list for a list
+       of channels ordered from left to right. If you change the
+       host names of your cluster nodes, you have to update
+       /etc/channel_list.
+
+       You can also use the script <B>run_cfly</B> in order to start
+       <B>cfly</B> on a single node. <B>run_cfly</B> expects the <B>DataSync</B> dae-
+       mon node hostname as its first parameter. In addition to
+       all user control is identical to that of <B>perfly</B>. See man-
+       ual page for <B>perfly</B> for details.
+
+       <B>cfly</B> has one new parameter to the perfly command line flag
+       <B>-H</B>.  This flag now takes four parameters (instead of
+       three): <B>horiz_fov</B>,<B>vert_fov</B>,<B>h_offset</B>,<B>v_offset</B>.  They set
+       custom field-of-view and viewing offset in the horizontal
+       and vertical directions.  This option is useful for over-
+       riding the automatic projection parameter setting of <B>cfly</B>.
+
+
+   <B>Package</B> <B>dependencies</B>
+       <B>cfly</B> uses DataSync (libds).
+
+
+   <B>Trouble</B> <B>Shooting</B>
+       <B>Channels</B> <B>come</B> <B>up</B> <B>with</B> <B>wrong</B> <B>horizontal</B> <B>offsets.</B>
+
+       The channels listed in /etc/channel_list may be out of
+       order. They should be ordered from left to right.
+
+       <B>Channels</B> <B>do</B> <B>not</B> <B>start</B> <B>at</B> <B>all</B>
+
+       Verify that the <B>DataSync</B> daemon (<B>dsyncd</B>) is running on the
+       same node where you started <B>run_all_cfly</B> (for best load-
+       balancing, <B>dsyncd</B> should run on the master channel).
+
+       Verify that all channel nodes have xhost enabled.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+   <B>Learning</B> <B>More</B>
+       Once you've seen OpenGL Performer in action, you will want
+       to learn more about it.  The OpenGL Performer Programming
+       Guide and the OpenGL Performer Release Notes are the pri-
+       mary sources of information, but the a number of informa-
+       tion sources are available to give you a good start in
+       your learning process. The origin of this quest is the
+       Performer man page. Just type "man performer" and just
+       about everything you might want to know will be there or
+       in one of the on-line resources listed there.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>perfly</B>, <B>performer</B>, <B>dsServer</B>, <B>dsSession</B>, <B>xhost</B>
+
+
+
+                                                        cfly(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

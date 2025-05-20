@@ -1,0 +1,507 @@
+<HTML>
+<HEAD>
+<TITLE>pfVolFog</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVolFog</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVolFog(3pf)                                       pfVolFog(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfVolFog</B> - Defines a nonuniform volume fog.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfVolFog.h&gt;
+
+       void          <B>pfVolFog::setColor</B>(float _r,       float _g,
+                       float _b);
+
+       void          <B>pfVolFog::getColor</B>(float *r,       float *g,
+                       float *b);
+
+       void          <B>pfVolFog::setFlags</B>(int which, int val);
+
+       int           <B>pfVolFog::getFlags</B>(int which);
+
+       void          <B>pfVolFog::setVal</B>(int which, float  val);
+
+       void          <B>pfVolFog::getVal</B>(int which, float *val);
+
+       void          <B>pfVolFog::setAttr</B>(int which, void *attr);
+
+       void          <B>pfVolFog::getAttr</B>(int which, void *attr);
+
+       void          <B>pfVolFog::apply</B>(pfScene *scene);
+
+       void          <B>pfVolFog::draw</B>(pfChannel *channel);
+
+       void          <B>pfVolFog::addChannel</B>(pfChannel *channel);
+
+       void          <B>pfVolFog::updateView</B>(void);
+
+       void          <B>pfVolFog::addNode</B>(pfNode *node);
+
+       void          <B>pfVolFog::setDensity</B>(float density);
+
+       float         <B>pfVolFog::getDensity</B>(void);
+
+       pfTexture *   <B>pfVolFog::getTexture</B>(void);
+
+       void          <B>pfVolFog::addPoint</B>(float elevation,
+                       float density);
+
+       void          <B>pfVolFog::addColoredPoint</B>(float elevation,
+                       float density,    float _r,    float _g,
+                       float _b);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfVolFog</B> is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfVolFog</B>.  This is also true for ancestor classes of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfVolFog</B> can also be used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfVolFog is a class that is used to draw the scene with
+       fog that has different densities at different locations in
+       the scene. The class supports two types of nonuniform fog:
+       a layered fog and a patchy fog.
+
+       A layered fog changes only with elevation, its density and
+       color  is  uniform at a given height. In a pfVolFog a lay-
+       ered fog is defined by a set  of  elevation  points.  Each
+       elevation  point  can specify a fog density and optionally
+       also a fog color at the point's  elevation.   The  density
+       and  the  color between two neighboring points is linearly
+       interpolated.  A patchy fog is defined  by  closed  three-
+       dimensional  objects  and  its  density is constant inside
+       these objects. At the moment all objects specify a  patchy
+       fog of the same color and the same density.
+
+       A  pfVolFog  is not part of the scene graph, it is created
+       separately by the application process. Once created eleva-
+       tion  points  of a layered fog can be specified by calling
+       <B>pfVolFog::addPoint</B>  or  <B>pfVolFog::addColoredPoint</B>  repeat-
+       edly.   The  fog  initialization  is  completed by calling
+       <B>pfVolFog::apply</B>.
+
+       Example:
+
+       pfVolFog *lfog = new pfVolFog;
+
+       lfog-&gt;addPoint(elev1, density1);
+       lfog-&gt;addPoint(elev2, density2);
+       enclosing the foggy areas. It is possible to define sev-
+       eral disjoint areas in the same tree or by adding several
+       different nodes.  Note that each area has to be completely
+       enclosed and the vertices of the surfaces have to be
+       ordered so that the front face of each surface faces out-
+       side the foggy area. The node has to be part of the scene
+       graph for the rendering to work properly.
+
+       Example:
+
+       pfVolFog *pfog = new pfVolFog;
+
+       pfog-&gt;addNode(fogNode);
+
+       pfog-&gt;apply();
+
+
+       Patchy and layered fog can be combined but only if layered
+       fog has a uniform color.
+
+
+       The function <B>pfVolFog::apply</B> initializes a pfVolFog. If at
+       least two elevation points were defined it initializes
+       data structures necessary for rendering of a layered fog,
+       including a 3D texture.  Any control points defined after-
+       wards are ignored.  If a node containing patchy fog bound-
+       aries has been added prior to calling <B>pfVolFog::apply</B> a
+       patchy fog is initialized.  Since function
+       <B>pfVolFog::addNode</B> only marks the parts of the scene graphs
+       that specify the texture it is possible to add additional
+       patchy fog nodes even after <B>pfVolFog::apply</B> has been
+       called.
+
+
+       A pfVolFog needs information about the current eye posi-
+       tion and view direction.  Since this information is not
+       directly accessible in a draw process it is necessary to
+       call <B>pfVolFog::addChannel</B> for each channel (at the begin-
+       ning of the application).  Whenever the view changes the
+       application process has to call <B>pfVolFog::updateView</B>. For
+       example, see programs in perf/samples/apps/C/fogfly or
+       perf/samples/apps/C++/volfog.  Without updating the view
+       the fog will not be rendered.
+
+       If the application changes the position of the patchy fog
+       boundaries (for example, by inserting a pfSCS, pfDCS, or
+       pfFCS node above the fog node) or the orientation of the
+       whole scene with respect to the up vector (for example,
+       the use of a trackball in perfly) the fog may not be drawn
+       correctly.
+
+
+       To draw the scene with a fog the draw process has to call
+       <B>pfVolFog::draw</B> instead of <B>pfDraw</B>. This function will take
+       care of drawing the whole scene graph with the specified
+       fog. Expect the draw time to increase because the scene is
+       drawn twice (three times if both patchy and layered fog
+       are specified). In case of a patchy fog there may also be
+       several full-screen polygons being drawn.  You can easily
+       (optimally 12-bit per r,g,b) and a stencil buffer. It is
+       recommended to use at least a 4-bit stencil buffer (1-bit
+       is sufficient only for very simple fog objects).  It may
+       be necessary to modify your application so that it asks
+       for such a visual.
+
+       A pfVolFog can be deleted using <B>pfDelete</B>. In case of a
+       layered fog it is necessary to delete the texture handle
+       in a draw process. The texture is returned by
+       <B>pfVolFog::getTexture</B>.  See example in perf/sam-
+       ples/apps/C/fogfly.
+
+
+       FOG PARAMETERS
+
+       As mentioned above a layered fog of a uniform color is
+       specified by function <B>pfVolFog::addPoint</B>, which sets the
+       fog density at a given elevation.  The density is scaled
+       so that if the fog has density 1 the nearest object inside
+       the fog that has full fog color is at a distance equal to
+       the 1/10 of the diagonal of the scene bounding box.  The
+       layered fog color is set by function <B>pfVolFog::setColor</B> or
+       by calling <B>pfVolFog::setAttr</B> with parameter PFVFOG_COLOR
+       and a pointer to an array of three floats. The default fog
+       color is (0.9,0.9,1).
+
+       A layered fog of a nonuniform color is specified by func-
+       tion <B>pfVolFog::addColoredPoint</B>, which sets the fog density
+       and the fog color at a given elevation. The color set by
+       <B>pfVolFog::setColor</B> is then ignored.
+
+       The layered fog mode is set by function <B>pfVolFog::setVal</B>
+       with parameter PFVFOG_LAYERED_MODE and one of PFVFOG_LIN-
+       EAR, PFVFOG_EXP, or PFVFOG_EXP2. It is also possible to
+       set the mode both for a layered and patchy fog at once by
+       using parameter PFVFOG_MODE.  The default mode is PFV-
+       FOG_LINEAR. Function of the mode parameter is equivalent
+       to function of the fog mode of the OpenGL <B>glFog()</B>.
+
+       A layered fog can be self-shadowed, that is the lower
+       parts of a dense fog appear darker. Self-shadowing is
+       enabled by setting flag PFVFOG_FLAG_SELF_SHADOWING to 1.
+       The fog mode should be set to PFVFOG_EXP.  When the fog is
+       has different colors at different elevations a secondary
+       scattering is approximated, when the flag PFV-
+       FOG_FLAG_FOG_FILTER is set to 1.  In this case the color
+       of a higher layer may affect the color of a lower layer.
+       If the flag PFVFOG_FLAG_DARKEN_OBJECTS is set even the
+       objects below a dense fog become darker. The light is
+       assumed to come from the top.
+
+       The size of a 3D texture used by a layer fog can be modi-
+       fied by calling <B>pfVolFog::setAttr</B> with parameter PFV-
+       FOG_3D_TEX_SIZE and an array of three integer values. The
+       default texture size is 64x64x64, but reasonable results
+       can be achieved with even smaller sizes. The sizes are
+       automatically rounded to the closest greater or equal
+       power of 2. The second value should be greater or equal
+       than the third value.
+       be forced by calling <B>pfVolFog::setFlags</B> with flag PFV-
+       FOG_FLAG_FORCE_2D_TEXTURE set to 1.
+
+       Once a layered fog is initialized by calling the
+       <B>pfVolFog::apply</B> changing any of the above parameters will
+       not affect rendering of the layered fog.
+
+
+       The density of a patchy fog is controlled by function
+       <B>pfVolFog::setDensity</B>. It can be also set using
+       <B>pfVolFog::setVal</B> with parameter PFVFOG_FOG_DENSITY.  As in
+       case of a layered fog the density of a patchy fog is
+       scaled by the tenth of the diagonal of the scene bounding
+       box.
+
+
+       The user can specify an additional density value that is
+       added to every pixel inside or behind a patchy fog bound-
+       ary using the function <B>pfVolFog::setVal</B> with parameter
+       PFVFOG_FOG_DENSITY_BIAS. This value makes a patchy fog
+       appear denser but it may create unrealistically sharp
+       boundaries. The default value is 0.
+
+       The patchy fog color is set by function <B>pfVolFog::setColor</B>
+       or by calling <B>pfVolFog::setAttr</B> with parameter PFV-
+       FOG_COLOR and a pointer to an array of three floats.  If
+       the blend_color extension is not available patchy fog will
+       be white.
+
+       The patchy fog mode is set by function <B>pfVolFog::setVal</B>
+       with parameter PFVFOG_PATCHY_MODE and one of PFVFOG_LIN-
+       EAR, PFVFOG_EXP, or PFVFOG_EXP2. It is also possible to
+       set the mode both for a patchy and layered fog at once by
+       using parameter PFVFOG_MODE.  The default mode is PFV-
+       FOG_LINEAR.
+
+       The quality and speed of patchy fog rendering can be con-
+       trolled by <B>pfVolFog::setVal</B> with parameter PFVFOG_RESOLU-
+       TION. The resolution is a value between 0 and 1. Higher
+       values will reduce banding and speed up the drawing.  On
+       the other hand, high values may cause corruption in areas
+       of too many overlapping fog surfaces. The default value is
+       0.2, but you may try to use values higher than that if
+       your fog boundaries do not overlap much.
+
+       Parameters of a patchy fog can be modified any time and
+       they will affect the rendering of the subsequent frame. A
+       patchy fog can also be animated by modifying the geometry
+       of the fog nodes. Make sure that the bounding box of the
+       geoset is updated and that <B>pfVolFog::addNode</B> is called
+       every time the bounding box is updated.
+
+       The multi-pass algorithms used for rendering layered and
+       patchy fog may produce incorrect results if the scene
+       graph contains polygons that have equal depth values. To
+       avoid such problems a stencil buffer is used during ren-
+       dering of the second pass. You can disable this function
+       by setting flag PFVFOG_FLAG_CLOSE_SURFACES to 0.
+
+
+       It is possible to use a different algorithm for rendering
+       patchy fog that can handle semitransparent surfaces bet-
+       ter. To use this algorithm, set flag PFV-
+       FOG_FASTER_PATCHY_FOG to 1.
+
+       The faster algorithm also allows the color of patchy fog
+       to be modified using a texture. Either a predefined 1D
+       texture expressing the attenuation between two elevations
+       is used or the user provides a 1D or a 3D texture for each
+       volume object. The predefined 1D texture is enabled by
+       setting flag PFVFOG_FLAG_PATCHY_FOG_1DTEXTURE. The texture
+       is mapped to the range of elevations between the bottom
+       and top of the fog bounding box. The texture value at the
+       bottom (default 0.3) can be modified by calling
+       <B>pfVolFog::setVal</B> with parameter PFVFOG_PATCHY_TEXTURE_BOT-
+       TOM and the value at the top (default 1.5) using parameter
+       PFVFOG_PATCHY_TEXTURE_TOP.  To be able to use a different
+       scale for objects of different sizes, the fog objects have
+       to be specified separately. When flag PFVFOG_FLAG_SEPA-
+       RATE_NODE_BINS is set all calls to <B>pfVolFog::addNode</B>
+       define fog nodes that are drawn separately and the prede-
+       fined texture is scaled according to the bounding box of
+       each node.  If both flag PFVFOG_FLAG_PATCHY_FOG_1DTEXTURE
+       and flag PFVFOG_FLAG_USER_PATCHY_FOG_TEXTURE are set tex-
+       tures associated with the fog nodes are used to modify the
+       surface color of a patchy fog (also only in the faster
+       algorithm).  To avoid artifacts on overlapping colored
+       patchy fog objects a flag PFVFOG_FLAG_DRAW_NODES_SEPA-
+       RATELY forces the algorithm to be applied to each node
+       separately, in the back-to-front order with respect to the
+       viewpoint. Currently, this mode does not work well when
+       scene objects intersect fog objects.
+
+       If flag PFVFOG_FLAG_LAYERED_PATCHY_FOG is set the layered
+       fog is used to define the density and possibly also the
+       color of a patchy fog.  The layered fog is then present
+       only in areas defined by the patchy fog boundaries. Since
+       layered fog is computed for the whole scene, it is impor-
+       tant to set fog parameter PFVFOG_MAX_DISTANCE to a value
+       that corresponds to the size of the patchy fog area (for
+       example, a diameter of its bounding sphere). Use function
+       <B>pfVolFog::setVal</B> to modify the maximum distance parameter.
+       When the faster patchy fog algorithm is used only the den-
+       sity can be varied using a layered fog.
+
+       Layered patchy fog nodes can be moved and rotated by spec-
+       ifying a matrix for each fog node, identified by its index
+       (the order in which nodes were specified). A version of
+       the function <B>pfVolFog::setAttr</B> with three parameters can
+       be used. The first parameter is PFVFOG_ROTATE_NODE, the
+       second parameter specified the node index and the last one
+       is a pointer to a pfMatrix.
+
+       Cull programs (see pfCullProgram) can speed up rendering
+       of patchy fog because in some draw passes only the part of
+       the scene intersecting the fog boundary is rendered. To
+       enable cull programs set flag PFVFOG_FLAG_USE_CULL_PROGRAM
+       to 1.
+       decreasing intensity (density) along the cone axis. Addi-
+       tional rendering passes darken the objects outside the
+       cone of light and lit the objects inside the light shaft
+       based on their distance from the light.  To enable these
+       additional passes set flag PFVFOG_FLAG_LIGHT_SHAFT to 1.
+       To ensure that these passes are applied even if the light
+       shaft is not in the field of view you have to also set
+       flag PFVFOG_FLAG_LAYERED_PATCHY_FOG to 1.
+
+       To control the additional passes the parameter PFV-
+       FOG_LIGHT_SHAFT_DARKEN_FACTOR (set using
+       <B>pfVolFog::setAttr</B>) can change the factor by which all
+       objects outside the light shaft are darkened.  The default
+       value is 0.3.  Parameters PFVFOG_LIGHT_SHAFT_ATTEN_SCALE
+       and PFVFOG_LIGHT_SHAFT_ATTEN_TRANSLATE set the translate
+       and scaling of the one-dimensional texture that is used to
+       reduce the color of objects lit by the light. It is recom-
+       mended to set the translate to a small value, e.g. 10-20%
+       of the shaft length, and the scale to the inverse of the
+       shaft length.
+
+       Since light shafts are using a combination of layered and
+       patchy fog and the density is decreasing to 0 at the end
+       of the light cone the quality of results is very sensitive
+       to the depth of color buffers.  12-bit visuals are
+       required and the light shaft should not be too large.
+       Also make sure that PFVFOG_MAX_DISTANCE is set as small as
+       possible.  See program perf/samples/apps/C++/volfog for an
+       example of setting up a light shaft.
+
+
+
+       HINTS
+
+       A layered fog is faster to render than a patchy fog, thus
+       if draw is very slow try to use a layered fog instead of a
+       patchy fog. Rendering of both types of fog together is
+       even slower and you may try to define only one type.
+
+       Changing the fog mode does not affect the rendering speed
+       in case of a layered fog but rendering of a patchy fog is
+       slower for fog modes PFVFOG_EXP and PFVFOG_EXP2. If you
+       prefer using non-linear modes try to use them only for the
+       layered fog and not for the patchy fog.
+
+       You can speed up drawing of a patchy fog by reducing the
+       size of the fog boundaries. In case of several disjoint
+       fog areas the size of a bounding box containing all bound-
+       aries affects the draw time and quality.  Try to avoid
+       defining a patchy fog in two opposite parts of your scene.
+       Try also to increase the value of <I>resolution</I> (if there are
+       not too many overlapping fog boundaries) or reduce the
+       patchy fog density.
+
+
+       If there is a lot of banding visible in the fog try to
+       choose a visual with as many bits per color component as
+       possible. Keep in mind that a patchy fog needs stencil
+       buffer.  You can also try to apply all techniques men-
+       that front faces always face outside the foggy area.
+
+       If you see a darker band in a layered fog at the eye level
+       make sure that the texture size is set so that the second
+       value is greater or equal than the third value.
+
+
+       LIMITATIONS
+
+       Layered fog:
+
+              The 3D texture coordinates for a layered fog are
+              determined at each vertex and interpolated across a
+              polygon. Consequently, an object located on top of
+              a large ground polygon may be fogged a bit more or
+              less than the part of the polygon just under the
+              object.
+
+              A layered fog works fast with a 3d texture. Reload-
+              ing of 2d textures during the animation can be
+              slow.
+
+              When the layered fog is self-shadowed, only a sin-
+              gle white light source coming from the top is con-
+              sidered.
+
+       Patchy fog:
+
+              The method does not work well for semi-transparent
+              surfaces. If your scene contains objects that are
+              semitransparent or that have semi-transparent edges
+              (for example, tree billboards or mountains in Per-
+              former town) these objects or edges may be cut or
+              may be fogged more than the neighboring pixels.
+              Even if a semi-transparent edge of a billboard is
+              outside the fog it will not be smooth.  Set flag
+              PFVFOG_FASTER_PATCHY_FOG to use a different algo-
+              rithm that does not have these problems. The faster
+              algorithm, on the other hand, suffers from the same
+              problems as layered fog because the fog factors are
+              determined at each vertex and interpolated across a
+              polygon.
+
+
+              All areas of a patchy fog have the same color.
+
+              The default algorithm for patchy fog does not work
+              with pfEarthSky.
+
+
+              A layered patchy fog is extremely sensitive to the
+              size of the fog area and the density of the layered
+              fog. Specifically, the fog values accumulated along
+              an arbitrary line crossing the bounding box of the
+              fog area should not reach 1.
+
+              A patchy fog needs stencil buffer and as deep color
+              buffers as possible.  The rendering quality on a
+              visual with less than 12 bits per color component
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfObject, pfNode, pfFog
+
+
+
+                                                    pfVolFog(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

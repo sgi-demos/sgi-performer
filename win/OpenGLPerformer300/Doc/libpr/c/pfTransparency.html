@@ -1,0 +1,164 @@
+<HTML>
+<HEAD>
+<TITLE>pfTransparency</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTransparency</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTransparency(3pf)                           pfTransparency(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfTransparency,</B>  <B>pfGetTransparency</B>  -  Set/get  the trans-
+       parency mode
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfTransparency</B>(int type);
+
+       int    <B>pfGetTransparency</B>(void);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>type</I>  is a symbolic constant and is one of:
+
+             <B>PFTR_OFF</B>
+                  Disable transparency
+
+             <B>PFTR_ON</B>
+                  OpenGL Performer  will  use  a  default  trans-
+                  parency  mechanism  depending  on  the  machine
+                  being used.
+
+             <B>PFTR_HIGH_QUALITY</B>
+                  OpenGL Performer will use a transparency mecha-
+                  nism  that  provides  the  highest quality, not
+                  necessarily the fastest, transparency.
+
+             <B>PFTR_FAST</B>
+                  OpenGL Performer will use a transparency mecha-
+                  nism that provides the fastest, not necessarily
+                  the highest quality, transparency.
+
+             <B>PFTR_BLEND_ALPHA</B>
+                  OpenGL   Performer   will   use   the    OpenGL
+                  <B>glBlendFunc(3g)</B> method of transparency.
+
+             <B>PFTR_MS_ALPHA</B>
+                  OpenGL   Performer  will  use  the  the  OpenGL
+                  <B>glEnable(GL_SAMPLE_ALPHA_TO_ONE_SGIS)</B> method of
+                  transparency  when  multisampling  is available
+                  and enabled.  Source alpha values will be  con-
+                  verted  to 1.0 (full opacity) before writing to
+                  the framebuffer.
+
+             <B>PFTR_MS_ALPHA_MASK</B>
+                  OpenGL   Performer   will   use   the    OpenGL
+                  <B>glEnable(GL_SAMPLE_ALPHA_TO_MASK_SGIS)</B>   method
+                  of transparency when multisampling is  enabled.
+                  Source alpha values will not be modified.
+       <I>type</I>  may  be  OR-ed  with  <B>PFTR_NO_OCCLUDE</B> if transparent
+       geometry is not to occlude other geometry.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfTransparency</B>  sets  the  transparency  mode   to   <I>mode</I>.
+       Enabling  transparency is not enough to render transparent
+              finalColor  = alpha * geometryColor + ( 1 - alpha )
+              * colorInFramebuffer
+
+       In other words, alpha is the "inverse" of transparency.
+
+       The  transparency   mode   value   may   be   OR-ed   with
+       <B>PFTR_NO_OCCLUDE</B>.   <B>PFTR_NO_OCCLUDE</B>  disables writes to the
+       depth  buffer  so  that  any   geometry   rendered   after
+       <B>pfTransparency</B>  is  called with this value will not modify
+       the depth buffer and so will not be able  to  occlude  any
+       other  geometry.   Since you can "see-through" transparent
+       geometry,   this   is   a   useful   option   when   using
+       <B>PFTR_BLEND_ALPHA</B>  type  transparency and you are unable to
+       render transparent geometry back to front.
+
+       <B>pfGetTransparency</B> returns the current transparency mode.
+
+       The transparency mode state element is identified  by  the
+       <B>PFSTATE_TRANSPARENCY</B>   token.    Use   this   token   with
+       <B>pfGStateMode</B> to set the transparency mode of a  pfGeoState
+       and  with  <B>pfOverride</B>  to override subsequent transparency
+       mode changes:
+
+       Example 1:
+
+       /* Set up transparent pfGeoState */
+       pfGStateMode(gstate, PFSTATE_TRANSPARENCY, PFTR_HIGH_QUALITY);
+
+       /* Attach gstate to gset */
+       pfGSetGState(gset, gstate);
+
+       /*
+        * Draw transparent gset. 'gset' must have alpha values
+        * that are &lt; 1.0f for transparency to have effect.
+        */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       /* Override transparency mode to PFTR_OFF */
+       pfTransparency(PFTR_OFF);
+       pfOverride(PFSTATE_TRANSPARENCY, PF_ON);
+
+
+       The <B>MS_ALPHA</B> transparency methods only work when the win-
+       dow is configured for multisampling. In this case alpha
+       values are converted to a multisample mask, a "screen
+       door" if you will, that allows the geometry color to only
+       partially influence each pixel. This kind of transparency
+       is most efficient when multisampling and has the important
+       benefit of *not* requiring sorting of transparent geome-
+       try. <B>PFTR_BLEND_ALPHA</B> on the other hand actually blends
+       the geometry color with what is already in the frame-
+       buffer. Thus it requires the following for proper results:
+
+
+              1.   Transparent geometry be rendered after opaque
+                   geometry.
+
+       pfDispList and will only have effect when that pfDispList
+       is later drawn with <B>pfDrawDList</B>.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       <B>pfTransparency</B> modifies the <B>zwritemask</B> but does not
+       restore it.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       blendfunction, msalpha, msmask, glEnable, glSampleMaskS-
+       GIS, pfDispList, pfGeoState, pfState, zwritemask
+
+
+
+                                              pfTransparency(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

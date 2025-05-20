@@ -1,0 +1,392 @@
+<HTML>
+<HEAD>
+<TITLE>pfHighlight</TITLE>
+</HEAD>
+<BODY>
+<H1>pfHighlight</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfHighlight(3pf)                                 pfHighlight(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfHighlight,</B>  <B>pfGetCurHlight</B> - Control, create, modify and
+       query highlight state
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfHighlight.h&gt;
+
+                         <B>pfHighlight::pfHighlight</B>()
+
+       static pfType *   <B>pfHighlight::getClassType</B>(void);
+
+       void              <B>pfHighlight::apply</B>(void);
+
+       void              <B>pfHighlight::setMode</B>(uint mode);
+
+       uint              <B>pfHighlight::getMode</B>(void);
+
+       void              <B>pfHighlight::setColor</B>(uint which,
+                           float r, float g, float b);
+
+       void              <B>pfHighlight::getColor</B>(uint which,
+                           float *r, float *g, float *b);
+
+       void              <B>pfHighlight::setAlpha</B>(float a);
+
+       float             <B>pfHighlight::getAlpha</B>(void);
+
+       void              <B>pfHighlight::setNormalLength</B>(float length,
+                           float bboxScale);
+
+       float             <B>pfHighlight::getNormalLength</B>(float *length,
+                           float *bboxScale);
+
+       void              <B>pfHighlight::setLineWidth</B>(float width);
+
+       float             <B>pfHighlight::getLineWidth</B>(void);
+
+       void              <B>pfHighlight::setPntSize</B>(float size);
+
+       float             <B>pfHighlight::getPntSize</B>(void);
+
+       void              <B>pfHighlight::setLinePat</B>(int which,
+                           ushort pat);
+
+       ushort            <B>pfHighlight::getLinePat</B>(const int which);
+
+       void              <B>pfHighlight::setFillPat</B>(int which,
+                           uint *fillPat);
+
+       void              <B>pfHighlight::getFillPat</B>(const int which,
+                           uint *pat);
+
+       void              <B>pfHighlight::setGState</B>(pfHighlight* hl,
+                           pfGeoState *gstate);
+
+       void              <B>pfHighlight::setTex</B>(pfTexture *tex);
+
+       pfTexture*        <B>pfHighlight::getTex</B>(void);
+
+       void              <B>pfHighlight::setTEnv</B>(pfTexEnv *tev);
+
+       pfTexEnv*         <B>pfHighlight::getTEnv</B>(void);
+
+       void              <B>pfHighlight::setTGen</B>(pfTexGen *tgen);
+
+       pfTexGen*         <B>pfHighlight::getTGen</B>(void);
+
+       pfHighlight *     <B>pfGetCurHlight</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfHighlight</B> is derived from the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfHighlight</B>.  This is also true for ancestor classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfHighlight</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       modes, a contrasting, or background, color.  Additionally,
+       there are highlighting modes for displaying the bound nor-
+       mals and cached bounding boxes of pfGeoState geometry.
+
+       A pfHighlight structure can be applied in  immediate  mode
+       to  the current active pfGeoState with <B>pfHighlight::apply</B>,
+       and    added    to    a    specific    pfGeoState     with
+       <B>pfGeoState::setMode</B>.  Highlighting can be enabled and dis-
+       abled in immediate mode  with  <B>pfEnable</B>(<B>PFEN_HIGHLIGHTING</B>)
+       and  <B>pfDisable</B>(<B>PFEN_HIGHLIGHTING</B>),  and  the  override for
+       highlighting    can    be    set     with     <B>pfOverride</B>(-
+       <B>PFSTATE_HIGHLIGHT</B>).  Unlike other types of state, a struc-
+       ture  may  be  applied  to  a   specific   pfGeoSet   with
+       <B>pfGeoSet::setHlight</B>.   This  will cause the pfGeoSet to be
+       drawn  as  highlighted  with  the  specified  highlighting
+       structure,  unless highlighting has been overridden as off
+       with <B>pfOverride</B>.
+
+       This special exception was made because it is assumed that
+       highlighting  is  to be used dynamically to highlight spe-
+       cific objects for a short period of time  and  should  not
+       impact the rest of the state structure.
+
+       Highlighting  does  have some performance penalty, in part
+       because some of the highlighting modes make use of  expen-
+       sive graphics features, and in part because, to offer this
+       flexibility, highlighted objects  go  through  a  slightly
+       slower path in OpenGL Performer rendering code.
+
+       <B>new</B>(arena) allocates a pfHighlight from the specified mem-
+       ory arena, or from the process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfHighlight from the default memory arena (see
+       <B>pfGetSharedArena</B>).   Like  other  pfObjects,  pfHighlights
+       cannot  be  created statically, automatically on the stack
+       or  in  arrays.   pfHighlights  should  be  deleted   with
+       <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfHighlight::getClassType</B>  returns  the  <B>pfType</B>*  for  the
+       class    <B>pfHighlight</B>.     The    <B>pfType</B>*    returned    by
+       <B>pfHighlight::getClassType</B>  is  the  same  as  the  <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>  on  any
+       instance  of  class <B>pfHighlight</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an  object
+       is  of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfHighlight::apply</B>  makes  the  pfHighlight  the   current
+       active pfHighlight structure.
+
+       <B>pfGetCurHlight</B>  returns  a  pointer  to the current active
+       pfHighlight structure.
+
+       <B>pfHighlight::setGState</B> sets a highlighting  pfGeoState  of
+       the  pfHighlight  to  <I>gstate</I>.  This pfGeoState is made the
+       current pfGeoState for the highlighting phase of the draw-
+       ing  of the highlighted pfGeoSet.  Additional highlighting
+       mode changes are applied on top of this pfGeoState.   This
+
+       <B>pfHighlight::setMode</B>  sets  the highlighting mode <I>mode</I> for
+       the pfHighlight.  The mode specifies  the  drawing  style:
+       how  the  filled  region and polygon outlines of an object
+       should be drawn.  This mode is a bitmask composed by  bit-
+       wise OR-ing together the following tokens.  The default is
+       <B>PFHL_FILL</B>, and a zero mask is ignored.
+
+              <B>PFHL_POINTS</B>         Selects the display  of  object
+                                  vertices  as  points  using the
+                                  point   size    specified    by
+                                  <B>pfHlightPntSize</B>.
+
+              <B>PFHL_NORMALS</B>        Selects  the  display of object
+                                  normals  as  lines   of   width
+                                  determined                   by
+                                  <B>pfHighlight::setLineWidth</B>,
+                                  length       determined      by
+                                  <B>pfHighlight::setNormalLength</B>,
+                                  and    color    determined   by
+                                  <B>pfHighlight::setColor</B>.
+
+              <B>PFHL_BBOX_LINES</B>     Selects  the  display  of   the
+                                  object's cached bounding box in
+                                  lines of  width  determined  by
+                                  <B>pfHighlight::setLineWidth</B>   and
+                                  color       determined       by
+                                  <B>pfHighlight::setColor</B>.
+
+              <B>PFHL_BBOX_FILL</B>      Selects   the  display  of  the
+                                  object's cached bounding box as
+                                  a solid filled box of the fore-
+                                  ground  color  of  the  pfHigh-
+                                  light.
+
+              <B>PFHL_LINES</B>          Selects   outlining  of  primi-
+                                  tives. The lines are  drawn  of
+                                  width       determined       by
+                                  <B>pfHighlight::setLineWidth</B>   and
+                                  color       determined       by
+                                  <B>pfHighlight::setColor</B>.
+
+              <B>PFHL_LINES_R</B>        Selects outlining of primitives
+                                  and   reverses  foreground  and
+                                  background   colors   for   the
+                                  lines.
+
+              <B>PFHL_LINESPAT</B>       Selects outlining of primitives
+                                  with patterned lines.
+
+              <B>PFHL_LINESPAT2</B>      Selects outlining of primitives
+                                  with  2-pass  patterned  lines,
+                                  using both foreground and back-
+                                  ground highlighting colors.
+
+              <B>PFHL_FILL</B>           Selects   filling  of  polygons
+                                  with the foreground  highlight-
+                                  ing  color.   In this mode, the
+                                  highlighted polygons are filled
+                                  and  reverses  foreground   and
+                                  background   colors   for  fill
+                                  highlight modes.
+
+              <B>PFHL_FILLTEX</B>        Selects the  application  of  a
+                                  highlight texture on the object
+                                  geometry.  The default  texture
+                                  may  be  used, or a texture and
+                                  associated  attributes  may  be
+                                  set                        with
+                                  <B>pfHighlight::setTexTGen</B>,
+                                  <B>pfHighlight::setTEnvTGen</B>,   and
+                                  <B>pfHighlight::setTGen</B>.
+
+              <B>PFHL_FILLPAT</B>        Selects  patterned  filling  of
+                                  polygons  with  the  foreground
+                                  highlighting color.  This  pat-
+                                  terning  will  be done in addi-
+                                  tion to the normal  filling  of
+                                  the  polygons  and  will  be an
+                                  overlay with  the  normal  base
+                                  polygons showing through.
+
+              <B>PFHL_FILLPAT2</B>       Selects  2-pass patterned fill-
+                                  ing of polygons using both  the
+                                  foreground and background high-
+                                  lighting colors.  This pattern-
+                                  ing will be done in addition to
+                                  the normal filling of the poly-
+                                  gons  and  will  be  an overlay
+                                  with the normal  base  polygons
+                                  showing through.
+
+              <B>PFHL_SKIP_BASE</B>      Causes the normal drawing phase
+                                  of the highlighted pfGeoSet  to
+                                  be  skipped.  This includes the
+                                  application of  the  pfGeoState
+                                  for that pfGeoSet.
+
+       <B>pfHighlight::getMode</B>  returns the highlighting mode of the
+       pfHighlight.
+
+       <B>pfHighlight::setColor</B>  sets  the  specified   highlighting
+       color  <I>color</I>, <B>PFHL_FGCOLOR</B> or <B>PFHL_BGCOLOR</B>, of the pfHigh-
+       light, to <I>r</I>, <I>g</I>, and <I>b</I>.  <B>pfHighlight::getColor</B>  copies  the
+       specified  <I>color</I>,  <B>PFHL_FGCOLOR</B>  or  <B>PFHL_BGCOLOR</B>,  of the
+       pfHighlight, into <I>r</I>, <I>g</I>, and <I>b</I>.
+
+       <B>pfHighlight::setAlpha</B> sets the alpha of the pfHighlight to
+       <I>a</I>.  <B>pfHighlight::getAlpha</B> returns the alpha of the pfHigh-
+       light.
+
+       <B>pfHighlight::setLineWidth</B> sets the line width to  be  used
+       for  the  <B>PFHL_LINES</B>,  <B>PFHL_NORMALS</B>,  and <B>PFHL_BBOX</B>  high-
+       lighting modes of the pfHighlight to <I>width</I>.  If  <I>width</I>  is
+       not  greater  than zero, the line width will not be set by
+       the highlight structure and will  be  inherited  from  the
+       current  environment.   <B>pfHighlight::getLineWidth</B>  returns
+       the line width of the pfHighlight.
+       <I>bboxScale</I>, respectively.
+
+       <B>pfHighlight::setPntSize</B> sets the point size to be used for
+       the  <B>PFHL_POINTS</B>  highlighting  mode of the pfHighlight to
+       <I>size</I>.  If <I>size</I> is not greater than zero,  the  point  size
+       will  not  be  set  by the highlight structure and will be
+       inherited     from      the      current      environment.
+       <B>pfHighlight::getPntSize</B>  returns  the  point  size  of the
+       pfHighlight.
+
+       <B>pfHighlight::setLinePat</B> sets the pattern to  be  used  for
+       lines in the  <B>PFHL_LINES</B> highlighting modes of the pfHigh-
+       light to <I>pat</I>.  <B>pfHighlight::getLinePat</B> returns  the  high-
+       lighting  line pattern of the pfHighlight.  For both func-
+       tions, the <I>which</I> argument determines if the  line  pattern
+       pertaining to the foreground (<B>PFHL_FGPAT</B>) or background (-
+       <B>PFHL_BGPAT</B>) style is to be set or inquired.
+
+       <B>pfHighlight::setFillPat</B> sets the fill pattern to  be  used
+       in the  <B>PFHL_FILLPAT</B> highlighting modes of the pfHighlight
+       to <I>pat</I>.  <B>pfHighlight::getFillPat</B> returns the  highlighting
+       fill pattern of the pfHighlight.
+
+       <B>pfHighlight::setTex</B>  sets  the  pfTexture for the <B>PFHL_TEX</B>
+       highlighting   modes   of   the   pfHighlight   to    <I>tex</I>.
+       <B>pfHighlight::getTex</B>  returns the previously set highlight-
+       ing texture of the pfHighlight.  If a texture is not spec-
+       ified  but the <B>PFHL_TEX</B> is selected for the pfHighlight, a
+       default two-component texture using the highlighting fore-
+       ground and background colors will be used.
+
+       <B>pfHighlight::setTEnv</B>  sets the texture environment (pfTex-
+       Env) for the <B>PFHL_TEX</B> highlighting modes  of  the  pfHigh-
+       light to <I>tev</I>.  <B>pfHighlight::getTEnv</B> returns the previously
+       set highlighting texture environment of  the  pfHighlight.
+       If a texture environment is not specified but the <B>PFHL_TEX</B>
+       is selected for the pfHighlight, a default  texture  blend
+       environment will be used.
+
+       <B>pfHighlight::setTGen</B>  sets  the texture coordinate genera-
+       tion attribute (pfTexGen) for  the  <B>PFHL_TEX</B>  highlighting
+       modes  of  the  pfHighlight to <I>tgen</I>.  <B>pfHighlight::getTGen</B>
+       returns the previously set highlighting  pfTexGen  of  the
+       pfHighlight.   If a texture coordinate generation function
+       is not specified and the object to be highlighted  has  no
+       texture  coordinates  of  its  own  and  the  <B>PFHL_TEX</B>  is
+       selected for the pfHighlight, a default texture coordinate
+       generation function will be used.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Example 1: Set up a highlighting structure and apply it in
+       immediate mode to the current pfGeoState.
+
+       pfHighlight *hl;
+
+       /* allocate a new highlight color */
+       hl = new pfHighlight;
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDisable, pfDrawHlightedGSet, pfEnable,
+       pfGSetHlight, pfGeoState, pfGetGSetHlight, pfObject,
+       pfOverride, pfState
+
+
+
+                                                 pfHighlight(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

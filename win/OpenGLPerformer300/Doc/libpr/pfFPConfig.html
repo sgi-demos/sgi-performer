@@ -1,0 +1,89 @@
+<HTML>
+<HEAD>
+<TITLE>pfFPConfig</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFPConfig</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFPConfig(3pf)                                   pfFPConfig(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFPConfig,</B>  <B>pfGetFPConfig</B> - Specify floating-point toler-
+       ances and exception handling
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void    <B>pfFPConfig</B>(int which, float val);
+
+       float   <B>pfGetFPConfig</B>(int which);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfFPConfig</B> allows you to set some tolerances used  by  the
+       OpenGL Performer math routines.  The <I>which</I> field specifies
+       which floating point attribute is to be set.   <I>val</I>  speci-
+       fies  the value that attribute should take. Supported val-
+       ues are:
+
+              <B>PFFP_UNIT_ROUNDOFF</B>
+                   Specifies the tolerance applied to testing for
+                   equality,  usually  scaled by the magnitude of
+                   the operand.  The default is 1.0e-5.  For per-
+                   formance  reasons,  the  appropriately  scaled
+                   tolerance is not used pervasively.
+
+              <B>PFFP_ZERO_THRESH</B>
+                   Specifies how large in  magnitude  a  floating
+                   point  number  can be before it should be con-
+                   sidered non-zero.  The default is 1.0e-15.
+
+              <B>PFFP_TRAP_FPES</B>
+                   Enables  and  disables  trapping  of  floating
+                   point  exceptions  with  <I>value</I>s  1.0  and 0.0,
+                   respectively.  Normally, these floating  point
+                   errors  are  handled through kernel exceptions
+                   or by the floating point hardware, and may  be
+                   nearly invisible to an application except from
+                   performance degradation, sometimes  very  sig-
+                   nificant, which they can cause.  When enabled,
+                   pfNotify events are generated for the floating
+                   point  exceptions mentioned above and messages
+                   displayed or passed to the user supplied pfNo-
+                   tify handler.
+
+       An  application  can also turn on floating point exception
+       handling via the general Performer  pfNotify  notification
+       mechanism.  Calling  <B>pfNotifyLevel</B> with the <B>PFNFY_FP_DEBUG</B>
+       notification level configures <B>pfFPConfig</B> to enable  excep-
+       tions.   Alternately,  an appropriate setting of the envi-
+       ronment variable <B>PFNFYLEVEL</B> will enable this processing as
+       well.  Use  of  the  <B>pfNotifyLevel</B>  function is preferable
+       because then the PFNFYLEVEL environment  variable  can  be
+       used when necessary to override the specification.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       handle_sigfpes, pfNotifyLevel
+
+
+
+                                                  pfFPConfig(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,266 @@
+<HTML>
+<HEAD>
+<TITLE>pfQuat</TITLE>
+</HEAD>
+<BODY>
+<H1>pfQuat</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfQuat(3pf)                                           pfQuat(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfQuat</B> - Set and operate on quaternions
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLinMath.h&gt;
+
+                     <B>pfQuat::pfQuat</B>();
+
+                     <B>pfQuat::pfQuat</B>(float _x, float _y, float _z,
+                       float _w);
+
+                     <B>pfQuat::pfQuat</B>(const float v[4]);
+
+                     <B>pfQuat::pfQuat</B>(const pfMatrix &amp;m);
+
+                     <B>pfQuat::pfQuat</B>(const pfVec3 &amp;axis,
+                       float _angle);
+
+                     <B>pfQuat::pfQuat</B>(const pfVec3 &amp;rotateFrom,
+                       const pfVec3 rotateTo);
+
+       void          <B>pfQuat::makeRot</B>(float angle,        float x,
+                       float y, float z);
+
+       void          <B>pfQuat::getRot</B>(float *angle,       float *x,
+                       float *y, float *z);
+
+       void          <B>pfQuat::getRot</B>(pfMatrix &amp;m);
+
+       void          <B>pfQuat::makeRot</B>(const pfMatrix &amp;m);
+
+       void          <B>pfQuat::makeVecRotVec</B>(const pfVec3 &amp;rotateFrom,
+                       const pfVec3 rotateTo);
+
+       float         <B>pfQuat::length</B>(void);
+
+       void          <B>pfQuat::conj</B>(const pfQuat &amp;q);
+
+       void          <B>pfQuat::exp</B>(const pfQuat &amp;q);
+
+       void          <B>pfQuat::log</B>(const pfQuat &amp;q);
+
+       void          <B>pfQuat::mult</B>(const pfQuat &amp;q1,
+                       const pfQuat &amp;q2);
+
+       void          <B>pfQuat::div</B>(const pfQuat &amp;q1,
+                       const pfQuat &amp;q2);
+
+       void          <B>pfQuat::invert</B>(const pfQuat &amp;q);
+
+       int           <B>pfQuat::equal</B>(const pfQuat &amp;q1,
+                       const pfQuat &amp;q2);
+
+       int           <B>pfQuat::almostEqual</B>(const pfQuat &amp;q1,
+                       const pfQuat &amp;q2, float tol);
+
+       extern void   <B>pfQuat::meanTangent</B>(const pfQuat &amp;q1,
+                       const pfQuat &amp;q2, const pfQuat &amp;q3);
+
+       pfQuat &amp;      <B>pfQuat::operator</B> <B>*</B>(const pfQuat &amp;m);
+
+       pfQuat        <B>pfQuat::operator</B> <B>*=</B>(const pfQuat &amp;m);
+
+       pfQuat        <B>pfQuat::operator</B> <B>/</B>(const pfQuat &amp;v);
+
+       pfQuat &amp;      <B>pfQuat::operator</B> <B>/=</B>(const pfQuat &amp;v);
+
+
+                     struct pfQuat : public pfVec4
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfQuat</B> is derived from the par-
+       ent class <B>pfVec4</B>, so each of these member functions of
+       class <B>pfVec4</B> are also directly usable with objects of
+       class <B>pfQuat</B>.  This is also true for ancestor classes of
+       class <B>pfVec4</B>.
+
+       void*          <B>pfVec4::operator</B> <B>new</B>(size_t);
+       void*          <B>pfVec4::operator</B> <B>new</B>(size_t, void *arena);
+       void           <B>pfVec4::addScaled</B>(pfVec3&amp; dst,
+                        const pfVec3&amp; v1, float s,
+                        const pfVec3&amp; v2);
+       void           <B>pfVec4::add</B>(const pfVec4&amp; v1,
+                        const pfVec4&amp; v2);
+       int            <B>pfVec4::almostEqual</B>(const pfVec4&amp; v2,
+                        float tol);
+       void           <B>pfVec4::combine</B>(float s1, const pfVec4&amp; v1,
+                        float s2, const pfVec4&amp; v2);
+       void           <B>pfVec4::copy</B>(const pfVec4&amp; v);
+       float          <B>pfVec4::distance</B>(const pfVec4&amp; pt2);
+       float          <B>pfVec4::dot</B>(const pfVec4&amp; v2);
+       int            <B>pfVec4::equal</B>(const pfVec4&amp; v2);
+       float          <B>pfVec4::length</B>(void);
+       void           <B>pfVec4::negate</B>(const pfVec4&amp; v);
+       float          <B>pfVec4::normalize</B>(void);
+       void           <B>pfVec4::scale</B>(float s, const pfVec4&amp; v);
+       void           <B>pfVec4::set</B>(float x, float y, float z,
+                        float w);
+       float          <B>pfVec4::sqrDistance</B>(const pfVec4&amp; pt2);
+       void           <B>pfVec4::sub</B>(const pfVec4&amp; v1,
+                        const pfVec4&amp; v2);
+       void           <B>pfVec4::xform</B>(const pfVec4&amp; v, const pfMa-
+                        trix&amp; m);
+       float&amp;         <B>pfVec4::operator</B> <B>[]</B>(int i);
+       const float&amp;   <B>pfVec4::operator</B> <B>[]</B>(int i);
+       int            <B>pfVec4::operator</B> <B>==</B>(const pfVec4&amp; v);
+       pfVec4         <B>pfVec4::operator</B> <B>-</B>() const;
+       pfVec4         <B>pfVec4::operator</B> <B>+</B>(const pfVec4&amp; v);
+       pfVec4         <B>pfVec4::operator</B> <B>-</B>(const pfVec4&amp; v);
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>=</B>(const pfVec4&amp; v);
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>*=</B>(float d);
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>/=</B>(float d);
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>+=</B>(const pfVec4&amp; v);
+       pfVec4         <B>pfVec4::operator</B> <B>*</B>(const pfVec4&amp; v,
+                        const pfMatrix&amp; m);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfQuat represents a quaternion as the four floating point
+       values (<I>x</I>, <I>y</I>, <I>z</I>, <I>w</I>) of a pfVec4.
+
+       The default constructor <B>pfQuat</B>() is empty and does no ini-
+       tialization.  <B>new</B>(arena) allocates a pfQuat from the spec-
+       ified memory arena, or from the heap if <I>arena</I> is NULL.
+       <B>new</B> allocates a pfQuat from the default memory arena (see
+       <B>pfGetSharedArena</B>).  pfQuats can also be created automati-
+       cally on the stack or statically.  pfQuats allocated with
+       <B>new</B> can be deleted with <B>delete</B> or <B>pfDelete</B>.  pfQuats can
+       also be constructed by specifying the four members of the
+       quaternion directly as floats using <B>pfQuat</B>(float _x, float
+       _y, float _z, float _w), as an array of floats using
+       <B>pfQuat</B>(const float v[4]), from an orthonormal pfMatrix
+       using <B>pfQuat</B>(const pfMatrix &amp;m), from an axis and angle
+       using <B>pfQuat</B>(const pfVec3 &amp;axis, float _angle), and from
+       two vectors to rotate between using <B>pfQuat</B>(const pfVec3
+       &amp;rotateFrom, const pfVec3 rotateTo).
+
+       <B>pfQuat::makeRot</B> converts an <I>axis</I> and <I>angle</I> rotation repre-
+       sentation to a quaternion.  <B>pfQuat::getRot</B> is the inverse
+       operation. It produces the axis (as a unit length direc-
+       tion vector) and angle equivalent to the given quaternion.
+       Also see <B>pfMatrix::makeQuat</B> and <B>pfMatrix::getOrthoQuat</B>.
+
+       <B>pfQuat::makeRot(pfMatrix)</B> converts the rotation expressed
+       by an orthonormal pfMatrix to a pfQuat.  If the pfMatrix
+       is not orthonormal the results are undefined (and will
+       most certainly not be the rotation that you wanted).
+       <B>pfQuat::getRot(pfMatrix)</B> constructs a rotation matrix from
+       the quaternion.
+
+       <B>pfQuat::makeVecRotVec</B> constructs a quaternion from the
+       rotation between the two vectors rotateFrom and rotateTo.
+
+       Several monadic quaternion operators are provided.
+       <B>pfQuat::conj</B> produces the complex conjugate <I>dst</I> of <I>q</I> by
+       negating only the complex components (<I>x</I>, <I>y</I>, and <I>z</I>) which
+       results in an inverse rotation.  <B>pfQuat::exp</B> and
+       <B>pfQuat::log</B> perform complex exponentiation and logarithm
+       functions respectively. The length of a quaternion is com-
+       puted by <B>pfQuat::length</B> and is defined as the norm of all
+       four quaternion components.  Macro equivalents are
+       <B>PFCONJ_QUAT</B> and <B>PFLENGTH_QUAT</B>.  For negation, use the
+       pfVec4 routine, <B>pfVec4::negate</B>.
+
+       <B>pfQuat::mult</B> and <B>pfQuat::div</B> are dyadic quaternion opera-
+       tions which provide the product, and quotient of two
+       quaternions.  When quaternions are used to represent rota-
+       tions, multiplication of two quaternions is equivalent,
+       but more efficient, than the multiplication of the two
+       correspondinging rotation matrices.
+
+       <B>pfQuat::invert</B> computes the multiplicative inverse of a
+       quaternion.  These operations are the basis from which the
+
+       <B>pfQuat</B> <B>&amp;</B> <B>operator</B> <B>*</B>(const pfQuat &amp;m) <B>pfQuat</B> <B>operator</B>
+       <B>*=</B>(const pfQuat &amp;m) Performs multiplication with anther
+       pfQuat.
+
+       <B>pfQuat</B> <B>operator</B> <B>/</B>(const pfQuat &amp;v) <B>pfQuat</B> <B>&amp;</B> <B>operator</B>
+       <B>/=</B>(const pfQuat &amp;v) Performs division with anther pfQuat.
+
+       Interpolation of quaternions (as presented by Ken Shoe-
+       make) is an effective technique for rotation interpola-
+       tion. Spherical linear interpolation is performed with
+       <B>pfQuat::slerp</B>, which produces a pfQuat that is <I>t</I> of the
+       way between <I>q1</I> and <I>q2</I>.
+
+       Spherical quadratic interpolation is provided by
+       <B>pfQuat::squad</B> and its helper function,
+       <B>pfQuat::meanTangent</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       These functions use a pfVec4 to represent quaternions and
+       store the imaginary part first, thus the array contents q
+       = {x,y,z,w} are a representation of the quaternion w + x<I>i</I>
+       + y<I>j</I>+ z<I>k</I>.
+
+       Because both <I>q</I> and <I>-q</I> represent the same rotation (quater-
+       nions have a rotation range of [-360,360] degrees) conver-
+       sions such as <B>pfMatrix::getOrthoQuat</B> make an arbitrary
+       choice of the sign of the returned quaternion.  To prevent
+       the arbitrary sign from introducing large, unintended
+       rotations, <B>pfQuat::slerp</B> checks the angle <I>theta</I> between <I>q1</I>
+       and <I>q2</I>.  If <I>theta</I> exceeds 180 degrees, <I>q2</I> is negated
+       changing the interpolations range from [0,<I>theta</I>] to [0,
+       <I>theta</I>-360 degrees].
+
+       When using overloaded operators in C++, assignment opera-
+       tors, e.g.  "+=", are somewhat more efficient than the
+       corresponding binary operators, e.g. "+", because the lat-
+       ter construct a temporary intermediate object.  Use
+       assignment operators or macros for binary operations where
+       optimal speed is important.
+
+       C++ does not support array deletion (i.e. <B>delete[]</B>) for
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfVec4[n].
+
+       For more information on quaternions, see the article by
+       Sir William Rowan Hamilton "<I>On</I> <I>quaternions;</I> <I>or</I> <I>on</I> <I>a</I> <I>new</I>
+       <I>system</I> <I>of</I> <I>imaginaries</I> <I>in</I> <I>algebra</I>," in the Philosophical
+       Magazine, xxv, pp. 10-13 (July 1844).  More recent refer-
+       ences include "<I>Animating</I> <I>Rotation</I> <I>with</I> <I>Quaternion</I> <I>Curves</I>,"
+       SIGGRAPH Proceedings Vol 19, Number 3, 1985, and "<I>Quater-</I>
+       <I>nion</I> <I>Calculus</I> <I>For</I> <I>Animation</I>," in "Math for SIGGRAPH",
+       Course Notes, #23, SIGGRAPH 1989, both by Ken Shoemake.
+       An introductory tutorial is available on the Internet at
+       ftp://ftp.cis.upenn.edu/pub/graphics/shoemake/quatut.ps.Z.
+       Note that for consistency with Performer's transformation
+
+
+                                                      pfQuat(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

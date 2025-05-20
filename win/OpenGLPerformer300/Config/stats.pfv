@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+  <module>
+    <class>pfvmLoader</class>
+    <data>
+	<filepath>/usr/share/Performer/data</filepath>
+        <Model><FileName>esprit.pfb</FileName></Model>
+        <Model><FileName>pfLightSource.pfb</FileName></Model>
+    </data>
+  </module>
+
+  <module>
+    <class>pfvmStats</class>
+      <data>
+      <key>s</key>
+      <OnOff>1</OnOff>
+      <updateFrames>25</updateFrames>
+      <Cpu>0</Cpu>
+      <DB>0</DB>
+      <Cull>0</Cull>
+      <Fill>0</Fill>
+      <GFX>0</GFX>
+      <TIMES>1</TIMES>
+      <AttrCounts>0</AttrCounts>
+      <TimeHist>0</TimeHist>
+      <TranspFill>0</TranspFill>
+      <DbVis>0</DbVis>
+      <Depth>0</Depth>
+    </data>
+  </module>
+
+  <module>
+    <class>pfvmTrackball</class>
+  </module>
+    
+</viewer>
+
+
+

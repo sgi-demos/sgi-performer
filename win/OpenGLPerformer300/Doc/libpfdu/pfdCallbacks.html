@@ -1,0 +1,99 @@
+<HTML>
+<HEAD>
+<TITLE>pfdCallbacks</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdCallbacks</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdCallbacks(3pf)                               pfdCallbacks(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdPreDrawTexgenExt,</B>  <B>pfdPostDrawTexgenExt,</B>  <B>pfdPreDrawRe-</B>
+       <B>flMap,</B> <B>pfdPostDrawReflMap,</B> <B>pfdPreDrawContourMap,</B>  <B>pfdPost-</B>
+       <B>DrawContourMap,</B> <B>pfdPreDrawLinearMap,</B> <B>pfdPostDrawLinearMap,</B>
+       <B>pfdTexgenParams</B> -  Node  callbacks  examples  for  special
+       effects.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       int    <B>pfdPreDrawTexgenExt</B>(pfTraverser *trav, void *data);
+
+       int    <B>pfdPostDrawTexgenExt</B>(pfTraverser *trav,
+                void *data);
+
+       int    <B>pfdPreDrawReflMap</B>(pfTraverser *trav, void *data);
+
+       int    <B>pfdPostDrawReflMap</B>(pfTraverser *trav, void *data);
+
+       int    <B>pfdPreDrawContourMap</B>(pfTraverser *trav,
+                void *data);
+
+       int    <B>pfdPostDrawContourMap</B>(pfTraverser *trav,
+                void *data);
+
+       int    <B>pfdPreDrawLinearMap</B>(pfTraverser *trav, void *data);
+
+       int    <B>pfdPostDrawLinearMap</B>(pfTraverser *trav,
+                void *data);
+
+       void   <B>pfdTexgenParams</B>(const float *newParamsX,
+                const float *newParamsY);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These callback functions provide a useful generic callback
+       prototype  for  <B>pfNode</B>s.   Use  these  callbacks to create
+       effects that OpenGL Performer does not  support  directly,
+       or  to perform graphics library tasks differently than the
+       built-in mechanisms. The currently  implemented  callbacks
+       perform reflection mapping using <B>texgen</B>.
+
+       To write a database loader that loads reflective materials
+       (as in <B>pfdLoadFile_obj</B>), just group  reflective  materials
+       under  different  geodes from non-reflective materials and
+       call <B>pfNodeTravFuncs</B> using <B>pfdPreDrawReflMap</B> as  the  pre-
+       draw  callback  and  <B>pfdPostDrawReflMap</B>  as  the post-draw
+       callback as follows.
+
+       pfNodeTravFuncs(MyReflMappedGeode, PFTRAV_DRAW,
+           pfdPreDrawReflMap, pfdPostDrawReflMap);
+
+       This will tell the loader to set <B>pfdPreDrawReflMap</B> as the
+       pre-draw callback and <B>pfdPostDrawReflMap</B> as the post-draw
+       callback for the geode containing the reflective materi-
+       als.
+       functions might be implemented.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfNode, pfNodeTravFuncs, pfdLoadFile_obj, texgen
+
+
+
+                                                pfdCallbacks(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

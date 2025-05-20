@@ -1,0 +1,412 @@
+<HTML>
+<HEAD>
+<TITLE>pfDoubleDCS</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDoubleDCS</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDoubleDCS(3pf)                                 pfDoubleDCS(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfDoubleDCS</B>  - Create, modify and get the matrix of a dou-
+       ble-precision dynamic coordinate system.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfDoubleDCS.h&gt;
+
+                           <B>pfDoubleDCS::pfDoubleDCS</B>();
+
+       static pfType *     <B>pfDoubleDCS::getClassType</B>(void);
+
+       void                <B>pfDoubleDCS::setTrans</B>(double x,   dou-
+                             ble y, double z);
+
+       void                <B>pfDoubleDCS::setRot</B>(double h,     dou-
+                             ble p, double r);
+
+       void                <B>pfDoubleDCS::setCoord</B>(pfCoordd *coord);
+
+       void                <B>pfDoubleDCS::setScale</B>(double s);
+
+       void                <B>pfDoubleDCS::setScale</B>(double x,   dou-
+                             ble y, double z);
+
+       void                <B>pfDoubleDCS::setMat</B>(pfMatrix4d &amp;m);
+
+       void                <B>pfDoubleDCS::getMat</B>(pfMatrix4d &amp;m);
+
+       const pfMatrix4d*   <B>pfDoubleDCS::getMatPtr</B>(void);
+
+       void                <B>pfDoubleDCS::setMatType</B>(uint val);
+
+       uint                <B>pfDoubleDCS::getMatType</B>();
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfDoubleDCS</B> is derived from the
+       parent  class  <B>pfDoubleSCS</B>,  so each of these member func-
+       tions of class <B>pfDoubleSCS</B> are also directly  usable  with
+       objects  of  class  <B>pfDoubleDCS</B>.   This  is  also true for
+       ancestor classes of class <B>pfDoubleSCS</B>.
+
+       void                <B>pfDoubleSCS::getMat</B>(pfMatrix4d &amp;mat);
+       const pfMatrix4d*   <B>pfDoubleSCS::getMatPtr</B>(void);
+
+
+       Since the class <B>pfDoubleSCS</B> is  itself  derived  from  the
+       parent  class  <B>pfGroup</B>,  objects  of class <B>pfDoubleDCS</B> can
+       also be used with these functions designed for objects  of
+       class <B>pfGroup</B>.
+
+       int        <B>pfGroup::addChild</B>(pfNode *child);
+       int        <B>pfGroup::insertChild</B>(int index, pfNode *child);
+       int        <B>pfGroup::replaceChild</B>(pfNode *old,         pfN-
+                    ode *new);
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       Since  the class <B>pfGroup</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class  <B>pfDoubleDCS</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfDoubleDCS</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfDoubleDCS</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfDoubleDCS (Double-precision Dynamic Coordinate System)
+       is a pfDoubleSCS whose matrix can be modified. It is  use-
+       ful  for generating scenes with objects very far away from
+       the origin.
+
+       <B>new</B> <B>pfDoubleDCS</B> creates and returns a handle to  a  pfDou-
+       bleDCS.   Like  other  pfNodes,  pfDoubleDCSes  are always
+       allocated from shared memory and cannot be created  stati-
+       cally, on the stack or in arrays.  pfDoubleDCSes should be
+       deleted using <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfDoubleDCS::getClassType</B>  returns  the  <B>pfType</B>*  for  the
+       class    <B>pfDoubleDCS</B>.     The    <B>pfType</B>*    returned    by
+       <B>pfDoubleDCS::getClassType</B>  is  the  same  as  the  <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfDoubleDCS</B>.  Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than  to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       The  initial  transformation  is the identity matrix.  The
+       transformation of a pfDoubleDCS can be set by specifying a
+       matrix  or translation, scale and rotation.  When indepen-
+       dently  setting  translation,  rotation,  and  scale,  the
+       pfDoubleDCS  matrix  is  computed as S*R*T, where S is the
+       scale, R is the rotation, and T is  the  translation.  The
+       order  of  effect  is then scale followed by rotation fol-
+       lowed by translation.
+
+       pfDoubleDCS operations are absolute  rather  than  cumula-
+       tive.  For example:
+
+       dcs-&gt;setTrans(2.0f, 0.0f, 0.0f);
+       dcs-&gt;setTrans(1.0f, 0.0f, 0.0f);
+
+       specifies a translation by 1 unit along the X coordinate
+       axis, not 3 units.
+
+       By default a pfDoubleDCS uses a bounding sphere which is
+       dynamic, so it is automatically updated when the pfDou-
+       bleDCS transformation is changed or when children are
+       added, deleted or changed.  This behavior may be changed
+       using <B>pfNode::setBound</B>.  The bound for a pfDoubleDCS
+
+       <B>pfDoubleDCS::setScale</B> sets the scale portion of the pfDou-
+       bleDCS to scale uniformly by a scale factor <I>s</I>.  This
+       supersedes the previous scale leaving the rotation and
+       translation unchanged. <B>pfDoubleDCS::setScale</B> specifies a
+       non-uniform scale of <I>x</I>, <I>y</I>, <I>z</I>.
+
+       <B>pfDoubleDCS::setRot</B> sets the rotation portion of the
+       matrix:
+
+              <I>h</I>    Specifies heading, the rotation about the Z
+                   axis.
+
+              <I>p</I>    Specifies pitch, the rotation about the X
+                   axis.
+
+              <I>r</I>    Specifies roll, rotation about the Y axis.
+
+       The matrix created is R*P*H, where R is the roll trans-
+       form, P is the pitch transform and H is the heading trans-
+       form.  The new (h,p,r) combination replaces the previous
+       specification, leaving the scale and translation
+       unchanged.  The convention is natural for a model in which
+       +Y is "forward," +Z is "up" and +X is "right".  To main-
+       tain 1/1000 degree resolution in the single precision
+       arithmetic used internally for sine and cosine calcula-
+       tions, the angles <I>h</I>, <I>p</I>, <I>r</I> should be in the range of -7500
+       to +7500 degrees.
+
+       <B>pfDoubleDCS::setCoord</B> sets the rotation and translation
+       portion of the pfDoubleDCS according to <I>coord</I>.  This is
+       equivalent to:
+
+       dcs-&gt;setRot(coord-&gt;hpr[0], coord-&gt;hpr[1], coord-&gt;hpr[2]);
+       dcs-&gt;setTrans(coord-&gt;xyz[0], coord-&gt;xyz[1], coord-&gt;xyz[2]);
+
+
+       <B>pfDoubleDCS::setMat</B> sets the transformation matrix for the
+       pfDoubleDCS to <I>m</I>.
+
+       Normally <B>pfDoubleDCS::setMat</B> is used as a replacement for
+       the above routines which individually set the scale, rota-
+       tion and translational components.  The mechanisms can be
+       combined but only if the supplied matrix can be repre-
+       sented as scale followed by a rotation followed by a
+       translation (e.g. a point pt is transformed by the matrix
+       as: pt' = pt*S*R*T), which implies that no shearing or
+       non-uniform scaling is present.
+
+       <B>pfDoubleDCS::setMatType</B> allows the specification of infor-
+       mation about the type of transformation the matrix repre-
+       sents.  This information allows Performer to speed up some
+       operations.  The matrix type is specified as the OR of
+
+              PFMAT_TRANS: matrix may include a translational
+              component in the 4th row.
+
+              PFMAT_ROT
+                     matrix may include a rotational component in
+                     matrix may include a non-uniform scale in
+                     the left upper 3X3 submatrix.
+
+              PFMAT_PROJ
+                     matrix may include projections.
+
+              PFMAT_HOM_SCALE
+                     matrix may have mat[4][4] != 1.
+
+              PFMAT_MIRROR
+                     matrix may include mirroring transformation
+                     that switches between right handed and left
+                     handed coordinate systems.
+
+       <B>pfDoubleDCS::getMatType</B> returns the matrix type as set by
+       <B>pfDoubleDCS::setMatType</B>.  If no matrix type is set the
+       default is ~0, corresponding to a general matrix.
+
+       The transformation of a pfDoubleDCS affects all its chil-
+       dren.  As the hierarchy is traversed from top to bottom,
+       each new matrix is pre-multiplied to create the new trans-
+       formation.  For example, if DoubleDCSb is below DoubleDCSa
+       in the scene graph, any geometry G below DoubleDCSa is
+       transformed as G*DoubleDCSb*DoubleDCSa.
+
+       <B>pfNode::flatten</B> cannot flatten pfDoubleDCSes since they
+       may change at run-time.  In this case <B>pfNode::flatten</B> will
+       compute a pfDoubleSCS representing the accumulated static
+       transformation that the pfDoubleDCS inherits and insert it
+       above the pfDoubleDCS.  Static transformations below a
+       pfDoubleDCS are flattened as usual.  See <B>pfNode::flatten</B>
+       for more details.
+
+       The presence of transformations in the scene graph impacts
+       the performance of intersection, culling and drawing.
+       pfGeoSet culling (see <B>PFCULL_GSET</B> in
+       <B>pfChannel::setTravMode</B>) is disabled in portions of the
+       scene graph below pfDoubleDCSes.
+
+       Both pre and post CULL and DRAW callbacks attached to a
+       pfDoubleDCS (<B>pfNode::setTravFuncs</B>) will be affected by the
+       transformation represented by the pfDoubleDCS, i.e. - the
+       pfDoubleDCS matrix will already have been applied to the
+       matrix stack before the pre callback is called and will be
+       popped only after the post callback is called.
+
+       <B>pfDoubleDCS::getMat</B> copies the transformation matrix value
+       from the pfDoubleDCS into the matrix <I>m</I>.  For faster matrix
+       access, <B>pfDoubleDCS::getMatPtr</B> can be used to get a const
+       pointer to the pfDoubleDCS's matrix.
+
+       <B>pfDoubleDCS</B> nodes are useful for modeling objects very far
+       from the origin or the database - so far away that the
+       resolution of floating point numbers isn't high enough to
+       express small movements of the objects. We use a common
+       example to describe this feature of <B>pfDoubleDCS</B> nodes:
+
+       When modeling a round Earth and placing the origin in the
+       center of the Earth, the surface of the Earth is very far
+       fly/drive over the surface of the Earth, we want to depict
+       small translations only in the vicinity of the camera.
+       Translating an object 200 miles away from the camera by 1
+       cm has negligible effect on the output image.  <B>pfDoubleDCS</B>
+       nodes provide a method to translate the camera position to
+       the origin of the database every frame, and to correct the
+       relative position of the scene to that of the camera. This
+       way, all the geometry in the vicinity of the camera
+       becomes close enough to the origin that the resolution of
+       floating point numbers is high enough to express small
+       object translations.
+
+       In more practical terms, given a camera position at <I>E</I> <I>=</I>
+       <I>(Ex,</I> <I>Ey,</I> <I>Ez)</I>, and a database tile position at <I>T</I> <I>=</I> <I>(Tx,</I> <I>Ty,</I>
+       <I>Tz)</I>, we build a scene graph with a single <B>pfDoubleDCS</B> node
+       at the root, and one <B>pfDoubleDCS</B> node above each tile. We
+       set the channel eyepoint in the origin by seting the chan-
+       nel viewing matrix to the identity matrix. We then use the
+       <B>pfDoubleDCS</B> node at the root to express the real camera
+       position and the <B>pfDoubleDCS</B> node above each tile to
+       express the position of the tile.  We load the translation
+       <I>-E</I> <I>=</I> <I>(-Ex,</I> <I>-Ey,</I> <I>-Ez)</I> onto the root <B>pfDoubleDCS</B> and the
+       translation <I>T</I> <I>=</I> <I>(Tx,</I> <I>Ty,</I> <I>Tz)</I> onto the tile <B>pfDoubleDCS</B>.
+       When Performer traverses the scene graph, it composes the
+       final translation <I>T-E</I> <I>=</I> <I>(Tx-Ex,</I> <I>Ty-Ey,</I> <I>Tz-Ez)</I>. When the
+       camera is fairly close to the tile, this translation is
+       small enough that even floating point numbers provide a
+       high enough resolution for it.
+
+       Coding the above example we get:
+
+
+       void
+       setDoublePrecisionDCS (pfChannel *chan,
+                              pfDoubleDCS *ddcs,
+                              pfCoordd *coord)
+       {
+           pfMatrix4d          mat, invMat;
+
+           // Channel camera is at origin.
+           chan -&gt; setViewMat(pfIdentMat);
+
+           mat -&gt; makeCoordd (coord);
+
+           invMat -&gt; invertOrthoN (mat);
+
+           // Put inverse of camera position in double DCS.
+           ddcs -&gt; setMat (invMat);
+       }
+
+
+       where <I>coord</I> contains the camera position, and <I>ddcs</I> is the
+       <B>pfDoubleDCS</B> at the root of the scene graph. Every time the
+       camera position changes, we have to update the <B>pfDoubleDCS</B>
+       at the root of the scene graph.  The tiles contain vertex
+       coordinates relative to the tile origin. This origin is
+       translated by the tile <B>pfDoubleDCS</B> to the correct posi-
+       tion.
+
+       node is a double-precision matrix, the CULL test is
+       ignored on this node. In other words, all the nodes whose
+       closest parent matrix node is a double-precision node are
+       accepted by the CULL traversal and are always drawn.
+
+       Performer does not CULL these nodes because the standard
+       Performer node bounding sphere is single-precision and can
+       not correctly express double precision matrix operations.
+       Converting to double-precision bounding spheres would have
+       slowed down the CULL traversal.
+
+       There is a simple workaround that forces Performer back to
+       single precision mode: Add a <B>pfSCS</B> node below the lowest
+       <B>pfDouble?CS</B> node. Use an identity matrix for the new <B>pfSCS</B>
+       node. The <B>pfSCS</B> node demotes the CULL traversal back to
+       single-precision mode, and the CULL test becomes active
+       again.
+
+       The sample code under /usr/share/Per-
+       former/src/pguide/libpf/C/doubleDCS2.c demonstrates how to
+       create a scene graph with the correct node setup.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfCoord, pfGroup, pfChannel, pfLookupNode, pfFlatten,
+       pfMatrix, pfNode, pfDCS, pfSCS, pfFCS, pfDoubleSCS, pfDou-
+       bleFCS, pfScene, pfTraverser, pfDelete
+
+
+
+                                                 pfDoubleDCS(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

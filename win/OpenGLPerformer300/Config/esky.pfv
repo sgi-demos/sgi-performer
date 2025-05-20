@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+<Module>
+  <class>pfvmLoader</class>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>esprit.flt</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmEarthSky</class>
+  <data>
+    <mode>skyGrnd</mode>
+    <SkyTopColor>0,0,1,1</SkyTopColor>
+    <SkyBotColor>0.4,0.4,1,1</SkyBotColor>
+    <HorizColor>0.7,0.7,0.99,1</HorizColor>
+    <GrndFarColor>0.2,0.3,0.3,1</GrndFarColor>
+    <GrndNearColor>0.2,0.2,0.1,1</GrndNearColor>
+    <CloudBotColor>0.7,0.2,0.6,1</CloudBotColor>
+    <CloudTopColor>0.8,0.3,0.7,1</CloudTopColor>
+    <ClearColor>0,0,0,1</ClearColor>
+
+    <GrndHt>0</GrndHt>
+
+    <HorizAngle>10</HorizAngle>
+    <CloudTop>20000</CloudTop>
+    <CloudBot>20000</CloudBot>
+    <TZoneBot>15000</TZoneBot>
+    <TZoneTop>25000</TZoneTop>
+    <GrndFogTop>1000</GrndFogTop>
+    <DistFactor>1</DistFactor>
+
+  </data>
+</Module>
+
+</viewer>
+
+

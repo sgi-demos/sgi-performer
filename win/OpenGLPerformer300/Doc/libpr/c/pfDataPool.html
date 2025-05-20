@@ -1,0 +1,272 @@
+<HTML>
+<HEAD>
+<TITLE>pfDataPool</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDataPool</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDataPool(3pf)                                   pfDataPool(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCreateDPool,</B> <B>pfGetDPoolSize,</B> <B>pfGetDPoolName,</B> <B>pfReleaseD-</B>
+       <B>Pool,</B>  <B>pfAttachDPool,</B>  <B>pfDPoolAlloc,</B>   <B>pfDPoolFree,</B>   <B>pfD-</B>
+       <B>PoolFind,</B>   <B>pfDPoolLock,</B>  <B>pfDPoolSpinLock,</B>  <B>pfDPoolUnlock,</B>
+       <B>pfDPoolTest,</B>   <B>pfDPoolAttachAddr,</B>    <B>pfGetDPoolAttachAddr,</B>
+       <B>pfGetDPoolClassType</B>  -  Create,  control and allocate from
+       locked memory pools.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfDataPool*      <B>pfCreateDPool</B>(uint size, char *name);
+
+       int              <B>pfGetDPoolSize</B>(pfDataPool *dpool);
+
+       const char*      <B>pfGetDPoolName</B>(pfDataPool* dpool);
+
+       int              <B>pfReleaseDPool</B>(pfDataPool *dpool);
+
+       pfDataPool*      <B>pfAttachDPool</B>(char *name);
+
+       volatile void*   <B>pfDPoolAlloc</B>(pfDataPool *dpool,
+                          uint size, int id);
+
+       int              <B>pfDPoolFree</B>(pfDataPool *dpool,
+                          void *dpmem);
+
+       volatile void*   <B>pfDPoolFind</B>(pfDataPool *dpool, int id);
+
+       int              <B>pfDPoolLock</B>(void *dpmem);
+
+       int              <B>pfDPoolSpinLock</B>(void* dpmem,   int spins,
+                          int block);
+
+       void             <B>pfDPoolUnlock</B>(void *dpmem);
+
+       int              <B>pfDPoolTest</B>(void *dpmem);
+
+       void             <B>pfDPoolAttachAddr</B>(void *addr);
+
+       void*            <B>pfGetDPoolAttachAddr</B>(void);
+
+       pfType *         <B>pfGetDPoolClassType</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL Performer class <B>pfDataPool</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfDataPool</B>.  Casting an object of  class  <B>pfDataPool</B>
+       to  an object of class <B>pfObject</B> is taken care of automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfDataPool</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>dpool</I>  identifies a pfDataPool.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfDataPool is similar to a shared  memory  malloc  arena
+       but  adds the ability to lock/unlock pfDataPool memory for
+       multiprocessing  applications.   The  datapool   functions
+       allow  related  or  unrelated  processes to share data and
+       provide a means for locking data blocks to eliminate  data
+       collision.  These functions use the shared arena functions
+       (see <B>usinit</B>).
+
+       <B>pfCreateDPool</B> creates and returns a  handle  to  a  pfDat-
+       aPool.  <I>size</I> is the size in bytes of the pfDataPool.  <I>name</I>
+       is the name of the pfDataPool and is also the name of  the
+       memory-mapped  file  used by the pfDataPool.  This file is
+       created in the directory "/usr/tmp" unless the environment
+       variable  <B>PFTMPDIR</B>  is  defined, in which case the file is
+       created in the directory named in the <B>PFTMPDIR</B> environment
+       variable.   <I>name</I>  should  be  unique  among all pfDataPool
+       names and only a single  process  should  create  a  given
+       pfDataPool with name <I>name</I>.
+
+       <B>pfGetDPoolClassType</B>  return  the  <B>pfType</B>*  for  the  class
+       <B>pfDataPool</B>.  The <B>pfType</B>*  returned  is  the  same  as  the
+       <B>pfType</B>* returned by invoking <B>pfGetType</B>  on any instance of
+       class <B>pfDataPool</B>.  Because OpenGL  Performer  allows  sub-
+       classing  of built-in types, when decisions are made based
+       on the type of an object, it  is  usually  better  to  use
+       <B>pfIsOfType</B>  to test if an object is of a type derived from
+       a Performer type rather than to test for  strict  equality
+       another process.  A handle  to  the  found  pfDataPool  is
+       returned  or  <B>NULL</B>  if  it  was  not found or could not be
+       accessed.
+
+       <B>pfReleaseDPool</B> hides <I>dpool</I> so that no other processes  may
+       attach  to  it  although all previously attached processes
+       may still access it.  Additionally, a released  pfDataPool
+       will  be  removed  from the file system (deleted) once all
+       attached processes exit.  <B>pfReleaseDPool</B> returns  <B>TRUE</B>  if
+       successful and <B>FALSE</B> otherwise.
+
+       <B>pfDPoolAlloc</B>  returns  a  pointer  to a block of memory of
+       <I>size</I> bytes that was allocated out  of  <I>dpool</I>  or  <B>NULL</B>  if
+       there is not enough available memory in <I>dpool</I>.  <I>size</I> is in
+       bytes and can range from 1 to the size of the  pfDataPool.
+       The actual size allocated is always rounded up to the next
+       16 byte boundary.  <I>id</I> is an integer  id  assigned  to  the
+       block   of   memory  that  is  used  to  reference  it  by
+       <B>pfDPoolFind</B>.  Block id's should be unique or  the  results
+       are undefined.
+
+       <B>pfDPoolFind</B>  returns  a  pointer  to a block of pfDataPool
+       memory which is identified by <I>id</I> or <B>NULL</B>  if  <I>id</I>  was  not
+       found.   The  calling process must be attached to the dat-
+       apool memory.
+
+       <B>pfDPoolFree</B> frees the memory block previously allocated by
+       <B>pfDPoolAlloc</B> and makes it available to be reallocated.
+
+       <B>pfDPoolLock</B>,  <B>pfDPoolSpinLock</B>   and <B>pfDPoolUnlock</B> lock and
+       unlock access to a block of  pfDataPool  memory  that  was
+       allocated  by  <B>pfDPoolAlloc</B>.   When  the  lock  cannot  be
+       acquired, <B>pfDPoolLock</B> yields  the  processor  causing  the
+       current  thread  to  block  until  the  lock is available.
+       <B>pfDPoolSpinLock</B>  provides more control by accepting  argu-
+       ments to control the spinning and blocking.  When <I>block</I> is
+       <I>FALSE</I>, <B>pfDPoolSpinLock</B> returns rather  than  yielding  the
+       processor if the lock cannot be acquired.  <I>spins</I> specifies
+       the number of times to spin before yielding or  returning.
+       A  <I>spins</I>  value  of -1 invokes the default, currently 600.
+       <B>pfDPoolLock</B> and <B>pfDPoolSpinLock</B> return 1 upon  acquisition
+       of  the  lock,  0  upon failure to acquire the lock and -1
+       upon error.  <B>pfDPoolUnlock</B> relinquishes the  lock  on  the
+       block of memory.
+
+       There  are  a fixed number of locks (currently 4096) allo-
+       cated for each pfDataPool and a new lock is consumed  when
+       an  allocation in that pfDataPool is first locked.  Subse-
+       quent releases and locks do not require further lock allo-
+       cations.
+
+       Example:
+
+       typedef struct SharedData
+       {
+           float a, b, c;
+       } SharedData;
+
+       pfDataPool *pool;
+        :
+       /* write to the DataPool with cooperative mutual exclusion */
+       pfDPoolLock((void*)data);
+       data-&gt;a = 370.0;
+       data-&gt;b = 371.0;
+       data-&gt;c = 407.0;
+       pfDPoolUnlock((void*)data);
+
+
+       <B>pfDPoolLock</B> attempts to acquire a hardware lock associated
+       with <I>dpmem</I>.  If another process has already acquired the
+       lock, the calling process will not return until the lock
+       is acquired.  Whether the process blocks or spins is a
+       function of the machine configuration.  (see <B>usconfig</B>).
+       <B>pfDPoolUnlock</B> unlocks <I>dpmem</I>.  A process which double-trips
+       a lock by calling <B>pfDPoolLock</B> twice in succession will
+       block until the lock is unset by another process.  A pro-
+       cess may unlock a lock that was locked by a different pro-
+       cess.  <B>pfDPoolTest</B> returns 0 if <I>dpmem</I> is unlocked and 1 if
+       it is locked.
+
+       pfDataPool memory may be accessed without using the lock
+       and unlock feature; however this defeats the mutual exclu-
+       sion feature provided by pfDataPool functions.
+
+       A data pool must occupy the same range of virtual memory
+       addresses in all processes that attach to it.
+       <B>pfAttachDPool</B> will fail if something else has already been
+       mapped into the required address space, e.g. as a result
+       of mmap or sbrk.  To minimize this risk, <B>pfCreateDPool</B>
+       tries to place new datapools above the main shared memory
+       arena created by <B>pfInitArenas</B>.  The address at which the
+       next datapool will be created can be overridden by calling
+       <B>pfDPoolAttachAddr</B> with the <I>addr</I> argument specifying the
+       desired address.  An <I>addr</I> of NULL tells Performer to
+       return to its normal placement efforts.  The next attach-
+       ment address is returned by <B>pfGetDPoolAttachAddr</B>.
+
+       In the absence of a shared memory arena created by
+       <B>pfInitArenas</B>, <B>pfCreateDPool</B> lets the kernel choose the
+       data pool placement.
+
+       Deleting a data pool with <B>pfDelete</B> or  unmaps the data
+       pool from virtual memory as well as deleting the pfDat-
+       aPool data structure.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfDataPool functionality is not currently supported under
+       the single processor version of Performer on Linux.
+
+       When a datapool is created, a file is created in
+       "/usr/tmp" or <B>PFTMPDIR</B>.  The file name will end with the
+       string ".pfdpool".  If <B>pfReleaseDPool</B> is not called to
+       unlink the datapool, this file will remain in the file
+       system after the program exits, taking up disk space.
+
+       When using pfDataPools between unrelated processes, you
+       can reduce memory conflicts by having the application that
+       amalloc, pfInitArenas, usconfig, usinit, ussetlock,
+       ustestlock, usunsetlock
+
+
+
+                                                  pfDataPool(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

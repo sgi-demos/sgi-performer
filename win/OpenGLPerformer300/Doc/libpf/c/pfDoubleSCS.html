@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+<TITLE>pfDoubleSCS</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDoubleSCS</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDoubleSCS(3pf)                                 pfDoubleSCS(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewDoubleSCS,</B>  <B>pfGetDoubleSCSClassType,</B>  <B>pfGetDoubleSCS-</B>
+       <B>Mat,</B> <B>pfGetDoubleSCSMatPtr</B> - Create and get  matrix  for  a
+       static coordinate system node.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfDoubleSCS *       <B>pfNewDoubleSCS</B>(pfMatrix4d mat);
+
+       pfType *            <B>pfGetDoubleSCSClassType</B>(void);
+
+       void                <B>pfGetDoubleSCSMat</B>(pfDoubleSCS *scs,
+                             pfMatrix4d mat);
+
+       const
+                           pfMatrix4d*   <B>pfGetDoubleSCSMatPtr</B>(pfDoubleSCS *scs);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfDoubleSCS</B> is derived from the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class <B>pfGroup</B> are also directly  usable  with  objects  of
+       class <B>pfDoubleSCS</B>.  Casting an object of class <B>pfDoubleSCS</B>
+       to an object of class <B>pfGroup</B> is taken care  of  automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfGroup</B>.
+
+       int        <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+       int        <B>pfInsertChild</B>(pfGroup *group,  int index,  pfN-
+                    ode *child);
+       int        <B>pfReplaceChild</B>(pfGroup *group,     pfNode *old,
+                    pfNode *new);
+       int        <B>pfRemoveChild</B>(pfGroup *group, pfNode* child);
+       int        <B>pfSearchChild</B>(pfGroup *group, pfNode* child);
+       pfNode *   <B>pfGetChild</B>(const pfGroup *group, int index);
+       int        <B>pfGetNumChildren</B>(const pfGroup *group);
+       int        <B>pfBufferAddChild</B>(pfGroup *group,           pfN-
+                    ode *child);
+       int        <B>pfBufferRemoveChild</B>(pfGroup *group,        pfN-
+                    ode *child);
+
+
+       Since the class <B>pfGroup</B> is itself derived from the  parent
+       class  <B>pfNode</B>,  objects  of  class <B>pfDoubleSCS</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>,  objects of class <B>pfDoubleSCS</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfDoubleSCS</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       <I>scs</I>  identifies a pfDoubleSCS
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfDoubleSCS node represents a static  coordinate  system
+       --  a  modeling transform that cannot be changed once cre-
+       ated.  pfDoubleSCS nodes are similar to but less  flexible
+       than  pfDoubleDCS  nodes.  What they lack in changeability
+       they make up in performance.
+
+       <B>pfNewDoubleSCS</B> creates and returns a handle  to  a  pfDou-
+       bleSCS.   Like  other  pfNodes,  pfDoubleSCSes  are always
+       allocated from shared memory  and  can  be  deleted  using
+       <B>pfDelete</B>.
+
+       <B>pfNewDoubleSCS</B>  creates  a  pfDoubleSCS  using  <I>mat</I> as the
+       transformation matrix.
+
+       By default a pfDoubleSCS uses a dynamic bounding volume so
+       it  is  automatically  updated  when  children  are added,
+       deleted or changed.  This behavior may  be  changed  using
+       <B>pfNodeBSphere</B>.   The  bound  for a pfDoubleSCS encompasses
+       all B(i)*<I>mat</I>, where B(i) is the bound for  the  child  'i'
+       and <I>mat</I> is the transformation matrix of the pfDoubleSCS.
+
+       <B>pfGetDoubleSCSClassType</B>  returns the <B>pfType</B>* for the class
+       <B>pfDoubleSCS</B>.       The      <B>pfType</B>*      returned       by
+       <B>pfGetDoubleSCSClassType</B>   is   the  same  as  the  <B>pfType</B>*
+       returned by invoking <B>pfGetType</B> on any  instance  of  class
+       <B>pfDoubleSCS</B>.   Because OpenGL Performer allows subclassing
+       of built-in types, when decisions are made  based  on  the
+       type  of an object, it is usually better to use <B>pfIsOfType</B>
+       to test if an object is of a type derived from a Performer
+       type  rather  than  to  test  for  strict  equality of the
+       <B>pfType</B>*'s.
+
+       The transformation of a pfDoubleSCS affects all its  chil-
+       dren.   As  the hierarchy is traversed from top to bottom,
+       each new matrix is pre-multiplied to create the new trans-
+       formation.  For example, if DoubleSCSb is below DoubleSCSa
+       in the scene graph, any geometry  G  below  DoubleSCSa  is
+       transformed as G*DoubleSCSb*DoubleSCSa.
+
+       Static transformations represented by pfDoubleSCSes may be
+       'flattened' in a pre-processing step for  improved  inter-
+       section,  culling,  and  drawing  performance.   <B>pfFlatten</B>
+       accumulates transformations in a scene graph, applies them
+       to geometry, and sets flattened pfDoubleSCSes to the iden-
+       tity matrix.  Flattening  is  recommended  when  available
+       memory  and scene graph structure allow it.  See <B>pfFlatten</B>
+       for more details.
+
+       <B>pfGetDoubleSCSMat</B> copies the transformation matrix for <I>scs</I>
+       into  <I>mat</I>.  For faster matrix access, <B>pfGetDoubleSCSMatPtr</B>
+       returns a const pointer to <I>scs</I>'s matrix.
+
+       Both pre and post CULL and DRAW callbacks  attached  to  a
+       pfDoubleSCS  (<B>pfNodeTravFuncs</B>)  will  be  affected  by the
+       transformation represented by the pfDoubleSCS, i.e. -  the
+       pfDoubleSCS  matrix  will already have been applied to the
+
+
+                                                 pfDoubleSCS(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

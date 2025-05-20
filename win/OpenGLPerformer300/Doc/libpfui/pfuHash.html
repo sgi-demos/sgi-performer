@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<TITLE>pfuHash</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuHash</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuHash(3pf)                                         pfuHash(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuNewHTable,</B>  <B>pfuDelHTable,</B> <B>pfuResetHTable,</B> <B>pfuEnterHash,</B>
+       <B>pfuRemoveHash,</B> <B>pfuFindHash,</B> <B>pfuHashGSetVerts,</B> <B>pfuCalcHash-</B>
+       <B>Size</B> - Hash table utility library.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfuHashTable *   <B>pfuNewHTable</B>(int numb,       int eltsize,
+                          void* arena);
+
+       void             <B>pfuDelHTable</B>(pfuHashTable* ht);
+
+       void             <B>pfuResetHTable</B>(pfuHashTable* ht);
+
+       pfuHashElt *     <B>pfuEnterHash</B>(pfuHashTable* ht,
+                          pfuHashElt* elt);
+
+       int              <B>pfuRemoveHash</B>(pfuHashTable* ht,
+                          pfuHashElt* elt);
+
+       int              <B>pfuFindHash</B>(pfuHashTable* ht,
+                          pfuHashElt* elt);
+
+       int              <B>pfuHashGSetVerts</B>(pfGeoSet *gset);
+
+       int              <B>pfuCalcHashSize</B>(int size);
+
+
+                        typedef struct _pfuHashElt
+                        {
+                            int        id;
+                            int        listIndex;
+                            uint  key;
+                            void  *data;
+                        } pfuHashElt;
+
+                        typedef struct _pfuHashBucket
+                        {
+                            int        nelts;
+                            pfuHashElt *elts;
+                            struct _pfuHashBucket     *next;
+
+                        } pfuHashBucket;
+
+                        typedef struct _pfuHashTable
+                        {
+                            void  *arena;
+                            int        eltSize;
+                            int        realeltSize;
+                            int        numBuckets;
+                            pfuHashBucket   **buckets;
+
+                            /* Flat list of hash elements provides linear ordering */
+                            int        listCount;
+
+       shared memory arena <I>arena</I> with <I>numb</I> elements each of size
+       <I>eltsize</I>.  <I>eltsize</I> is in bytes and must be a multiple of
+       four.
+
+       <B>pfuDelHTable</B> deletes the hash table <I>ht</I>.
+
+       <B>pfuResetHTable</B> resets the hash table <I>ht</I>.
+
+       <B>pfuEnterHash</B> puts element <I>elt</I> into hash table <I>ht</I>.  If the
+       element is already in the table, it returns the address of
+       that element, otherwise it returns NULL and adds the ele-
+       ment to the <I>list</I> member of the <B>pfuHashTable</B> structure.
+
+       <B>pfuRemoveHash</B> removes element <I>elt</I> from the hash table <I>ht</I>,
+       returning <B>TRUE</B> if <I>elt</I> was found and <B>FALSE</B> otherwise.
+
+       <B>pfuFindHash</B> looks for element <I>elt</I> in hash table <I>ht</I>,
+       returning <B>TRUE</B> if <I>elt</I> was found and <B>FALSE</B> otherwise.
+
+       <B>pfuHashGSetVerts</B> takes a <B>pfGeoSet</B> of type <B>PFGS_TRIS</B> and
+       attempts to share all <B>PFGS_PER_VERTEX</B> attributes.
+       <B>pfuHashGSetVerts</B> will convert a non-indexed <B>pfGeoSet</B> into
+       an indexed one and may delete the old attribute and index
+       arrays and create new ones.  Consequently you may wish to
+       <B>pfRef</B> your arrays to avoid their deletion.
+
+       An example of <B>pfuHashGSetVerts</B> usage is found in
+       <B>pfdMeshGSet</B>.
+
+       <B>pfuCalcHashSize</B> returns the smallest prime number larger
+       than <I>size</I>. This is useful since hash tables are more mem-
+       ory efficient when their table size is prime.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfRef, pfuMeshGSet, pfuEventQueue, pfuGUI
+
+
+
+                                                     pfuHash(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

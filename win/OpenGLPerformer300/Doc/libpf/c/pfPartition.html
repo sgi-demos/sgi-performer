@@ -1,0 +1,267 @@
+<HTML>
+<HEAD>
+<TITLE>pfPartition</TITLE>
+</HEAD>
+<BODY>
+<H1>pfPartition</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfPartition(3pf)                                 pfPartition(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewPart,</B>  <B>pfGetPartClassType,</B>  <B>pfPartVal,</B>  <B>pfGetPartVal,</B>
+       <B>pfPartAttr,</B>  <B>pfGetPartAttr,</B>  <B>pfBuildPart,</B>  <B>pfUpdatePart</B>  -
+       Create and update pfPartition spatial partitioning node.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfPartition *   <B>pfNewPart</B>(void);
+
+       pfType *        <B>pfGetPartClassType</B>(void);
+
+       void            <B>pfPartVal</B>(pfPartition* part,    int which,
+                         float val);
+
+       float           <B>pfGetPartVal</B>(pfPartition *part,
+                         int which);
+
+       void            <B>pfPartAttr</B>(pfPartition* part,   int which,
+                         void *attr);
+
+       void *          <B>pfGetPartAttr</B>(pfPartition *part,
+                         int which);
+
+       void            <B>pfBuildPart</B>(pfPartition* cset);
+
+       void            <B>pfUpdatePart</B>(pfPartition* cset);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfPartition</B> is derived from the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class  <B>pfGroup</B>  are  also  directly usable with objects of
+       class <B>pfPartition</B>.  Casting an object of class <B>pfPartition</B>
+       to  an  object of class <B>pfGroup</B> is taken care of automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfGroup</B>.
+
+       int        <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+       int        <B>pfInsertChild</B>(pfGroup *group,  int index,  pfN-
+                    ode *child);
+       int        <B>pfReplaceChild</B>(pfGroup *group,     pfNode *old,
+                    pfNode *new);
+       int        <B>pfRemoveChild</B>(pfGroup *group, pfNode* child);
+       int        <B>pfSearchChild</B>(pfGroup *group, pfNode* child);
+       pfNode *   <B>pfGetChild</B>(const pfGroup *group, int index);
+       int        <B>pfGetNumChildren</B>(const pfGroup *group);
+       int        <B>pfBufferAddChild</B>(pfGroup *group,           pfN-
+                    ode *child);
+       int        <B>pfBufferRemoveChild</B>(pfGroup *group,        pfN-
+                    ode *child);
+
+
+       Since  the class <B>pfGroup</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class  <B>pfPartition</B>  can  also  be
+       used  with  these  functions designed for objects of class
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfPartition</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfPartition</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfPartition is a type of pfGroup for organizing the sub-
+       graph of a scene into a static  data  structure  which  is
+       more    efficient    for    intersection    testing   with
+       <B>pfNodeIsectSegs</B> for some databases.  pfPartition does  not
+       affect  culling  performance nor does it improve intersec-
+       tion  performance  under  transformation  nodes,  pfSwitch
+       nodes, pfMorph nodes or pfSequence nodes.
+
+       <B>pfNewPart</B>  creates  and returns a handle to a pfPartition.
+       Like other pfNodes, pfPartitions are always allocated from
+       shared memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetPartClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfPartition</B>.  The <B>pfType</B>* returned  by  <B>pfGetPartClassType</B>
+       is  the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of class <B>pfPartition</B>.  Because OpenGL Per-
+       former  allows  subclassing  of built-in types, when deci-
+       sions are made based on the type of an object, it is  usu-
+       ally better to use <B>pfIsOfType</B> to test if an object is of a
+       type derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfBuildPart</B>  constructs a 2D spatial partitioning based on
+       the <I>type</I>.
+
+       Within the confines of the parameters set  by  <B>pfPartAttr</B>,
+       OpenGL  Performer  attempts to construct an optimal parti-
+       tion based on the  distribution  of  vertices  within  the
+       pfGeoSets  in the subgraph of the scene rooted at the par-
+       tition.  Information about the  selected  partitioning  is
+       displayed  when  the  <B>pfNotifyLevel</B>  is  debug  or higher.
+       Because the search for the optimal partitioning is compute
+       intensive, once the partitioning has been determined for a
+       particular database, the range of  the  search  should  be
+       restricted using <B>pfPartAttr</B>.
+
+       <B>pfUpdatePart</B> causes the scene graph under the partition to
+       be traversed and any changes incorporated into the spatial
+       partitioning.  The partitioning itself does not change.
+
+       <B>pfPartAttr</B>  sets  the  partition  attribute  <I>attr</I>  to  the
+       attribute <I>attr</I>.  Partition attributes are:
+
+              <B>PFPART_MIN_SPACING</B>
+                   <I>attr</I> points to a pfVec3 specifying the minimum
+                   spacing  between  partition  dividers  in each
+                   dimension.  If not specified, the  default  is
+                   1/20th  of  the bounding box diagonal.  When a
+                   partition is built, a search is  made  between
+                   partition  is  built, a search is made between
+                   <B>PFPART_MAX_SPACING</B> and <B>PFPART_MIN_SPACING</B>.
+
+              <B>PFPART_ORIGIN</B>
+                   <I>attr</I> points to a pfVec3 specifying  an  origin
+                   for the partition.  If not specified, a search
+                   is done to find an optimal origin.
+
+       <B>pfGetPartAttr</B> returns the partition attribute <I>attr</I>.
+
+       <B>pfPartVal</B> sets the partition value <I>val</I> to the  value  <I>val</I>.
+       Partition values are:
+
+              <B>PFPART_FINENESS</B>
+                   A  value  between  0.0 and 1.0 which indicates
+                   how fine of  a  partitioning  should  be  con-
+                   structed.    The  subdivision  is  limited  by
+                   <B>PFPART_MIN_SPACING</B>   and   <B>PFPART_MAX_SPACING</B>.
+                   1.0  causes  extremely  fine subdivision.  0.0
+                   causes no subdivision.  0.5 is usually a  good
+                   value and is the default.
+
+       <B>pfGetPartVal</B> returns the partition value <I>val</I>.
+
+       A  pfPartition behaves like a pfGroup when the mode in the
+       pfSegSet    used     with     <B>pfNodeIsectSegs</B>     includes
+       <B>PFTRAV_IS_NO_PART</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfPartitions are primarily useful for databases containing
+       many axis-aligned objects for which bounding spheres are a
+       poor  fit  and  when only one or two segments are made per
+       call to <B>pfNodeIsectSegs</B>.  For example,  terrain  following
+       on  gridded  terrain  is likely to benefit.  For databases
+       such as this which themselves have a regular grid,  it  is
+       also important for performance that the origin and spacing
+       of the partition align exactly the terrain grid.  pfParti-
+       tions  do  not  currently  help with the problem pfGeoSets
+       containing too much geometry.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The search for an optimal grid is very thorough so that it
+       takes  a  <I>very</I>  long  time  if the search domain is large.
+       Once a good partitioning for a database is determined, the
+       <B>PFPART_MIN_SPACING</B>,  <B>PFPART_MAX_SPACING</B>  and <B>PFPART_ORIGIN</B>
+       can be set equal for much faster building.
+
+       Currently only partitionings in  the  XY  plane  are  sup-
+       ported.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGroup,  pfLookupNode,  pfNode,  pfNodeIsectSegs, pfNoti-
+       fyLevel, pfScene
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

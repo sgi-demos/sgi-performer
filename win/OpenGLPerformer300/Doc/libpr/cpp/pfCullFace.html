@@ -1,0 +1,111 @@
+<HTML>
+<HEAD>
+<TITLE>pfCullFace</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCullFace</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCullFace(3pf)                                   pfCullFace(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCullFace,</B> <B>pfGetCullFace</B> - Specify face culling mode
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfCullFace</B>(int mode);
+
+       int    <B>pfGetCullFace</B>(void);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>mode</I>  is a symbolic constant and is one of:
+
+             <B>PFCF_OFF</B>            Face culling is off,
+
+             <B>PFCF_BACK</B>           Polygons  that  are  back-facing
+                                 will be culled.
+
+             <B>PFCF_FRONT</B>          Polygons that  are  front-facing
+                                 will be culled.
+
+             <B>PFCF_BOTH</B>           Polygons   that  are  front  and
+                                 back-facing will be culled.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfCullFace</B> sets the face culling mode  used  to  cull  all
+       subsequent  polygons.  A polygon is considered to be back-
+       facing if its vertices  are  in  clockwise  order  (screen
+       coordinates).   Frontfacing  polygon  vertex  ordering  is
+       counterclockwise.
+
+       <B>pfGetCullFace</B> returns the current face culling mode.
+
+       The face culling mode state element is identified  by  the
+       <B>PFSTATE_CULLFACE</B>    token.     Use    this    token   with
+       <B>pfGeoState::setMode</B> to set the  face  culling  mode  of  a
+       pfGeoState and with <B>pfOverride</B> to override subsequent face
+       culling mode changes.
+
+       <B>pfCullFace</B> is a display-listable command.  If a pfDispList
+       has  been  opened by <B>pfDispList::open</B>, <B>pfCullFace</B> will not
+       have immediate effect but will be captured by  the  pfDis-
+       pList  and  will  only have effect when that pfDispList is
+       later drawn with <B>pfDispList::draw</B>.
+
+       Example 1:
+
+       /* Set up 'face-culled' pfGeoState */
+       gstate-&gt;setMode(PFSTATE_CULLFACE, PFCF_BACK);
+
+       /* Attach gstate to gset */
+       gset-&gt;setGState(gstate);
+
+       /* Draw face-culled gset */
+       gset-&gt;draw();
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Backface culling with <B>pfCullFace</B>(<B>PFCF_BACK</B>) can signifi-
+       cantly improve performance for "solid" databases whose
+       polygons are oriented consistently and where objects are
+       closed.  With these databases you cannot see backfacing
+       polygons since they are always obscured by nearer front-
+       facing ones.  The graphics hardware can quickly reject
+       backfacing polygons so use of backface culling is <I>strongly</I>
+       encouraged to increase performance.
+
+       Face culling should be disabled when using two-sided
+       lighting, since the two-sided lighting is only useful for
+       distinguishing backfacing objects.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       backface, frontface, pfDispList, pfGeoState, pfOverride,
+       pfState
+
+
+
+                                                  pfCullFace(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

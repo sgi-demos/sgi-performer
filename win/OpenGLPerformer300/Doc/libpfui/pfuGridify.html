@@ -1,0 +1,370 @@
+<HTML>
+<HEAD>
+<TITLE>pfuGridify</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuGridify</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuGridify(3pf)                                   pfuGridify(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuGridifySaveSize,</B>  <B>pfuGridifyMem,</B>  <B>pfuUnGridifyMem,</B> <B>pfu-</B>
+       <B>GridifyFileP,</B> <B>pfuGridifyFile,</B> <B>pfuGridifyImageTile,</B>  <B>pfuUn-</B>
+       <B>GridifyImageTile,</B> <B>pfuGridifyImageCache,</B> <B>pfuUnGridifyImage-</B>
+       <B>Cache,</B>   <B>pfuGridifyClipTexture,</B>   <B>pfuUnGridifyClipTexture,</B>
+       <B>pfuGridifyMPClipTexture,</B>  <B>pfuUnGridifyMPClipTexture,</B>  <B>pfu-</B>
+       <B>GridifyAnyClipTexture,</B> <B>pfuUnGridifyAnyClipTexture</B>  -  Run-
+       time clip texture gridification
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       int    <B>pfuGridifySaveSize</B>(int width,  int height, int pix-
+                eldepth, int borderwidth);
+
+       void   <B>pfuGridifyMem</B>(unsigned char *buf,        int width,
+                int height,   int pixeldepth,  int borderwidth,
+                const unsigned char color[/* pixeldepth */],
+                unsigned char savecolors[/* pfuGridifySave-
+                Size() */]);
+
+       void   <B>pfuUnGridifyMem</B>(unsigned char *buf,      int width,
+                int height,   int pixeldepth,  int borderwidth,
+                const unsigned char savedcolors[/* pfuGridi-
+                fySaveSize() */]);
+
+       int    <B>pfuGridifyFileP</B>(const char *infilename_for_errors,
+                FILE *infp, const char *outfilename_for_errors,
+                FILE *outfp,  int width,  int height,  int pix-
+                eldepth,                       int borderwidth,
+                unsigned char color[/* pixeldepth */]);
+
+       int    <B>pfuGridifyFile</B>(const char *filename,     int width,
+                int height,  int pixeldepth,   int borderwidth,
+                unsigned char color[/* pixeldepth */]);
+
+       int    <B>pfuGridifyImageTile</B>(pfImageTile *itile,    int pix-
+                eldepth,      const unsigned char color[/* pix-
+                eldepth */], int isproto);
+
+       int    <B>pfuUnGridifyImageTile</B>(pfImageTile *itile);
+
+       int    <B>pfuGridifyImageCache</B>(pfImageCache *icache, int pix-
+                eldepth,            unsigned char color[/* pix-
+                eldepth */]);
+
+       int    <B>pfuUnGridifyImageCache</B>(pfImageCache *icache);
+
+       int    <B>pfuGridifyClipTexture</B>(pfClipTexture *cliptex);
+
+       int    <B>pfuUnGridifyClipTexture</B>(pfClipTexture *cliptex);
+
+       int    <B>pfuGridifyMPClipTexture</B>(pfMPClipTexture *mpcliptex);
+
+       int    <B>pfuUnGridifyMPClipTexture</B>(pfMPClipTexture *mpcliptex);
+       image tile data at runtime, to facilitate visual verifica-
+       tion  of texel size, tile size, and which mipmap levels of
+       detail are being displayed.   Functions  are  provided  to
+       gridify  image data that is represented in any of the fol-
+       lowing forms:  pfClipTexture,  pfImageCache,  pfImageTile,
+       raw  tile in memory, or raw tile in file.  For all but the
+       last of these, the image pixels clobbered by the  grid  is
+       saved   in  a  compact  form  so  that  the  corresponding
+       <B>pfuUnGridify</B> function can retrieve them  and  restore  the
+       original  underlying image quickly.  This allows an appli-
+       cation to efficiently toggle gridification at runtime.  In
+       the sample application perfly, the 'g' key toggles clipmap
+       gridification (if the scene contains a clipmap).
+
+       If the image data is in an  RGB  format  (PFTEX_RGBA_8  or
+       PFTEX_RGB5_A1),  the  grid  color  is  chosen  as follows,
+       depending on the destination clipmap level size:
+              cyan     1x1    64x64     4096x4096    262144x262144
+              blue     2x2   128x128    8192x8192    524288x524288
+              magenta  4x4   256x256   16384x16384  1048576x1048576
+              red      8x8   512x512   32767x32768  2097152x2097152
+              yellow  16x16 1024x1024  65535x65535  4194304x4194304
+              green   32x32 2048x2048 131072x131072 8388608x8388608
+       If the data is in luminance (PFTEX_I_8) format,  the  grid
+       colors  alternate  between black and white: black for 1x1,
+       4x4, 16x16, etc. and white for 2x2, 8x8, 32x32, etc.
+
+       The grid for a pfImageTile or raw memory or file tile con-
+       sists of:
+
+              --   A 2-pixel border around the entire tile
+
+              --   A  column  of 4x8-pixel ticks, spaced 8 pixels
+                   apart, down the center of the tile vertically,
+                   and  a  similar  row of them across the center
+                   horizontally
+
+              --   Two columns of 2x4-pixel ticks, spaced 16 pix-
+                   els  apart,  at the 1/4 and 3/4 tile position,
+                   and similar rows of them.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       For example, this is the grid overlayed on a 128x128  tile
+       (only the upper-left quarter is shown):
+       :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+       ::
+       ::
+       ::                                                          ::::::::
+       ::                                                          ::::::::
+       ::
+       ::
+       ::                            ....                          ::::::::
+       ::                            """"                          ::::::::
+       ::
+       ::
+       ::                                                          ::::::::
+       ::                                                          ::::::::
+       ::
+       ::
+       ::             ::             .::.             ::           ::::::::
+       ::             ::             "::"             ::           ::::::::
+       ::
+       ::
+       ::                                                          ::::::::
+       ::                                                          ::::::::
+       ::
+       ::
+       ::                            ....                          ::::::::
+       ::                            """"                          ::::::::
+       ::
+       ::
+       ::                                                          ::::::::
+       ::                                                          ::::::::
+       ::
+       ::    ::::    ::::    ::::    ::::    ::::    ::::    ::::    ::::
+       ::    ::::    ::::    ::::    ::::    ::::    ::::    ::::  ::::::::
+       ::    ::::    ::::    ::::    ::::    ::::    ::::    ::::  ::::::::
+       ::    ::::    ::::    ::::    ::::    ::::    ::::    ::::    ::::
+       ::
+       ::                                                          ::::::::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       And this is the grid used for a 64x64 tile:
+       ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+       ::                                                            ::
+       ::                                                            ::
+       ::                          ::::::::                          ::
+       ::                          ::::::::                          ::
+       ::                                                            ::
+       ::                                                            ::
+       ::            .::.          ::::::::          .::.            ::
+       ::            "::"          ::::::::          "::"            ::
+       ::                                                            ::
+       ::                                                            ::
+       ::                          ::::::::                          ::
+       ::                          ::::::::                          ::
+       ::                                                            ::
+       ::    ::::    ::::    ::::    ::::    ::::    ::::    ::::    ::
+       ::    ::::    ::::    ::::  ::::::::  ::::    ::::    ::::    ::
+       ::    ::::    ::::    ::::  ::::::::  ::::    ::::    ::::    ::
+       ::    ::::    ::::    ::::    ::::    ::::    ::::    ::::    ::
+       ::                                                            ::
+       ::                          ::::::::                          ::
+       ::                          ::::::::                          ::
+       ::                                                            ::
+       ::                                                            ::
+       ::            .::.          ::::::::          .::.            ::
+       ::            "::"          ::::::::          "::"            ::
+       ::                                                            ::
+       ::                                                            ::
+       ::                          ::::::::                          ::
+       ::                          ::::::::                          ::
+       ::                                                            ::
+       ::                                                            ::
+       ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+       Thus  a  user can look at geometry that is textured with a
+       gridified clipmap and deduce the following kinds of infor-
+       mation:
+              Texel size and size of tiles and imagery in texels:
+                     Use the known size of the ticks (4x8  texels
+                     and 2x4 texels), the size of the tile border
+                     (2 texels wide  around  each  tile,  so  the
+                     boundary  line  between  adjacent tiles is 4
+                     texels wide), and the spacing between  ticks
+                     (little ticks are 16 texels apart, big ticks
+                     are 8 texels apart) to measure sizes.
+              Which mipmap levels of detail are being displayed:
+                     Look it up by color in the table above.  For
+                     RGB  data, the colors repeat every 6 levels,
+                     so some deduction by other means may be nec-
+                     essary (e.g. familiarity with the image data
+                     itself,  or  fiddling  with  the  minLOD  or
+                     maxLOD  slider).   Usually it is only neces-
+                     sary to think hard once  in  order  to  "get
+                     one's  bearings"; after that, it is easy see
+                     transitions between levels and to figure out
+                     the  size of a given level from knowledge of
+                     adjacent levels.
+
+              <B>pfuGridifyMem</B>  takes a pointer <I>buf</I> to a tile of raw
+              image data of  size  <I>width</I>,<I>height</I>  with  <I>pixeldepth</I>
+              bytes  per  pixel,  and  a  given <I>borderwidth</I> (2 is
+              standard, but any number can be given; e.g. a value
+              larger than width/2 will change the tile to a solid
+              color), and gridifies it using the specified  <I>color</I>
+              for  the  grid.  If <I>savecolors</I> is not <B>NULL</B>, it must
+              be  a  pointer  to  a  buffer  of  size  previously
+              returned  by <B>pfuGridifySaveSize</B> to be used for sav-
+              ing the image pixels that will get clobbered by the
+              grid.    <B>pfuUnGridifyMem</B>   undoes   the  effect  of
+              <B>pfuGridifyMem</B>.
+
+              <B>pfuGridifyFile</B> is just  like  <B>pfuGridifyMem</B>  except
+              that  it  operates  on  a  raw image tile in a file
+              (specified by  <I>filename</I>)  rather  than  in  memory.
+              There is no corresponding ungridify function, since
+              it is easy enough to simply  save  a  copy  of  the
+              original  file.   The  function  return  value is 1
+              indicating success, or 0 (and a pfNotify message of
+              level  PFNFY_WARN) indicating failure to open, read
+              from, or write to the file.
+
+              <B>pfuGridifyFileP</B> is a lower-level interface  to  the
+              functionality  of  <B>pfuGridifyFile</B>.   It  takes file
+              pointers (<I>infp</I>, <I>outfp</I>) and the input  file  may  be
+              different  from  the  output  file.  The parameters
+              <I>infilename</I><B>_</B><I>for</I><B>_</B><I>errors</I>  and   <I>outfilename</I><B>_</B><I>for</I><B>_</B><I>errors</I>
+              are  used for printing in error messages, should an
+              error occur.  The function return value is 1  indi-
+              cating  success,  or  0  (and a pfNotify message of
+              level PFNFY_WARN) indicating failure to  read  from
+              <I>infp</I> or write to <I>outfp</I>.
+
+              <B>pfuGridifyImageTile</B> gridifies the pfImageTile <I>itile</I>
+              using a border width of 2 and <I>pixeldepth</I> bytes  per
+              pixel (which must be the actual number of bytes per
+              pixel in <I>itile</I>), with the given <I>color</I>.  If  <I>isproto</I>
+              is FALSE, this means waiting for the tile to become
+              valid and then gridifying  the  underlying  memory.
+              If  <I>isproto</I>  is true, it means setting the readFunc
+              so that all pfImageTiles cloned from itile  in  the
+              future will automatically get gridified as they are
+              read in from  disk.   <B>pfuUnGridifyImageTile</B>  undoes
+              the  effect of <B>pfuGridifyImageTile</B>.  Both functions
+              return 1 on success, or 0 (and a  pfNotify  message
+              of  level  PFNFY_WARN)  if  an  error or unexpected
+              state is encountered (e.g.  trying  to  gridify  an
+              already-gridified image cache, or trying to ungrid-
+              ify one that has not been gridified).
+
+              <B>pfuGridifyImageCache</B>  gridifies  the  given   image
+              cache  <I>icache</I>  by  calling <B>pfuGridifyImageTile</B> with
+              the given arguments on the prototype tile  and  all
+              tiles  in the cache.  <B>pfuUnGridifyImageCache</B> undoes
+              the effect of <B>BpfuGridifyImageCache</B>.  Both function
+              return  1  on success, or 0 (and a pfNotify message
+              of level PFNFY_WARN) if an error is encountered.
+
+              return  1  on success, or 0 (and a pfNotify message
+              of level PFNFY_WARN) if an error is encountered.
+
+              <B>pfuGridifyAnyClipTexture</B> is a convenience  function
+              that  calls  <B>pfuGridifyClipTexture</B> on the <I>i</I>'th tex-
+              ture encountered  during  traversal  of  the  scene
+              graph  rooted at <I>scene</I>.  <B>pfuUnGridifyAnyClipTexture</B>
+              undoes the effect of <B>pfuGridifyAnyClipTexture</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       In a multiprocess Performer application,  these  functions
+       should only be called from the DRAW process.
+
+       While  a pfClipTexture, pfImageCache, or pfImageTile is in
+       a gridified state, its user data  is  used  to  store  the
+       saved  pixels  and  callback  information, so applications
+       cannot use the objects' user data for other purposes.
+
+       The implementation of pfuGridifyImageCache (and thus  also
+       pfuGridifyClipTexture  which  uses  it) installs a wrapper
+       readFunc on the prototype tile.  This  wrapper  calls  the
+       original readFunc and gridifies the data before returning,
+       allocating an array to store the saved pixels.  (The  cor-
+       responding  pfuUnGridify  functions restore the saved pix-
+       els, free the saved pixel array, and restore the  original
+       readFunc.)   This  implementation has two important conse-
+       quences: first, while an object is in a  gridified  state,
+       it  can  incur  per-frame  memory allocations and frees (a
+       practice that is frowned upon when trying to achieve  con-
+       sistent frame rates).  Second, applications that install a
+       custom readFunc must take care to do so *before*  gridify-
+       ing  so that the gridification function will wrap it prop-
+       erly.
+
+       <B>pfuGridifyMPClipTexture</B> and <B>pfuUnGridifyMPClipTexture</B>  are
+       not implemented.
+
+       The  libpfutil  source code, object code and documentation
+       are provided as unsupported software.  Routines  are  sub-
+       ject to change in future releases.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfClipTexture,  pfImageCache, pfImageTile, pfMultiprocess,
+       pfNotify, perfly
+
+
+
+                                                  pfuGridify(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

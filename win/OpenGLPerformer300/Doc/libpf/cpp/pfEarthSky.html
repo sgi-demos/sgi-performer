@@ -1,0 +1,402 @@
+<HTML>
+<HEAD>
+<TITLE>pfEarthSky</TITLE>
+</HEAD>
+<BODY>
+<H1>pfEarthSky</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfEarthSky(3pf)                                   pfEarthSky(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfEarthSky</B>  - Create and control weather, Earth-Sky model,
+       and screen clearing.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfEarthSky.h&gt;
+
+                         <B>pfEarthSky::pfEarthSky</B>();
+
+       static pfType *   <B>pfEarthSky::getClassType</B>(void);
+
+       void              <B>pfEarthSky::setMode</B>(int mode, int val);
+
+       int               <B>pfEarthSky::getMode</B>(int  mode);
+
+       void              <B>pfEarthSky::setAttr</B>(int attr,
+                           float val);
+
+       float             <B>pfEarthSky::getAttr</B>(int  mode);
+
+       void              <B>pfEarthSky::setColor</B>(int which, float r,
+                           float g, float b, float a);
+
+       void              <B>pfEarthSky::getColor</B>(int  which,
+                           float *r,     float *g,    float *b,
+                           float *a);
+
+       void              <B>pfEarthSky::setFog</B>(int which,
+                           pfFog *fog);
+
+       pfFog *           <B>pfEarthSky::getFog</B>(int  which);
+
+       void              <B>pfEarthSky::setFogDensities</B>(pfEarthSky* _esky,
+                           int numpt,        float *elevations,
+                           float *densities);
+
+       void              <B>pfEarthSky::setDensities</B>(pfEarthSky* _esky,
+                           int *numpt,      float **elevations,
+                           float **densities);
+
+       void              <B>pfEarthSky::setFogTextureElevations</B>(pfEarthSky* _esky,
+                           int n, float *elev);
+
+       void              <B>pfEarthSky::getFogTextureElevations</B>(pfEarthSky* _esky,
+                           int *n, float **elev);
+
+       void              <B>pfEarthSky::setFogTexture</B>(pfEarthSky* _esky,
+                           pfTexture *tex);
+
+       pfTexture*        <B>pfEarthSky::getFogTexture</B>(pfEarthSky* _esky);
+
+       void              <B>pfEarthSky::setFogTextureColorTable</B>(pfEarthSky* _esky,
+                           int n, unsigned char *table);
+
+       void              <B>pfEarthSky::getFogTextureColorTable</B>(pfEarthSky* _esky,
+       The  OpenGL Performer class <B>pfEarthSky</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfEarthSky</B>.  This is also true for ancestor  classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfEarthSky</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>esky</I>  identifies a pfEarthSky.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions provide a means to clear the frame and  Z-
+       buffer,  draw  a  sky,  horizon  and  ground plane, and to
+       implement various weather effects.  Once the earth-sky  is
+       set  in a channel, it should be the first thing drawn when
+       a scene is rendered.
+
+       <B>new</B> <B>pfEarthSky</B> creates and returns a handle to a  pfEarth-
+       Sky.   Like  other  pfNodes,  pfEarthSky  nodes are always
+       allocated from shared memory and cannot be created  stati-
+       cally, on the stack or in arrays.  pfEarthSky nodes should
+       be deleted using <B>pfDelete</B> rather than the delete operator.
+
+
+       <B>pfEarthSky::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfEarthSky</B>.       The      <B>pfType</B>*       returned       by
+       <B>pfEarthSky::getClassType</B>   is  the  same  as  the  <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>  on  any
+       instance  of  class  <B>pfEarthSky</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an  object
+       is  of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfEarthSky::setMode</B> is used to set the earth-sky rendering
+       mode.  <B>pfEarthSky::getMode</B> is used to obtain the earth-sky
+       rendering mode. These functions currently accept  the  two
+       mode arguments <B>PFES_BUFFER_CLEAR</B>, and <B>PFES_CLOUDS</B>.
+              <B>PFES_BUFFER_CLEAR</B> may have the following values:
+
+                     <B>PFES_FAST</B>
+                          The  default  mode.  This simply clears
+                          the color and  Z  buffers.   The  clear
+                          color      can     be     set     using
+                          <B>pfEarthSky::setColor</B>.    Dithering   is
+                          turned off during the clear.
+
+                     <B>PFES_TAG</B>  Initializes  the  framebuffer to a
+                     known state very
+                          rapidly.   Has an effect only when mul-
+                          tisampling.  Often, this mode  is  used
+                          as  an  optimization before rendering a
+                          background  that  covers   the   entire
+                          screen.   See  <B>pfClear</B>  for the details
+                          and   restrictions    of    the    mode
+                          <B>PFCL_MSDEPTH</B>.
+
+                     <B>PFES_SKY</B>
+                          Causes a sky and horizon backdrop to be
+                          drawn.  These  are  drawn  using  large
+                          polygons  that  are  recalculated  each
+                          frame,  using  information  about   the
+                          clipping  planes,  field  of  view, and
+                          eyepoint  vertical  position  for   the
+                          selected   channel.    They  are  drawn
+                          instead of a screen clear, forcing  the
+                          Z  buffer  to  a  known  state.  If the
+                          viewpoint goes below the ground  plane,
+                          the  area below the horizon will not be
+                          cleared.  In the case of <B>PFES_SKY</B>,  the
+                          screen is never cleared below the lower
+                          edge of the horizon.
+
+                     <B>PFES_SKY_GRND</B>
+                          Add a ground plane to the sky and hori-
+                          zon model drawn by <B>PFES_SKY</B>.
+
+                     <B>PFES_SKY_CLEAR</B>
+                          Draw the sky and horizon, and clear the
+                          screen below the edge of the horizon.
+
+                          the only  choice  at  present,  is  the
+                          default type.
+
+       <B>pfEarthSky::setColor</B>  is used to set the colors referenced
+       by the earth-sky rendering routines.  <B>pfEarthSky::getColor</B>
+       returns  the  indicated  color  component of the earth-sky
+       mode. The components are:
+
+              <B>PFES_SKY_TOP</B>        The color of the  sky  directly
+                                  above the viewpoint.
+
+              <B>PFES_SKY_BOT</B>        The  color  of the sky where it
+                                  joins the horizon.
+
+              <B>PFES_HORIZ</B>          The color of the bottom edge of
+                                  the horizon.
+
+              <B>PFES_GRND_FAR</B>       The  color  of the ground plane
+                                  where it meets the horizon.
+
+              <B>PFES_GRND_NEAR</B>      The color of the  ground  plane
+                                  directly below the viewer.
+
+              <B>PFES_CLOUD_BOT</B>      The  color of the bottom of the
+                                  opaque cloud layer.
+
+              <B>PFES_CLOUD_TOP</B>      The color of  the  top  of  the
+                                  opaque cloud layer.
+
+              <B>PFES_CLEAR</B>          The  color  for  simple  screen
+                                  clearing.
+
+       The fog color is set as explained in the <B>pfFog</B> man page.
+
+       <B>pfEarthSky::setAttr</B> is used to set a number of attributes.
+       The  companion  function  <B>pfEarthSky::getAttr</B>  is  used to
+       return these same attribute values. The tokens  and  their
+       meanings are listed below:
+
+              <B>PFES_GRND_HT</B>  Set  the ground height for the ground
+              plane that is
+                   used when <B>PFES_SKY_GRND</B> is enabled and defines
+                   the bottom edge of the horizon which  is  used
+                   in  all  of  the  modes  that draw a sky.  The
+                   ground plane extends from the eyepoint to  the
+                   horizon with a width greater than the field of
+                   view.  Note that objects placed on the  ground
+                   with  the  same  height  may not Z buffer cor-
+                   rectly.  Also, as objects move into  the  dis-
+                   tance,  the Z buffer resolution for those pix-
+                   els will decrease, making proper priority res-
+                   olution  of small distances between the ground
+                   plane and objects less likely.
+
+              <B>PFES_HORIZ_ANGLE</B> Set the vertical  displacement  of
+              the horizon band
+                   in degrees.  The horizon band is blended  into
+                   the  sky  bottom  color so it may appear to be
+                   less than this angle.  This angle remains con-
+                   is enabled when the cloud base  is  less  than
+                   the  cloud  top.   By  default, it is disabled
+                   (base &gt; top).  Each token  is  followed  by  a
+                   height value.  The cloud layer is opaque.  The
+                   cloud layer thickness is simply  (top  -  bot-
+                   tom).
+
+              <B>PFES_CLOUD_BOT</B>  Set the cloud layer lower position.
+              The cloud layer
+                   is  enabled  when  the cloud base is less than
+                   the cloud top.  By  default,  it  is  disabled
+                   (base  &gt;  top).   Each  token is followed by a
+                   height value.  The cloud layer is opaque.  The
+                   cloud  layer  thickness  is simply (top - bot-
+                   tom).
+
+              <B>PFES_TZONE_TOP</B> Set the transition zone for  exiting
+              a cloud layer.
+                   Provided to allow a smooth transition  out  of
+                   clouds.   This transition is enabled by making
+                   the transition height greater than  the  cloud
+                   top.   It is disabled by doing the opposite or
+                   by disabling the cloud layer.  By default, the
+                   transition zone is disabled.
+
+              <B>PFES_TZONE_BOT</B> Set the transition zone for entering
+              a cloud layer.
+                   Provided  to  allow  a  smooth transition into
+                   clouds.  This transition is enabled by  making
+                   the transition height less than the cloud bot-
+                   tom.  It is disabled by doing the opposite  or
+                   by disabling the cloud layer.  By default, the
+                   transition zone is disabled.
+
+              <B>PFES_GRND_FOG_TOP</B> Set the height of the ground  fog
+              layer.  Ground
+                   fog is enabled when a valid pfFog is set.   By
+                   default ground fog is disabled.
+
+              <B>PFES_TENT_DISTANCE_FACTOR</B> sets a factor for pulling
+              the <B>pfEarthSky</B>
+                   geometry  towards the camera and away from the
+                   far clipping plane. When using <B>pfChannel</B>  off-
+                   sets,  the  <B>pfEarthSky</B> geometry may be clipped
+                   against the far clipping plane.  In  order  to
+                   avoid   this  artifact,  the  application  may
+                   request to draw the <B>pfEarthSky</B> geometry closer
+                   to  the  camera.  A value of 1.0 means drawing
+                   the geometry at  the  far  clipping  plane.  a
+                   value of 0.0 means drawing the geometry at the
+                   near plane. The default value is 1.0.
+
+       <B>pfESkyFog</B> sets which type of fog to use when in ground fog
+       or  general  visibility.  The token may be one of the fol-
+       lowing values:
+              <B>PFES_GRND</B>
+              <B>PFES_GENERAL</B>
+       <B>pfEarthSky::getFog</B> returns the indicated fog selection.
+
+       Due  to  the  design of the graphics library, fog would be
+       discontinuous in adjacent channels  which  use  rotational
+       viewing offsets (See <B>pfChannel::setViewOffsets</B>).  However,
+       when attached to a pfChannel (see <B>pfChannel::setESky</B>) that
+       has  a  rotational viewing offset, a pfEarthSky will auto-
+       matically  adjust  the  ranges  of  the   pfFog   set   by
+       <B>pfEarthSky::setFog</B>  to  account for any rotational offsets
+       so that fog is continuous across adjacent channels.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfEarthSky does not work  properly  for  off-axis  viewing
+       frusta.
+
+       Because  <B>PFES_TAG</B> only has effect when multisampling, care
+       must be taken for cross-platform portability.   Background
+       renderings that rely on the depth buffer having been reset
+       (e.g. backgrounds that do not  disable  z  buffering  with
+       <B>glDepthFunc(GL_ALWAYS)</B>  in  OpenGL)  may need to request a
+       normal depth buffer clear when not multisampling.
+
+       When multisampling, <B>PFES_SKY_GND</B> and <B>PFES_SKY</B> are signifi-
+       cantly faster than <B>PFES_SKY_CLEAR</B>.
+
+
+
+</PRE>
+<H2>Layered Fog Support</H2><PRE>
+       pfEarthSky  provides  basic support for creating a layered
+       fog model based on the defined elevations and densities of
+       the different atomospheric layers.  The resulting model is
+       stored in a 3D texture where each slice of the 3D  texture
+       represents summed fog densities for an eye at a given ele-
+       vation and  points at d,h where d is a horizontal distance
+       from  the eye and h is the height of the given point along
+       a defined "up" vector. A  texture  lookup  table  (texture
+       color  table)  is  then  use to exponentiate this value to
+       turn the fog density into a fog blending factor.  pfTexGen
+       functions  are used to do the proper indexing into the fog
+       model when rendering.  This 3D  texture  can  be  used  to
+       apply  a  layered  fog  model as a second pass after first
+       rendering an unfogged  scene.   <B>pfEarthSky::makeFogTexture</B>
+       will  create  the  fog texture and create it just based on
+       the normal pfEarthSky definition, or use additional infor-
+       mation, such as your own provided layers and densities for
+       finer resolution. The following routines allow you to  set
+       and get the different parts of the elements used to create
+       the model:
+
+              <B>pfEarthSky::setFogDensities</B>
+
+              <B>pfEarthSky::setFogDensities</B>
+
+              <B>pfEarthSky::setTextureElevations</B>
+
+              <B>pfEarthSky::getFogTextureElevations</B>
+
+              <B>pfEarthSky::setFogTexture</B>
+
+              <B>pfGetESkyFogTexturepfEarthSky::getFogTexture</B>
+
+              <B>pfEarthSky::setTextureColorTable</B>
+                     demonstration program.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The layered fog model on pfEarthSky doesn't work with  the
+       pfEarthSky  geometry.  Instead, you should define your own
+       enviornmental geometry.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfClear, pfFog, pfNewChan, zfunction,  glDepth-
+       Func, pfDelete
+
+
+
+                                                  pfEarthSky(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

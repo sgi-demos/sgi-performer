@@ -1,0 +1,277 @@
+<HTML>
+<HEAD>
+<TITLE>pfuTraverser</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuTraverser</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuTraverser(3pf)                               pfuTraverser(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuInitTraverser,</B>   <B>pfuTraverse,</B>  <B>pfuTravPrintNodes,</B>  <B>pfu-</B>
+       <B>TravGLProf,</B> <B>pfuTravCountDB,</B>  <B>pfuTravNodeHlight,</B>  <B>pfuTravN-</B>
+       <B>odeAttrBind,</B>  <B>pfuTravCalcBBox,</B>  <B>pfuTravCountNumVerts,</B> <B>pfu-</B>
+       <B>TravSetDListMode,</B> <B>pfuTravCompileDLists,</B> <B>pfuTravDrawDLists,</B>
+       <B>pfuTravCreatePackedAttrs,</B>  <B>pfuFillGSetPackedAttrs,</B> <B>pfuDel-</B>
+       <B>GSetAttrs,</B> <B>pfuTravCachedCull,</B> <B>pfuCalcDepth,</B>  <B>pfuLowestCom-</B>
+       <B>monAncestor,</B> <B>pfuLowestCommonAncestorOfGeoSets,</B> <B>pfuFindTex-</B>
+       <B>ture,</B> <B>pfuFindClipTextures</B> - Useful scene graph traversals.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void       <B>pfuInitTraverser</B>(pfuTraverser* trav);
+
+       int        <B>pfuTraverse</B>(pfNode* node, pfuTraverser* trav);
+
+       void       <B>pfuTravPrintNodes</B>(pfNode *node,
+                    const char *fname);
+
+       void       <B>pfuTravGLProf</B>(pfNode *node, int mode);
+
+       void       <B>pfuTravCountDB</B>(pfNode *node,          pfFrameS-
+                    tats *fstats);
+
+       void       <B>pfuTravNodeHlight</B>(pfNode *node,         pfHigh-
+                    light *hl);
+
+       void       <B>pfuTravNodeAttrBind</B>(pfNode *node,
+                    unsigned int attr, unsigned int bind);
+
+       void       <B>pfuTravCalcBBox</B>(pfNode *node, pfBox *box);
+
+       int        <B>pfuTravCountNumVerts</B>(pfNode *node);
+
+       void       <B>pfuTravSetDListMode</B>(pfNode *node, int enable);
+
+       void       <B>pfuTravCompileDLists</B>(pfNode *node,     int del-
+                    Mask);
+
+       void       <B>pfuTravDrawDLists</B>(pfNode *node);
+
+       void       <B>pfuTravCreatePackedAttrs</B>(pfNode *node, int for-
+                    mat, int delMask);
+
+       void       <B>pfuFillGSetPackedAttrs</B>(pfGeoSet *gset,
+                    int mask);
+
+       void       <B>pfuDelGSetAttrs</B>(pfGeoSet *gset, int delMask);
+
+       void       <B>pfuTravCachedCull</B>(pfNode* node, int numChans);
+
+       int        <B>pfuCalcDepth</B>(pfNode *node);
+
+       pfNode *   <B>pfuLowestCommonAncestor</B>(pfNode *scene,
+       pfNode *   <B>pfuFindTexture</B>(pfNode *scene,            int n,
+                    (*fun)(pfGeoState*,   pfTexture*,   void*),
+                    void *arg, int travmode);
+
+       void       <B>pfuFindClipTextures</B>(pfList *list,          pfN-
+                    ode *scene);
+
+
+                  struct _pfuTraverser
+                  {
+                      pfuTravFuncType       preFunc;
+                      pfuTravFuncType       postFunc;
+                      int                   mode;
+                      int                   depth
+                      pfNode               *node;
+                      pfMatStack           *mstack;
+                      void                 *data;
+                  };
+
+                  typedef struct _pfuTraverser pfuTraverser;
+                  typedef int (*pfuTravFuncType)(pfuTraverser *trav);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuTraverser</B> provides a customizable, recursive traversal
+       of an OpenGL Performer scene graph.  Traversals are useful
+       for many things including database queries like "find and
+       activate all the <B>pfSequence</B> nodes in this scene graph".
+
+       The <B>pfuTraverser</B> facility is used by initializing a
+       <B>pfuTraverser</B> structure and invoking <B>pfuTraverse</B> with the
+       <B>pfuTraverser</B> and a target <B>pfNode</B>.  Custom database pro-
+       cessing is carried out in the pre- and post-traversal
+       callbacks that are provided by the user.
+
+       <B>pfuInitTraverser</B> initializes <I>trav</I> to the following:
+
+       preFunc = postFunc = NULL
+       mode = <B>PFUTRAV_SW_ALL</B> | <B>PFUTRAV_LOD_ALL</B> | <B>PFUTRAV_SEQ_ALL</B>
+       mstack = NULL
+       data = NULL
+
+
+       <I>mode</I> is a bitmask indicating how to traverse nodes which
+       have an explicit (<B>pfSwitch</B>) or implicit (<B>pfLOD</B>) switch.
+       The <B>ALL</B>, <B>NONE</B>, and <B>CUR</B> forms of the <B>PFUTRAV</B> tokens indi-
+       cate that the traversal should traverse all, none, or just
+       the current child of the specified node type, e.g.
+       <B>PFUTRAV_SEQ_CUR</B> will traverse the currently selected child
+       of all <B>pfSequence</B> nodes.
+
+       <I>preFunc</I> and <I>postFunc</I> are callbacks which are invoked
+       before and after each node in the hierarchy is visited.
+       Callbacks are passed a pointer to the current <B>pfuTraverser</B>
+       structure and may access elements of the <B>pfuTraverser</B>.
+
+       The <I>node</I> member references the current node in the traver-
+       sal.  <I>data</I> is a pointer to user-data and if non-NULL,
+       <I>mstack</I> will contain the matrix stack of the traversal,
+       implemented are:
+
+              <B>pfuTravPrintNodes</B>
+                   Recursively prints all nodes below <I>node</I> into
+                   file <I>fname</I>.
+
+              <B>pfuTravGLProf</B>
+                   Outputs GLprof output tags.  If <I>mode</I> is true
+                   then it places glprof tag callbacks.
+
+              <B>pfuTravCountDB</B>
+                   Accumulates stats for scene graph <I>node</I> into
+                   stats structure <I>fstats</I> by traversing <I>node</I> with
+                   stats open.
+
+              <B>pfuTravNodeHlight</B>
+                   Highlights all nodes below <I>node</I> by recursive
+                   traversal and calling a highlight routine on
+                   each.
+
+              <B>pfuTravNodeAttrBind</B>
+                   Recursively traverses <I>node</I> setting <I>attr</I> of
+                   each node under <I>node</I> to the value <I>bind</I>.
+
+              <B>pfuTravCalcBBox</B>
+                   Computes the bounding box of <I>node</I> and returns
+                   it in the parameter <I>box</I>.  If the <I>node</I> parame-
+                   ter is <B>NULL</B>, the returned box will be an empty
+                   box.
+
+              <B>pfuTravCountNumVerts</B>
+                   Returns the number of vertices in the scene
+                   graph rooted by <I>node</I>.
+
+              <B>pfuTravCachedCull</B>
+                   Installs callback functions for each node
+                   which cache CULL results between frame
+                   updates.
+
+              <B>pfuCalcDepth</B>
+                   Returns the depth of the scene graph pointed
+                   to by <I>node</I>.  A single root node with no chil-
+                   dren is counted as having depth 1.
+
+              <B>pfuLowestCommonAncestor</B>
+                   Return the lowest common ancestor node of all
+                   nodes in the scene graph rooted by <I>scene</I> for
+                   which <I>fun</I>(node, <I>arg</I>) != 0, using the traversal
+                   mode given by <I>travmode</I>.
+
+              <B>pfuLowestCommonAncestorOfGeoSets</B>
+                   Return the lowest common ancestor node of all
+                   geosets in the scene graph rooted by <I>scene</I> for
+                   which <I>fun</I>(geoset, <I>arg</I>) != 0, using the traver-
+                   sal mode given by <I>travmode</I>.
+
+              <B>pfuFindTexture</B>
+                   Return the <I>n</I>'th texture occuring in the
+                   traversal of the scene graph rooted by <I>scene</I>
+                   Enables and disables the pfGeoSet display-list
+                   rendering mode on all nodes beneath <I>node</I>. The
+                   value of <I>enable</I> guides the processing: non-
+                   zero <I>enable</I> will force display list mode and a
+                   zero value will prevent it.   If display lists
+                   for pfGeoSets in the subtree are dirty or non-
+                   existant, they will be recreated as they are
+                   drawn.  Note that pfGeoSets under pfLODs or
+                   pfSwitch nodes may not be immediately drawn,
+                   as pfGeoSets not in view.  To make sure all
+                   pfGeoSets are compiled immediately, the
+                   <B>pfuTravCompleDLists</B> traversal should be used.
+
+              <B>pfuTravCompleDLists</B>
+                   Will immediately compile all pfGeoSets beneath
+                   <I>node</I>.  The <I>delMask</I> argument indicates which
+                   (if any) of the pfGeoSet attributes (vertex
+                   position, color, normal, and texture coordi-
+                   nate) are to be deleted once the display list
+                   is built to minimize storage consumption. Once
+                   these attributes are deleted, then returning
+                   to immediate-mode rendering via a second call
+                   to <B>pfuTravSetDListMode</B> will result in empty
+                   pfGeoSets and lost geometry. This traversal
+                   must be executed in the DRAW process, or in a
+                   thread that is sproced or in the same address
+                   as the DRAW as it requires an active GL con-
+                   tect to create the GL display lists for the
+                   DRAW.  This traversal will reach all pfGeoSets
+                   immediately for compilation.
+                   <B>pfuTravSetDListMode</B> can then be used to select
+                   the display list rendering mode.
+
+              <B>pfuTravDrawDLists</B>
+                   will draw all pfGeoSets under <I>node</I> that have a
+                   draw mode of <B>PFGS_DRAW_GLOBJ</B>.  On an Infinite-
+                   Reality graphics platform, this will  cause
+                   the GL display lists to be downloaded into the
+                   local display list memory in the graphics sub-
+                   system for future fast rendering.  Even on
+                   other graphics platforms,  there is other
+                   additional optimization that might be done on
+                   the first rendering of a display list.
+
+              <B>pfuTravCreatePackedAttrs</B>
+                   This traversal builds a special packed
+                   pfGeoSet attribute array representation (based
+                   on the OpenGL VertexArray facility) that can
+                   speed rendering in many cases by reducing host
+                   overhead in data transmission to the pipeline.
+                   The <I>format</I> argument indicates which style of
+                   packed attribute data should be used. Refer to
+                   the header files for details of the supported
+                   formats, such as PFGS_PA_C4UBN3ST2FV3F and
+                   PFGS_PA_C4UBN3ST2F).
+
+       <B>pfuFillGSetPackedAttrs</B> constructs the packed attribute
+       array representation of <I>gset</I> using <I>mask</I> to determine what
+       to pack and how to pack it.
+       list.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFrameStats, pfGeoSet, pfNode, pfTraverser
+
+
+
+                                                pfuTraverser(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

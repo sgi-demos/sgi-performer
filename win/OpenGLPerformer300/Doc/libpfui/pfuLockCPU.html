@@ -1,0 +1,208 @@
+<HTML>
+<HEAD>
+<TITLE>pfuLockCPU</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuLockCPU</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuLockCPU(3pf)                                   pfuLockCPU(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuFreeAllCPUs,</B> <B>pfuRunProcOn,</B> <B>pfuLockDownProc,</B> <B>pfuLockDow-</B>
+       <B>nApp,</B> <B>pfuLockDownCull,</B> <B>pfuLockDownDraw,</B> <B>pfuLockDownLPoint,</B>
+       <B>pfuPrioritizeProcs,</B>  <B>pfuRunDiskProcsOn</B>  -  Priority,  pro-
+       cesses and processor assignment functions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       int   <B>pfuFreeAllCPUs</B>(void);
+
+       int   <B>pfuRunProcOn</B>(int cpu);
+
+       int   <B>pfuLockDownProc</B>(int cpu);
+
+       int   <B>pfuLockDownApp</B>(void);
+
+       int   <B>pfuLockDownCull</B>(pfPipe *);
+
+       int   <B>pfuLockDownDraw</B>(pfPipe *);
+
+       int   <B>pfuLockDownLPoint</B>(pfPipe *);
+
+       int   <B>pfuPrioritizeProcs</B>(int pri);
+
+       int   <B>pfuRunDiskProcsOn</B>(int cpu);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These routines assign processes to CPUs  and  implement  a
+       policy  specifically  designed for locking down the OpenGL
+       Performer application, cull, and draw processes.  The rou-
+       tines  implementing  these features utilize the IRIX REACT
+       facilities.  Refer to the IRIX REACT technical report, and
+       the  <B>sysmp(2)</B>  reference  page for detailed information on
+       these concepts.
+
+       <B>pfuFreeAllCPUs</B> frees any CPUs which may have  been  previ-
+       ously restricted.
+
+       The routine <B>pfuRunProcOn</B> can be used to force a process to
+       run on a specified CPU and  does  not  require  super-user
+       permission.   This  is often used to force extra processes
+       that can run asynchronously from the draw, such  as  those
+       receiving and generating input, onto CPU 0 without isolat-
+       ing that CPU from standard UNIX scheduling.   <B>pfuRunProcOn</B>
+       forces the calling process to run on the specified CPU and
+       does not require super-user permission.
+
+       All of the <B>pfuLock&lt;*&gt;</B> routines force a process to  run  on
+       the  specified CPU.  They also attempt to isolate the pro-
+       cessor to run only those  processes  that  have  specified
+       that they must run on that CPU.  Isolating a CPU also pro-
+       tects it from seeing unnecessary  cache  and  TLB  flushes
+       generated  by  processes that have not specified that they
+       must run on this CPU.
+
+
+</PRE>
+<H2>OBSOLETE</H2><PRE>
+       The  process  control  functionality   below is considered
+       obsolete in Performer 2.2.  It is still provided for  com-
+       patibility  had  has been updated to include new processes
+       and to use the POSIX scheduling if available on  the  cur-
+       rent  system  (requires  6.2  + patch1717, patchset 31 and
+       patchset43 or 6.4 or later  version  of  IRIX).   However,
+       this  functionality has been obsoleted by the much simpler
+       and more extensible <B>pfuProcessManager</B>.
+
+       The <B>pfuLockDown&lt;App,Cull,Draw&gt;</B> routines implement a policy
+       for selecting CPUs for different processors given the pro-
+       gram and machine configuration.
+
+       The locking and assignment  policy  implemented  by  these
+       routines is implemented in the various stages of an OpenGL
+       Performer application as follows.
+
+       1. CPU 0 is never isolated.
+
+       2. In the <B>APPCULLDRAW</B> mode, the  processor  assignment  is
+       handled by the <B>APP</B> process which takes CPU 1.
+
+       3.  In  the <B>APP_CULLDRAW</B> mode, the processor assignment is
+       handled separately by the <B>APP</B> and <B>DRAW</B> processes.
+
+       4. In the <B>APP_CULL_DRAW</B> mode, each process handles itself.
+
+       When there is only one pipe, processors are mapped to pro-
+       cesses as follows. If there are three CPUs, each  of  <B>APP,</B>
+       <B>CULL</B>  and <B>DRAW</B> gets its own process. If there are only two
+       CPUs, <B>APP</B> is put on CPU 0, which is not isolated, and <B>DRAW</B>
+       and <B>CULL</B> share CPU 1.  The <B>LPOINT</B> process is given its own
+       CPU if there are enough  available  CPUs.   Otherwise,  it
+       will be given then last CPU.
+
+       Multipipe mappings are as follows.
+
+       If NumCPUs &gt;= 2 + 2*NumPipes
+       then each cull and draw process can have its own CPU, with the application
+       getting CPU 1, and UNIX getting CPU 0.
+
+       If NumCPUs == 1 + 2*NumPipes
+       then the application shares CPU 0 with UNIX.
+
+       Otherwise, if NumCPUs &gt;= 2 + NumPipes
+       then cull and draw processes for each pipe are paired together.
+
+       The LPoint processes are also  given their own CPUs if there are enough
+       available CPUs.  Otherwise, they are grouped together on a single CPU,
+       their own if there is on extra, else the last CPU.
+
+
+       If there are fewer CPUs then indicated above, then the
+       application is assigned to CPU 0 with UNIX, APP and CULL
+       process are paired, and when only one free CPU remains,
+       all remaining processes are assigned to the last CPU.
+
+       Each of these routines return 1 if successful and 0 if an
+       is one CULL process per pfPipe) to a CPU determined by the
+       policy above.  T policy above.  This routine should be
+       called from application's <B>pfConfigStage</B> callback for the
+       <B>PFPROC_CULL</B> stage.  The CPU is isolated to running only
+       processes that have specified that they must run on this
+       CPU.  This CPU isolation requires super-user permission.
+
+       <B>pfuLockDownDraw</B> locks the DRAW process of a pfPipe (there
+       is one draw process per pfPipe) to a CPU determined by the
+       policy above.  This routine should be called from applica-
+       tion's <B>pfConfigStage</B> callback for the <B>PFPROC_DRAW</B> stage.
+       See the <B>pfConfigStage</B> reference page for more information.
+       The CPU is isolated to running only processes that have
+       specified that they must run on this CPU.  This CPU isola-
+       tion requires super-user permission.
+
+       <B>pfuLockDownLPoint</B> locks the LPOINT process of a pfPipe
+       (there up to one optional light point process per pfPipe)
+       to a CPU determined by the policy above.  This routine
+       should be called from application's <B>pfConfigStage</B> callback
+       for the <B>PFPROC_LPOINT</B> stage.  The is isolated to running
+       only processes that have specified that they must run on
+       this CPU.  This CPU isolation requires super-user permis-
+       sion.
+
+       <B>pfuRunDiskProcsOn</B> forces all threads servicing pfQueue's
+       to run on a certain cpu.  See the <B>pfQueue</B> man page for how
+       pfQueue's can be used to service disk threads.  A value of
+       -1 passed as the <I>cpu</I> argument will cause the routine to
+       choose cpu 2*NumPipes+3 if it exists or cpu 0 otherwise.
+
+       <B>pfuPrioritizeProcs</B> should be called after <B>pfConfig</B> and
+       will set or remove non-degrading priorities from all Per-
+       former processes.  <I>pri</I> is a boolean: if TRUE all OpenGL
+       Performer processes will be assigned a non-degrading pri-
+       ority of NDPHIMAX+2 (see <B>schedctl</B>); if FALSE any non-
+       degrading priorities will be removed.  You must have
+       super-user permission to enable non-degrading priorities
+       but not to remove them.
+
+       If you wish to assign different priorities to different
+       processes, simply modify <B>pfuPrioritizeProcs</B> to suit your
+       needs.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Processor lock-down functionality is not currently avail-
+       able under Linux.
+
+       Isolating a CPU to specific processes requires super-user
+       permission.
+
+       CPU 0 should <I>never</I> be isolated.
+
+       A utility shell script is provided in /usr/share/Per-
+       former/src/tools/freeproc that can be run as super-user to
+       clean up after a program that exits ungracefully.
+
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+
+
+                                                  pfuLockCPU(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

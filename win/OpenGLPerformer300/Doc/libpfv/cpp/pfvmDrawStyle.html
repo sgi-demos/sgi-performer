@@ -1,0 +1,209 @@
+<HTML>
+<HEAD>
+<TITLE>pfvmDrawStyle</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvmDrawStyle</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvmDrawStyle(3pf)                             pfvmDrawStyle(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvmDrawStyle</B> - DrawStyle module for pfvViewer
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfvm/pfvmDrawStyle.h&gt;
+
+
+       <B>pfvmDrawStyle::pfvmDrawStyle</B>( pfvXmlNode* xml=NULL);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfvmDrawStyle</B> is derived from
+       the parent class <B>pfvModule</B>, so each of these member  func-
+       tions  of  class  <B>pfvModule</B>  are also directly usable with
+       objects of class <B>pfvmDrawStyle</B>.  This  is  also  true  for
+       ancestor classes of class <B>pfvModule</B>.
+
+       int            <B>pfvModule::getScope</B>();
+       int            <B>pfvModule::getScopeIndex</B>();
+       pfvObject*     <B>pfvModule::getScopeTarget</B>();
+       void           <B>pfvModule::bindCallback</B>(int which);
+       void           <B>pfvModule::unbindCallback</B>(int which);
+       int            <B>pfvModule::getCBMask</B>();
+       virtual void   <B>pfvModule::preConfig</B>();
+       virtual void   <B>pfvModule::postConfig</B>();
+       virtual void   <B>pfvModule::enterView</B>(pfvView*v);
+       virtual void   <B>pfvModule::exitView</B>(pfvView*v);
+       virtual void   <B>pfvModule::enterWorld</B>();
+       virtual void   <B>pfvModule::exitWorld</B>();
+       virtual void   <B>pfvModule::sync</B>();
+       virtual void   <B>pfvModule::frame</B>();
+       virtual void   <B>pfvModule::preCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::preDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::overlay</B>(pfvDispChan*chan);
+       int            <B>pfvModule::bindKeys</B>(char*keys);
+       int            <B>pfvModule::unbindKeys</B>(char*keys)
+       char*          <B>pfvModule::getEventMask</B>()
+       void           <B>pfvModule::setEventMask</B>(char* str);
+       virtual int    <B>pfvModule::handleEvent</B>(int evType,
+                        char key);
+       uint64_t       <B>pfvModule::getViewMask</B>();
+
+
+       Since the class <B>pfvModule</B> is itself derived from the  par-
+       ent  class  <B>pfvobject</B>,  objects of class <B>pfvmDrawStyle</B> can
+       also be used with these functions designed for objects  of
+       class <B>pfvobject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfvmDrawStyle</B> can also be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfvmDrawStyle  is  a  pfvViewer module that allows user to
+       change the drawstyle with keypress.
+
+
+       ========
+       <B>XML</B> <B>tags</B>
+       ========
+
+
+
+           &lt;module&gt;
+               &lt;class&gt;pfvmDrawStyle&lt;/class&gt;
+               &lt;data&gt;
+                   ...
+                   parameters
+                   ...
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+       where <B>parameters</B> is one or more of the following:
+
+       <B>&lt;name&gt;</B>string<B>&lt;/name&gt;</B> where <B>string</B> is the name assigned to
+       <B>&lt;backface&gt;</B>value<B>&lt;/backface&gt;</B> where <B>value</B> is either on or
+       off.  If set to 'on', backface culling is initially
+       enabled.  By default it is disabled.  Backface culling can
+       be toggled with the 'b' key.
+
+       <B>&lt;lighting&gt;</B>value<B>&lt;/lighting&gt;</B> where <B>value</B> is either on or
+       off.  If set to 'off', lighting is initally disabled.  By
+       default it is enabled.  Lighting can be toggled with the
+       'l' key.
+
+       <B>&lt;drawstyle&gt;</B>int<B>&lt;/drawstyle&gt;</B> where <B>int</B> is an integer indi-
+       cating the drawstyle.  See the PFUSTYLE* values defined in
+       pfutil.h.  The default is 0, which corresponds to filled.
+       When the 'w' key is pressed, it toggles between wireframe
+       and filled.  When the 'W' key is pressed, it cycles
+       through the available drawstyles.
+
+
+       Example:
+           &lt;module&gt;
+               &lt;class&gt;pfvmDrawStyle&lt;/class&gt;
+               &lt;data&gt;
+                   &lt;name&gt;drawing_styles&lt;/name&gt;
+                   &lt;lighting&gt;on&lt;/lighting&gt;
+                   &lt;backface&gt;on&lt;/backface&gt;
+                   &lt;texture&gt;off&lt;/texture&gt;
+
+                   &lt;!-- set drawstyle to wireframe -&gt;
+                   &lt;drawstyle&gt;1&lt;/drawstyle&gt;
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+
+       =======
+       <B>Scoping</B>
+       =======
+
+       A pfvmDrawStyle module can be scoped globally, to a single
+       view, or to a single world.
+
+       If scoped globally, pfvmDrawStyle will respond to all key
+       presses, and will simoultaneously control the drawstyle of
+       all views in pfvViewer application.
+
+       If scoped to a view, pfvmDrawStyle will only respond to
+       key presses over its target-view, and will only control
+       the drawstyle of geometry rendered within such view.
+
+       If scoped to a world, pfvmDrawStyle will respond to key-
+       presses on any view while it is viewing module's target
+       world, and will simoultaneously control the drawing style
+       for all views currently viewing target world.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The source code for the pfvmDrawStyle Module is provided
+       and can be found in /usr/share/Per-
+       former/src/pguide/libpfv/viewer/modules/pfvmDrawStyle
+       pfvXml
+
+
+
+                                               pfvmDrawStyle(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

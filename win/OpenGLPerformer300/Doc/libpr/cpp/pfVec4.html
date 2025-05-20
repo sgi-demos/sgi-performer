@@ -1,0 +1,235 @@
+<HTML>
+<HEAD>
+<TITLE>pfVec4</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVec4</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVec4(3pf)                                           pfVec4(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfVec4</B> - Set and operate on 4-component vectors
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfVec4.h&gt;
+
+       void*          <B>pfVec4::operator</B> <B>new</B>(size_t);
+
+       void*          <B>pfVec4::operator</B> <B>new</B>(size_t, void *arena);
+
+                      <B>pfVec4::pfVec4</B>();
+
+                      <B>pfVec4::pfVec4</B>(float x,  float y,  float z,
+                        float w);
+
+       void           <B>pfVec4::addScaled</B>(pfVec3&amp; dst,
+                        const pfVec3&amp; v1,              float s,
+                        const pfVec3&amp; v2);
+
+       void           <B>pfVec4::add</B>(const pfVec4&amp; v1,
+                        const pfVec4&amp; v2);
+
+       int            <B>pfVec4::almostEqual</B>(const pfVec4&amp; v2,
+                        float tol);
+
+       void           <B>pfVec4::combine</B>(float s1, const pfVec4&amp; v1,
+                        float s2, const pfVec4&amp; v2);
+
+       void           <B>pfVec4::copy</B>(const pfVec4&amp; v);
+
+       float          <B>pfVec4::distance</B>(const pfVec4&amp; pt2);
+
+       float          <B>pfVec4::dot</B>(const pfVec4&amp; v2);
+
+       int            <B>pfVec4::equal</B>(const pfVec4&amp; v2);
+
+       float          <B>pfVec4::length</B>(void);
+
+       void           <B>pfVec4::negate</B>(const pfVec4&amp; v);
+
+       float          <B>pfVec4::normalize</B>(void);
+
+       void           <B>pfVec4::scale</B>(float s, const pfVec4&amp; v);
+
+       void           <B>pfVec4::set</B>(float x,    float y,   float z,
+                        float w);
+
+       float          <B>pfVec4::sqrDistance</B>(const pfVec4&amp; pt2);
+
+       void           <B>pfVec4::sub</B>(const pfVec4&amp; v1,
+                        const pfVec4&amp; v2);
+
+       void           <B>pfVec4::xform</B>(const pfVec4&amp; v,  const pfMa-
+                        trix&amp; m);
+
+
+       pfVec4         <B>pfVec4::operator</B> <B>+</B>(const pfVec4&amp; v);
+
+       pfVec4         <B>pfVec4::operator</B> <B>-</B>(const pfVec4&amp; v);
+
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>=</B>(const pfVec4&amp; v);
+
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>*=</B>(float d);
+
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>/=</B>(float d);
+
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>+=</B>(const pfVec4&amp; v);
+
+       pfVec4&amp;        <B>pfVec4::operator</B> <B>-=</B>(const pfVec4&amp; v);
+
+       pfVec4         <B>pfVec4::operator</B>         <B>*</B>(const pfVec4&amp; v,
+                        float d);
+
+       pfVec4         <B>pfVec4::operator</B>                 <B>*</B>(float d,
+                        const pfVec4&amp; v);
+
+       pfVec4         <B>pfVec4::operator</B>         <B>/</B>(const pfVec4&amp; v,
+                        float d);
+
+       pfVec4         <B>pfVec4::operator</B>         <B>*</B>(const pfVec4&amp; v,
+                        const pfMatrix&amp; m);
+
+
+                      struct pfVec4 {
+                          float vec[4];
+                      };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Math functions for 4-component vectors.
+
+       Most accesses to pfVec4 go through pfVec4::operator[], but
+       pfVec4 is a public struct whose data member vec is
+       directly accessible, e.g.  for passing to a routine
+       expecting a float* such as glColor4fv.  The default con-
+       structor <B>pfVec4()</B> is empty and does not initialize the
+       values in the vector.  An initializing constructor
+       <B>pfVec4</B>(float, float, float, float) accepts the initial
+       values for the vector.  <B>new</B>(arena) allocates a pfVec4 from
+       the specified memory arena, or from the heap if <I>arena</I> is
+       NULL.  <B>new</B> allocates a pfVec4 from the default memory
+       arena (<B>pfGetSharedArena</B>).  pfVec4s can also be created
+       automatically on the stack or statically.  pfVec4s allo-
+       cated with <B>new</B> should be deleted with <B>pfDelete</B>, not
+       <B>delete</B>.
+
+       The name <I>vec</I> has been used below to indicate the pfVec4 on
+       which the member function is being invoked.
+
+       <B>pfVec4::set</B>: <I>vec</I>[0] = <I>x</I>, <I>vec</I>[1] = <I>y</I>, <I>vec</I>[2] = <I>z</I>, <I>vec</I>[3] =
+       <I>w</I> .  Macro equivalent is <B>PFSET_VEC4</B>.
+
+       <B>pfVec4::copy</B>: <I>vec</I> = <I>v</I>.  Macro equivalent is <B>PFCOPY_VEC4</B>.
+
+       <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFSUB_VEC4</B>.
+
+       <B>pfVec4::scale</B>: <I>vec</I> = <I>s</I> * <I>v1</I>.  Sets <I>vec</I> to the vector <I>v</I>
+       scaled by <I>s</I>.  Macro equivalent is <B>PFSCALE_VEC4</B>.
+
+       <B>pfVec4::addScaled</B>: <I>vec</I> = <I>v1</I> + <I>s</I> * <I>v2</I>.  Sets <I>vec</I> to the
+       vector <I>v1</I> plus the vector <I>v2</I> scaled by <I>s</I>.  Macro equiva-
+       lent is <B>PFADD_SCALED_VEC4</B>.
+
+       <B>pfVec4::combine</B>: <I>vec</I> = <I>s1</I> * <I>v1</I> + <I>s2</I> * <I>v2</I>.  Sets <I>vec</I> to be
+       the linear combination of <I>v1</I> and <I>v2</I> with scales <I>s1</I> and <I>s2</I>,
+       respectively.  Macro equivalent is <B>PFCOMBINE_VEC4</B>.
+
+       <B>pfVec4::normalize</B>: <I>vec</I> = <I>vec</I> / length(<I>vec</I>).  Normalizes
+       the vector <I>vec</I> to have unit length and returns the origi-
+       nal length of the vector.
+
+       <B>pfVec4::xform</B>: <I>vec</I> = <I>v</I> * <I>m</I>.  Transforms <I>v</I> by the matrix <I>m</I>.
+
+       <B>pfVec4::dot</B> = <I>vec</I> dot <I>v2</I> = <I>vec</I>[0] * <I>v2</I>[0] + <I>vec</I>[1] * <I>v2</I>[1]
+       + <I>vec</I>[2] * <I>v2</I>[2] + <I>vec</I>[3] * <I>v2</I>[3].  Returns dot product of
+       the vectors <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFDOT_VEC4</B>.
+
+       <B>pfVec4::length</B> = |vec| = sqrt(<I>vec</I> dot <I>vec</I>).  Returns
+       length of the vector <I>vec</I>.  Macro equivalent is
+       <B>PFLENGTH_VEC4</B>.
+
+       <B>pfVec4::sqrDistance</B> = (<I>vec</I> - <I>v2</I>) dot (<I>vec</I> - <I>v2</I>).  Returns
+       square of distance between two points <I>vec</I> and <I>v2</I>.  Macro
+       equivalent is <B>PFSQR_DISTANCE_PT4</B>.
+
+       <B>pfVec4::distance</B> = sqrt((<I>vec</I> - <I>v2</I>) dot (<I>vec</I> - <I>v2</I>)).
+       Returns distance between two points <I>vec</I> and <I>v2</I>.  Macro
+       equivalent is <B>PFDISTANCE_PT4</B>.
+
+       <B>pfVec4::equal</B> = (<I>vec</I> == <I>v2</I>).  Tests for strict component-
+       wise equality of two vectors <I>vec</I> and <I>v2</I> and returns FALSE
+       or TRUE.  Macro equivalent is <B>PFEQUAL_VEC4</B>.
+
+       <B>pfVec4::almostEqual</B>.  Tests for approximate component-wise
+       equality of two vectors <I>vec</I> and <I>v2</I>.  It returns FALSE or
+       TRUE depending on whether the absolute value of the dif-
+       ference between each pair of components is less than the
+       tolerance <I>tol</I>.  Macro equivalent is <B>PFALMOST_EQUAL_VEC4</B>.
+       <B>float&amp;</B> <B>operator</B> <B>[]</B>(int i) <B>const</B> <B>float&amp;</B> <B>operator</B> <B>[]</B>(int i)
+       Accesses indexed component of vector.
+
+       <B>int</B> <B>operator</B> <B>==</B>(const pfVec4&amp;) Equality comparison opera-
+       tor.
+
+       <B>pfVec4</B> <B>operator</B> <B>-</B>() const Nondestructive unary negation -
+       returns a new vector.
+
+       <B>pfVec4</B> <B>operator</B> <B>+</B>(const pfVec4&amp;) <B>pfVec4</B> <B>operator</B> <B>-</B>(const
+       pfVec4&amp;) Component-wise binary vector addition and sub-
+       traction operators.
+
+       <B>pfVec4&amp;</B> <B>operator</B> <B>=</B>(const pfVec4&amp;) Vector assignment opera-
+       tor.
+
+       <B>pfVec4</B> <B>operator</B> <B>*</B>(const pfVec4&amp;, float) <B>pfVec4</B> <B>operator</B>
+       <B>*</B>(float d, const pfVec4&amp;) <B>pfVec4</B> <B>operator</B> <B>/</B>(const pfVec4&amp;,
+       float) <B>pfVec4</B> <B>operator</B> <B>*</B>(const pfVec4&amp;, const pfMatrix&amp;)
+       Component-wise binary scalar multiplication and division
+       operators.
+
+       Routines can accept the same vector as source, destina-
+       tion, or as a repeated operand.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       When using overloaded operators in C++, assignment opera-
+       tors, e.g.  "+=", are somewhat more efficient than the
+       corresponding binary operators, e.g. "+", because the lat-
+       ter construct a temporary intermediate object.  Use
+       assignment operators or macros for binary operations where
+       optimal speed is important.
+
+       C++ does not support array deletion (i.e. <B>delete[]</B>) for
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfVec4[n].
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfMatrix, pfVec2, pfVec3
+
+
+
+                                                      pfVec4(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

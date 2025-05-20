@@ -1,0 +1,211 @@
+<HTML>
+<HEAD>
+<TITLE>makeProxyImages</TITLE>
+</HEAD>
+<BODY>
+<H1>makeProxyImages</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+makeProxyImages(1pf)                         makeProxyImages(1pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>makeProxyImages</B>  -  OpenGL  Performer  tool for generating
+       images for image-based rendering in which the  images  are
+       projected on a proxy, a simplified version of the object
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>makeProxyImages</B> file [ options ]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The  program  <B>makeProxyImages</B>  is one of the tool programs
+       distributed with  the  OpenGL  Performer  high-performance
+       graphics library.  It can be used to create images (views)
+       of the specified object from a set  of  directions.  Since
+       the  images  are being projected on a proxy, a simplifica-
+       tion of the original object, additional processing may  be
+       required  to add views of parts of the proxy that are par-
+       tially or fully obstructed by  other  parts.  These  addi-
+       tional  texture  pieces are important because as the proxy
+       is rotated away from the view at  which  the  texture  was
+       computed  some  parts  of the proxy that were not directly
+       visible from the view may become visible. Thus each  image
+       consists  of  the  view  of the object and a collection of
+       texture pieces for obstructed parts of the  proxy.  It  is
+       necessary to store texture coordinates for each proxy tri-
+       angle so that the texture  pieces  are  correctly  mapped.
+       Consequently, the program <B>makeProxyImages</B> outputs not only
+       textures storing the views but also a pfIBRnode that  con-
+       tains  the texture coordinates and the proxy geometry. The
+       proxy of an  object  can  be  created  using  the  program
+       <B>simplify</B>.
+
+       The input to the program is the file containg the original
+       complex object.  The file containing the proxy  is  speci-
+       fied  using the switch -pf, the images are stored in files
+       with the name specified using the switch -f (a view number
+       and  the  extension  rgb  is added automatically), and the
+       resulting pfIBRnode is stored in a  file  specified  using
+       the switch -pfb.
+
+       It  is  also  important to specify the size of the texture
+       (-W xsize ysize) and the oversampling factor in  case  the
+       hardware  does  not  support antialiasing (switch -o). The
+       view directions can be defined using the  text  file  with
+       information  about  rings  (switch  -rv), using only views
+       around the object (switch -n),  or  using  uniformly  dis-
+       tributed  3D  views  (switch  -nv).  Each line of the ring
+       file contains two values: the angle  from  the  horizontal
+       plane  and how many views are created for that angle.  Use
+       the switch -sk if you want to skip  a  certain  number  of
+       views in each ring.
+
+       By  default  the program uses orthographic projection. The
+       center of the projection is the  center  of  the  bounding
+       sphere  around the object and the object is scaled so that
+       the bounding sphere fits  the  window.   If  the  bounding
+       textures thus it is important you specify the  lights  the
+       same  way as in your scene.  By default the default perfly
+       lighting is selected. You  can  specify  your  own  lights
+       using  the  switch -l (-l posx posy posz posw r g b). Sev-
+       eral switches can be used to define multiple lights.
+
+
+       <B>PACKING</B> <B>ADDITIONAL</B> <B>TEXTURE</B> <B>PIECES</B>
+
+       By default the program <B>makeProxyImages</B>  renders  only  the
+       view  of  the object, without the extra texture pieces for
+       obstructed triangles of the proxy. To enable this  feature
+       you  have  to  add  the  switch  -ev.  The process has two
+       steps. First, the number and size  of  texture  pieces  is
+       determined  and a packing algorithm determines their posi-
+       tion around the primary view. Second, for  each  view  the
+       texture pieces are rendered in place.
+
+       The  packing  algorithm  operates on pixel level and there
+       are several switches that effect its speed and quality  of
+       results.   To speed up the packing algorithm you can down-
+       sample the textures before packing using the switch  -evd.
+       The  drawback  is  that  there  may  be  more wasted space
+       between texture pieces.  You can also reduce the number of
+       neighboring pixels the algorithm checks when finding opti-
+       mal place for texture pieces (switch -evp).   In  general,
+       the  texture pieces are not aligned with their neighboring
+       pieces, thus when the view texture is mipmapped  the  gaps
+       between  the textures may become visible. For this purpose
+       you can add the switch -evmp and set how  many  mipmapping
+       levels  will  be without any cracks.  What happens is that
+       each edge of the texture piece that is  not  a  silhouette
+       edge  is  extended to contain more pixels from neighboring
+       triangles.  Setting the value too high may cause the pack-
+       ing algorithm to fail.
+
+       If the packing algorithm fails to place the texture pieces
+       around the primary view the object is scaled down a little
+       (for  the given view) and the algorithm is restarted. This
+       repeats until all texture pieces fit.
+
+       Similarly as obstructed triangles may come into full  view
+       also  backfacing  triangle may become visible as the proxy
+       is rotated away from the view.  Thus it is possible to add
+       texture pieces for backfacing triangles into the view tex-
+       ture using the switch -bf. Not  all  backfacing  triangles
+       are  added  but only those that may be visible from neigh-
+       boring views.  Since additional texture  pieces  that  are
+       used for backfacing triangles of the proxy can be found in
+       neighboring views it is advantageous  to  combine  several
+       views  into  a  single texture. This reduces the number of
+       texture pieces packed into a texture for one view. You can
+       use  the switch -tm to control this. It is recommended not
+       to exceed 2K x 2K when combining several  views  into  one
+       texture.
+
+
+       <B>FINETUNING</B> <B>TEXTURE</B> <B>RENDERING</B>
+
+       triangles may be  transparent.   This  may  cause  visible
+       cracks when the object is rotated.  Moving the clip planes
+       reduces some of the cracks.
+
+       If you move the plane that is behind the triangle  further
+       away  (switch  -evlb)  some of the geometry that is behind
+       the silhouette is included in the texture.  When you  move
+       the  front clip plane closer to the cameras (switch -evlf)
+       some of the geometry that is in front of the silhouette is
+       included in the texture.
+
+       Since some proxy triangles may have texture with transpar-
+       ent edges it may be desirable to sort the proxy triangles.
+       Since  the  proxy  can  be viewed from any direction it is
+       necessary to determine how the triangles are  sorted.   If
+       the proxy is rendered with selecting only the nearest view
+       the triangles are ordered for each view  differently.  You
+       have  to  set  that mode using the switch -nr. By default,
+       three or four nearest views are blended together.  In that
+       case  the  proxy  triangles  are  sorted for each group of
+       views.  Sometimes it may be possible  to  see  changes  in
+       transparency  as the view moves from one group of views to
+       another. If this becomes too obvious you can  disable  the
+       sorting using the switch -evns.
+
+       All  the  issues  mentioned in this section can be drasti-
+       cally reduced if the proxy is very close to  the  original
+       object - especially around visible sharp edges - or if the
+       number of views is increased.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       To obtain the full set of command  line  options  run  the
+       program <B>makeProxyImages</B> without any parameters.
+
+
+       If  your machine does not support a single-buffered visual
+       with at least 8 bits per red, green, blue, and alpha  com-
+       ponent  the  images  may be missing alpha channel. See the
+       number of alpha bits  printed  at  the  beginning  of  the
+       <B>makeProxyImages</B>  output.   On some SGI systems with multi-
+       sampling you may try to use the switch -nms to  request  a
+       visual  wihout multisampling, improving the chance of get-
+       ting a visual with alpha channel.
+
+       Do not forget to oversample the textures on machines  with
+       no antialiasing (switch -o).
+
+       The  process  may take very long time if the proxy is very
+       fine and many texture pieces have  to  be  added  to  each
+       view.  Since the rendering is done into a window make sure
+       that you do not overlap the window during the  process  or
+       that the screen saver does not start.  If some of the tex-
+       tures are corrupt you may restart the  program  with  same
+       parameters and add the switch -sfr that skips rendering of
+       the given number of textures. It is also a  good  idea  to
+       increase  shared  arena size (using environmental variable
+       PFSHAREDSIZE) to avoid memory overflow when the  pfIBRnode
+       is saved at the end.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>performer</B>, <B>pfIBRtexture</B>, <B>pfIBRnode</B>, <B>simplify</B>
+
+
+
+                                             makeProxyImages(1pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,675 @@
+<HTML>
+<HEAD>
+<TITLE>pfImageCache</TITLE>
+</HEAD>
+<BODY>
+<H1>pfImageCache</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfImageCache(3pf)                               pfImageCache(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfImageCache</B>  -  Create,  modify  and  update a multilevel
+       tiled cache useful for roaming through large tiled  images
+       by  continuously updating a rectangular image representing
+       one valid region of the image.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfImageCache.h&gt;
+
+                      <B>pfImageCache::pfImageCache</B>();
+
+       static pfType *
+                      <B>pfImageCache::getClassType</B>(void);
+
+       void           <B>pfImageCache::setName</B>(const char *name);
+
+       const char *   <B>pfImageCache::getName</B>(void);
+
+       void           <B>pfImageCache::setImageSize</B>(int sizeS,
+                        int sizeT, int sizeR);
+
+       void           <B>pfImageCache::getImageSize</B>(int *sizeS,
+                        int *sizeT, int *sizeR);
+
+       void           <B>pfImageCache::setProtoTile</B>(pfImageTile *tile);
+
+       pfImageTile *  <B>pfImageCache::getProtoTile</B>(void);
+
+       void           <B>pfImageCache::setMemRegionSize</B>(int nTilesS,
+                        int nTilesT, int nTilesR);
+
+       void           <B>pfImageCache::getMemRegionSize</B>(int *nTilesS,
+                        int *nTilesT, int *nTilesR);
+
+       void           <B>pfImageCache::getCurMemRegionSize</B>(int *nTilesS,
+                        int *nTilesT, int *nTilesR);
+
+       void           <B>pfImageCache::setMemRegionOrg</B>(int s, int t,
+                        int r);
+
+       void           <B>pfImageCache::getMemRegionOrg</B>(int *s,
+                        int *t, int *r);
+
+       void           <B>pfImageCache::getCurMemRegionOrg</B>(int *s,
+                        int *t, int *r);
+
+       void           <B>pfImageCache::setTexRegionSize</B>(int sizeS,
+                        int sizeT, int sizeR);
+
+       void           <B>pfImageCache::getTexRegionSize</B>(int *sizeS,
+                        int *sizeT, int *sizeR);
+
+       void           <B>pfImageCache::getCurTexRegionSize</B>(int *sizeS,
+                        int *sizeT, int *sizeR);
+
+                        int *t, int *r);
+
+       void           <B>pfImageCache::getValidRegionOffset</B>(int *s,
+                        int *t, int *r);
+
+       void           <B>pfImageCache::setTex</B>(void *dst,    int lvl,
+                        int type);
+
+       void           <B>pfImageCache::getTex</B>(void **dst,  int *lvl,
+                        int *type);
+
+       void           <B>pfImageCache::setTexSize</B>(int s,      int t,
+                        int r);
+
+       void           <B>pfImageCache::getTexSize</B>(int *s,    int *t,
+                        int *r);
+
+       void           <B>pfImageCache::setReadQueueFunc</B>(pfImageCacheReadQueueFuncType func);
+
+       void           <B>pfImageCache::setTileFileNameFunc</B>(pfImageCacheTileFileNameFuncType func);
+
+       pfImageCacheReadQueueFuncType
+                      <B>pfImageCache::getReadQueueFunc</B>(void);
+
+       pfImageCacheTileFileNameFuncType
+                      <B>pfImageCache::getTileFileNameFunc</B>(void);
+
+       void           <B>pfImageCache::setFileStreamServer</B>(int dim,
+                        int which, const char *device);
+
+       const char *   <B>pfImageCache::getFileStreamServer</B>(int dim,
+                        int which);
+
+       void           <B>pfImageCache::setStreamServerQueue</B>(int dim,
+                        int which, pfQueue *q);
+
+       pfQueue *      <B>pfImageCache::getStreamServerQueue</B>(int dim,
+                        int which);
+
+       pfQueue
+                      *      <B>pfImageCache::getStreamServerQueueByName</B>(const char *name);
+
+       void           <B>pfImageCache::setTileFileNameFormat</B>(const char *fmtString,
+                        int nArgs, int *argList);
+
+       void           <B>pfImageCache::getTileFileNameFormat</B>(const char **fmtString,
+                        int *nArgs, const int **argList);
+
+       int            <B>pfImageCache::getNumStreamServers</B>(int dim);
+
+       void           <B>pfImageCache::setMode</B>(int mode, int val);
+
+       int            <B>pfImageCache::getMode</B>(int mode);
+
+       pfImageTile *  <B>pfImageCache::getTile</B>(int s, int t, int r);
+
+       const pfList*  <B>pfImageCache::getLoadUpdates</B>(void);
+
+       int            <B>pfImageCache::isValid</B>(int s, int t,  int r,
+
+       void           <B>pfImageCache::setMaster</B>(pfImageCache *master);
+
+       pfImageCache * <B>pfImageCache::getMaster</B>(void);
+
+       pfList *       <B>pfImageCache::getSlaves</B>(void);
+
+       void           <B>pfImageCache::invalidate</B>(void);
+
+       void           <B>pfImageCache::calcTexRegion</B>(int *_orgS,
+                        int *_orgT,   int *_orgR,  int *_sizeS,
+                        int *_sizeT, int *_sizeR);
+
+       void           <B>pfImageCache::calcMemRegion</B>(int *_orgS,
+                        int *_orgT,   int *_orgR,  int *_sizeS,
+                        int *_sizeT, int *_sizeR);
+
+       void           <B>pfImageCache::setDTRMode</B>(uint mode);
+
+       uint           <B>pfImageCache::getDTRMode</B>(void);
+
+       int            <B>pfImageCache::isTexRegChanged</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfImageCache</B>  is  derived  from
+       the  parent  class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B>  are  also  directly  usable  with
+       objects  of  class  <B>pfImageCache</B>.   This  is also true for
+       ancestor classes of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfImageCache</B> can also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  <B>pfImageCache</B> allows a selected subset of an arbitrarily
+       large tiled image to be cached in main memory  and  incre-
+       mentally updated from disk or other file system devices as
+       the origin of the selected subset is changed.
+
+       The basic notion of a <B>pfImageCache</B> is  to  hold  an  MxNxO
+       grid of tiles in main memory while providing access to the
+       complete  set  of  tiles  on  disk  as  needed.   Further,
+       <B>pfImageCache</B>'s  support  the  ability  to  define  a valid
+       region within the currently valid portion of the  pfImage-
+       Cache.   This valid region is of a certain size and can be
+       roamed independently of the tile boundaries defined by the
+       disk-based tiles in which the image is stored.  This valid
+       region is also represented in texture memory and is  effi-
+       ciently  updated in a toroidal manner through simple calls
+       defining the new origin of the valid region.   In  use,  a
+       <B>pfImageCache</B>  is  a  multilevel cache used to roam a valid
+       'region' or 'window' through a large virtual texture via a
+       texture memory cache of the current window and a main mem-
+       ory cache consisting of a slightly larger tiled  rectangu-
+       lar  region  where this region is constantly being updated
+       by bring new tiles from disk to main memory.
+
+       <B>new</B>(arena) allocates a  pfImageCache  from  the  specified
+       memory  arena,  or from the process heap if <I>arena</I> is NULL.
+       <B>new</B> allocates a pfImageCache from the default memory arena
+       (see  <B>pfGetSharedArena</B>).   Like  other pfObjects, pfImage-
+       Caches cannot be created statically, automatically on  the
+       stack  or  in  arrays  and should be deleted with <B>pfDelete</B>
+       rather than the delete operator.
+
+       <B>pfImageCache::getClassType</B> returns  the  <B>pfType</B>*  for  the
+       class    <B>pfImageCache</B>.     The    <B>pfType</B>*    returned   by
+       <B>pfImageCache::getClassType</B> is  the  same  as  the  <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfImageCache</B>.  When decisions  are  made
+       based  on  the  type of an object, it is usually better to
+       use  the member function <B>isOfType</B> to test if an object  is
+       of  a  type  derived  from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfImageCache::setName</B> sets the name of the pfImageCache to
+       <I>name</I>  while  <B>pfImageCache::getName</B> returns the name of the
+       pfImageCache.
+
+
+   <B>pfImageCache</B> <B>CACHE</B> <B>CONFIGURATION</B>
+       <B>pfImageCache::setImageSize</B> sets the image size to be  rep-
+       resented  by  the pfImageCache.  This image size is speci-
+       fied in texels and must be some multiple of the tile  size
+       for  the  pfImageCache.  This size is specified in texels.
+       <B>pfImageCache::getImageSize</B> returns the virtual size of the
+       pfImageCache.   Any  of the arguments s,t,r may be NULL in
+       which case it will be ignored.
+
+       <B>pfImageCache::setProtoTile</B>  sets  the  prototype  for  the
+       pfImageTiles that will be used to store the image informa-
+       region  of  image within the pfImageCache.  Thus the cache
+       size is specified in terms  of  the  number  of  prototype
+       tiles  specified  via  <B>pfImageCache::setProtoTile</B>  in each
+       dimension of  the  cache.   <B>pfImageCache::getMemRegionSize</B>
+       will return the last size values set by the application in
+       each dimension of the pfImageCache.  This size  is  speci-
+       fied  in  terms of the number of prototypical pfImageTiles
+       required to specify the cache. Any of  the  pointer  argu-
+       ments  nTilesS,  nTilesT, nTilesR may be NULL, which indi-
+       cates the application is not interested in those values.
+
+       Since there is some latency between size values being  set
+       used,  <B>pfImageCache::getCurMemRegionSize</B>  returns  the mem
+       region size currently in use.
+
+       As an example, a pfImageCache might be  configured  to  an
+       image size 32768x32768x1 with a prototypical tile that had
+       size of 512x512x1 and a cache size of 4x4x1.  Such a cache
+       would  always  contain a 2048x2048x1 image in the cache by
+       holding a grid of  4x4x1  pfImageTiles  where  each  pfIm-
+       ageTile  represented  a specific 512x512x1 subregion which
+       was loaded independently.
+
+       <B>pfImageCache::setMemRegionOrg</B>  sets  the  current   origin
+       (specified  in  terms  of the number of prototypical tiles
+       from the lower left corner of the image) for the  pfImage-
+       Cache.   Changing this origin will cause incremental load-
+       ing of pfImageTiles based on the previous origin and  size
+       of the pfImageCache, verses the new origin and size of the
+       pfImageCache's               memory                region.
+       <B>pfImageCache::getMemRegionOrg</B> returns the last origin val-
+       ues set by the application of  the  pfImageCache's  memory
+       region.   Any  of  the pointer arguments nTilesS, nTilesT,
+       nTilesR may be NULL, in which indicates that the  applica-
+       tion is not interested in their values.
+
+       Since  there  is  some latency between origin values being
+       set and used, <B>pfImageCache::getCurMemRegionOrg</B> returns the
+       mem region origin currently in use.
+
+
+   <B>pfImageCache</B> <B>TEXTURE</B> <B>REGION</B>
+       Each  pfImageCache  contains  a destination texture region
+       which is the region that is to be present in texture  mem-
+       ory.   This  'tex  region' is defined by a size and origin
+       which define the subset of the image  represented  by  the
+       pfImageCache to be held in texture memory.  The tex region
+       also has a destination pfTexture and  texture  level  that
+       define how to update the tex region as its origin changes.
+       If the tex region origin has changed when  a  pfImageCache
+       is  applied,  then a list of incremental texture loads are
+       generated that will update the tex region in texture  mem-
+       ory.  These updates are aligned on tile and texture bound-
+       aries and are set up to update the destination texture  in
+       a  toroidal  fashion.  In this way, only the difference in
+       texture between the previous valid region and the  current
+       one  need to be loaded for any given apply operation.  The
+       list of loads corresponding to the aforementioned  differ-
+       ence  is  applied to the appropriate level of the destina-
+       <B>pfImageCache::setTex</B> sets the destination texture and tex-
+       ture level for the pfImageCache.   Currently  only  pfTex-
+       tures  are  supported  as valid destination and so <I>dstType</I>
+       must be set to PFTLOAD_DST_TEXTURE.  Note that  this  tex-
+       ture  will  be  incrementally  updated to contain the 'tex
+       region'  within  the  pfImageCache.   <B>pfImageCache::getTex</B>
+       returns  the  current  destination texture, texture level,
+       and type for the texture region for the pfImageCache.  Any
+       of the arguments dst,level,type may be NULL, in which case
+       it will be ignored.
+
+       <B>pfImageCache::setTexSize</B> sets the size in  texels  of  the
+       destination texture that the pfImageCache will write into.
+       This destination size should be set to the full level size
+       for  destination  pfTexture.   Note that this size is com-
+       pletely independent from the  texture  region  size  which
+       represents  the  amount  of  texture  being updated during
+       every      frame      in      the      texture      cache.
+       <B>pfImageCache::getTexSize</B>  returns the size of the destina-
+       tion texture level that the pfImageCache modifies. Any  of
+       the pointer arguments s, t, and r may be NULL, which indi-
+       cates that  the  application  is  not  interested  in  the
+       results.
+
+       <B>pfImageCache::setTexRegionSize</B>  sets the size in texels of
+       the texture region for the pfImageCache.  This size should
+       be  no  larger  than the destination texture level for the
+       texture region.  Changing this size can be used to control
+       load by decreasing the size of the cached piece of texture
+       in texture memory.  <B>pfImageCache::getTexRegionSize</B> returns
+       the  last  size values of the texture region for the pfIm-
+       ageCache set by the application (or the  default  if  they
+       were  never  set).  Any  of  the  pointer arguments sizeS,
+       sizeT, and sizeR may be NULL,  which  indicates  that  the
+       application is not interested in those values.
+
+       Since  there is some latency between size values being set
+       and used,  <B>pfImageCache::getCurTexRegionSize</B>  returns  the
+       tex region size currently in use.
+
+       <B>pfImageCache::setTexRegionOrg</B>  is used to control the ori-
+       gin of the texture region that should  be  represented  in
+       texture  memory.  The new origin for the texture region is
+       not   applied   until   <B>pfImageCache::apply</B>   is   called.
+       <B>pfImageCache::getTexRegionOrg</B> return the latest setting of
+       the forementioned origin of the current texture region for
+       the  pfImageCache.  Any of the pointer arguments s, t, and
+       r may be NULL, which indicates that the application is not
+       interested in those values.
+
+       Since  there  is  some latency between origin values being
+       set and used, <B>pfImageCache::getCurTexRegionOrg</B> returns the
+       tex region origin currently in use.
+
+
+       <B>pfImageCache::getTexRegionOffset</B>  get the current toroidal
+       offset used in represent the texture region in the  desti-
+       nation  texture.   Any of the arguments s,t,r may be NULL,
+       in which case it will be ignored.  The offset  is  implied
+       matrix of (16/512.0f, 32/512.0f, 0/1.0f).
+
+
+   <B>pfImageCache</B> <B>Advanced</B> <B>Tile</B> <B>Loading</B>
+       It is possible to control the reading from disk  of  pfIm-
+       ageTiles needed by the pfImageCache by specifying parallel
+       work queues on which pfImageTiles should  be  placed  when
+       they need to be loaded.  These read queues are implemented
+       using the <B>pfQueue</B> functions  and  are  configured  with  a
+       function  to  read  each pfImageTile as it is removed from
+       the <B>pfQueue</B>.  For advanced users, it is possible to estab-
+       lish multiple <B>pfQueue</B>s to take care of the loading of dif-
+       ferent pfImageTiles when the pfImageCache wishes  to  page
+       those  pfImageTiles in.  There are three levels of support
+       in <B>pfImageCache</B> for these queues.  First, users can simply
+       set  a  single read queue and corresponding disk thread by
+       assigning a work queue to the prototypical  tile  assigned
+       to the pfImageCache.  In this basic case, a simple call to
+       <B>pfGetGlobalReadQueue</B>, can be used to configure this single
+       global read queue which can then be assigned to the proto-
+       type pfImageTile for the pfImageCache.   Alternately,  for
+       more  advanced  applications,  the  pfImageTiles  that the
+       cache will need can be stored on different disks such that
+       different queues serviced by different threads can page in
+       these tiles from the disks  in  simultaneously.   At  this
+       level  the  user as the ability to specify 'StreamServers'
+       that will be used to service tiles of center numbers.  For
+       example,  a user with four disks might choose to put every
+       fourth tile on disk 0, every second tile of four  on  disk
+       1, every third tile of four on disk 2, and every fourth of
+       four on disk 3.  In this way, she  could  achieve  greater
+       parallelism when reading tiles from different disks at the
+       same time.
+
+       <B>pfImageCache::setReadQueueFunc</B>                         and
+       <B>pfImageCache::getReadQueueFunc</B>  are  used to set and get a
+       callback function used to set the read queue for a partic-
+       ular pfImageTile before the pfImageCache requests it to be
+       loaded.  This call provides the ultimate ability for users
+       to  control  exactly  what  process's  serve what loads of
+       pfImageTiles.
+
+       <B>pfImageCache::setTileFileNameFunc</B>                      and
+       <B>pfImageCache::getTileFileNameFunc</B>  are used to set and get
+       a callback function used to set the filename for  a  pfIm-
+       ageTile's  before  the  pfImageCache  requests  it  to  be
+       loaded.  This call provides the ultimate  flexibility  for
+       users to control file naming conventions.
+
+       <B>pfImageCache::setTileFileNameFormat</B>  sets  a  sprintf like
+       format string that will be used to  set  the  filename  of
+       each  pfImageTile  before  it is loaded.  <I>fmtString</I> repre-
+       sents the sprintf format string that will be used  to  set
+       the  filename,  however note that the arguments to sprintf
+       must be defined via  the  <I>nArgs</I>  and  <I>argList</I>  parameters.
+       <I>nArgs</I>  simply  represents  the  number  of  arguments that
+       should be passed to sprintf while <I>argList</I>  is  a  list  of
+       integer tokens that describe each argument.  ONLY the fol-
+       lowing list of arguments is available:
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_TILEORG_T</B> - integer
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_TILEORG_R</B> - integer
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVERNAME</B>    -
+              string
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_CACHENAME</B> - string
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_FILENUM_S</B> - integer
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_FILENUM_T</B> - integer
+              <B>PFIMAGECACHE_TILE_FILENAMEARG_FILENUM_R</B> - integer
+
+       For  example, the default values for <I>fmtString</I>, <I>nArgs</I>, and
+       <I>argList</I> are as follows:
+
+       <I>fmtString</I> = "%s%s.%d.r%03d.c%03d.raw888"
+       <I>nArgs</I> = 5
+       <I>argList</I> =
+       {
+            PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVERNAME,
+            PFIMAGECACHE_TILE_FILENAMEARG_CACHENAME,
+            PFIMAGECACHE_TILE_FILENAMEARG_VSIZE_S,
+            PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_T,
+            PFIMAGECACHE_TILE_FILENAMEARG_TILENUM_S
+       }
+
+
+       Thus for a pfImageCache with a stream server name of "/",
+       a cache name of "usr/data/Terrain/TerrainTexture/texture",
+       a virtual size of 16384x16384x1, which was trying to load
+       a 512x512x1 pfImageTile with an origin of 8192,2048,0, the
+       pfImageCache would generate the following file name for
+       the pfImageTile: "/usr/data/Terrain/TerrainTexture/tex-
+       ture.16384.r004.c016.raw888"
+
+       <B>pfImageCache::getTileFileNameFormat</B> will return by refer-
+       ence the format string, number of arguments, and argument
+       list currently being used by the pfImageCache.  Note these
+       references should not be altered as they are currently
+       being used by the pfImageCache.
+
+       <I>dim</I> has one of the following values for the stream server
+       functions associated with pfImageCaches:
+              <B>PFIMAGECACHE_S_DIMENSION</B>,
+              <B>PFIMAGECACHE_T_DIMENSION</B>,
+              <B>PFIMAGECACHE_R_DIMENSION</B>.
+
+       <B>pfImageCache::setFileStreamServer</B> sets a string name to
+       serve as the PFIMAGECACHE_TILE_FILENAMEARG_STREAMSERVER-
+       NAME if the <I>which</I>th stream server associated with <I>dim</I> is
+       used to load in a pfImageTile.  Note that if the pfImage-
+       Cache mode BPFIMAGECACHE_AUTOCREATE_STREAMSERVER_QUEUES is
+       set to PF_ON, then a pfQueue will be created and associ-
+       ated with each unique File Stream Server name assigned to
+       the pfImageCache.  <B>pfImageCache::getFileStreamServer</B>
+       returns the current server name associated with the
+       <I>which</I>th stream server of the <I>dim</I> dimension of the pfImage-
+       Cache.
+
+       <B>pfImageCache::setStreamServerQueue</B> sets a pfQueue to act
+       as a possible stream server for every tile loaded where
+       the tile number in dimension <I>dim</I> mod the number of stream
+       <B>pfImageCache::getStreamServerQueueByName</B> returns the
+       pfQueue associated with the given stream server name.
+       This function is useful for obtain pointers to pfQueues
+       that were automatically created using
+       <B>pfImageCache::setFileStreamServer</B>.
+
+       <B>pfImageCache::getNumStreamServers</B> returns the number of
+       stream servers currently being used by the pfImageCache
+       for dimension <I>dim</I>.  This is the effective modulo that will
+       be used to determine the potential stream server for a
+       particular pfImageTile for a particular dimension.
+
+       <B>pfImageCache::setMode</B> sets one of the following modes
+       affecting the behavior of the pfImageCache:
+
+       <B>PFIMAGECACHE_AUTOCENTER</B> - currently not implemented, but
+       in future releases will force the cache to be centered
+       around the valid region.
+
+       <B>PFIMAGECACHE_AUTOCREATE_STREAMSERVER_QUEUES</B> - when using
+       the file stream server functionality of a pfImageCache,
+       this will cause a separate pfQueue/ Read thread to be cre-
+       ated for every unique stream server name.
+
+       <B>PFIMAGECACHE_AUTOSET_TILE_FILENAME</B> - This mode describes
+       whether or not the pfImageCache should automatically set
+       each pfImageTile's filename before it is loaded.
+
+       <B>PFIMAGECACHE_AUTOSET_TILE_READQUEUE</B> - This mode describes
+       whether or not the pfImageCache should automatically set
+       each pfImageTile's read queue before it is loaded.
+
+       <B>pfImageCache::getMode</B> will return the value of any of the
+       previously mentioned pfImageCache modes.
+
+       <B>pfImageCache::isValid</B> will return whether or not all the
+       tiles included in the box, (s,t,r) to
+       (s+sizeS-1,t+sizeT-1,r+sizeR-1), are in the cache and are
+       validated.
+
+       <B>pfImageCache::isValid</B> returns non-zero if the tex region
+       portion of the mem region is completely covered with valid
+       tiles. A valid tile in the mem region is valid if it has
+       been loaded with the approprate texel data from disk.
+
+
+   <B>pfImageCache</B> <B>Application</B>
+       <B>pfImageCache::apply</B> is the mechanism for causing the pfIm-
+       ageCache to update itself based on a new cache origin and
+       new valid region origin.  This apply must happen either in
+       the draw process, or while a pfDispList has been opened.
+       This apply will first update the pfImageCache's cache ori-
+       gin and initiate any tile loading that needs to happen in
+       order for the cache to be updated.  Next, it will generate
+       a list of pfTexLoad's that need to be applied to the valid
+       region's destination texture in order for the texture to
+       contain an accurate representation of the new valid
+       region.  Lastly, it traverses through that list of updates
+       applying each pfTexLoad, which in turn will cause down-
+       value is used by the image cache to shrink the tex region
+       in order to ration the amount of download time to conform
+       to the time limit supplied by this version of apply. Under
+       normal circumstances, this apply is only called by the
+       image cache's cliptexture when the PF_DTR_TEXLOAD DTR mode
+       is enabled. The application should normall never call this
+       function directly unless it is using pfImageCaches in a
+       standalone fashion.
+
+       <B>pfImageCache::setMaster</B> establishes a master/slave rela-
+       tionship between this pfImageCache (the slave) and the
+       pfImageCache specified to be the master. Slave pfImage-
+       Caches use the master's pfImageCache image tile array in
+       memory, but do their own downloading into texture memory.
+       This is used for multipipe applications, where the same
+       pfImageCache should be used in multiple windows. This
+       relationship is usually part of a set of master/slave
+       pfImageCaches that are part of a master/slave cliptexture
+       pair. See <B>pfClipTexture::setMaster</B> for more details.
+
+       <B>pfImageCache::getMaster</B> returns a pointer to the pfImage-
+       Cache that is the master of this pfImageCache, if this
+       image cache is a slave. If the pfImageCache is not a
+       slave, then NULL is returned.  pfImageCaches can be in one
+       of three states, master, slave, or neither.
+
+       <B>pfImageCache::getSlaves</B> returns a pointer to pfList. The
+       list contains pointers to pfImageCaches that are slaves of
+       this pfImageCache, if this image cache is a master. If the
+       pfImageCache is not a master, then NULL is returned.
+       pfImageCaches can be in one of three states, master,
+       slave, or neither.
+
+       <B>pfImageCache::getTile</B> will return a pointer the pfIm-
+       ageTile in the pfImageCache's array of tiles in system
+       memory. The particular tile requested is specified in s,
+       t, and r dimensions, using tile units. For example
+       requesting tile 1, 0, 0 will return the second tile in the
+       first row in the first level of the pfImageCache tile
+       array.
+
+       <B>pfImageCache::invalidate</B> invalidates the valid region of
+       an pfImageCache. This will force a full download of the
+       the valid region defined by the most recently set valid
+       region origin.  This will only affect the download from
+       pfImageCache memory tiles to texture memory. It does not
+       force new downloads of tiles from disk.
+
+       <B>pfImageCache::calcTexRegion</B> takes pointers to the origin
+       and size of a user-supplied pfImageCache Texture Region
+       and modifies them so the region is 1. entirely contained
+       within the image cache itself, 2. is no larger than the
+       destination texture, and 3. Conforms to the texture
+       subload alignment requirements of the host machine. When-
+       ever possible, Texture Regions are translated, rather than
+       shrunk, to stay within the Image Cache boundaries. Texture
+       alignment requirements are met by "rounding out" to
+       machine alignment boundaries; the left and bottom (minimum
+       value) edges are rounded down, while the right and top
+       <B>pfImageCache::calcMemRegion</B> takes pointers to the origin
+       and size of a user-supplied pfImageCache Memory Region and
+       modifies them so the region is 1. entirely contained
+       within the image cache itself, and 2. is no larger than
+       the maximum memregion size, currently 128 by 128 texture
+       tiles. Whenever possible, Memory Regions are translated,
+       rather than shrunk, to stay within the Image Cache bound-
+       aries. This routine is used internally by pfImageCache
+       when a new Memory Region is supplied. pfImageCache users
+       are strongly encouraged to use this routine to check Mem-
+       ory Region parameters before sending them to a pfImage-
+       Cache. Note that in general, the routine will modify the
+       values of all its arguments.
+
+       <B>pfImageCache::setDTRMode</B> Is used to control DTR (dynamic
+       texture resolution) or image cache load control. DTR con-
+       sists of a number of independent load control modes, con-
+       trolled by the DTRMode bitmask, and a number of user-set-
+       table parameters, all of which have reasonable default
+       values. Currently, the DTR bitmask can be any combination
+       of the folowing bits: PF_DTR_MEMLOAD, PF_DTR_TEXLOAD, and
+       PF_DTR_READSORT. PF_DTR_MEMLOAD uses image tile availabil-
+       ity to adjust load control, PF_DTR_TEXLOAD uses estimated
+       texture subload time to adjust load control, and
+       PF_DTR_READSORT turns on sorting in the image tile read
+       queue. These modes can be set singly or in any combina-
+       tion. The default value is the logical or of all three
+       values.
+
+       Image Cache load control is controlled by clip texture
+       load control when image caches are used as levels in clip
+       textures (the normal situation for image caches). The DTR
+       mode values are the same for both objects.
+
+       It is only necessary to set DTR modes on image caches when
+       the image cache is being used in a standalone fashion. In
+       the vast majority of cases, the application should control
+       DTR modes through the clip texture (in libpf applications,
+       in the MPClipTexture).
+
+       <B>pfImageCache::getDTRMode</B> can be used to get the currently
+       set DTR mode.
+
+       <B>pfImageCache::isTexRegChanged</B> returns non-zero if DTR
+       (image cache load control) has changed the size of the tex
+       region in order to meet download bandwidth and tile avail-
+       ability requirements. It is used internally by DTR. The
+       value will be zero if the tex region is at its originally
+       configured dimensions, or if the PF_DTR_TEXLOAD DTR mode
+       bit isn't set.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfTexture, pfTexLoad, pfImageTile, pfClipTexture, pfQueue
+
+
+
+                                                pfImageCache(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

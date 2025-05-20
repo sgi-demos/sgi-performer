@@ -1,0 +1,81 @@
+<HTML>
+<HEAD>
+<TITLE>pfuFlybox</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuFlybox</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuFlybox(3pf)                                     pfuFlybox(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuOpenFlybox,</B>  <B>pfuReadFlybox,</B> <B>pfuGetFlybox,</B> <B>pfuGetFlybox-</B>
+       <B>Active,</B> <B>pfuInitFlybox</B> - Routines to read  the  BG  Systems
+       flybox.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       int   <B>pfuOpenFlybox</B>(char *port);
+
+       int   <B>pfuReadFlybox</B>(int *dioval, float *inbuf);
+
+       int   <B>pfuGetFlybox</B>(float *analog, int *but);
+
+       int   <B>pfuGetFlyboxActive</B>(void);
+
+       int   <B>pfuInitFlybox</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  routines  provide a simple interface to the BG Sys-
+       tems flybox but do not provide a flight model based on the
+       flybox.
+
+       <B>pfuOpenFlybox</B> opens the flybox port specified by <I>port</I>.
+
+       <B>pfuReadFlybox</B>  reads  the  values  of  the  flybox digital
+       inputs into <I>dioval</I> and stores the eight analog input  val-
+       ues into <I>inbuf</I>.
+
+       <B>pfuGetFlybox</B>  reads the values of the flybox analog inputs
+       into <I>analog</I> after setting them to zero if  their  absolute
+       values  are  very small. It also stores the flybox digital
+       inputs into <I>but</I>.
+
+       <B>pfuGetFlyboxActive</B> returns whether the flybox is currently
+       active.
+
+       <B>pfuInitFlybox</B>    initializes    the   flybox.    It   uses
+       <B>pfuOpenFlybox</B> and <B>pfuGetFlybox</B>.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       BG Systems Inc. is located in Palo Alto, California. Their
+       telephone number is (415) 858-2628.
+
+       The  libpfutil  source code, object code and documentation
+       are provided as unsupported software.  Routines  are  sub-
+       ject to change in future releases.
+
+
+
+                                                   pfuFlybox(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

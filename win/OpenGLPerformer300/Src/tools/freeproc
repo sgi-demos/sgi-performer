@@ -1,0 +1,39 @@
+#!/bin/sh
+
+#
+# freeproc - shell script for un-restricting and un-isolating processors
+#
+# This script is useful for freeing up processors if a program
+#	that isolates or restricts processors exits ungracefully.
+# The example program 
+#		/usr/share/Performer/src/pguide/libpf/progs/procestup.c
+#	shows how to isolate and restrict processors for specific
+#	processes.
+#
+# This script must be run as root to work.
+#
+
+if [ `whoami` != "root" ]
+then
+	echo "Must be root for $0 to work.";
+	exit 0;
+fi
+
+# free restricted processors
+for i in `mpadmin -r`
+do
+	mpadmin -u$i
+done
+
+#Enable scheduler clock on isolated processors
+for i in `mpadmin -I`
+do
+	mpadmin -C$i
+done
+
+#Unisolate processors 
+for i in `mpadmin -I`
+do
+	mpadmin -U$i
+done
+

@@ -1,0 +1,282 @@
+<HTML>
+<HEAD>
+<TITLE>pfString</TITLE>
+</HEAD>
+<BODY>
+<H1>pfString</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfString(3pf)                                       pfString(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewString,</B>   <B>pfGetStringClassType,</B>  <B>pfStringMat,</B>  <B>pfGet-</B>
+       <B>StringMat,</B>  <B>pfStringMode,</B>  <B>pfGetStringMode,</B>  <B>pfStringFont,</B>
+       <B>pfGetStringFont,</B>     <B>pfStringString,</B>    <B>pfGetStringString,</B>
+       <B>pfStringBBox,</B>    <B>pfGetStringBBox,</B>    <B>pfStringSpacingScale,</B>
+       <B>pfGetStringSpacingScale,</B>  <B>pfStringColor,</B> <B>pfGetStringColor,</B>
+       <B>pfGetStringCharGSet,</B>      <B>pfGetStringCharPos,</B>       <B>pfGet-</B>
+       <B>StringStringLength,</B>   <B>pfStringGState,</B>   <B>pfGetStringGState,</B>
+       <B>pfDrawString,</B> <B>pfFlattenString,</B>  <B>pfStringIsectMask,</B>  <B>pfGet-</B>
+       <B>StringIsectMask,</B> <B>pfStringIsectSegs</B> - String facility using
+       pfFont
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfString*         <B>pfNewString</B>(void *arena);
+
+       pfType*           <B>pfGetStringClassType</B>(void);
+
+       void              <B>pfStringMat</B>(pfString *string,
+                           const pfMatrix mat);
+
+       void              <B>pfGetStringMat</B>(const pfString *string,
+                           pfMatrix mat);
+
+       void              <B>pfStringMode</B>(pfString *string, int mode,
+                           int val);
+
+       int               <B>pfGetStringMode</B>(const pfString *string,
+                           int mode);
+
+       void              <B>pfStringFont</B>(pfString *string,
+                           pfFont* font);
+
+       pfFont*           <B>pfGetStringFont</B>(const pfString *string);
+
+       void              <B>pfStringString</B>(pfString *string,
+                           const char* cstr);
+
+       const
+                         char*       <B>pfGetStringString</B>(const pfString *string);
+
+       void              <B>pfStringBBox</B>(pfString *string,
+                           const pfBox *newBBox);
+
+       const pfBox*      <B>pfGetStringBBox</B>(pfString *string);
+
+       void              <B>pfStringSpacingScale</B>(pfString *string,
+                           float horiz,             float vert,
+                           float depth);
+
+       void              <B>pfGetStringSpacingScale</B>(const pfString *string,
+                           float *horiz,           float *vert,
+                           float *depth);
+
+       const pfGeoSet*   <B>pfGetStringCharGSet</B>(pfString *string,
+                           int index);
+
+       const pfVec3*     <B>pfGetStringCharPos</B>(pfString *string,
+                           int index);
+
+       size_t            <B>pfGetStringStringLength</B>(pfString *string);
+
+       void              <B>pfStringGState</B>(pfString *string,
+                           pfGeoState* gstate);
+
+       pfGeoState*       <B>pfGetStringGState</B>(const pfString *string);
+
+       void              <B>pfDrawString</B>(pfString *string);
+
+       void              <B>pfFlattenString</B>(pfString *string);
+
+       void              <B>pfStringIsectMask</B>(pfString *string,
+                           uint mask, int setMode, int bitOp);
+
+       uint              <B>pfGetStringIsectMask</B>(pfString *string);
+
+       int               <B>pfStringIsectSegs</B>(pfString *string,
+                           pfSegSet *segSet, pfHit **hits[]);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfString</B> is  derived  from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfString</B>.  Casting an object of class <B>pfString</B> to an
+       object of class <B>pfObject</B> is taken care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfString</B> can also be used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>string</I>  identifies a pointer to a pfString
+
+       <I>font</I>    identifies a pointer to a pfFont
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfNewString</B>  creates  and  returns a handle to a pfString.
+       <I>arena</I> specifies a malloc arena out of which  the  pfString
+       is  allocated or <B>NULL</B> for allocation off the process heap.
+       pfStrings can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetStringClassType</B> returns the  <B>pfType</B>*  for  the  class
+       <B>pfString</B>.  The <B>pfType</B>* returned by <B>pfGetStringClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>  on
+       any  instance of class <B>pfString</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test  if  an  object  is  of  a  type
+       derived  from  a  Performer  type  rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfStringMat</B> sets the transformation matrix for  <I>string</I>  to
+       <I>mat</I>  or  to  the  identity  matrix  if  <I>mat</I> is NULL.  Call
+       <B>pfGetStringMat</B> to retrieve the matrix.
+
+       Use <B>pfStringMode</B> and <B>pfGetStringMode</B> to set and get  modes
+       of the <I>string</I>.  Use the <B>PFSTR_JUSTIFY</B> mode to set the jus-
+       tification of the string to one of the following:
+
+
+              <B>PFSTR_FIRST</B> or <B>PFSTR_LEFT</B>
+                   Set the string to be left-justified; the first
+                   character  will be immediately to the right of
+                   the origin.
+
+              <B>PFSTR_MIDDLE</B> or <B>PFSTR_CENTER</B>
+                   Set the string  to  be  center-justified;  the
+                   string will be centered at the origin.
+
+              <B>PFSTR_LAST</B> or <B>PFSTR_RIGHT</B>
+                   Set the string to be right-justified; the last
+                   character will be immediately to the  left  of
+                   the origin.
+
+       Use  the <B>PFSTR_CHAR_SIZE</B> to specify the size, in bytes, of
+       each character in the string. <I>val</I> is  one  of  <B>PFSTR_CHAR</B>,
+       <B>PFSTR_SHORT</B>, <B>PFSTR_INT</B> indicating that character sizes are
+       sizeof(char), sizeof(short), and sizeof(int) respectively.
+
+       Call  <B>pfGetStringBBox</B>  to retrieve the bounding box around
+       <I>string</I> as if it were drawn using the  assigned  justifica-
+       tion,  drawing  style,  font,  and character string.  Call
+       <B>pfStringBBox</B> to set this bounding box explicitly.
+
+       the <B>PFSTR_AUTO_SPACING</B> mode is enabled, the spacing scales
+       can be used  to  change  the  direction  of  the  rendered
+       string,  for  example,  spacing  scales of (0, -1, 0) will
+       render the string vertically, suitable  for  labeling  the
+       vertical axis of a 2D graph.
+
+       of  the  steps used when drawing each succeeding character
+       from <I>string</I>. The default spacing scales are  all  1.0   An
+       interesting  example  is  horizontal  scale 0 and vertical
+       scale -1, in which case the string is drawn downward  like
+       a neon sign outside a downtown bar and grill.
+
+       <B>pfStringGState</B>  and  <B>pfGetStringGState</B>  set  and  get  the
+       <B>pfGeoState</B>  attached  to  <I>string</I>.   If  no  <B>pfGeoState</B>  is
+       attached, then <I>string</I> will be drawn with whatever graphics
+       state is active at draw time.
+
+       Call <B>pfStringFont</B> and <B>pfGetStringFont</B> to set  or  get  the
+       pfFont   used   by   <I>string</I>.    Call   <B>pfStringString</B>  and
+       <B>pfGetStringString</B> to set or get the character  string  for
+       <I>string</I>.  <B>pfGetStringStringLength</B> will return the length of
+       a <B>pfString</B>'s current character string.  <B>pfStringColor</B>  and
+       <B>pfGetStringColor</B> get and set <I>string's</I> color.
+
+       <B>pfGetStringCharGSet</B>  returns  a pointer to the GeoSet cur-
+       rently being used to draw the character at place <I>index</I>  in
+       the   pfString's   string.    <B>pfGetStringCharPos</B>  likewise
+       returns a pointer to a pfVec3  that  specifies  the  exact
+       location relative to the current transform where the char-
+       acter in position <I>index</I> in the string array will be drawn.
+       Both  of  the above functions will return NULL if <I>index</I> is
+       greater than or equal to the pfString's length - which may
+       be obtained through <B>pfGetStringStringLength</B>.
+
+       Call  <B>pfDrawString</B>  to draw the string, including applying
+       the <B>pfGeoState</B> if available, the color, and the texture if
+       this is a <B>PFSTR_TEXTURED</B> string.
+
+       A  <B>pfString</B> is normally composed of a <B>pfGeoSet</B> per charac-
+       ter in the string.  Call <B>pfFlattenString</B>  to  flatten  the
+       character  spacings  into the individual GeoSets.  A flat-
+       tened primitive is faster,  but  flattening  has  overhead
+       which  should  be  avoided  if the string will be changing
+       quickly, e.g. in every  frame.   <B>pfFlattenString</B>  Must  be
+       called  every  time  you change the contents of the string
+       geometry; e.g. after calling <B>pfStringString</B>.
+
+       <B>pfStringIsectMask</B>  enables  intersections  and  sets   the
+       intersection  mask for <I>string</I>.  <I>mask</I> is a 32-bit mask used
+       to determine whether a particular pfString should be exam-
+       ined during a particular intersection request.  A non-zero
+       bit-wise AND of the pfString's mask with the mask  of  the
+       intersection  request  (<B>pfStringIsectSegs</B>)  indicates that
+       the pfString should be tested.  The default  mask  is  all
+       1's, i.e.  0xffffffff.
+
+       <B>pfGetStringIsectMask</B>  returns the intersection mask of the
+       specified pfString.
+
+       information  returned  from  tests  against  the geometric
+       primitives inside pfGeoSets.
+
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       See <B>pfText</B> for sample code demonstrating <B>pfString</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFont, pfDelete, pfGeoSet, pfText
+
+
+
+                                                    pfString(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

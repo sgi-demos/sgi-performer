@@ -1,0 +1,305 @@
+<HTML>
+<HEAD>
+<TITLE>pfQuerySys</TITLE>
+</HEAD>
+<BODY>
+<H1>pfQuerySys</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfQuerySys(3pf)                                   pfQuerySys(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGetMachString,</B>  <B>pfGetRelString,</B> <B>pfQuerySys,</B> <B>pfMQuerySys,</B>
+       <B>pfQueryPerf,</B>  <B>pfPerf,</B>  <B>pfGetIRIXRelease</B>  -  Routines   for
+       querying parameters of system configuration
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       const char *   <B>pfGetMachString</B>(void);
+
+       const char *   <B>pfGetRelString</B>(void);
+
+       int            <B>pfQuerySys</B>(int which, int *dst);
+
+       int            <B>pfMQuerySys</B>(int *which, int *dst);
+
+       int            <B>pfQueryPerf</B>(int which, void *dst);
+
+       int            <B>pfPerf</B>(int which, void *dst);
+
+       float          <B>pfGetIRIXRelease</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Graphics  platforms provide a range of hardware configura-
+       tions whose parameters may affect the usability of  graph-
+       ics  features.   These  functions  provide  the ability to
+       query these parameters.  OpenGL Performer makes use of the
+       following  useful routines in determining its information:
+       <B>getgdesc(3g)</B>, <B>XGetVisualInfo(3X11)</B>, and  <B>glXGetConfig(3g)</B>.
+
+       <B>pfGetMachString</B>  returns  the renderer string for the cur-
+       rent graphics platform:
+
+              <B>VGXT</B>           VGX
+
+              <B>LIGHT</B>          Indigo Starter
+
+              <B>EXTREME</B>        Extreme
+
+              <B>RE</B>             RealityEngine
+
+              <B>VTX</B>            RealityEngine - VTX
+
+              <B>NEWPORT</B>        Indy
+
+              <B>CRM</B>            O2
+
+              <B>MGRAS</B>          Impact
+
+              <B>IR</B>             InfiniteReality
+
+              <B>IRL</B>            InfiniteReality on Onyx2
+
+              <B>IRE</B>            iR Reality
+
+       number.   <B>pfQuerySys</B>  can  also  be used to directly query
+       this same information.
+
+       <B>pfQuerySys</B> takes a <B>PFQSYS_</B> token and returns  in  <I>dst</I>  the
+       value  for  the  requested parameter.  The return value is
+       the number of bytes successfully written.
+
+       The <B>pfQuerySys</B> query token must be one of:
+
+              <B>PFQSYS_GL</B>
+                     returns the GL type  currently  being  used:
+                     <B>PFGL_OPENGL</B>,  or  <B>PFGL_NOGL</B>  if  no graphics
+                     driver is currently running.
+
+              <B>PFQSYS_MAJOR_VERSION</B>
+                     returns the major number of the OpenGL  Per-
+                     former release in use.
+
+              <B>PFQSYS_MINOR_VERSION</B>
+                     returns  the minor number of the OpenGL Per-
+                     former release in use.
+
+              <B>PFQSYS_MAINT_VERSION</B>
+                     returns  the  maintenance  release  of   the
+                     OpenGL Performer release in use.
+
+              <B>PFQSYS_NUM_CPUS</B>
+                     returns the number of CPUs on the system.
+
+              <B>PFQSYS_NUM_CPUS_AVAILABLE</B>
+                     returns  the  number  of available (non-iso-
+                     lated) CPUs on the system.
+
+              <B>PFQSYS_NUM_SCREENS</B>
+                     returns the number of screens,  or  hardware
+                     graphics pipelines.
+
+              <B>PFQSYS_SIZE_PIX_X</B>
+                     returns  the  width of the default screen of
+                     the current display in pixels.  The  current
+                     display      is     that     returned     by
+                     <B>pfGetCurWSConnection</B>.
+
+              <B>PFQSYS_SIZE_PIX_Y</B>
+                     returns the height of the default screen  of
+                     the  current display in pixels.  The current
+                     display     is     that     returned      by
+                     <B>pfGetCurWSConnection</B>.
+
+              <B>PFQSYS_MAX_SNG_RGB_BITS</B>
+                     returns  the  maximum number of configurable
+                     single-buffered bits per  RGB  color  compo-
+                     nent.
+
+              <B>PFQSYS_MAX_DBL_RGB_BITS</B>
+                     returns  the  maximum number of configurable
+                     double-buffered bits per  RGB  color  compo-
+                     nent.
+
+                     double-buffered bits per alpha color  compo-
+                     nent.
+
+              <B>PFQSYS_MAX_SNG_ACCUM_BITS</B>
+                     returns  the  maximum number of configurable
+                     single-buffered bits per accumulation buffer
+                     color component.
+
+              <B>PFQSYS_MAX_DBL_ACCUM_BITS</B>
+                     returns  the  maximum number of configurable
+                     double-buffered bits per accumulation buffer
+                     color component.
+
+              <B>PFQSYS_MAX_SNG_CI_BITS</B>
+                     returns  the  maximum number of configurable
+                     single-buffered bits for colorindex.
+
+              <B>PFQSYS_MAX_DBL_CI_BITS</B>
+                     returns the maximum number  of  configurable
+                     double-buffered bits for colorindex.
+
+              <B>PFQSYS_MAX_SNG_OVERLAY_CI_BITS</B>
+                     returns  the  maximum number of configurable
+                     bits for colorindex single-buffered  overlay
+                     buffers.
+
+              <B>PFQSYS_MAX_DBL_OVERLAY_CI_BITS</B>
+                     returns  the  maximum number of configurable
+                     bits for colorindex double-buffered  overlay
+                     buffers.
+
+              <B>PFQSYS_MAX_DEPTH_BITS</B>
+                     returns  the  maximum number of configurable
+                     bits for depth buffers.
+
+              <B>PFQSYS_MAX_STENCIL_BITS</B>
+                     returns the maximum number  of  configurable
+                     bits for stencil buffers.
+
+              <B>PFQSYS_MAX_MS_SAMPLES</B>
+                     returns  the  maximum number of configurable
+                     subsamples for multisample buffers.   Multi-
+                     sample  buffers  are  used for antialiasing.
+                     See the <B>pfWindow</B> and <B>pfAntialias</B>  man  pages
+                     for more information.
+
+              <B>PFQSYS_MAX_MS_DEPTH_BITS</B>
+                     returns  the  maximum number of configurable
+                     bits for multisampled depth buffers.
+
+              <B>PFQSYS_MAX_MS_STENCIL_BITS</B>
+                     returns the maximum number  of  configurable
+                     bits for multisampled stencil buffers.
+
+              <B>PFQSYS_MAX_LIGHTS</B>
+                     returns  the  maximum allowable number of GL
+                     lights that may be on at one time.
+
+              <B>PFQSYS_TEXTURE_MEMORY_BYTES</B>
+
+              <B>PFQSYS_MAX_CLIPTEXTURE_SIZE</B>
+                     returns the maximum virtual size of both the
+                     s and t dimensions of a pfClipTexture.
+
+              <B>PFQSYS_CLIPTEXTURE_CENTER_ALIGNMENT</B>
+                     returns  the  pfClipTexture  alignment  con-
+                     straint  based  on this system.  The pfClip-
+                     Texture center must be set to a multiple  of
+                     this value in each dimension.
+
+              <B>PFQSYS_MIN_CLIPTEXTURE_INVALID_BORDER</B>
+                     returns  the  minimum  invalid border that a
+                     pfClipTexture can use  on  this  system  (in
+                     order to generate 'correct' texture based of
+                     the pfClipTexture).
+
+              <B>PFQSYS_TEX_SUBLOAD_ALIGNMENT</B>
+                     returns the minimum texel alignment  allowed
+                     for pfTexture subloads.
+
+              <B>PFQSYS_CALLIGRAPHIC_PIPE0</B>
+                     returns  a  bit  field  that indicates which
+                     video channels  are  enabled  on  the  Light
+                     Point Board.  A value of 0 either means that
+                     there is no board on the Pipe0, or there are
+                     no enabled channel on this board, so no cal-
+                     ligraphics lights can be used on  the  pipe.
+                     <B>PFQSYS_CALLIGRAPHIC_PIPE1</B>                and
+                     <B>PFQSYS_CALLIGRAPHIC_PIPE2</B> does the same test
+                     for the pipe 1 and the pipe 2.
+
+              <B>PFQSYS_MAX_ANISOTROPY</B>
+                     returns  the maximum anisotropy supported on
+                     the current platform.
+
+       <B>pfMQuerySys</B> takes an NULL-terminated array of query tokens
+       and  a  destination  buffer  and will do multiple queries.
+       The return value will be the number of bytes  successfully
+       written.   This  routine is more efficient than <B>pfQuerySys</B>
+       if multiple queries are desired.
+
+       <B>pfQueryPerf</B>  returns  performance  information   for   the
+       requested  query  token.   The currently supported queries
+       deal with texture download timings.  The possible  queries
+       are  currently  values  indicating  which texture download
+       cost table the application is interested in querying.  The
+       token  values may be one of: <B>PFQPERF_DEFAULT_TEXLOAD_TABLE</B>
+       - the default cost table appropriate the current  hardware
+       configuration,   <B>PFQPERF_USER_TEXLOAD_TABLE</B>   -  the  user
+       defined  cost  table,  if  one  has  been   defined,   and
+       <B>PFQPERF_CUR_TEXLOAD_TABLE</B>  -  which cost table, either the
+       default or the user-defined one,  which  is  currently  in
+       use.  If a user-defined cost table is supplied via <B>pfPerf</B>,
+       that table takes precedence.
+
+       The cost table is returned as a pointer to a pfTexSubload-
+       CostTable  structure  in  the <I>dst</I> ptr. This structure con-
+       tains the width and height of the  cost  table  arrays  of
+       Texture download cost table is internally used by cliptex-
+       ture  load control (DTR) to estimate the time it will take
+       in the DRAW process to  update  the  cliptextures  texture
+       memory. DTR adjusts the download size appropriately to try
+       and keep the total download cost  (measured  in  millisec-
+       onds)  below  a application defined maximum limit.   Users
+       can use these tables in similar ways for doing  their  own
+       texture  management  for individual pfTextures.  Performer
+       stores a number of cost tables  for  a  set  of  important
+       hardware  configurations. In addition, a user defined cost
+       table can be supplied by the application with <B>pfPerf</B>.
+
+       <B>pfPerf</B> allows the application to  provide  a  custom  cost
+       information.   table.  The function expects a single argu-
+       ment, a pointer to a token and  associated  values.   Cur-
+       rently  supported  is  specifying  pfTexSubloadCost  table
+       structure that has been properly filled in.   These  times
+       will be then used by the pfClipTexture DTR load management
+       of texture  downloads.   Application-defined  cost  tables
+       have precedence, and are used instead of the default table
+       when they are supplied.  The cost table can be checked  by
+       reading    it    back    by   calling   <B>pfQueryPerf</B>   with
+       <B>PFQPERF_USER_TEXLOAD_TABLE</B> for the <I>which</I> argument.
+
+       <B>pfGetIRIXRelease</B> will return the X.Y IRIX  release  number
+       corresponding to the host system.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfWindow::query</B>  can  be  used  to query the configuration
+       parameters of a given pfWindow.  <B>pfFeature</B> can be used  to
+       query the availability of specific features on the current
+       hardware configuration.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFeature,  pfGetCurWSConnection,  pfWindow,  pfAntialias,
+       pfTexture, pfClipTexture, XGetVisualInfo, glXGetConfig
+
+
+
+                                                  pfQuerySys(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

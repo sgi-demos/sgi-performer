@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+<TITLE>pfuMPipeStats</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuMPipeStats</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuMPipeStats(3pf)                             pfuMPipeStats(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuManageMPipeStats</B>  -  Multipipe/multichannel stats util-
+       ity.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       int   <B>pfuManageMPipeStats</B>(int nframes, nSampledPipes);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       This utility obtains time stamp stats for  each  Performer
+       channel/pipe  in  an automatic fashion. The complete stats
+       log is stored in a file for later review. Timing  informa-
+       tion for pre- and post-callbacks is also provided.
+
+       The routine <B>pfuManageMPipeStats</B> can be used to obtain tim-
+       ing information during a number of frames per each channel
+       for  pre-draw,  <B>pfDraw</B>, post-draw, pre-cull, <B>pfCull</B>, post-
+       cull as well as <B>ISECT</B> and <B>APP</B>.
+
+       <I>nframes</I> specifies the number of  frames  to  be  measured.
+       <I>nSampledPipes</I>  is the number of pipes for which statistics
+       are to be gathered.
+
+       The first time that <B>pfuManageMPipeStats</B> is called it auto-
+       matically  determines  the pipe and channel configuration.
+       It also sets up a minimally configured <B>pfStats</B> in order to
+       obtain the data.
+
+
+       During  the  requested number of frames, the utility grabs
+       the latest <B>pfStats</B> buffer  into  main  memory.  After  the
+       requested number of frames, the utility creates a new file
+       called <B>MPipeStats0.log</B>.  The file  number  is  incremented
+       each  time  that  the utility is used from the same execu-
+       tion, so that the next time it is used the file  have  the
+       name <B>MPipeStats1.log</B> and so on.
+
+       <B>pfuManageMPipeStats</B>  returns  1  while  it is getting time
+       stamps and 0 when it has finished its collection and  cre-
+       ated the historical file.
+
+       <B>pfuManageMPipeStats</B>  must  be called in the APP. It may be
+       used multiple times.
+
+       Following is an example of use in an application loop:
+
+
+       /* DumpMPipeStats is controlled by the user interface */
+
+       if(SharedArena-&gt;DumpMPipeStats &amp;&amp; !mpstats_running)
+           mpstats_running = pfuManageMPipeStats(10, 1));
+
+       if(mpstats_running)
+           mpstats_running = pfuManageMPipeStats(10, 1));
+
+       ====================================================================
+       Frame:&lt;frame&gt;
+       _____________________________APP____________________________________
+       Absolute Timeline information (sec)
+       AppFrame:&lt;frame&gt;
+       AppStart:&lt;start&gt;
+       enterSync:&lt;enterSync&gt; afterClean:&lt;afterClean&gt; afterSync:&lt;afterSync&gt;
+       pfFrameStart:&lt;frameStart&gt; pfFrameEnd:&lt;frameEnd&gt;
+       _____________________________ISECT__________________________________
+       Absolute Timeline information (sec)
+       IsectFrame: &lt;frame&gt;
+       Start:&lt;start&gt; End:&lt;end&gt;
+
+       Relative Timeline information (msec)
+       Total Isect Time:&lt;end-start&gt;
+       _____________________________CULL &amp; DRAW____________________________
+       Chan: &lt;Channel_number&gt;
+       Frame: &lt;frame_number&gt;
+
+       Absolute Timeline information (sec)
+       CullFrame: &lt;cullFrame&gt;
+           Start: &lt;cullStart&gt; End: &lt;cullEnd&gt;
+           BeginUpDate: &lt;begUpdate&gt; EndUpdate: &lt;endUpdate&gt;
+       DrawFrame: &lt;drawFrame&gt;
+           Start: &lt;drawStart&gt; End: &lt;drawEnd&gt;
+           pfDrawStart: &lt;pfDrawStart&gt; pfDrawEnd: &lt;pfDrawEnd&gt; AfterSwap: &lt;AfterSwap&gt;
+
+       Relative Timeline information (msec)
+       Total Cull Time:&lt;cullEnd-cullStart&gt;
+       Total Draw Time:&lt;drawEnd-drawStart&gt;
+           PreDraw: &lt;preDraw&gt;
+           pfDraw:  &lt;pfDraw&gt;
+           PostDraw:&lt;postDraw&gt;
+       --------------------------------------------------------------------
+
+
+       You are encouraged to change the default file format as
+       well as the data being collected.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Depending on the multiprocess mode being used a number of
+       initial frames could be filled by nonsensical data.
+
+       The use of <B>pfuManageMPipeStats</B> modifies the <B>pfStats</B> mode.
+       After it completes it sets the <B>pfStats</B> modes to their
+       default values.
+
+       Hence, if you wish to reuse settings from the previous
+       <B>pfStats</B> you should save them before the first call to
+       <B>pfuManageMPipeStats</B>.
+
+       CPU 0 should <I>never</I> be isolated.
+
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

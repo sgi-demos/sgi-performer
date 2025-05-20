@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<TITLE>pfuBarrier</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuBarrier</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuBarrier(3pf)                                   pfuBarrier(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuBarrierCreate,</B>   <B>pfuBarrierDestroy,</B>  <B>pfuBarrierEnter</B>  -
+       spin-free multiprocess barrier routines
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfuBarrier *   <B>pfuBarrierCreate</B>(usptr_t *usptr);
+
+       void           <B>pfuBarrierDestroy</B>(pfuBarrier *b);
+
+       void           <B>pfuBarrierEnter</B>(pfuBarrier *b,
+                        unsigned int n);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  functions  provide  a rendezvous mechanism for syn-
+       chronizing processes.  The API and functionality is analo-
+       gous to IRIX libc's barrier(), but the implementation uses
+       semaphores instead of spinning, and is therefore  hundreds
+       of  times  faster  than barrier() when there is contention
+       for processors.
+
+       <B>pfuBarrierCreate()</B> takes a usptr_t as an argument to indi-
+       cate  the shared arena from which to allocate the barrier.
+       This should be either Performer's semaphore arena obtained
+       by pfGetSemaArena(), or an arena handle obtained through a
+       call to usinit().  If the barrier cannot be  created  then
+       NULL  is  returned and the system errno is set to indicate
+       the error.
+
+       <B>pfuBarrierDestroy()</B> releases all storage  associated  with
+       <B>b</B>.
+
+       <B>pfuBarrierEnter()</B>  takes  a  pointer to a previously allo-
+       cated    barrier     structure     (as     returned     by
+       <B>pfuBarrierCreate()</B>)  and  the number of participating pro-
+       cesses.  As each process  enters  the  barrier,  it  waits
+       (using a semaphore) until all <B>n</B> processes have entered, at
+       which time all are released and continue  executing.   The
+       barrier may be reused immediately.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The  implementation  does  not depend on any other part of
+       Performer.  It uses  two  semaphores  allocated  from  the
+       semaphore arena.
+
+       There  is  no analogue of libc's init_barrier() to reset a
+       barrier, since it's nonsense.
+
+       The libpfutil source code, object code  and  documentation
+       are  provided  as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

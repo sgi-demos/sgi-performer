@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+<TITLE>pfSharedMem</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSharedMem</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSharedMem(3pf)                                 pfSharedMem(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfInitArenas,</B>   <B>pfFreeArenas,</B>  <B>pfGetSharedArena,</B>  <B>pfGetSe-</B>
+       <B>maArena,</B>     <B>pfSharedArenaSize,</B>      <B>pfGetSharedArenaSize,</B>
+       <B>pfSharedArenaBase,</B>  <B>pfGetSharedArenaBase,</B> <B>pfSemaArenaSize,</B>
+       <B>pfGetSemaArenaSize,</B>  <B>pfSemaArenaBase,</B>  <B>pfGetSemaArenaBase,</B>
+       <B>pfTmpDir,</B> <B>pfGetTmpDir</B> - Shared Memory Functions
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       int            <B>pfInitArenas</B>(void);
+
+       int            <B>pfFreeArenas</B>(void);
+
+       void*          <B>pfGetSharedArena</B>(void);
+
+       void*          <B>pfGetSemaArena</B>(void);
+
+       void           <B>pfSharedArenaSize</B>(size_t size);
+
+       size_t         <B>pfGetSharedArenaSize</B>(void);
+
+       void           <B>pfSharedArenaBase</B>(void *base);
+
+       void *         <B>pfGetSharedArenaBase</B>(void);
+
+       void           <B>pfSemaArenaSize</B>(size_t size);
+
+       size_t         <B>pfGetSemaArenaSize</B>(void);
+
+       void           <B>pfSemaArenaBase</B>(void *base);
+
+       void *         <B>pfGetSemaArenaBase</B>(void);
+
+       void           <B>pfTmpDir</B>(char *dirname);
+
+       const char *   <B>pfGetTmpDir</B>(void);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfInitArenas</B>  creates  arenas that can be used to allocate
+       shared memory, locks and semaphores  from  (see  <B>pfMalloc</B>,
+       <B>usnewlock</B>, <B>usnewsema</B>).  In a libpf application, this func-
+       tion is called by <B>pfInit</B> so it is not necessary to call it
+       directly.  However, a libpr application that wishes to use
+       Performer's arenas, must call <B>pfInitArenas</B> before  calling
+       <B>pfInit</B> to ensure that the type system is created in shared
+       memory.
+
+       In  addition  to   creating   a   shared   memory   arena,
+       <B>pfInitArenas</B>  uses <B>usinit</B> to create an arena for locks and
+       semaphores.
+
+       <B>pfTmpDir</B> and the  environment  variable  <B>PFTMPDIR</B>  control
+       where  <B>pfInitArenas</B>  creates  its  arenas.   If neither is
+       specified, the semaphore arena is created in <B>/usr/tmp</B>  and
+       large (256MB by default) shared memory arena and  a  128KB
+       semaphore arena.  The semaphore arena always uses a memory
+       mapped file.
+
+       For the shared memory arena, the default option uses  swap
+       space.   This  is  usually  preferable  to  using a memory
+       mapped file in a directory specified by  <B>PFTMPDIR</B>.   Using
+       an  actual  file is slower at allocation time and requires
+       actual disk space for extending the file length  to  equal
+       the  amount of memory allocated (<B>pfMalloc</B>) from the arena.
+       Because the temporary file is unlinked after creation, any
+       memory  actually  allocated  will  show  up  as used under
+       <B>df(1)</B>, but not under <B>du(1)</B>.  The application size in <B>ps(1)</B>
+       will reflect the maximum specified size of the arena, e.g.
+       256MB.  But space is not  reserved  until  accessed,  i.e.
+       until required by <B>pfMalloc</B>.  So the large arena created by
+       <B>pfInitArenas</B> does not consume any substantial disk or swap
+       space resources until needed.
+
+       <B>pfSharedArenaSize</B>  can  be used to override the arena size
+       that OpenGL Performer uses by default (256MB).  <I>size</I> spec-
+       ifies the desired size in bytes.  Arena size is limited by
+       the largest contiguous possible memory mapping,  currently
+       slightly  more  than  1.7GB  in an application linked with
+       DSOs.  When attempting large arena  mappings,  first  make
+       sure  that the real and virtual memory usage limits set in
+       the   shell   or   with    setrlimit()    are    adequate.
+       <B>pfSharedArenaSize</B>  must  be  called before <B>pfInitArenas</B> to
+       have effect.  <B>pfGetSharedArenaSize</B> returns the arena  size
+       in bytes.
+
+
+       The   comparable   calls   for  the  semaphore  arena  are
+       <B>pfSemaArenaSize</B> and <B>pfGetSemaArenaSize</B>.
+
+       <B>pfSharedArenaBase</B> sets the base address for the mapping of
+       the  shared  memory  arena.   Normally, IRIX chooses these
+       base addresses  automatically.   Direct  specification  is
+       only  useful  if the application needs closer control over
+       the layout of virtual address space, e.g.  to  avoid  con-
+       flicts  with other mappings.  <B>pfGetSharedArenaBase</B> returns
+       the base address for the arena.
+
+       The  comparable  calls  for  the   semaphore   arena   are
+       <B>pfSemaArenaBase</B> and <B>pfGetSemaArenaBase</B>.
+
+       <B>pfGetSemaArena</B>  returns  a  handle  to  the lock arena and
+       <B>pfGetSharedArena</B> returns a pointer to  the  shared  memory
+       arena.   This  pointer cannot be used directly, only as an
+       argument to <B>pfMalloc</B>.  <B>pfGetTmpDir</B> returns  the  temporary
+       directory set using <B>pfTmpDir</B>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Shared  Arena  functionality  is  not  currently supported
+       under the single processor version of Performer on  Linux.
+
+       These  arenas  can  only  be  used  by  related processes.
+       Related in this context means processes that  are  created
+       by  <B>fork</B>  or <B>sproc</B> once <B>pfInitArenas</B> has been called.  Use
+
+
+                                                 pfSharedMem(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

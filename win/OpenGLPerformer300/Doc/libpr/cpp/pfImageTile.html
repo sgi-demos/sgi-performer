@@ -1,0 +1,579 @@
+<HTML>
+<HEAD>
+<TITLE>pfImageTile</TITLE>
+</HEAD>
+<BODY>
+<H1>pfImageTile</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfImageTile(3pf)                                 pfImageTile(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfImageTile,</B> <B>pfGetGlobalReadQueue,</B> <B>pfDeleteGlobalReadQueue</B>
+       - Memory representation for  rectangular  (sub)section  of
+       texture image.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfImageTile.h&gt;
+
+       void              <B>pfImageTile::pfImageTile</B>();
+
+       void              <B>pfImageTile::setSize</B>(int w,       int h,
+                           int d);
+
+       void              <B>pfImageTile::getSize</B>(int *w,     int *h,
+                           int *d);
+
+       void              <B>pfImageTile::setOrigin</B>(int s,     int t,
+                           int r);
+
+       void              <B>pfImageTile::getOrigin</B>(int *s,   int *t,
+                           int *r);
+
+       void              <B>pfImageTile::setMem</B>(unsigned char *img,
+                           int nBytes);
+
+       unsigned char *   <B>pfImageTile::getMem</B>(void);
+
+       unsigned char *   <B>pfImageTile::getUnalignedMem</B>(void);
+
+       int               <B>pfImageTile::getNumImageComponents</B>(void);
+
+       void              <B>pfImageTile::setMemImageFormat</B>(int format);
+
+       int               <B>pfImageTile::getMemImageFormat</B>(void);
+
+       void              <B>pfImageTile::setMemImageType</B>(int type);
+
+       int               <B>pfImageTile::getMemImageType</B>(void);
+
+       int               <B>pfImageTile::getMemImageTexelSize</B>(void);
+
+       void              <B>pfImageTile::setMemInfo</B>(int psize,
+                           int lock);
+
+       void              <B>pfImageTile::getMemInfo</B>(int *psize,
+                           int *lock);
+
+       void              <B>pfImageTile::setName</B>(const char *fname);
+
+       const char *      <B>pfImageTile::getName</B>(void);
+
+       void              <B>pfImageTile::setFileName</B>(const char *fname);
+
+       const char *      <B>pfImageTile::getFileName</B>(void);
+
+
+       void              <B>pfImageTile::setNumFileTiles</B>(int nTilesS,
+                           int nTilesT, int nTilesR);
+
+       void              <B>pfImageTile::getNumFileTiles</B>(int *nTielsS,
+                           int *nTilesT, int *nTilesR);
+
+       void              <B>pfImageTile::setFileImageFormat</B>(int fileFmt);
+
+       int               <B>pfImageTile::getFileImageFormat</B>(void);
+
+       void              <B>pfImageTile::setFileImageType</B>(int fileType);
+
+       int               <B>pfImageTile::getFileImageType</B>(void);
+
+       void              <B>pfImageTile::setHeaderOffset</B>(int offset);
+
+       int               <B>pfImageTile::getHeaderOffset</B>(void);
+
+       unsigned char *   <B>pfImageTile::getSubTile</B>(int s,    int t,
+                           int r);
+
+       unsigned char *   <B>pfImageTile::getValidSubTile</B>(int s,
+                           int t, int r);
+
+       void              <B>pfImageTile::setReadQueue</B>(pfQueue *q);
+
+       pfQueue *         <B>pfImageTile::getReadQueue</B>(void);
+
+       int               <B>pfImageTile::getTotalBytes</B>(void);
+
+       int               <B>pfImageTile::getValidBytes</B>(void);
+
+       int               <B>pfImageTile::getValidTexels</B>(void);
+
+       void              <B>pfImageTile::setValidTexels</B>(int nTexels);
+
+       int               <B>pfImageTile::isValid</B>(void);
+
+       int               <B>pfImageTile::isDirty</B>(void);
+
+       void              <B>pfImageTile::setReadFunc</B>(pfReadImageTileFuncType func);
+
+       pfReadImageTileFuncType
+                         <B>pfImageTile::getReadFunc</B>(void);
+
+       void              <B>pfImageTile::setDefaultTile</B>(pfImageTile *default);
+
+       pfImageTile *     <B>pfImageTile::getDefaultTile</B>(void);
+
+       void              <B>pfImageTile::setDefaultTileMode</B>(int useDefault);
+
+       int               <B>pfImageTile::getDefaultTileMode</B>(void);
+
+       int               <B>pfImageTile::load</B>(void);
+
+       int               <B>pfImageTile::load</B>(int nTexels);
+
+       int               <B>pfImageTile::load</B>(const char *fname);
+
+       pfQueue *         <B>pfImageTile::getMemQueue</B>(void);
+
+       void              <B>pfImageTile::setPriority</B>(int priority);
+
+       int               <B>pfImageTile::getPriority</B>(void);
+
+       void              <B>pfImageTile::sortFunc</B>(pfQueueSortFuncData *data);
+
+       int               <B>pfImageTile::isLoading</B>(void);
+
+       void              <B>pfImageTile::setUseMemQueue</B>(short useMemQueue);
+
+       short             <B>pfImageTile::getUseMemQueue</B>(void);
+
+       void              <B>pfImageTile::setFileNameFunc</B>(pfTileFileNameFuncType fnptr);
+
+       pfTileFileNameFuncType
+                         <B>pfImageTile::getFileNameFunc</B>(void);
+
+       void              <B>pfImageTile::setImageCache</B>(pfImageCache *icache);
+
+       pfImageCache *    <B>pfImageTile::getImageCache</B>(void)
+
+       void              <B>pfImageTile::setTileIndex</B>(int s,  int t,
+                           int r);
+
+       void              <B>pfImageTile::getTileIndex</B>(int *s,
+                           int *t, int *r);
+
+       int               <B>pfImageTile::ProcessOneRead</B>(void *data);
+
+       int               <B>pfImageTile::ReadDirect</B>(pfImageTile *itile,
+                           int ntexels);
+
+       int               <B>pfImageTile::ReadNormal</B>(pfImageTile *itile,
+                           int ntexels);
+
+       pfQueue*          <B>pfGetGlobalReadQueue</B>(void);
+
+       void              <B>pfDeleteGlobalReadQueue</B>(void);
+
+       typedef
+                         int       <B>(*pfReadImageTileFuncType)</B>(pfImageTile *itile,
+                           int nTexels);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfImageTile</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfImageTile</B>.  This is also true for ancestor classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfImageTile is representation of a texture image in main
+       memory.   A  pfImageTile  can  be used to load textures or
+       pieces of texture from disk and store them in certain byte
+       configurations in main memory.  Further these pfImageTiles
+       can then be used as the src for pfTextures  or  pfTexLoads
+       in  order to load imagery into a GL texture from main mem-
+       ory.
+
+       The default constructor <B>pfImageTile</B> creates a pfImageTile.
+       <B>new</B>(arena) allocates a pfImageTile from the specified mem-
+       ory arena, or from the process heap if  <I>arena</I> is <B>NULL</B>. <B>new</B>
+       allocates a pfImageTile from the default memory arena (see
+       <B>pfGetSharedArena</B>).   Like  other  pfObjects,  pfImageTiles
+       cannot  be  created statically, automatically on the stack
+       or  in  arrays.   pfImageTiles  should  be  deleted   with
+       <B>pfDelete</B> rather than with the delete operator.
+
+       <B>pfImageTile::setSize</B> sets the size of this tile in each of
+       the      three      supported      image       dimensions.
+       <B>pfImageTile::getSize</B> fills in its arguments with the sizes
+       for each of the three supported image dimensions.  Any  of
+       the  arguments w,h,d may be NULL, in which case it will be
+       ignored.
+
+       <B>pfImageTile::setOrigin</B> sets the origin of the subregion of
+       the  imagetile  with  respect to the possibly larger whole
+       image.  <B>pfImageTile::getOrigin</B> fills in its arguments with
+       the  imagetile's  origin  in  each  of the three supported
+       image dimensions.  Any of the arguments s,t,r may be NULL,
+       in which case it will be ignored.
+
+       Thus  one example of a pfImageTile might be representing a
+       subregion of 2048x2048x1 image that was 256x256x1 in  size
+       starting  at  location 1024,512,0 in the larger image.  In
+       memory into the imagetile efficiently.  Note, this routine
+       always returns memory aligned on page boundaries - even if
+       the    memory    was    given   to   the   imagetile   via
+       <B>pfImageTile::setMem</B>.
+
+       <B>pfImageTile::getUnalignedMem</B> returns a pointer to the mem-
+       ory  used  to represent the image for the imagetile.  This
+       routine  returns  the  non-page  aligned  version  of  the
+       imagetile's  memory;  however,  the  data is considered to
+       start   on    the    first    page    boundary    -    see
+       <B>pfImageTile::getMem</B>.   This routine is useful for directly
+       getting the  memory  pointer  set  on  the  imagetile  via
+       <B>pfImageTile::setMem</B>.
+
+       <B>pfImageTile::setMem</B> assigns the memory that should be used
+       to represent the actual image for the  imagetile.   <I>nBytes</I>
+       refers  to the number of bytes that can be stored in <I>img</I> -
+       this information is useful if the imagetile  needs  to  be
+       resized.   Note that generically this memory will be allo-
+       cated and destroyed automatically and this  piece  of  api
+       need not be used for normal applications.
+
+       <B>pfImageTile::setMemImageFormat</B>  is  used to set the memory
+       format and number of components used to represent an image
+       texel in memory within the image tile.  The memory formats
+       correspond to GL and Performer tokens used to  define  the
+       external   formats   of   textures.    See  <B>pfTexture</B>  and
+       <B>glTexImage2D</B>.  <B>pfImageTile::getMemImageFormat</B> returns  the
+       memory  format  used  to represent each image texel within
+       the   imagetile.    Possible   memory   formats   include:
+       <B>PFTEX_LUMINANCE</B>,   <B>PFTEX_LUMINANCE_ALPHA</B>,  <B>PFTEX_RGB</B>,  and
+       <B>PFTEX_RGBA</B>.
+
+       <B>pfImageTile::setMemImageType</B> is used to set the data  type
+       of  each  component/texel  stored  with  the memory of the
+       imagetile.  The memory type corresponds  directly  to  the
+       external  memory  type tokens passed into GL and Performer
+       when defining external memory representation of  textures.
+       See          <B>pfTexture</B>          and          <B>glTexImage2D</B>.
+       <B>pfImageTile::getMemImageType</B> returns the memory type  used
+       to represent each image texel within the imagetile.
+
+       <B>pfImageTile::getMemImageTexelSize</B>   returns  the  size  in
+       bytes of each texel of the imagetile.  This size is deter-
+       mined  through knowing the number of components within the
+       image and the size of each component.  This information is
+       directly derived from the memory format and memory type of
+       the imagetile.
+
+       <B>pfImageTile::getNumImageComponents</B> returns the  number  of
+       color  components  in  each  image  texel,  based  on  the
+       imagetile's memory format and memory type.
+
+       <B>pfImageTile::setMemInfo</B> is used to set two important char-
+       acteristics about the memory used to represent the texture
+       image with the imagetile.  <I>psize</I> is used to  describe  the
+       modulo  on which the address of the actual data represent-
+       ing the texture image must start.  For instance  if  <I>psize</I>
+       is  set  to 4096 then the effective address if the texture
+       <I>psize</I>  boundary.  <I>lock</I> specifies whether the memory should
+       be pinned down via <B>mpin</B> when  allocated.   Both  of  these
+       parameters  are  necessary  if the memory will be used for
+       direct IO reads from disk in which case  strict  alignment
+       requirements  are  needed  because  no intermediate memory
+       buffer  is  used  when  copying  data   from   the   disk.
+       <B>pfImageTile::getMemInfo</B>   returns  the  information  about
+       whether the imagetile should attempt  to  <B>mpin</B>  memory  it
+       creates  and  what  modulo  should be used as an alignment
+       requirement for the memory representing the texture image.
+       Either  of  the arguments psize,lock may be NULL, in which
+       case it will be ignored.
+
+       <B>pfImageTile::setName</B> and <B>pfImageTile::getName</B> set and  get
+       the  name  of a particular image tile.  The name is useful
+       for nothing other than to represent a possible image  name
+       associated with all of the tiles of a particular image.
+
+       <B>pfImageTile::setFileName</B>  and <B>pfImageTile::getFileName</B> set
+       and get the filename associated with  a  particular  image
+       tile.   This filename is used when the imagetile is loaded
+       via <B>pfImageTile::load</B>.
+
+       <B>pfImageTile::setFileImageFormat</B> is used to set  the  texel
+       format and number of components used to represent an image
+       texel in memory within the image tile.  The formats corre-
+       spond to GL and Performer tokens used to define the exter-
+       nal formats of textures.  See <B>pfTexture</B> and  <B>glTexImage2D</B>.
+       <B>pfImageTile::getFileImageFormat</B> returns the format used to
+       represent each image texel within the imagetile  on  disk.
+       Possible      formats      include:       <B>PFTEX_LUMINANCE</B>,
+       <B>PFTEX_LUMINANCE_ALPHA</B>, <B>PFTEX_RGB</B>, and <B>PFTEX_RGBA</B>.
+
+       <B>pfImageTile::setFileImageType</B> is used to set the data type
+       of  each component/texel stored within the imagetile data.
+       The memory type corresponds directly to the external  mem-
+       ory type tokens passed into GL and Performer when defining
+       external memory representation of textures.  See <B>pfTexture</B>
+       and  <B>glTexImage2D</B>.   <B>pfImageTile::getFileImageType</B> returns
+       the data type used to represent each  image  texel  within
+       the imagetile as stored externally to the tile.
+
+       <B>pfImageTile::getFileImageTexelSize</B>  returns  the  size  in
+       bytes of each texel of the imagetile.  This size is deter-
+       mined  through knowing the number of components within the
+       image and the size of each component.  This information is
+       directly derived from the file format and file type of the
+       imagetile.
+
+       <B>pfImageTile::setFileTile</B> sets the subtile of the  file  in
+       which   the  imagetile  exists.   <B>pfImageTile::getFileTile</B>
+       returns the file subtile for this imagetile.  Any  of  the
+       arguments  tileS,tileT,tileR may be NULL, in which case it
+       will be ignored.   <B>pfImageTile::setNumFileTiles</B>  sets  the
+       number of tiles in each dimension within the file contain-
+       ing the pfImageTile.  <B>pfImageTile::getNumFileTiles</B> returns
+       the number of tiles in each dimension within the file con-
+       taining  the  pfImageTile.   Any  of  the  arguments  nTi-
+       lesS,nTilesT,nTilesR may be NULL, in which case it will be
+       <B>pfImageTile::setDefaultTile</B>  sets an alternate pfImageTile
+       to use when data is requested from this tile  and  is  not
+       available.  <B>pfImageTile::getDefaultTile</B> returns the alter-
+       nate pfImageTile that was specified to be used when  image
+       data is requested and is not available.
+
+       <B>pfImageTile::setDefaultTileMode</B>                        and
+       <B>pfImageTile::getDefaultTileMode</B>  set  and  gets  the  mode
+       associated with the use of the default pfImageTile associ-
+       ated with this pfImageTile.  PF_ON specifies  to  use  the
+       default  when  data  is  unavailable,  PF_OFF specifies to
+       ignore the default tile.
+
+       <B>pfImageTile::getSubTile</B> returns a  pointer  to  the  texel
+       corresponding to s,t,r.
+
+       <B>pfImageTile::getValidSubTile</B> also returns a pointer to the
+       texel corresponding to s,t,r; however, this function  will
+       spin waiting for that texel data to be validated before it
+       returns.  This is  useful  for  synchronizing  texel  data
+       being loaded asynchronously.
+
+       <B>pfImageTile::setValidTexels</B>  is used to explicitly set the
+       valid portion of an imagetile.  When the number  of  valid
+       texels  is  equal  to  the  total  number of texels in the
+       imagetile then the entire imagetile is marked as valid.
+
+       <B>pfImageTile::getValidTexels</B> returns  the  number  of  cur-
+       rently  valid texels.  This number is determined by either
+       the   number   of   texels   marked   valid   through    a
+       <B>pfImageTile::load</B>      or      explicitly      set     via
+       <B>pfImageTile::setValidTexels</B>.
+
+       <B>pfImageTile::getTotalBytes</B> returns  the  total  number  of
+       bytes  required  to  store  a  texture  image  within  the
+       imagetile.  The value is  calculated  by  multiplying  the
+       total number of texels in the texture image by the size of
+       each texel.
+
+       <B>pfImageTile::getValidBytes</B> returns  the  total  number  of
+       valid bytes available currently loaded of the image stored
+       with the imagetile.  The value is calculated by  multiply-
+       ing  the  number  of currently valid texels by the size of
+       each texel.
+
+       <B>pfImageTile::isValid</B> returns whether  the  entire  texture
+       image stored within the imagetile has been loaded.
+
+       <B>pfImageTile::isDirty</B>  returns  whether something about the
+       imagetile has changed that  could  cause  it  have  to  be
+       loaded.
+
+       <B>pfImageTile::setReadFunc</B>  sets a function to call in order
+       to perform the actual read of  data  from  disk  or  other
+       external  device into the imagetile.  The default function
+       supports fast reading of several raw data formats and will
+       eventually  support  slow  reading  for  a large number of
+       image formats.  <B>pfImageTile::getReadFunc</B> returns the  cur-
+       rent  function  used  to  read data into an imagetile when
+       See  the  <B>pfQueue</B>  man  page  for  more  information about
+       queues.
+
+       <B>pfImageTile::halve</B> returns a new pfImageTile that contains
+       a  half resolution version of the imagetile.  This will be
+       useful for creating mipmaps but is  currently  not  imple-
+       mented.
+
+       <B>pfImageTile::load</B>  will cause the tile to be loaded either
+       synchronously   or   asynchronously   depending   on   the
+       imagetile's      current      read     queue     -     see
+       <B>pfImageTile::setReadQueue</B>  above.    This   routine   will
+       attempt  to  load the entire image from the file specified
+       via the imagetile's filename parameter.
+
+       <B>pfImageTile::load(int</B> <B>ntexels)</B> specifies that <I>ntexels</I> tex-
+       els should be read into the imagetile and validated.
+
+       <B>pfImageTile::load(const</B>  <B>char</B> <B>*fname)</B> effectively sets the
+       filename of the imagetile and causes it to be loaded.
+
+       <B>pfImageTile::load(const</B> <B>char</B> <B>*fname,</B> <B>int</B> <B>ntexels)</B> sets the
+       filename  of  the  imagetile  and causes a partial load to
+       take place.
+
+       <B>pfImageTile::freeMem</B> causes the memory used  to  hold  the
+       actual texture image within the imagetile to be freed.
+
+       <B>pfGetGlobalReadQueue</B> will return a pointer to a preconfig-
+       ured global read queue with one service  thread  that  can
+       manage all loading of pfImageTile's asynchronously.
+
+       <B>pfDeleteGlobalReadQueue</B> will delete the global read queue.
+       The first time <B>pfGetGlobalReadQueue</B> is  called  after  the
+       read  queue  has been deleted, a new one will be allocated
+       and configured.
+
+       <B>pfImageTile::setMemQueue</B> sets the queue where image  tiles
+       will be place store their pfMemory when they are reconfig-
+       ured by an image cache. The memory queue holds a  list  of
+       pfMemorys.  In  practice,  only the image tile used as the
+       proto tile needs to set a valid memqueue value.   The  use
+       of    the    MemQueue    and   be   controlled   via   the
+       <B>pfImageTile::setUseMemQueue</B> function described below.
+
+       <B>pfImageTile::getMemQueue</B> returns the current value of  the
+       image tile's memqueue pointer.
+
+       <B>pfImageTile::setUseMemQueue</B>  is used to tell the ImageTile
+       whether or not to use the memory re-use queue described by
+       <B>pfImageTile::setMemQueue</B>.  The default value is TRUE which
+       will allow the queue to be used.
+
+       <B>pfImageTile::getUseMemQueue</B> returns TRUE if the  imagetile
+       is  currently set to use the memory reuse queue defined by
+       <B>pfImageTile::setMemQueue</B>.
+
+       <B>pfImageTile::setPriority</B> set  the  priority  of  an  image
+       tile.  The  priority  value is used by sorting read queues
+       priority value is lower.  <B>pfImageTile::getPriority</B> returns
+       the current value of an image tile's priority.
+
+       <B>pfImageTile::sortFunc</B> is a static member function  of  the
+       pfImageTile  class. It is used as the sorting function for
+       the read queue of a pfImageCache. It is not  intended  for
+       general use by applications.
+
+       <B>pfImageTile::isLoading</B> indicates whether the image tile is
+       currently being processed by the read function. A value of
+       non-zero  means  that  the  tile represented by this image
+       tile is being read from disk into  a  tile  of  the  image
+       cache in system memory.
+
+       <B>pfImageTile::setFileNameFunc</B>  sets  the file name function
+       that the read function will call to  dynamically  evaluate
+       the  file  name that should be used to read tile data from
+       disk to the image cache's mem region.  The  default  func-
+       tion,  <B>pfImageCache::autoConfigFileName()</B>,  takes an image
+       tile argument and computes the  proper  file  name  string
+       using the parameter values set in the pfImageCache object.
+       This function pointer is automatically set when the  pfIm-
+       ageCache creates and configures its pfImageTile objects.
+
+       <B>pfImageTile::getFileNameFunc</B>  returns  a  function pointer
+       showing the pfImageTile object's file name function.  This
+       function is called by the read function on the pfImageTile
+       object to set the filename  before  reading  the  file  to
+       download the texel data. An exmple function that uses this
+       function is the <B>ReadNormal</B>  and  <B>ReadDirect</B>  example  read
+       functions in <B>lib/libpfutil/pfdLoadImage.c</B>
+
+       <B>pfImageTile::setImageCache</B>  set  the  current pfImageCache
+       pointer. The pfImageCache object is used by the file  name
+       configuration  function  to  generate the image tile file-
+       name.  This function is called by the read  function  when
+       the  pfImageTile  texel  data  is downloaded from disk the
+       pfImageCache object's mem region. This value is  automati-
+       cally  set  by the pfImageCache object when it creates and
+       configures its pfImageTile objects.
+
+       <B>pfImageTile::getImageCache</B> returns a pointer to  the  cur-
+       rent  pfImageCache  object.  If the pfImageTile object was
+       created by the  application,  the  default  value  of  the
+       pointer  is NULL. If created by a pfImageCache object, the
+       pointer will point to the creating pfImageCache.
+
+       <B>pfImageTile::setTileIndex</B> set the s, t, and r  coordinates
+       of  the  image  tile  within  the cliptexture level.  This
+       value positions  the  tile  within  the  complete  virtual
+       level.  This  value  is  set  by the creating pfImageCache
+       object.
+
+       <B>pfImageTile::getTileIndex</B> return the current s, t,  and  r
+       coordinates of the image tile.
+
+       <B>pfImageTile::ProcessOneRead</B> this is the function that man-
+       ages the global read queue.  The  read  queue  calls  this
+       function  with  a  pointer  to  the last read element. The
+       cache  data.  The  source  code  for the C version of this
+       function             is             defined             in
+       <B>/usr/share/Performer/src/lib/libpfdb/pfdLoadImage.c</B>.    If
+       the disk file can't be read using direct I/O, the function
+       calls <B>pfImageTile::ReadNormal</B>.
+
+       <B>pfImageTile::ReadNormal</B> this is the fallback read function
+       used  by  the  global  read  queue.  It   is   called   by
+       <B>pfImageTile::ReadDirect</B>  if it fails. It tries to read the
+       disk file using the FILE library.  If it fails, it  prints
+       a  warning  message.  The source code for the C version of
+       this        function         is         defined         in
+       <B>/usr/share/Performer/src/lib/libpfdb/pfdLoadImage.c</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfImageCache, pfQueue, pfTexLoad, pfTexture
+
+
+
+                                                 pfImageTile(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

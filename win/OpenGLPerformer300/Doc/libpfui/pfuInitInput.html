@@ -1,0 +1,240 @@
+<HTML>
+<HEAD>
+<TITLE>pfuInitInput</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuInitInput</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuInitInput(3pf)                               pfuInitInput(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuInitInput,</B> <B>pfuInitMultiChanInput,</B> <B>pfuExitInput,</B> <B>pfuGet-</B>
+       <B>Mouse,</B>  <B>pfuGetEvents,</B>  <B>pfuInputHandler,</B>   <B>pfuCollectInput,</B>
+       <B>pfuCollectGLEventStream,</B>  <B>pfuCollectXEventStream,</B>  <B>pfuMap-</B>
+       <B>MouseToChan,</B>  <B>pfuMouseInChan,</B>  <B>pfuMouseButtonClick,</B>   <B>pfu-</B>
+       <B>MouseButtonRelease,</B>  <B>pfuMapXTime</B> - Initialize, process and
+       reset input devices.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void     <B>pfuInitInput</B>(pfPipeWindow *pipeWin, int mode);
+
+       void     <B>pfuInitMultiChanInput</B>(pfChannel **chanArray,
+                  int numChans, int mode);
+
+       void     <B>pfuExitInput</B>(void);
+
+       void     <B>pfuGetMouse</B>(pfuMouse *mouse);
+
+       void     <B>pfuGetEvents</B>(pfuEventStream *events);
+
+       void     <B>pfuInputHandler</B>(pfuEventHandlerFuncType userFunc,
+                  uint mask);
+
+       void     <B>pfuCollectInput</B>(void);
+
+       void     <B>pfuCollectGLEventStream</B>(pfuEventStream *events,
+                  pfuMouse *mouse,   int handlerMask,  pfuEven-
+                  tHandlerFuncType handlerFunc);
+
+       void     <B>pfuCollectXEventStream</B>(pfWSConnection dsp,
+                  pfuEventStream *events,      pfuMouse *mouse,
+                  int handlerMask, pfuEventHandlerFuncType han-
+                  dlerFunc);
+
+       int      <B>pfuMapMouseToChan</B>(pfuMouse *mouse,        pfChan-
+                  nel *chan);
+
+       int      <B>pfuMouseInChan</B>(pfuMouse *mouse, pfChannel *chan);
+
+       void     <B>pfuMouseButtonClick</B>(pfuMouse *mouse,  int button,
+                  int x, int y, double time);
+
+       void     <B>pfuMouseButtonRelease</B>(pfuMouse *mouse,   int but-
+                  ton, int x, int y, double time);
+
+       double   <B>pfuMapXTime</B>(double xtime);
+
+
+
+                typedef struct _pfuMouse
+                {
+                    int        flags;         /* for PDEV_MOUSE_*_DOWN and PFUDEV_MOD_* bitmasks */
+                    int        modifiers;     /* modifier keys only  */
+                     * Xformers need last and middle click and release info
+                     */
+                              /* Mask of clicks seen last frame */
+                    int        click;
+                              /* Last click position for each mouse button */
+                    int   clickPos[PFUDEV_MOUSE_DOWN_MASK][2];
+                              /* Screen coordinates where a mouse button was last clicked */
+                    int        clickPosLast[2];
+                              /* mask of mouse releases seen last frame */
+                    int        release;
+                              /* last release position for each mouse button */
+                    int   releasePos[PFUDEV_MOUSE_DOWN_MASK][2];
+                              /* Screen coordinates where a mouse button was last released*/
+                    int        releasePosLast[2];
+                              /* Last click time for each mouse button */
+                    double     clickTime[PFUDEV_MOUSE_DOWN_MASK];
+                              /* Time of last button click */
+                    double     clickTimeLast;
+                              /* Last release time for each mouse button */
+                    double     releaseTime[PFUDEV_MOUSE_DOWN_MASK];
+                              /* Time of last button release */
+                    double     releaseTimeLast;
+
+
+                    int        winSizeX; /* Window Size */
+                    int        winSizeY;
+
+                    int   inWin;         /* Window focus flag */
+
+                } pfuMouse;
+
+
+                typedef void (*pfuEventHandlerFuncType)(int dev, void* val,
+                    pfuCustomEvent *pfuevent);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       There are a variety of automatic and explicit event col-
+       lection utilities in libpfutil.  Automatic X or GL input
+       event collection is started with <B>pfuInitInput</B> and the
+       resulting events can be queried with <B>pfuInputHandler</B> and
+       <B>pfuGetEvents</B>.
+
+       <B>pfuInitInput</B> initializes mouse and keyboard input to be
+       read from the specified <B>pfPipeWindow</B> <I>pipeWin</I>.  <I>mode</I> is one
+       of:
+
+              <B>PFUINPUT_X</B>
+                   Read mouse and keyboard from a forked process
+                   using X device commands.  <I>pipe</I> must have a GLX
+                   window.  See the <B>pfuGLXWinopen</B> reference page
+                   for more information.
+
+              <B>PFUINPUT_GL</B>
+                   Read mouse and keyboard from the draw process
+                   using GL device commands.  <I>pipe</I> must have a GL
+                   window.  This option is no longer supported.
+       <B>pfuInitMultiChanInput</B> is a companion function to <B>pfuInit</B>
+       but for forked X input will create a separate forked input
+
+       WINQUIT
+       REDRAW
+       KEYBD
+       LEFTMOUSE
+       MIDDLEMOUSE
+       RIGHTMOUSE
+       INPUTCHANGE
+
+
+       Any other required GL devices, such as function keys,
+       should be queued explicitly by the application.
+       <B>pfuCollectInput</B> is no longer supported.
+
+       If the mode is <B>PFUINPUT_X</B> then <B>pfuCollectInput</B> does not
+       need to be called since the device input is automatically
+       collected by the forked process.
+
+       <B>pfuInputHandler</B> installs the custom handler <I>userFunc</I>,
+       which will then be called to process each input event
+       included in <I>mask</I>.  If the mode is <B>PFUINPUT_X</B>, then <I>mask</I>
+       can be set to the bitwise-or of an X input mask with
+       <B>PFUINPUT_CATCH_UNKNOWN</B>, <B>PFUINPUT_CATCH_SIM</B>, or
+       <B>PFU_CATCH_ALL</B>.  The <B>PFUINPUT_GL</B> mode is no longer sup-
+       ported.
+
+       <B>pfuGetMouse</B> copies the current mouse values from the libp-
+       futil event collector (initially triggered with
+       <B>pfuInitInput</B>) into <I>mouse</I> and <B>pfuGetEvents</B> copies the
+       events of the current frame into <I>events</I>.  <B>pfuGetEvents</B>
+       also resets the internal event queue.
+
+       <B>pfuMapMouseToChan</B> maps the mouse screen coordinates
+       (mouse-&gt;xpos, mouse-&gt;ypos) into coordinates in the range
+       [-1, 1] (mouse-&gt;xchan, mouse-&gt;ychan) based on <I>chan</I>'s view-
+       port.  Either <B>TRUE</B> or <B>FALSE</B> is returned to indicate that
+       the mouse is in or out of the <I>chan</I>'s viewport.
+
+       <B>pfuMouseInChan</B> does the <B>pfuMapMouseToChan</B> mapping.  In
+       addition, its return value considers mouse focus if a
+       mouse button is recorded as being down in <I>mouse</I>.  In this
+       case, the recorded position of where the mouse button was
+       clicked will determine if the current channel has focus.
+       The mouse will be considered to be "in" the channel of
+       focus.
+
+       <B>pfuCollectGLEventStream</B> will do immediate IRIS GL input
+       collection into the provided pfuEventStream and pfuMouse
+       structures. If the provided event stream or mouse pointer
+       is NULL, it will be ignored.  This routine must be called
+       in the draw process.  This function is no longer sup-
+       ported.
+
+       <B>pfuCollectXEventStream</B> will do immediate X input collec-
+       tion from the provided pfWSConnection into the provided
+       pfuEventStream and pfuMouse structures. If the provided
+       event stream or mouse pointer is NULL, it will be ignored.
+
+       <B>pfuExitInput</B> must be called to terminate the forked X
+       <B>pfuMouseButtonRelease</B> provides a similar capability for
+       button-up (release) events. As before, <I>button</I> specifies
+       which button, <I>x</I> and <I>y</I> identify the location of the virtual
+       event, and <I>time</I> denotes when the even is to be considered
+       to have occurred.
+
+       <B>pfuMapXTime</B> performs the mapping from an X-event time
+       <I>xtime</I> to the OpenGL Performer time system.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfuInit</B> should be called immediately after <B>pfConfig</B> when
+       using these routines to initialize shared memory used by
+       the utility library.  OpenGL Performer recommends that you
+       use X device input. The OpenGL Performer sample applica-
+       tion, <B>perfly</B>, is shipped with <B>PFUINPUT_X</B> as the default.
+       X device input is recommended for the following reasons:
+
+              OpenGL does not contain device input routines and
+              all input must be managed through X.
+
+              Collecting X device input in an asynchronous pro-
+              cess can improve real-time characteristics.
+
+       See the <B>pfuEventQueue</B> man page for a description of the
+       <B>pfuEventStream</B> structure.
+
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfuGLXWinopen, pfuInit, pfuEventQueue, pfuGUI
+
+
+
+                                                pfuInitInput(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

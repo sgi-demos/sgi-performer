@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+<TITLE>pfPolytope</TITLE>
+</HEAD>
+<BODY>
+<H1>pfPolytope</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfPolytope(3pf)                                   pfPolytope(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfPolytope</B>  -  Create, configure, transform, and intersect
+       polytopes
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoMath.h&gt;
+
+                 <B>pfPolytope::pfPolytope</B>();
+
+       pfType*   <B>pfPolytope::getClassType</B>(void);
+
+       int       <B>pfPolytope::getNumFacets</B>(void);
+
+       int       <B>pfPolytope::setFacet</B>(int i,
+                   const pfPlane *facet);
+
+       int       <B>pfPolytope::getFacet</B>(int i, pfPlane *facet);
+
+       int       <B>pfPolytope::removeFacet</B>(int i);
+
+       void      <B>pfPolytope::orthoXform</B>(const pfPolytope *src,
+                   const pfMatrix  &amp;mat);
+
+       int       <B>pfPolytope::contains</B>(const pfVec3  &amp;pt);
+
+       int       <B>pfPolytope::contains</B>(const pfSphere *sphere);
+
+       int       <B>pfPolytope::contains</B>(const pfBox *box);
+
+       int       <B>pfPolytope::contains</B>(const pfCylinder *cyl);
+
+       int       <B>pfPolytope::contains</B>(const pfPolytope *ptope1);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfPolytope</B> is derived from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class  <B>pfPolytope</B>.  This is also true for ancestor classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfPolytope</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfPolytope  is  a set of half spaces whose intersection
+       defines a convex, possibly semi-infinite, volume which may
+       be used for culling and other intersection testing where a
+       tighter bound than a pfBox, pfSphere, or pfCylinder is  of
+       benefit.
+
+       <B>new</B>(arena)  allocates a pfPolytope from the specified mem-
+       ory arena, or from the process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates  a pfPolytope from the default memory arena (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfPolytopes can-
+       not  be  created statically, automatically on the stack or
+       in arrays.  pfPolytopes can also be created  automatically
+       on  the  stack  or statically.  pfPolytopes allocated with
+       <B>new</B> can be deleted with <B>delete</B> or <B>pfDelete</B>.
+
+       <B>pfPolytope::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfPolytope</B>.        The       <B>pfType</B>*      returned      by
+       <B>pfPolytope::getClassType</B>  is  the  same  as  the   <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfPolytope</B>.   Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than  to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfPolytope::setFacet</B>  sets the <I>i</I>th facet of the pfPolytope
+       to <I>facet</I>.  <I>facet</I> defines a half space such that the normal
+       of   the  pfPlane  faces  "outside".  <B>pfPolytope::getFacet</B>
+       copies the <I>i</I>th facet of the pfPolytope into <I>facet</I>.
+
+       <B>pfPolytope::removeFacet</B>  removes  the  <I>i</I>th  facet  of  the
+       pfPolytope  from  the  list.  Remaining facets are shifted
+       left over the removed facet.
+
+       <B>pfPolytope::getNumFacets</B> returns the number of  facets  in
+       the pfPolytope.
+
+       <B>pfPolytope::orthoXform</B>  transforms  <I>src</I>  by <I>mat</I> and stores
+       the result in the pfPolytope.  <I>mat</I> should be an  orthonor-
+       mal matrix or results are undefined.
+
+       The  various member functions <B>pfPolytope::contains</B> compute
+
+              <B>PFIS_MAYBE</B>:
+                   The  intersection  of  the  primitive  and the
+                   pfPolytope might be non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>:
+                   The intersection  of  the  primitive  and  the
+                   pfPolytope is definitely non-empty.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>:
+                   The  primitive  is non-empty and lies entirely
+                   inside the pfPolytope.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfBox, pfCylinder, pfDelete,  pfFrustum,  pfMatrix,  pfOb-
+       ject, pfSphere
+
+
+
+                                                  pfPolytope(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

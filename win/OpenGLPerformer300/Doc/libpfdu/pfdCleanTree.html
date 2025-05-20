@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE>pfdCleanTree</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdCleanTree</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdCleanTree(3pf)                               pfdCleanTree(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdFreezeTransforms,</B>  <B>pfdCleanTree,</B> <B>pfdReplaceNode,</B> <B>pfdIn-</B>
+       <B>sertGroup,</B> <B>pfdRemoveGroup</B> - Scene graph optimizations
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfNode *   <B>pfdFreezeTransforms</B>(pfNode *node,  pfuTravFunc-
+                    Type func);
+
+       pfNode *   <B>pfdCleanTree</B>(pfNode *node,         pfuTravFunc-
+                    Type func);
+
+       void       <B>pfdReplaceNode</B>(pfNode *oldn, pfNode *newn);
+
+       void       <B>pfdInsertGroup</B>(pfNode *oldn, pfGroup *grp);
+
+       void       <B>pfdRemoveGroup</B>(pfGroup *oldn);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdCleanTree</B> traverses the scene graph rooted at <I>node</I>  and
+       removes redundant and empty pfGroups from the scene graph.
+       It also converts any pfSCS with an identity transformation
+       into a pfGroup.
+
+       By  default,  pfGroups  are eliminated if they have one or
+       fewer children.  Any children are reparented to the parent
+       of  the  pfGroup being eliminated.  The one exception is a
+       pfSwitch node with one child, which is not eliminated.  An
+       optional  function  <I>func</I>  can  be  provided  to alter this
+       determination during the  traversal.   At  each  candidate
+       pfGroup,  <I>func</I> is passed a pfuTraverser which includes the
+       current node.  If <I>func</I> returns TRUE, the current  node  is
+       eliminated.   If  <I>func</I>  returns FALSE, the current node is
+       retained.
+
+
+       <B>pfdFreezeTransforms</B> traverses the scene  graph  rooted  at
+       <I>node</I> and converts pfDCSes to pfSCSes.  Usually in prepara-
+       tion for a subsequent call to <B>pfFlatten</B>.  By  default  the
+       conversion  occurs  for  those pfDCSes that don't have any
+       callbacks and do not have the string "dcs" or "DCS" embed-
+       ded  in  the  node name.  An optional function <I>func</I> can be
+       provided to alter this determination during the traversal.
+       At  each  candidate pfGroup, <I>func</I> is passed a pfuTraverser
+       which includes the current node.  If  <I>func</I>  returns  TRUE,
+       the current node is converted.  If <I>func</I> returns FALSE, the
+       current node remains a pfDCS.
+
+       <B>pfdReplaceNode</B>,  <B>pfdInsertGroup</B>  and  <B>pfdRemoveGroup</B>   are
+       helper  routines.   <B>pfdReplaceNode</B>  replaces the node <I>oldn</I>
+       with the node <I>newn</I> in the scene graph, including reparent-
+       ing  <I>newn</I>  to  the  <I>oldn</I>'s  parents and reparenting <I>oldn</I>'s
+       children to <I>newn</I>.  <I>oldn</I> is not  deleted.   Any  callbacks,
+       traversal  masks  and  the  node  name  are  also  copied.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFlatten
+
+
+
+                                                pfdCleanTree(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

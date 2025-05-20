@@ -1,0 +1,7 @@
+#
+# OpenGL Performer 3.0 run-time license for Microsoft Windows NT, 2000, and XP
+# See http://www.sgi.com/software/performer for new licenses
+#
+
+FEATURE performer_windows sgifd 3.0 permanent uncounted \
+	FC2DE5B440B5C1CD9A0E "" DEMO

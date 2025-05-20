@@ -1,0 +1,277 @@
+<HTML>
+<HEAD>
+<TITLE>pfSequence</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSequence</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSequence(3pf)                                   pfSequence(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfSequence</B> - Control animation sequence nodes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfSequence.h&gt;
+
+                         <B>pfSequence::pfSequence</B>();
+
+       static pfType *   <B>pfSequence::getClassType</B>(void);
+
+       void              <B>pfSequence::setTime</B>(int frame,      dou-
+                           ble time);
+
+       double            <B>pfSequence::getTime</B>(int frame);
+
+       void              <B>pfSequence::setInterval</B>(int mode,
+                           int begin, int end);
+
+       void              <B>pfSequence::getInterval</B>(int *mode,
+                           int *begin, int *end);
+
+       void              <B>pfSequence::setDuration</B>(float speed,
+                           int nReps);
+
+       void              <B>pfSequence::getDuration</B>(float *speed,
+                           int *nReps);
+
+       void              <B>pfSequence::setMode</B>(int mode);
+
+       int               <B>pfSequence::getMode</B>(void);
+
+       int               <B>pfSequence::getFrame</B>(int *repeat);
+
+       void              <B>pfSequence::setEvaluation</B>(int state);
+
+       int               <B>pfSequence::getEvaluation</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfSequence</B> is derived from  the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class <B>pfGroup</B> are also directly  usable  with  objects  of
+       class  <B>pfSequence</B>.  This is also true for ancestor classes
+       of class <B>pfGroup</B>.
+
+       int        <B>pfGroup::addChild</B>(pfNode *child);
+       int        <B>pfGroup::insertChild</B>(int index, pfNode *child);
+       int        <B>pfGroup::replaceChild</B>(pfNode *old,         pfN-
+                    ode *new);
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       int        <B>pfGroup::searchChild</B>(pfNode* child);
+       pfNode *   <B>pfGroup::getChild</B>(int index);
+       int        <B>pfGroup::getNumChildren</B>(void);
+       int        <B>pfGroup::bufferAddChild</B>(pfNode *child);
+       int        <B>pfGroup::bufferRemoveChild</B>(pfNode *child);
+
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>,  objects  of class <B>pfSequence</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfSequence</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfSequence is a pfGroup that sequences through  a  range
+       of  its  children, drawing each child for a certain length
+       of time.  Its primary  use  is  for  animations,  where  a
+       <I>sequence</I>  of  objects  or  geometry (children) represent a
+       desired visual event.  <B>new</B> <B>pfSequence</B> creates and  returns
+       a handle to a pfSequence.  Like other pfNodes, pfSequences
+       are always allocated from shared memory and cannot be cre-
+       ated  statically,  on the stack or in arrays.  pfSequences
+       should be deleted using <B>pfDelete</B> rather  than  the  delete
+       operator.
+
+       <B>pfSequence::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfSequence</B>.       The      <B>pfType</B>*       returned       by
+       <B>pfSequence::getClassType</B>   is  the  same  as  the  <B>pfType</B>*
+       returned by invoking the virtual function <B>getType</B>  on  any
+       instance  of  class  <B>pfSequence</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an  object
+       is  of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       Children are added to a pfSequence  using  normal  pfGroup
+       API  (<B>pfGroup::addChild</B>).  The length of time that a child
+       is drawn is specified by  <B>pfSequence::setTime</B>.   <I>frame</I>  is
+       the  index  of  a child that should be drawn for <I>time</I> sec-
+       onds.  If <I>frame</I> &lt; 0, then all children will  be  displayed
+       for  <I>time</I> seconds.  If <I>time</I> = 0.0 or time is not specified
+       for a particular child, then it will not be drawn at  all.
+       If  <I>time</I>  &lt; 0.0 the sequence will pause at child <I>frame</I> and
+       draw it  repeatedly  until  the  sequence  is  resumed  or
+       stopped       (see       <B>pfSequence::setMode</B>       below).
+       <B>pfSequence::getTime</B> returns the time for frame <I>frame</I>.
+
+       <B>pfSequence::setInterval</B> specifies the interval or range of
+       frames  (children) to sequence.  <I>begin</I> and <I>end</I> specify the
+       beginning and ending indexes  of  the  pfSequence  respec-
+       tively.   Indexes are inclusive and should be in the range
+       0, numChildren - 1.  An index &lt; 0 is  equivalent  to  num-
+       Children  - 1 for convenience.  <I>end</I> may be less than <I>begin</I>
+       for reverse sequences.  The default sequence  interval  is
+       0, numChildren - 1.
+
+       <I>mode</I>  specifies  how  <I>seq</I> is sequenced over the range from
+       <I>begin</I> to <I>end</I> if it is a repeating sequence.
+
+              <B>PFSEQ_CYCLE</B>
+                   <I>seq</I> will go from <I>begin</I> to <I>end</I> then restart  at
+                   <I>begin</I>.
+
+              <B>PFSEQ_SWING</B>
+                   <I>seq</I>  will go back and forth from <I>begin</I> to <I>end</I>.
+
+       sequence.  <I>speed</I> divides the time that each sequence frame
+       is  displayed.   Values &lt; 1.0 slow down the sequence while
+       values &gt; 1.0 speed up the sequence.  The default <I>speed</I>  is
+       1.0.   <I>nReps</I>  is  the  number  of times <I>seq</I> repeats before
+       stopping.  If <I>nReps</I> is &lt; 0, <I>seq</I> will sequence indefinitely
+       and  if  ==  0 the sequence is disabled.  If <I>nReps</I> is &gt; 1,
+       <I>seq</I> will sequence for <I>nReps</I> cycles or swings depending  on
+       the sequencing mode set by <B>pfSequence::setInterval</B>.
+
+       The   number  of  repetitions  for  both  <B>PFSEQ_CYCLE</B>  and
+       <B>PFSEQ_SWING</B> is increased by 1 every time  an  endpoint  of
+       the  sequence is reached.  Therefore <B>PFSEQ_CYCLE</B> begins to
+       repeat itself after 1 repetition while <B>PFSEQ_SWING</B> repeats
+       itself  after  2 repetitions.  Note that for 1 repetition,
+       both modes are equivalent.
+
+       The default value for <I>nReps</I> is 1.  <B>pfSequence::getDuration</B>
+       copies the duration parameters into <I>speed</I> and <I>nReps</I>.
+
+       <B>pfSequence::setMode</B> controls the run-time execution of the
+       pfSequence.  <I>mode</I> is a symbolic token:
+
+              <B>PFSEQ_START</B>
+                   Restarts  the  sequence  from  its  beginning.
+                   Once  started,  a  sequence  may  be  stopped,
+                   paused, or started again in which case  it  is
+                   restarted from its beginning.
+
+              <B>PFSEQ_STOP</B>
+                   Stops  the  sequence.   After  an  sequence is
+                   stopped, it is reset so  that  further  execu-
+                   tions  of the sequence begin from the starting
+                   index.
+
+              <B>PFSEQ_PAUSE</B>
+                   Pauses  the  sequence  without  resetting  it.
+                   When  paused,  the current child will be drawn
+                   until  the  sequence  is  either  stopped   or
+                   resumed.
+
+              <B>PFSEQ_RESUME</B>
+                   Resumes a paused sequence.
+
+       Sequences are evaluated once per frame by <B>pfAppFrame</B>.  The
+       time   used   in   the   evaluation   is   that   set   by
+       <B>pfFrameTimeStamp</B>.   This  time  is  automatically  set  by
+       <B>pfFrame</B> but it may be overridden  by  the  application  to
+       account  for  varying  latency  due  to non-constant frame
+       rates.
+
+       By default, all sequences belong  to  a  global  Performer
+       list of sequences. All members of this list are considered
+       for evaluation by <B>pfAppFrame</B>. Only  the  active  sequences
+       are   actually  evaluated  but  looping  through  all  the
+       sequences may be time consuming for scene graphs with many
+       <B>pfSequence</B>   nodes.    <B>pfSequence::setEvaluation</B>   enables
+       adding/removing a pfSequence to/from the global  Performer
+       list of sequences.  <B>pfSequence::getEvaluation</B> returns TRUE
+       if the sequence is in the global list.
+       the pfSequence is currently drawing and  also  copies  the
+       number of repetitions it has completed into <I>repeat</I>.
+
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAppFrame,  pfFrame,  pfFrameTimeStamp,  pfGroup, pfNode,
+       pfDelete
+
+
+
+                                                  pfSequence(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

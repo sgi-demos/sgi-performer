@@ -1,0 +1,236 @@
+<HTML>
+<HEAD>
+<TITLE>pfList</TITLE>
+</HEAD>
+<BODY>
+<H1>pfList</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfList(3pf)                                           pfList(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfList</B> - Dynamically-sized list utility
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfList.h&gt;
+
+                         <B>pfList::pfList</B>();
+
+                         <B>pfList::pfList</B>(int eltSize,
+                           int listLength);
+
+       static pfType *   <B>pfList::getClassType</B>(void);
+
+       void              <B>pfList::add</B>(void* elt);
+
+       void              <B>pfList::combine</B>(const pfList *a,
+                           const pfList *b);
+
+       int               <B>pfList::fastRemove</B>(void* elt);
+
+       void              <B>pfList::fastRemoveIndex</B>(int index);
+
+       void *            <B>pfList::get</B>(int index);
+
+       const void **     <B>pfList::getArray</B>(void);
+
+       int               <B>pfList::getArrayLen</B>(void);
+
+       int               <B>pfList::getEltSize</B>(void);
+
+       int               <B>pfList::getNum</B>(void);
+
+       void              <B>pfList::insert</B>(int index, void* elt);
+
+       void              <B>pfList::move</B>(int index, void *elt);
+
+       void              <B>pfList::setArrayLen</B>(int len);
+
+       void              <B>pfList::setNum</B>(int num);
+
+       int               <B>pfList::remove</B>(void* elt);
+
+       void              <B>pfList::removeIndex</B>(int index);
+
+       int               <B>pfList::replace</B>(void* old, void* new);
+
+       void              <B>pfList::reset</B>(void);
+
+       int               <B>pfList::search</B>(void* elt);
+
+       void              <B>pfList::set</B>(int index, void *elt);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfList</B> is derived from the par-
+       ent class <B>pfObject</B>, so each of these member  functions  of
+                 pfFluxMemory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfList</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfList is a dynamically-sized array  of  arbitrary,  but
+       homogeneously-sized, elements.
+
+       The default constructor <B>pfList</B> creates a list with an ele-
+       ment size of sizeof(void *) bytes.  The  element  size  is
+       fixed  at  creation  time  and  cannot  be  later changed.
+       Another constructor is provided that  allows  the  element
+       size  <I>eltSize</I>  and initial allocated length <I>listLength</I> for
+       the pfList.  <B>new</B>(arena) allocates a pfList from the speci-
+       fied  memory  arena,  or from the process heap if <I>arena</I> is
+       NULL.  <B>new</B> allocates a  pfList  from  the  default  memory
+       arena   (see  <B>pfGetSharedArena</B>).   Like  other  pfObjects,
+       pfLists cannot be created statically, automatically on the
+       stack  or  in  arrays.   pfLists  should  be  deleted with
+       <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfList::getClassType</B> returns the  <B>pfType</B>*  for  the  class
+       <B>pfList</B>.   The  <B>pfType</B>* returned by <B>pfList::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking  the  virtual
+       function <B>getType</B> on any instance of class <B>pfList</B>.  Because
+       OpenGL Performer allows  subclassing  of  built-in  types,
+       when decisions are made based on the type of an object, it
+       is usually better to use  the member function <B>isOfType</B>  to
+       test  if  an  object is of a type derived from a Performer
+       However,  some memory (up to one half of the total alloca-
+       tion) at the end of the array may be wasted.  If you  know
+       the exact number of elements in the array, you can specify
+       the pfList array  length  either  when  creating  it  (the
+       <I>listLength</I>    argument    to    <B>new</B>    <B>pfList</B>)   or   with
+       <B>pfList::setArrayLen</B>.  <B>pfList::getArrayLen</B> returns the cur-
+       rent array length of the pfList.
+
+       Example 1:
+
+       /* Fit list's array to its current number of elements */
+       list-&gt;setArrayLen(list-&gt;getNum());
+
+
+       <B>pfList::set</B> sets the <I>index</I>th element of the pfList to <I>elt</I>.
+       The list is automatically grown if <I>index</I> is beyond the
+       current array length.
+
+       <B>pfList::get</B> returns the element of the pfList at index
+       <I>index</I> or 0 if <I>index</I> is out of bounds.
+
+       <B>pfList::add</B> appends <I>elt</I> to the pfList and automatically
+       grows the pfList if necessary.
+
+       <B>pfList::remove</B> removes <I>elt</I> from the pfList and shifts the
+       array down over the vacant spot, e.g. - if <I>elt</I> had index
+       0, then index 1 becomes index 0, index 2 becomes index 1
+       and so on.  <B>pfList::remove</B> returns the index of <I>elt</I> if <I>elt</I>
+       was actually removed and -1 if it was not found in the
+       list. <B>pfList::removeIndex</B> removes the <I>index</I>th element of
+       the pfList, and like <B>pfList::remove</B>, shifts the array down
+       over the vacant spot.
+
+       <B>pfList::fastRemove</B> removes <I>elt</I> from the pfList but does
+       not shift the array; instead it places the last element of
+       the array into the vacated location so it does not pre-
+       serve the list ordering.  <B>pfList::fastRemoveIndex</B> replaces
+       the <I>index</I>th element with the last element of the pfList.
+
+       Note that both <B>pfList::remove</B> and <B>pfList::fastRemove</B> lin-
+       early search the array for <I>elt</I> and remove only the first
+       matching element.  To remove all occurrences of <I>elt</I> do the
+       following:
+
+       while (list-&gt;remove(elt) &gt;= 0)
+           /* empty */ ;
+
+
+       <B>pfList::search</B> returns the index of <I>elt</I> if <I>elt</I> was found
+       in the pfList and -1 otherwise.
+
+       <B>pfList::insert</B> inserts <I>elt</I> before the array element with
+       index <I>index</I>.  <I>index</I> must be within the range [0 ..
+       <B>list-&gt;getNum</B>()].
+
+       <B>pfList::move</B> deletes <I>elt</I> from its current location and
+       inserts before the array element with index <I>index</I>.  <I>index</I>
+       must be within the range [0 ..  <B>list-&gt;getNum</B>()] or else
+       (-1) is returned and no move is executed.  If <I>elt</I> is not
+
+       <B>pfList::getNum</B> returns the number of elements in the
+       pfList. (Actually, <I>list</I> may have holes in its array so
+       <B>pfList::getNum</B> technically should be considered as return-
+       ing the maximum index of all elements in the pfList.)
+
+       <B>pfList::reset</B> zeros the pfList's array and resets the num-
+       ber of elements to 0.  It does not resize the array.
+
+       <B>pfList::combine</B> sets the pfList to <I>a</I> appended with <I>b</I>.  the
+       pfList may be the same as <I>a</I> or <I>b</I>.  Lists must have equal
+       element sizes to be combined.
+
+       For quick access to the list array, <B>pfList::getArray</B>
+       returns a pointer to the internal array of the pfList.
+       Care should be taken with this routine since out of bounds
+       range checking provided by pfList API is bypassed.  If you
+       add elements to the pfList then use <B>pfList::setNum</B> to set
+       the number of elements of the pfList.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       pfLists currently only support an element size of
+       <B>sizeof(void*)</B>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete
+
+
+
+                                                      pfList(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

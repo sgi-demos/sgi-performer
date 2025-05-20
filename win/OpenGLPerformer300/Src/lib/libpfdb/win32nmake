@@ -1,0 +1,19 @@
+#-------------------------------------------------------------------------#
+#-- common parts of a user Makefile for file loaders                    --#
+#-------------------------------------------------------------------------#
+#-- RCS version information						--#
+#--   $Revision: 1.1 $							--#
+#--   $Date: 2002/11/19 01:36:20 $					--#
+#-------------------------------------------------------------------------#
+
+!include $(PFROOT)/pfwin32.defs
+
+LIBS=lib$(LIBNAME).lib
+
+EXTRACFLAGS=-D__BUILD_LIBPFDB__ -D_DLL $(LOCALCFLAGS)
+EXTRALIBS=libpfdu-util.lib
+
+!include $(PFROOT)/pfwin32.rules
+
+lib$(LIBNAME).lib: $(OUTDIR)/$(LIBNAME).obj
+	$(LINK) $(DLL_LINK_FLAGS) /out:$(OUTDIR)/$(@:.lib=).dll $(EXTRALIBS) $**

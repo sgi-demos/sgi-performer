@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<TITLE>pfdCombineBillboard</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdCombineBillboard</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdCombineBillboards(3pf)               pfdCombineBillboards(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdCombineBillboards</B> - Merge pfBillboard nodes together.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       void   <B>pfdCombineBillboards</B>(pfNode *node, int sizeLimit);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdCombineBillboards</B>   gathers   sibling  billboard  nodes
+       together into as few large pfBillboard nodes as  possible.
+       This  can  often increase the efficiency of billboard pro-
+       cessing in databases with large numbers of single-pfGeoSet
+       pfBillboard  nodes,  such  as  the  OpenGL  Performer Town
+       database. The <I>sizeLimit</I> argument defines an upper limit to
+       the  merging  process. No pfBillboard node will be made to
+       have more than this number of pfGeoSets,  and  no  pfBill-
+       board  node  already  having more than this number will be
+       modified during the traversal.
+
+       There are a  few  requirements  and  restrictions  to  the
+       pfBillboard  combination  process.  In order to be merged,
+       pfBillboard nodes must be both <I>similar</I> and <I>combinable</I>.
+
+       For a pair of pfBillboard nodes to be  <I>similar</I>  they  must
+       each   have   the   same   values  for  their  pfBillboard
+       attributes. The attributes of pfBillboard nodes are:
+
+              Mode      Both pfBillboard nodes must have the same
+                        rotation     mode.    The    modes    are
+                        PFBB_AXIAL_ROT,  PFBB_POINT_ROT_EYE,  and
+                        PFBB_POINT_ROT_WORLD.
+
+              Axis      Both pfBillboard nodes must have the same
+                        axis of rotation. The  axis  is  compared
+                        using  <B>pfAlmostEqualVec3</B> with a tolerance
+                        of 0.0001.
+
+       In order for two pfBillboard nodes to be  considered  <I>com-</I>
+       <I>binable</I>, two additional conditions must be met:
+
+              Size      The destination pfBillboard node must not
+                        be  too  big.   The  argument   <I>sizeLimit</I>
+                        defines  the  maximum number if pfGeoSets
+                        that any combined node  may  contain,  so
+                        nodes  that  already  have at least <I>size-</I>
+                        <I>Limit</I> pfGeoSets will  not  receive  addi-
+                        tional pfGeoSets.
+
+              Safe      Both   pfBillboard   nodes   being   com-
+                        bined--the one giving  up  pfGeoSets  and
+                        the  one  receiving  them--must  be unin-
+                        stanced nodes. This means that each  node
+                        has  only  one parent. This situation can
+                        be forced if desired by calling <B>pfFlatten</B>
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFlatten, pfAlmostEqualVec3
+
+
+
+                                        pfdCombineBillboards(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

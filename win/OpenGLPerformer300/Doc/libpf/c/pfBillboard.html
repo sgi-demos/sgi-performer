@@ -1,0 +1,265 @@
+<HTML>
+<HEAD>
+<TITLE>pfBillboard</TITLE>
+</HEAD>
+<BODY>
+<H1>pfBillboard</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfBillboard(3pf)                                 pfBillboard(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewBboard,</B>  <B>pfGetBboardClassType,</B>  <B>pfBboardPos,</B>  <B>pfGetB-</B>
+       <B>boardPos,</B> <B>pfBboardPosFlux,</B>  <B>pfGetBboardPosFlux,</B>  <B>pfBboard-</B>
+       <B>Mode,</B>  <B>pfGetBboardMode,</B>  <B>pfBboardAxis,</B>  <B>pfGetBboardAxis</B>  -
+       Create and update automatic rotation billboard nodes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfBillboard *   <B>pfNewBboard</B>(void);
+
+       pfType *        <B>pfGetBboardClassType</B>(void);
+
+       void            <B>pfBboardPos</B>(pfBillboard* bill,      int i,
+                         const pfVec3 xyzOrigin);
+
+       void            <B>pfGetBboardPos</B>(pfBillboard* bill,   int i,
+                         pfVec3 xyzOrigin);
+
+       void            <B>pfBboardPosFlux</B>(pfBillboard* bill,
+                         pfFlux *flux);
+
+       pfFlux *        <B>pfGetBboardPosFlux</B>(pfBillboard* bill);
+
+       void            <B>pfBboardMode</B>(pfBillboard* bill,  int mode,
+                         int val);
+
+       int             <B>pfGetBboardMode</B>(pfBillboard* bill,
+                         int mode);
+
+       void            <B>pfBboardAxis</B>(pfBillboard* bill,
+                         const pfVec3 axis);
+
+       void            <B>pfGetBboardAxis</B>(pfBillboard* bill,
+                         pfVec3 axis);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfBillboard</B> is derived from the
+       parent class <B>pfGeode</B>, so each of these member functions of
+       class  <B>pfGeode</B>  are  also  directly usable with objects of
+       class <B>pfBillboard</B>.  Casting an object of class <B>pfBillboard</B>
+       to  an  object of class <B>pfGeode</B> is taken care of automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfGeode</B>.
+
+       int          <B>pfAddGSet</B>(pfGeode* geode, pfGeoSet* gset);
+       int          <B>pfRemoveGSet</B>(pfGeode* geode, pfGeoSet* gset);
+       int          <B>pfInsertGSet</B>(pfGeode* geode,       int index,
+                      pfGeoSet* gset);
+       int          <B>pfReplaceGSet</B>(pfGeode* geode,  pfGeoSet* old,
+                      pfGeoSet* new);
+       pfGeoSet *   <B>pfGetGSet</B>(const pfGeode* geode, int index);
+       int          <B>pfGetNumGSets</B>(const pfGeode* geode);
+
+
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>,  objects of class <B>pfBillboard</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects of class <B>pfBillboard</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfBillboard is a pfGeode in which each pfGeoSet  rotates
+       to follow the eyepoint.  Billboards are useful for complex
+       objects which are roughly symmetrical about  one  or  more
+       axes.   The  billboard tracks the viewer by rotating about
+       an axis or a point to present the same image to the viewer
+       using  far  fewer  polygons than a solid model.  A classic
+       example is a textured billboard of a single  quadrilateral
+       representing a tree.
+
+       A   pfBillboard  can  contain  any  number  of  pfGeoSets.
+       pfGeoSets are added to and removed  from  the  pfBillboard
+       using  the  <B>pfAddGSet</B>  and <B>pfRemoveGSet</B> routines used with
+       pfGeodes.  Each pfGeoSet rotates independently  to  follow
+       the  viewer.  By convention, the pfGeoSet is rotated about
+       the +Z axis so that the +Y axis  points  towards  the  eye
+       point.
+
+       <B>pfNewBboard</B> creates and returns a handle to a pfBillboard.
+       Like other pfNodes, pfBillboards are always allocated from
+       shared memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetBboardClassType</B>  returns  the  <B>pfType</B>*  for the class
+       <B>pfBillboard</B>.  The <B>pfType</B>* returned by <B>pfGetBboardClassType</B>
+       is  the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of class <B>pfBillboard</B>.  Because OpenGL Per-
+       former  allows  subclassing  of built-in types, when deci-
+       sions are made based on the type of an object, it is  usu-
+       ally better to use <B>pfIsOfType</B> to test if an object is of a
+       type derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfBboardPos</B>  specifies  the  position  <I>xyzOrigin</I>  for  the
+       pfGeoSet with index <I>i</I>.  <B>pfGetBboardPos</B> copies the position
+       of the pfGeoSet with index <I>i</I> into <I>xyzOrigin</I>.
+
+       Billboards can either rotate about an axis or a point.
+
+       Axial  billboards  rotate  about  the  axis  specified  by
+       <B>pfBboardAxis</B>.  The rotation is about the origin (0,0,0) of
+       the  pfGeoSet.   In  all cases, the geometry is modeled in
+       the XZ plane, with +Y forward.  When rendered,  the  bill-
+       board  is  rotated  so that the -Y axis points back to the
+       eye point.  The +Z axis is the pfGeoSet's  axis  of  rota-
+       tion.   An  axial rotate billboard is specified by setting
+       the  <B>PFBB_ROT</B>  <I>mode</I>  of  the  billboard   to   the   <I>value</I>
+       <B>PFBB_AXIAL_ROT</B>  using  <B>pfBboardMode</B>.  The axis of rotation
+       eye,   still   leaves  an  arbitrary  rotation  about  the
+       pfGeoSet's Y axis).
+
+              If the <B>PFBB_ROT</B> mode on the  billboard  is  set  to
+              <B>PFBB_POINT_ROT_EYE</B>,  the  billboard  is  rotated so
+              that the +Z axis of the pfGeoSet aligns as  closely
+              as   possible   with   the   axis   specified  with
+              <B>pfBboardAxis</B>, in eye space.  In particular, if  the
+              axis  is  +Z  (as it is by default), the +Z axis of
+              the pfGeoSet stays upright on the screen.
+
+              If the <B>PFBB_ROT</B> mode on the  billboard  is  set  to
+              <B>PFBB_POINT_ROT_WORLD</B>,  the  billboard is rotated so
+              that the angle between the +Z axis of the  pfGeoSet
+              and  axis  specified  with  <B>pfBboardAxis</B>  (in world
+              space) is minimized.
+
+       Both <B>PFBB_AXIAL_ROT</B>  and  <B>PFBB_POINT_ROT_WORLD</B>  billboards
+       may  "spin"  about  the Y axis of the pfGeoSet when viewed
+       along the rotation or alignment axis.
+
+       <B>pfBboardPosFlux</B> will set a pfFlux to be  used  to  contain
+       the  xyz  origins of all the pfGeoSets under a pfBillboard
+       node.  The data size of position flux should be  equal  to
+       the  number  of pfGeoSets under the pfBillboard multiplied
+       by the size of pfVec3.   Having  the  origins  in  a  flux
+       allows  you  to  animate  the  origins  to align them to a
+       pfASD.  <B>pfGetBboardPosFlux</B> returns  the  current  position
+       flux is there is one.
+
+       After  the first <B>pfSync</B>, the number of pfGeoSets, the num-
+       ber and length of the primitives,  and  planarity  of  the
+       vertices should not be changed.
+
+       Some  database  formats  may  place a transformation above
+       each billboard for positioning it.  As with a pfGeode con-
+       taining a small amount of geometry, having many billboards
+       with transformation matrices above them can be  expensive.
+
+       Since billboards always rotate towards the eyepoint, bill-
+       boards in adjacent channels with the  same  eyepoint  have
+       the  same  orientation.  Channels with different eyepoints
+       will have different billboard orientations.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Intersection traversals test only the pfBillboard's bound-
+       ing volume, not its individual pfGeoSets.
+
+       pfFlatten only transforms the position of a billboard, not
+       the axis and applies only a uniform scale to the billboard
+       geometry.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAddGSet,    pfRemoveGSet,   pfChanTravMode,   pfFlatten,
+       pfLookupNode, pfNodeTravFuncs, pfFlux,  pfScene,  pfTrans-
+       parency, pfDelete
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

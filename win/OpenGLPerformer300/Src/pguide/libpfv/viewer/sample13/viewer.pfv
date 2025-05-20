@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+    <world>
+	<name>world0</name>
+    </world>
+
+    <display>
+	<pipe>
+	    <pwin>
+		<fullscreen>0</fullscreen>
+		<orig>200,200</orig>
+		<size>800,600</size>
+	    </pwin>
+	</pipe>
+    </display>
+
+    <view>
+	<name>view0</name>
+    </view>
+
+    <view>
+	<name>view1</name>
+    </view>
+
+    <modulepath>../modules/</modulepath>
+    <module>
+	<scope>view,view0</scope>
+	<name>drawStyle0</name>
+	<class>pfvmDrawStyle</class>
+	<dso>pfvmDrawStyle/Debug/libpfvmDrawStyle.dll</dso>
+    </module>
+
+
+    <module>
+	<scope>view,view1</scope>
+	<name>drawStyle1</name>
+	<class>pfvmDrawStyle</class>
+	<dso>pfvmDrawStyle/Debug/libpfvmDrawStyle.dll</dso>
+    </module>
+
+    <module>
+	<scope>world,world0</scope>
+	<name>loader</name>
+	<class>pfvmLoader</class>
+	<dso>pfvmLoader/Debug/libpfvmLoader.dll</dso>
+	<data>
+	    <Model>
+		<Name>ESPRIT_1</Name>
+		<FileName>esprit.pfb</FileName>
+		<Rot>-90,0,0</Rot>
+		<Trans>-2,0,0</Trans>
+	    </Model>
+	    <Model>
+		<Name>ESPRIT_2</Name>
+		<AddToScene>1</AddToScene>
+		<FileName>esprit.pfb</FileName>
+		<Rot>90,0,0</Rot>
+		<Trans>2,0,0</Trans>
+	    </Model>
+	</data>
+    </module>
+
+    <modulepath>../modules/pfvmNavigator/Debug/</modulepath>
+    <module>
+	<scope>view,view0</scope>
+	<name>navigator</name>
+	<class>pfvmNavigator</class>
+	<data>
+	    <default_xyz>0.0,0.0,0.0</default_xyz>
+	    <default_hpr>0.0,0.0,0.0</default_hpr>
+	    <deltaH>0.1</deltaH>	
+	    <deltaP>0.1</deltaP>
+	    <initSpeed>0.003</initSpeed>
+	    <minSpeed>0.001</minSpeed>
+	    <maxSpeed>0.1</maxSpeed>
+	    <deltaSpeed>1.02</deltaSpeed>
+	    <deltaStrafe>0.05</deltaStrafe>
+	    <deltaZ>0.05</deltaZ>
+	    <dzone>0.3,0.3</dzone>
+	</data>
+    </module>
+
+</viewer>
+
+
+

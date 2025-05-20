@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<TITLE>pfScene</TITLE>
+</HEAD>
+<BODY>
+<H1>pfScene</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfScene(3pf)                                         pfScene(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewScene,</B>       <B>pfGetSceneClassType,</B>      <B>pfSceneGState,</B>
+       <B>pfGetSceneGState,</B> <B>pfSceneGStateIndex,</B>  <B>pfGetSceneGStateIn-</B>
+       <B>dex</B>  -  Create  a  scene  or  root node, set and get scene
+       pfGeoState or pfGeoState index.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfScene *      <B>pfNewScene</B>(void);
+
+       pfType *       <B>pfGetSceneClassType</B>(void);
+
+       void           <B>pfSceneGState</B>(pfScene *scene,
+                        pfGeoState *gstate);
+
+       pfGeoState *   <B>pfGetSceneGState</B>(const pfScene *scene);
+
+       void           <B>pfSceneGStateIndex</B>(pfScene *scene,
+                        int index);
+
+       int            <B>pfGetSceneGStateIndex</B>(const pfScene *scene);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class  <B>pfScene</B> is derived from the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class  <B>pfGroup</B>  are  also  directly usable with objects of
+       class <B>pfScene</B>.  Casting an object of class <B>pfScene</B>  to  an
+       object  of  class  <B>pfGroup</B> is taken care of automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfGroup</B>.
+
+       int        <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+       int        <B>pfInsertChild</B>(pfGroup *group,  int index,  pfN-
+                    ode *child);
+       int        <B>pfReplaceChild</B>(pfGroup *group,     pfNode *old,
+                    pfNode *new);
+       int        <B>pfRemoveChild</B>(pfGroup *group, pfNode* child);
+       int        <B>pfSearchChild</B>(pfGroup *group, pfNode* child);
+       pfNode *   <B>pfGetChild</B>(const pfGroup *group, int index);
+       int        <B>pfGetNumChildren</B>(const pfGroup *group);
+       int        <B>pfBufferAddChild</B>(pfGroup *group,           pfN-
+                    ode *child);
+       int        <B>pfBufferRemoveChild</B>(pfGroup *group,        pfN-
+                    ode *child);
+
+
+       Since  the class <B>pfGroup</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class <B>pfScene</B> can  also  be  used
+       with these functions designed for objects of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfScene</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfScene</B> can also be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>scene</I>   identifies a pfScene.
+
+       <I>gstate</I>  identifies a pfGeoState.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfScene is the root of a hierarchical database which may
+       be drawn or intersected with.   pfScene  is  derived  from
+       pfGroup  so  it can use pfGroup and pfNode API.  A pfScene
+       may have children like a pfGroup but it cannot be a  child
+       of  another  node.  Its special purpose is to serve as the
+       root node of a scene graph.
+
+       <B>pfNewScene</B> creates and returns  a  handle  to  a  pfScene.
+       Like  other  pfNodes,  pfScenes  are always allocated from
+       shared memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetSceneClassType</B> returns  the  <B>pfType</B>*  for  the  class
+       <B>pfScene</B>.   The  <B>pfType</B>* returned by <B>pfGetSceneClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>  on
+       any  instance  of class <B>pfScene</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when  decisions  are
+       made  based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test  if  an  object  is  of  a  type
+       derived  from  a  Performer  type  rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       OpenGL Performer will automatically  carry  out  the  APP,
+       CULL,  and  DRAW traversals on pfScenes which are attached
+       to pfChannels by <B>pfChanScene</B>.  The CULL and  DRAW  traver-
+       sals are directly or indirectly triggered by <B>pfFrame</B> while
+       the APP traversal is triggered by <B>pfAppFrame</B>.
+
+       Multiple pfChannels may reference  the  same  pfScene  but
+       each pfChannel references only a single pfScene.
+
+       <B>pfSceneGState</B>  attaches <I>gstate</I> to <I>scene</I>. The pfGeoState of
+       a pfScene defines the "global state" which may  be  inher-
+       ited  by  other pfGeoStates. This state inheritance mecha-
+       nism is further described in the pfGeoState man page.
+
+       The scene pfGeoState is defined as  the  global  state  by
+       <B>pfLoadGState</B>.   This  pfGeoState will be loaded before the
+       pfChannel DRAW callback (<B>pfChanTravFunc</B>) is invoked so any
+       custom  rendering  in  the callback will inherit the state
+       set by the scene pfGeoState. <B>pfGetSceneGState</B> returns  the
+       directly referenced pfGeoState of <I>scene</I> or the appropriate
+       pfGeoState in  the  global  table  if  <I>scene</I>  indexes  its
+       pfGeoState or NULL if the index cannot be resolved.
+
+       The scene pfGeoState may be indexed through a global table
+       by assigning an index with <B>pfSceneGStateIndex</B> and specify-
+       ing  the table with <B>pfApplyGStateTable</B>. Usually this table
+       is  provided   by   the   pfChannel   (<B>pfChanGStateTable</B>).
+       <B>pfGetSceneGStateIndex</B>  returns  the  pfGeoState  index  of
+       <I>scene</I> or -1 if <I>scene</I> directly references its pfGeoState.
+       pfGeoState, pfGroup, pfDelete
+
+
+
+                                                     pfScene(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

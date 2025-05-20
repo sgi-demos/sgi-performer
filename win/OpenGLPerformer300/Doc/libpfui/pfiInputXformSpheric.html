@@ -1,0 +1,199 @@
+<HTML>
+<HEAD>
+<TITLE>pfiInputXformSpheric</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiInputXformSpheric</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiInputXformSpheric(3pf)               pfiInputXformSpheric(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiGetIXformSphericClassType,</B>  <B>pfiNewIXformSpheric,</B> <B>pfiIX-</B>
+       <B>formSphericMode,</B> <B>pfiGetIXformSphericMode,</B>  <B>pfiIXformSpher-</B>
+       <B>icParameter,</B>  <B>pfiGetIXformSphericParameter,</B> <B>pfiCreate2DIX-</B>
+       <B>formSpheric,</B>  <B>pfiUpdate2DIXformSpheric,</B>  <B>pfiIXformSpheric-</B>
+       <B>SetWorld,</B>   <B>pfiIXformSphericReadPathFile,</B>  <B>pfiIXformSpher-</B>
+       <B>icPrintPathStuff</B> - pfiInputXformSpheric functions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfType
+                                *                 <B>pfiGetIXformSphericClassType</B>(void);
+
+       pfiInputXformSpheric *   <B>pfiNewIXformSpheric</B>(void *arena);
+
+       void                     <B>pfiIXformSphericMode</B>(pfiInputXformSpheric *spheric,
+                                  int mode, int val);
+
+       int                      <B>pfiGetIXformSphericMode</B>(pfiInputXformSpheric *spheric,
+                                  int mode);
+
+       void                     <B>pfiIXformSphericParameter</B>(pfiInputXformSpheric *spheric,
+                                  int _param, float _val);
+
+       float                    <B>pfiGetIXformSphericParameter</B>(pfiInputXformSpheric *spheric,
+                                  int _param);
+
+       pfiInputXformSpheric
+                                *   <B>pfiCreate2DIXformSpheric</B>(void *arena);
+
+       int                      <B>pfiUpdate2DIXformSpheric</B>(pfiInputXform *spheric,
+                                  pfiInputCoord *icoord,
+                                  void *data);
+
+       void                     <B>pfiIXformSphericSetWorld</B>(pfiInputXformSpheric *spheric,
+                                  int worldNumber,
+                                  int in_or_out);
+
+       void                     <B>pfiIXformSphericReadPathFile</B>(pfiInputXformSpheric *spheric,
+                                  char *filename);
+
+       void                     <B>pfiIXformSphericPrintPathStuff</B>(pfiInputXformSpheric *spheric);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiInputXformSpheric</B> functions.
+
+       A  pfiInputXformSpheric  is  a  child of the pfiInputXform
+       class and so pfiInputXform routines may be called  with  a
+       pfiInputXformSpheric.   See  the  pfiInputXform  reference
+       page for information on pfiInputXform functionality.   The
+       pfiInputXformSpheric  has a complete C++ API following the
+       conventions of general OpenGL Performer C++ API; C++ meth-
+       ods   are   declared  in  /usr/include/Performer/pfui/pfi-
+       Spheric.h.
+       looking at a globe).
+
+
+   <B>Mouse</B> <B>motion</B>
+       Left mouse button - hold down  then  up  and  down  motion
+       lengthens or shortens the radius.
+
+       Middle  mouse  button  - hold down then up and down motion
+       tilts up and down.  Left and right motion spins around.
+
+       Right mouse button - hold down then  up  and  down  motion
+       proceeds along rails to the next or previous "worlds".  If
+       there are no destinations then this button will  do  noth-
+       ing.
+
+       This motion model can be constrained with minimum and max-
+       imum values for any of these parameters.  These values can
+       be    set   using   the   C   get   and   set   functions:
+       <B>pfiGetIXformSphericParameter</B>                           and
+       <B>pfiIXformSphericParameter</B>.   In   C++:   <B>getParameter</B>  and
+       <B>setParameter</B>.  These functions all use parameters  defined
+       in <B>pfui.h</B>.
+
+       This  motion  model  also  has  the  concept  of  multiple
+       "worlds".  This allows  you  to  within  a  space  without
+       always  having the same center.  Imaging rotating around a
+       room containing an object of interest set off to one side.
+       When  viewing  the  whole  room more rotational freedom is
+       allowed, the center of motion is the center of  the  room,
+       etc.   Once interested in viewing the object the center of
+       motion becomes the object and rotational freedom  is  lim-
+       ited  in order to simplify viewing the model.  This can be
+       accomplished by having one world defined by the center  of
+       the  room,  and  this  has  a transition to a second world
+       defined by the center of the object.  These parameters are
+       of  the  form  of radius for the "in" point(s) and the out
+       point (radius, around, tilt).  There  is  the  ability  to
+       have  multiple  children "worlds" per world - the limit is
+       currently two.
+
+       To make setting these parameters less  bulky  there  is  a
+       configuration    file    that    can   be   loaded   using
+       <B>pfiIXformSphericReadPathFile</B>.  To  jump  to  a  particular
+       world use <B>pfiIXformSphericSetWorld</B>.  To print out informa-
+       tion  about  these  paths  from   world   to   world   use
+       <B>pfiIXformSphericPrintPathStuff</B>.
+
+
+   <B>Path</B> <B>file</B> <B>format</B>
+       This  file  is  formatted as follows (this is a legal file
+       also):
+
+
+        # at the beginning of a line comments the entire line
+        #
+        # The first tag that must be used is world.  These must occur in
+        # monotonically increasing order (0 1 2 3 ...).
+        world 0
+        #
+        # The remaining parameters are the same names as the definitions
+        # in <B>pfui.h</B> but using C++ style lowercase names.  That means
+        # the names are all lowercase except the first letter of words other
+        # than the first word.  For example PFIXSPH_NEAR_MIN_AROUND becomes
+        # nearMinAround.  And all parameters other than those specified
+        # above (world, child, center) are single floating point numbers.
+        minRadius 12.040635
+        maxRadius 100
+        inRadius 16.4774
+        outRadius 100
+        inAround -70.6169
+        outAround 0
+        inTilt 40.5644
+        outTilt 30
+        nearScaleLinearVelocity 0.0048
+        farScaleLinearVelocity 0.7
+        nearMaxAngularVelocity 0.7
+        farMaxAngularVelocity 4
+        nearMaxRollVelocity 0.2
+        farMaxRollVelocity 0.2
+        #
+        # This is the next world...
+        world 1
+        center 0 0 0
+        minRadius 2.001
+        maxRadius 3
+        outRadius 3
+        inRadius 2
+        outAround -90
+        inAround -90
+        outTilt 90
+        inTilt 90
+
+
+       <B>pfiInit</B> should be called once before any pfiInputXform-
+       Spheric routines and before the forked creation of any
+       additional processes that will be calling pfiInputXform-
+       Spheric routines.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+   <B>CAVEATS</B>
+       This motion model doesn't really pay attention to colli-
+       sions or position resets.  It is best to turn off colli-
+       sion checking while using the spheric motion model.  And
+       hitting reset will reset the position until any movement -
+       then the position prior to the reset is used again.
+
+
+
+                                        pfiInputXformSpheric(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

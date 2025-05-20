@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+<TITLE>pfuBoxLOD</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuBoxLOD</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuBoxLOD(3pf)                                     pfuBoxLOD(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuBoxLOD,</B>  <B>pfuMakeBoxGSet</B> - Calculate node bounding boxes
+       and build LODs from boxes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfLOD *      <B>pfuBoxLOD</B>(pfGroup *grp,             int flat,
+                      pfVec4 *color);
+
+       pfGeoSet *   <B>pfuMakeBoxGSet</B>(pfBox *box,      pfVec4 color,
+                      int flat);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions can be used to automatically generate very
+       simple  level-of-detail representations of a subgraph from
+       the bounding boxes of the geometric objects  contained  in
+       that subgraph.  Sending a node to <B>pfuBoxLOD</B> creates multi-
+       ple representations for  that  node  by  finding  bounding
+       boxes  at  different  levels  of  the scene graph and then
+       using those boxes as level-of-detail  models  under  <B>pfLOD</B>
+       nodes.   The  highest  level-of-detail  under the <B>pfLOD</B> is
+       simply the original subgraph.  The next highest  level-of-
+       detail  consists  of  the  subgraph  with  each  <B>pfGeode's</B>
+       <B>pfGeoSets</B> replaced by a single <B>pfGeoSet</B> depicting  a  box.
+       Next  every <B>pfGeode</B> is replaced by a single "box" <B>pfGeode</B>.
+       This continues to progressively lower levels-of-detail  as
+       the  "box"  <B>pfGeodes</B>  contain larger and larger subgraphs,
+       until the box rendered for the lowest level-of-detail con-
+       tains  the entire subgraph.  The new partial subgraphs are
+       created using <B>pfClone</B>.  The  LOD  transition  ranges  (see
+       <B>pfLODRange</B>)  are  set  as integer multiples of the spatial
+       extent of the subgraph.
+
+       <B>pfuBoxLOD</B> takes a subgraph <I>grp</I>, a color vector <I>color</I>,  and
+       a  shading  type  <I>flat</I>.   <I>grp</I> specifies the existing scene
+       graph hierarchy to be processed.  The <I>color</I> argument  pro-
+       vides the color definition used for the boxes that will be
+       built.  The shading type <I>flat</I> determines  each  <B>pfGeoSet</B>'s
+       primitive type and normals.  If <I>flat</I> is non-zero, the gen-
+       erated <B>pfGeoSet</B>'s are made up of <B>PFGS_FLAT_TRISTRIP</B> primi-
+       tives  with  face directed normals.  If <I>flat</I> is zero, they
+       consist of <B>PFGS_TRISTRIP</B> primitives with normals  directed
+       radially  outwards.   The  former produces sharply defined
+       cubes, the latter marshmallows.
+
+       To determine the appropriate size  of  the  box  geometry,
+       <B>pfuBoxLOD</B>  uses  <B>pfuTravCalcBBox</B> to get a tighter bound on
+       the subgraphs than <B>pfGetNodeBSphere</B> provides.
+
+       <B>pfuMakeBoxGSet</B> takes a <B>pfBox</B> <I>box</I> and  returns  a  <B>pfGeoSet</B>
+       containing  drawable geometry that represents the box with
+       color <I>color</I> and a shading  type  determined  by  <I>flat</I>,  as
+       explained  in  the  description  of  <B>pfuBoxLOD</B> above.  The
+       <B>pfGeoSet</B> and associated arrays are allocated from the cur-
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       The LOD transition range setting is very primitive.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet,  pfLOD,  pfLODRange,  pfuTravCalcBBox,  pfNodeB-
+       Sphere, pfScene, pfClone, pfGetSharedArena
+
+
+
+                                                   pfuBoxLOD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

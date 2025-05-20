@@ -1,0 +1,860 @@
+<HTML>
+<HEAD>
+<TITLE>pfWindow</TITLE>
+</HEAD>
+<BODY>
+<H1>pfWindow</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfWindow(3pf)                                       pfWindow(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewWin,</B>  <B>pfGetWinClassType,</B>  <B>pfWinAspect,</B> <B>pfWinFBConfig,</B>
+       <B>pfWinFBConfigAttrs,</B>  <B>pfWinFBConfigData,</B>   <B>pfWinFBConfigId,</B>
+       <B>pfWinFullScreen,</B> <B>pfWinGLCxt,</B> <B>pfWinIndex,</B> <B>pfWinList,</B> <B>pfWin-</B>
+       <B>Mode,</B> <B>pfWinName,</B> <B>pfWinOrigin,</B> <B>pfWinOriginSize,</B>  <B>pfWinOver-</B>
+       <B>layWin,</B> <B>pfWinScreen,</B> <B>pfWinShare,</B> <B>pfWinSize,</B> <B>pfWinStatsWin,</B>
+       <B>pfWinType,</B> <B>pfWinWSConnectionName,</B> <B>pfWinWSDrawable,</B>  <B>pfWin-</B>
+       <B>WSWindow,</B> <B>pfGetWinAspect,</B> <B>pfGetWinCurOriginSize,</B> <B>pfGetWin-</B>
+       <B>CurScreenOriginSize,</B> <B>pfGetWinCurState,</B>  <B>pfGetWinCurWSDraw-</B>
+       <B>able,</B> <B>pfGetWinFBConfig,</B> <B>pfGetWinFBConfigAttrs,</B> <B>pfGetWinFB-</B>
+       <B>ConfigData,</B> <B>pfGetWinFBConfigId,</B> <B>pfGetWinGLCxt,</B> <B>pfGetWinIn-</B>
+       <B>dex,</B>  <B>pfGetWinList,</B> <B>pfGetWinMode,</B> <B>pfGetWinName,</B> <B>pfGetWinO-</B>
+       <B>rigin,</B>   <B>pfGetWinOverlayWin,</B>   <B>pfGetWinScreen,</B>   <B>pfGetWin-</B>
+       <B>ScreenOrigin,</B> <B>pfGetWinSelect,</B> <B>pfGetWinShare,</B> <B>pfGetWinSize,</B>
+       <B>pfGetWinStatsWin,</B> <B>pfGetWinType,</B>  <B>pfGetWinWSConnectionName,</B>
+       <B>pfGetWinWSDrawable,</B>     <B>pfGetWinWSWindow,</B>     <B>pfAttachWin,</B>
+       <B>pfChooseWinFBConfig,</B>       <B>pfCloseWin,</B>       <B>pfCloseWinGL,</B>
+       <B>pfIsWinOpen,</B>   <B>pfIsManagedWin,</B>  <B>pfMQueryWin,</B>  <B>pfOpenNewNo-</B>
+       <B>PortWin,</B> <B>pfOpenWin,</B> <B>pfQueryWin,</B> <B>pfSelectWin,</B>  <B>pfAttachWin-</B>
+       <B>SwapGroup,</B>  <B>pfWinInSwapGroup,</B>  <B>pfWinSwapBarrier,</B> <B>pfGetWin-</B>
+       <B>SwapBarrier,</B> <B>pfSwapWinBuffers,</B>  <B>pfGetCurWin,</B>  <B>pfInitGfx</B>  -
+       GL-independent window creation/management routines
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfWindow*      <B>pfNewWin</B>(void *arena);
+
+       pfType*        <B>pfGetWinClassType</B>(void);
+
+       void           <B>pfWinAspect</B>(pfWindow *win, int x, int y);
+
+       void           <B>pfWinFBConfig</B>(pfWindow *win,       pfFBCon-
+                        fig config);
+
+       void           <B>pfWinFBConfigAttrs</B>(pfWindow *win,
+                        int *attr);
+
+       void           <B>pfWinFBConfigData</B>(pfWindow *win,
+                        void *data);
+
+       void           <B>pfWinFBConfigId</B>(pfWindow *win, int id);
+
+       void           <B>pfWinFullScreen</B>(pfWindow *win);
+
+       void           <B>pfWinGLCxt</B>(pfWindow *win,          pfGLCon-
+                        text gCxt);
+
+       void           <B>pfWinIndex</B>(pfWindow *win, int index);
+
+       void           <B>pfWinList</B>(pfWindow *win, pfList *wlist);
+
+       void           <B>pfWinMode</B>(pfWindow *win,          int mode,
+                        int val);
+
+       void           <B>pfWinOverlayWin</B>(pfWindow *win,       pfWin-
+                        dow *ow);
+
+       void           <B>pfWinScreen</B>(pfWindow *win, int s);
+
+       void           <B>pfWinShare</B>(pfWindow *win, uint mode);
+
+       void           <B>pfWinSize</B>(pfWindow *win, int xs, int ys);
+
+       void           <B>pfWinStatsWin</B>(pfWindow *win, pfWindow *ow);
+
+       void           <B>pfWinType</B>(pfWindow *win, uint type);
+
+       void           <B>pfWinWSConnectionName</B>(const pfWindow *win,
+                        const char *name);
+
+       void           <B>pfWinWSDrawable</B>(pfWindow *win,  pfWSConnec-
+                        tion dsp, pfWSDrawable xWin);
+
+       void           <B>pfWinWSWindow</B>(pfWindow *win,    pfWSConnec-
+                        tion dsp, pfWSWindow xWin);
+
+       void           <B>pfGetWinAspect</B>(const pfWindow *win, int *x,
+                        int *y);
+
+       void           <B>pfGetWinCurOriginSize</B>(pfWindow *win,
+                        int *xo, int *yo, int *xs, int *ys);
+
+       void           <B>pfGetWinCurScreenOriginSize</B>(pfWindow *win,
+                        int *xo, int *yo, int *xs, int *ys);
+
+       pfState*       <B>pfGetWinCurState</B>(const pfWindow *win);
+
+       pfWSDrawable   <B>pfGetWinCurWSDrawable</B>(const pfWindow *win);
+
+       pfFBConfig     <B>pfGetWinFBConfig</B>(const pfWindow *win);
+
+       int*           <B>pfGetWinFBConfigAttrs</B>(const pfWindow *win);
+
+       void*          <B>pfGetWinFBConfigData</B>(pfWindow *win);
+
+       int            <B>pfGetWinFBConfigId</B>(const pfWindow *win);
+
+       pfGLContext    <B>pfGetWinGLCxt</B>(const pfWindow *win);
+
+       int            <B>pfGetWinIndex</B>(const pfWindow *win);
+
+       pfList*        <B>pfGetWinList</B>(const pfWindow *win);
+
+       int            <B>pfGetWinMode</B>(const pfWindow *win,
+                        int mode);
+
+       const char*    <B>pfGetWinName</B>(const pfWindow *win);
+
+       void           <B>pfGetWinOrigin</B>(const pfWindow *win,
+                        int *xo, int *yo);
+
+       pfWindow*      <B>pfGetWinOverlayWin</B>(const pfWindow *win);
+
+       uint           <B>pfGetWinShare</B>(const pfWindow *win);
+
+       void           <B>pfGetWinSize</B>(const pfWindow *win,  int *xs,
+                        int *ys);
+
+       pfWindow*      <B>pfGetWinStatsWin</B>(const pfWindow *win);
+
+       uint           <B>pfGetWinType</B>(const pfWindow *win);
+
+       const
+                      char*    <B>pfGetWinWSConnectionName</B>(const pfWindow *win);
+
+       pfWSDrawable   <B>pfGetWinWSDrawable</B>(const pfWindow *win);
+
+       pfWSWindow     <B>pfGetWinWSWindow</B>(const pfWindow *win);
+
+       int            <B>pfAttachWin</B>(pfWindow *win0,          pfWin-
+                        dow *win1);
+
+       pfFBConfig     <B>pfChooseWinFBConfig</B>(pfWindow *win,
+                        int *attr);
+
+       void           <B>pfCloseWin</B>(pfWindow *win);
+
+       void           <B>pfCloseWinGL</B>(pfWindow *win);
+
+       int            <B>pfIsWinOpen</B>(pfWindow *win);
+
+       int            <B>pfIsManagedWin</B>(pfWindow *win);
+
+       int            <B>pfMQueryWin</B>(const pfWindow *win,
+                        int *which, int *dst);
+
+       pfWindow*      <B>pfOpenNewNoPortWin</B>(const char *name,
+                        int screen);
+
+       void           <B>pfOpenWin</B>(pfWindow *win);
+
+       int            <B>pfQueryWin</B>(const pfWindow *win,  int which,
+                        int *dst);
+
+       pfWindow*      <B>pfSelectWin</B>(pfWindow *win);
+
+       void           <B>pfAttachWinSwapGroup</B>(pfWindow* win0, pfWin-
+                        dow *win1);
+
+       int            <B>pfWinInSwapGroup</B>(pfWindow* win);
+
+       void           <B>pfWinSwapBarrier</B>(pfWindow* win,    int bar-
+                        rier);
+
+       int            <B>pfGetWinSwapBarrier</B>(pfWindow* win);
+
+       void           <B>pfSwapWinBuffers</B>(pfWindow *win);
+
+       pfWindow *     <B>pfGetCurWin</B>(void);
+
+       void           <B>pfInitGfx</B>(void);
+
+                      typedef GLXFBConfigSGIX pfGLXFBConfig;
+                      typedef GLXContext      pfGLContext;
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfWindow</B> is derived from the
+       parent class <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfWindow</B>.  Casting an object of class <B>pfWindow</B> to an
+       object of class <B>pfObject</B> is taken care of automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj, int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfWindow</B> can also be used
+       with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>win</I>  identifies a pfWindow.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions provide a single API for creating and man-
+       aging windows.
+
+       <B>pfNewWin</B> creates and returns a handle to a pfWindow.
+       <I>arena</I> specifies a malloc arena out of which the pfWindow
+       made based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test if an object is of a type
+       derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+
+       <B>pfWinAspect</B> sets the aspect ratio of <I>win</I> to be <I>x</I>:<I>y</I>.
+       <B>pfGetWinAspect</B> returns the aspect X and Y components of
+       <I>win</I> in <I>x</I> and <I>y</I>.
+
+       <B>pfWinFullScreen</B> will cause the window to be a full screen
+       window and change its size appropriately.  Future queries
+       of size and origin will reflect this new full screen size.
+
+       <B>pfWinFBConfig</B> sets the framebuffer configuration for <I>win</I>
+       to be that specified by <I>config</I> which must be an XVisual-
+       Info* or an GLXFBConfigSGIX.  OpenGL Performer will derive
+       an X visual from <I>config</I> if necessary.  This will determine
+       the framebuffer configuration used to create the graphics
+       context.  <B>pfGetWinFBConfig</B> will return the XVisualInfo*
+       for the visual of <I>win</I>.
+
+       <B>pfWinFBConfigAttrs</B> provides a window system independent
+       list of attribute tokens, <I>attr</I>, to describe the desired
+       framebuffer configuration of <I>win</I>.  The attribute list for-
+       mat is the same as the SGI GLX attribute format for
+       OpenGL, but with matching <B>PFFB_*</B> tokens that can be used
+       with OpenGL in place of the <B>GLX_*</B> tokens.  See the
+       <B>glXChooseVisual</B> man pages for more information.
+       <B>pfGetWinFBConfigAttrs</B> will return the attribute array cor-
+       responding to the visual of <I>win</I>.
+
+       <B>pfWinFBConfigData</B> can be used to provide GL dependent data
+       directly to the OpenGL framebuffer configuration routine.
+       <B>pfGetWinFBConfigData</B> can be used to get back GL dependent
+       data resulting from these calls.  See the <B>GLXgetconfig(3g)</B>
+       and <B>GLXlink(3g)</B> man pages for more information.
+
+       <B>pfWinFBConfigId</B> allows you to directly set the OpenGL X
+       visual id to be used in configuring the resulting OpenGL/X
+       window.  <B>pfGetWinFBConfigId</B> will return the current OpenGL
+       visual id of the window (or -1 if the id is not known) See
+       the <B>XVisualIDFromVisual(3X11)</B> and <B>XGetVisualInfo(3X11)</B> man
+       pages for more information about X visuals.
+
+       <B>pfWinGLCxt</B> sets the graphics context of <I>win</I> to be <I>gCxt</I>.
+       If the graphics context window of <I>win</I> has been set,
+       <B>pfOpenWin</B> on <I>win</I> will use that context and not create
+       another.  <B>pfGetWinGLCxt</B> will return the graphics context
+       of <I>win</I>.
+
+       <B>pfWinIndex</B> sets the alternate configuration window list
+       index of <I>win</I> to be <I>index</I>.  If <I>index</I> is greater than or
+       equal to zero, it will select an alternate configuration
+       window from the pfWindow <B>pfWinList</B>.  <I>index</I> may also select
+       one of the standard windows: <B>PFWIN_STATS_WIN</B>,
+       <B>PFWIN_OVERLAY_WIN</B>, and the default, <B>PFWIN_GFX_WIN</B>.  The
+       window indexing is only one level deep - if the selected
+       pfWindow has a window list and index, it is ignored and
+       <B>pfGetWinList</B> will return the current window list. These
+       alternate configuration windows are assumed to have the
+       same pfWSWindow parent window as the base pfWindow.
+
+       <B>pfWinMode</B> sets the pfWindow mode specified by <I>mode</I> of <I>win</I>
+       to <I>val</I>. <I>mode</I> may be one of:
+
+              <B>PFWIN_ORIGIN_LL</B>          will cause placement of
+                                       <I>win</I> to be relative to the
+                                       lower left corner of it
+                                       and its parent window.
+
+              <B>PFWIN_NOBORDER</B>           will cause the window to
+                                       not have the window system
+                                       border around the outside
+                                       of its drawing area. To
+                                       have a drawing area that
+                                       is truly full screen, this
+                                       mode should be set.
+
+              <B>PFWIN_AUTO_RESIZE</B>        will cause sub-pfWindows
+                                       of <I>win</I> who also have this
+                                       mode set to be automati-
+                                       cally reconfigured to
+                                       match the size and posi-
+                                       tion of <I>win</I>.  This
+                                       includes the
+                                       <B>PFWIN_OVERLAY_WIN</B>, the
+                                       <B>PFWIN_STATS_WIN</B>, and the
+                                       current selected window
+                                       from the pfWindow list.
+                                       The selection of a new
+                                       window from the pfWindow
+                                       list will also be automat-
+                                       ically sized and posi-
+                                       tioned if it is using the
+                                       <B>PFWIN_AUTO_RESIZE</B> mode.
+                                       This mode is on by
+                                       default.
+
+              <B>PFWIN_HAS_OVERLAY</B>        will cause <B>pfOpenWin</B> to
+                                       automatically create and
+                                       open (if necessary) an
+                                       overlay window for the
+                                       main pfWindow.  If the
+                                       window is of type
+                                       <B>PFWIN_AUTO_RESIZE</B>, the
+                                       overlay window will be
+                                       automatically configured
+                                       to keep the same
+                                       size/position as the main
+                                       window.
+
+              <B>PFWIN_EXIT</B>               Causes the window to
+                                       receive special ClientMes-
+                                       sage X events when the
+                                       user selects "Quit" or
+                                       "Exit" from the window
+                                       manager border menu on the
+                                       the X atom,
+                                       "WM_DELETE_WINDOW".  See
+                                       the examples below and the
+                                       <B>XClientMessageEvent</B> man
+                                       page for more information.
+       <B>pfGetWinMode</B> will return the value of the requested mode
+       in <I>mode</I>.
+
+       <B>pfWinName</B> sets the name of a pfWindow. By default, pfWin-
+       dows have no name.  <B>pfGetWinName</B> returns the name of a
+       pfWindow.
+
+       <B>pfWinOrigin</B> sets the origin of the pfWindow <I>win</I> to be
+       (<I>xo</I>,<I>yo</I>), relative to its parent window.  <B>pfGetWinOrigin</B>
+       returns the origin set by <B>pfWinOrigin</B>.  If the pfWindow
+       mode is <B>PFWIN_ORIGIN_LL</B>, the origin of the window is con-
+       sidered to be the lower-left corner. Otherwise, the origin
+       of the window is considered to be the X-style upper-left
+       corner.  <B>pfWinSize</B> sets the size of the pfWindow <I>win</I> to be
+       <I>x</I> by <I>y</I>.  <B>pfGetWinSize</B> returns the size of the pfWindow set
+       by <B>pfWinSize</B>, by <B>pfOpenWin</B>, or by <B>pfGetWinCurOriginSize</B>.
+       <B>pfWinOriginSize</B> sets both the origin and size of <I>win</I>.
+
+       <B>pfGetWinCurOriginSize</B> returns the current origin and size
+       of the pfWindow <I>win</I>, if open, otherwise it returns the
+       origin and size set by <B>pfWinOrigin</B>, <B>pfWinSize</B>, or
+       <B>pfWinOriginSize</B>. The internal origin and size of <I>win</I> will
+       be updated. This routine accesses the graphics context
+       and/or the X server and is slow on a window of type
+       <B>PFWIN_TYPE_X</B>.
+
+       <B>pfGetWinCurScreenOrigin</B> returns the cached screen relative
+       origin of <I>win</I>, if open, from the last time the window size
+       was set and then selected.  Otherwise it returns the ori-
+       gin and size set by <B>pfWinOrigin</B>.
+
+       <B>pfGetWinCurScreenOriginSize</B> returns the current screen-
+       relative origin and size of <I>win</I>, if open.  Otherwise it
+       returns the origin and size set by <B>pfWinOrigin</B>, <B>pfWinSize</B>,
+       or <B>pfWinOriginSize</B>.  For windows of type <B>PFWIN_TYPE_X</B>, it
+       must make expensive queries to the X server and can be
+       very slow.
+
+
+       <B>pfWinOverlayWin</B> sets the pfWindow <I>overlay</I> to be the asso-
+       ciated <B>PFWIN_OVERLAY_WIN</B> window for the main drawing
+       pfWindow, <I>win</I>.  This pfWindow is selected on <I>win</I> with
+       <B>pfWinIndex</B>(<I>win</I>, <B>PFWIN_OVERLAY_WIN</B>).  <I>overlay</I> should have
+       the same parent X window as <I>win</I>.  <B>pfGetWinOverlayWin</B> will
+       return the <B>PFWIN_OVERLAY_WIN</B> pfWindow.
+
+       <B>pfWinScreen</B> sets the screen of <I>win</I> to be <I>screen</I>.  The
+       screen selection takes effect upon <B>pfOpenWin</B>.  A screen
+       will be set by <B>pfOpenWin</B> if on was not previously set.
+       The screen of a pfWindow cannot be changed once set.
+       <B>pfGetWinScreen</B> will return the screen of a pfWindow.
+
+       <B>pfWinShare</B> sets the attributes that are to be shared by
+       pfWindows of the share group of <I>win</I> to be the bitmask
+
+              <B>PFWIN_SHARE_FBCONFIG</B>
+
+              <B>PFWIN_SHARE_GL_CXT</B>
+
+              <B>PFWIN_SHARE_GL_OBJS</B>
+
+              <B>PFWIN_SHARE_STATE</B>
+
+              <B>PFWIN_SHARE_OVERLAY_WIN</B>
+
+              <B>PFWIN_SHARE_STATS_WIN</B>
+
+              <B>PFWIN_SHARE_TYPE</B>
+
+              <B>PFWIN_SHARE_WSDRAWABLE</B>
+
+              <B>PFWIN_SHARE_WSWINDOW</B>
+       <B>pfGetWinShare</B> will return the share bitmask of <I>win</I>.
+
+       <B>pfWinStatsWin</B> sets the pfWindow <I>statsWin</I> to be the associ-
+       ated <B>PFWIN_OVERLAY_WIN</B> window for the main drawing pfWin-
+       dow, <I>win</I>.  This pfWindow is selected on <I>win</I> with
+       <B>pfWinIndex</B>(<I>win</I>, <B>PFWIN_STATS_WIN</B>).  <I>statsWin</I> should have
+       the same parent X window as <I>win</I>.  <B>pfGetWinStatsWin</B> will
+       return the <B>PFWIN_STATS_WIN</B> pfWindow.
+
+       <B>pfWinType</B> sets the type of a pfWindow where <I>type</I> is an or-
+       ed bitmask that may contain the type constants listed
+       below.  <B>pfGetWinType</B> returns the type of a pfWindow.  The
+       type of a pfWindow only takes effect by the call of
+       <B>pfOpenWin</B>.  The type of an open pfWindow cannot be
+       changed.  The pfWindow type attributes all start with
+       <B>PFWIN_TYPE_</B> and are:
+
+              <B>PFWIN_TYPE_NOPORT</B>
+                     The resulting window will have a graphics
+                     context but will not be mapped onto the
+                     screen. Windows of type <B>PFWIN_TYPE_NOPORT</B>
+                     are useful for queries about the graphics
+                     resources of the system and are needed for
+                     accessing the Video Sync Clock.  To facili-
+                     tate this, there is the special utility rou-
+                     tine, <B>pfOpenNewNoPortWin</B>.  Also, see the man
+                     pages for <B>pfInitVClock</B>, and <B>pfQuerySys</B>.  If
+                     this token is specified, all other type
+                     tokens are ignored.
+
+              <B>PFWIN_TYPE_X</B>
+                     The window opened will be an X window.
+                     OpenGL windows are always of type
+                     <B>PFWIN_TYPE_X</B>.  Windows of this type have as
+                     their pfWSWindow an X window (-
+                     <B>pfWinWSWindow</B>).  The pfWSDrawable that is
+                     attached to the graphics context is by
+                     default an X window (but can be set as an X
+                     Pixmap -- <B>pfWinWSWindow</B>) and has a frame-
+                     buffer configuration matching that specified
+                     by the pfWindow.  If the pfWSDrawable of the
+                     may have different framebuffer configuration
+                     types and pfWSDrawable X windows but all
+                     share the same parent X pfWSWindow.
+
+              <B>PFWIN_TYPE_OVERLAY</B>
+                     The pfWindow <I>win</I> will be given an appropri-
+                     ate framebuffer configuration, if not
+                     already set, that will support the standard
+                     overlay draw configuration at the time of
+                     the call to <B>pfOpenWin</B>.  For X windows, an X
+                     colormap will also be created and attached
+                     to the corresponding X window.  See the man
+                     pages for <B>XCreateWindow</B>, and <B>XCreateColormap</B>
+                     for more information.
+
+              <B>PFPWIN_TYPE_PBUFFER</B>
+                     The window drawable will be created in a
+                     pbuffer.  For this, you must also specify an
+                     GLXFBConfigSGIX with <B>pfWinFBConfig</B> before
+                     the window is opened.
+
+              <B>PFWIN_TYPE_STATS</B>
+                     The pfWindow <I>win</I> will be given a framebuffer
+                     configuration, if one has not already been
+                     specified through <B>pfWinFBConfig</B> or
+                     <B>pfChooseWinFBConfig</B>, that will support the
+                     current <B>pfStatsHwAttr</B> configuration at the
+                     time of the call to <B>pfOpenWin</B>.  See the
+                     <B>pfStatsHwAttr</B> man page for information on
+                     different statistics attributes and their
+                     framebuffer requirements.
+
+              <B>PFPWIN_TYPE_UNMANAGED</B>
+                     OpenGL Performer will not do automatic X
+                     window management on this window.  This
+                     includes size and position tracking, resiz-
+                     ing of alternate configuration windows, and
+                     swapbuffers. OpenGL Performer will still
+                     make the graphics context of this window
+                     current if it is selected. pfWindows with
+                     drawables that are of type GLXPbufferSGIX or
+                     Pixmap are automatically made unmanaged.
+
+       <B>pfWinWSWindow</B> sets the main window system window of <I>win</I> to
+       be <I>xWin</I> This routine is only relevant for pfWindows of
+       type <B>PFWIN_TYPE_X</B>.  The WSWindow of a pfWindow, if not
+       NULL, is used to manage the size and position of the
+       pfWindow. The WSWindow should also be the parent window of
+       the WSDrawable window of <I>Win</I>. The WSWindow should be
+       shared amongst all sub-pfWindows, such as the overlay win-
+       dow, the stats window, and any windows n the pfWindow
+       list.  If the WSWindow of <I>win</I> has been set, <B>pfOpenWin</B> on
+       <I>win</I> will use that X window and not create another.
+       <B>pfGetWinWSWindow</B> will return the X Window of <I>win</I>.
+
+       <B>pfWinWSDrawable</B> sets the graphics X drawable of <I>win</I> to be
+       <I>drawable</I>.  The drawable of a pfWindow is attached to the
+       graphics context and may be an X Pixmap, a GLXPbufferSGIX,
+       or an X Window. If provided as an X Window, it should be a
+       window list.
+
+       <B>pfWinWSConnectionName</B> allows you to specify the exact win-
+       dow server and default screen for the successive opening
+       of the window. This can be used for specifying remote dis-
+       plays or on machines running more than one window server.
+       <B>pfGetWinWSConnectionName</B> will return the name specifying
+       the current window server target.
+
+       <B>pfAttachWin</B> puts <I>win1</I>, and its current share group, in the
+       pfWindow share group of <I>win0</I>.  The attributes of <I>win0</I> will
+       be copied to <I>win1</I> and all of the windows in <I>win1</I>'s previ-
+       ous share group. pfWindows cannot be removed from a share
+       group.
+
+       <B>pfChooseWinFBConfig</B> will select a framebuffer configura-
+       tion for <I>win</I>, constrained by current settings, such as
+       type and the framebuffer configuration attributes, on <I>win</I>.
+       Additionally, the selection of the framebuffer configura-
+       tion will be relative to the screen of <I>win</I>.  If the screen
+       has not been set, it will be determined from the default
+       screen of the current pfWSConnection or DISPLAY environ-
+       ment variable.  The return value is the resulting pfFBCon-
+       fig, or NULL, indicating failure.  For X windows,
+       <B>pfChooseWinFBConfig</B> and <B>pfGetWinFBConfig</B> returns the
+       resulting XVisualInfo*.
+
+       <B>pfOpenWin</B> creates a graphics context and window, con-
+       strained by the settings of <I>win</I> on the current selected
+       display via <B>pfGetCurWSConnection</B>.  Attributes of <I>win</I> that
+       are not set are created and set as necessary.  If the
+       graphics window and context are not set, they will be cre-
+       ated.
+
+       If the pfWindow framebuffer configuration is not set (-
+       <B>pfWinFBConfig</B> or <B>pfChooseWinFBConfig</B>), the graphics window
+       will get the default rendering framebuffer configuration
+       for its current type (<B>pfWinType</B>).  For a rendering graph-
+       ics window of type <B>PFWIN_TYPE_X</B>, if the graphics drawable
+       has been set via <B>pfWinWSDrawable</B>, the framebuffer configu-
+       ration of that window is used for the graphics context.
+       Otherwise, a default rendering framebuffer configuration
+       for the current machine will be chosen via (-
+       <B>pfChooseFBConfig</B>).  not have multisample buffers by
+       default.  All pfWindows are automatically initialized with
+       <B>pfInitGfx</B> upon opening with <B>pfOpenWin</B>.
+
+       If the x or y size of the pfWindow is &lt;= 0, then a rubber-
+       band window will be created for the user to determine the
+       origin and size of the window, constrained by the pfWindow
+       aspect if set (<B>pfWinAspect</B>).  If the size of the pfWindow
+       is &lt;= 0 but the origin is &lt; 0, then the graphics window
+       will be opened with fixed size but allow the user to place
+       the window. The pfWindow origin and size may both be
+       internally set by <B>pfOpenWin</B>. If the <B>PFWIN_HAS_OVERLAY</B> mode
+       has been set, a <B>PFWIN_OVERLAY_WIN</B> will be automatically
+       created (if not already set, <B>pfWinOverlayWin</B>) and opened.
+       If <I>win</I> has a pfWindow list (<B>pfWinList</B>) and the current
+       pfWindow index is not <B>PFWIN_GFX_WIN</B>, then the selected
+       <I>win</I>.  If <I>win</I> is of type <B>PFWIN_TYPE_X</B>, its X windows will
+       be unmapped. <B>pfCloseWinGL</B> will destroy the current graph-
+       ics context and graphics X window but leaves the top level
+       X window in tact.
+
+       <B>pfIsWinOpen</B> returns the open status of <I>win</I>.
+
+       <B>pfIsManagedWin</B> returns whether or not of <I>win</I> is of type
+       <B>PFPWIN_TYPE_UNMANAGED</B>.
+
+       <B>pfQueryWin</B> takes a window configuration query token <I>which</I>
+       and writes into <I>dst</I> the value for the corresponding con-
+       figuration of the the opened pfWindow <I>win</I>.  The pfWindow
+       query token may be one of:
+
+              <B>PFQWIN_RGB_BITS</B>          returns the number of bits
+                                       per R_G_B color component
+                                       allocated in the main
+                                       color buffer.
+
+              <B>PFQWIN_ALPHA_BITS</B>        returns the number of bits
+                                       allocated for alpha in the
+                                       main color buffer.
+
+              <B>PFQWIN_CI_BITS</B>           returns the number of bits
+                                       for colorindex indices.
+
+              <B>PFQWIN_DEPTH_BITS</B>        returns the number of
+                                       framebuffer bits allocated
+                                       for Z.
+
+              <B>PFQWIN_MIN_DEPTH_VAL</B>     returns the minimum repre-
+                                       sentable Z depth value.
+
+              <B>PFQWIN_MAX_DEPTH_VAL</B>     returns the maximum repre-
+                                       sentable Z depth value.
+
+              <B>PFQWIN_MS_SAMPLES</B>        returns the number of mul-
+                                       tisample samples.
+
+              <B>PFQWIN_STENCIL_BITS</B>      returns the number of bits
+                                       in the stencil buffer.
+
+              <B>PFQWIN_STEREO</B>            returns whether the window
+                                       has stereo buffers allo-
+                                       cated.
+
+              <B>PFQWIN_DOUBLEBUFFER</B>      returns whether the window
+                                       has double-buffered color
+                                       buffers allocated.
+
+              <B>PFQWIN_NUM_AUX_BUFFERS</B>   returns the number of aux-
+                                       iliary color buffers allo-
+                                       cated for the window.
+
+              <B>PFQWIN_LEVEL</B>             returns the level of win-
+                                       dow planes (0 is  normal
+                                       drawing level, negative
+                                       for underlay and positive
+
+              <B>PFQWIN_ACCUM_ALPHA_BITS</B>  returns the number of bits
+                                       of alpha allocated in the
+                                       accumulation buffer.
+
+       <B>pfMQueryWin</B> takes an NULL-terminated array of query tokens
+       and a destination buffer and will do multiple queries.
+       The return value will be the number of bytes successfully
+       written.  This routine is more efficient than <B>pfQueryWin</B>
+       if multiple queries are desired.
+
+       <B>pfAttachWinSwapGroup</B> will place the windows in the swap
+       group of <I>win1</I> in the swap  group of <I>win0</I>.  Windows in a
+       swap group will always swap buffers at the same time.  If
+       two windows are in the same SwapGroup, but not on the same
+       screen, then OpenGL Performer will automatically hook up a
+       named SwapBarrier that is used to synchronize across
+       graphics pipelines. This also requires system configura-
+       tion (see the notes below).  <B>pfWinInSwapGroup</B> returns a
+       boolean indicating if <I>win</I> has been attached to a hardware
+       SwapGroup.  This attachment will not happen until a call
+       to <B>pfSelectWin</B>.
+
+       <B>pfWinSwapBarrier</B> let you attach the SwapGroup that con-
+       tains <I>win</I> to a <I>barrier</I>. If <I>barrier</I> is (-1), OpenGL Per-
+       former will pick a barrier name.  Currently on InfiniteRe-
+       ality there is only one barrier available and will be name
+       (1).  This might be necessary if you have other non-Per-
+       former windows hooked up to an OpenGL barrier with
+       <B>glXBindSwapBarrierSGIX(3G)</B> and want to add OpenGL Per-
+       former windows, first to a swap group, then to the named
+       barrier.  Additionally, this is useful for InfiniteReality
+       Calligraphic setup which uses the <B>SwapReady</B> interface to
+       synchronize raster and calligraphic displays.
+       <B>pfGetWinSwapBarrier</B> return 0 if no barrier is set, or the
+       barrier number otherwise.
+
+       <B>pfSwapWinBuffers</B> causes the currently selected front and
+       back buffers of the normal framebuffer of an open window
+       to be exchanged during the next vertical retrace period.
+
+       <B>pfGetCurWin</B> will return the pointer current OpenGL Per-
+       former pfWindow.  This a window is made the current window
+       when it is opened with <B>pfOpenWin</B> or selected with
+       <B>pfSelectWin</B>.
+
+       <B>pfInitGfx</B> will  configure the current graphics context
+       correctly for OpenGL Performer rendering operation and is
+       called automatically when pfWindows are opened.  It will
+       enable z-buffer depth testing, viewport clipping, and
+       subpixel vertex accuracy mode.  The Viewing projection
+       will be a two-dimensional one-to-one orthographic mapping
+       from eye coordinates to window coordinates with distances
+       to near and far clipping planes -1 and 1, respectively.
+       The model matrix will be the current matrix and will be
+       initialized to the identity matrix.  It is highly recom-
+       mended that a libpr application managing its own windows
+       call <B>pfInitGfx</B> for its normal drawing.
+
+
+       (which can be the screen).  Additionally, there are a bevy
+       of routines for getting the window origin.  User code
+       should not rely on knowning the up to date screen relative
+       origin but should be window-coordinate relative to be
+       efficient and reliable.
+
+       <B>X</B> <B>Framebuffer</B> <B>Configuration</B>: The selection of framebuffer
+       configurations for X windows uses the default GL selection
+       function <B>glXChooseVisual(3X11)</B>.  This function returns the
+       maximum possible framebuffer configuration matching the
+       requested attributes.  However, this may not be the opti-
+       mal configuration for performance.  One such example
+       occurs with OpenGL on RealityEngine: when requesting four
+       multisample subsamples and a depth buffer of 24 bits, a
+       depth buffer of 32 bits will be returned which has measur-
+       ably slower fill rate than a 24 bit depth buffer.  If the
+       default functions are not returning the desired frame-
+       buffer configuration, you can do your own X visual selec-
+       tion and set the visual id or the visual itself on the
+       pfWindow with <B>pfWinFBConfigId</B> and <B>pfWinFBConfig</B> respec-
+       tively.  Additionally, libpfutil provides an OpenGL visual
+       chooser, <B>pfuChooseFBConfig</B>, that limits the performance
+       critical attributes: multisamples, depth, RGB color, and
+       stencil.
+
+       A special case for framebuffer configuration exists for
+       the Extreme graphics platforms.  On these platforms, the
+       default framebuffer configuration has NO allocated stencil
+       bits because stencil bits will reduce depth buffer resolu-
+       tion. The user may explicitly request stencil bits if
+       desired.
+
+
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       This example creates a pfWindow structure and opens and
+       initializes the window for Performer drawing. This window
+       will be an OpenGL/X window.
+
+       {
+            pfWindow *win;
+
+            pfInitState();
+            win = pfNewWin(NULL);
+            pfWinName(win, "Performer");
+            pfOpenWin(win); /* create window and rendering context */
+            ......
+       }
+
+
+       This example is a more detailed example for creating a
+       window of pre-defined size and position.  It will have an
+       overlay window created automatically when the window is
+       opened.
+
+       {
+            pfWindow *win;
+            pfWindow *overlay;
+            pfWinMode(win, PFWIN_HAS_OVERLAY, PF_TRUE);
+            pfOpenWin(win); /* create window, overlay, and rendering context */
+
+            /* get back some useful things created by Performer */
+            overlay = pfGetWinOverlayWin(win);
+            /* get back Performer's internal shared display
+               connection to use for event handling */
+            dsp = pfGetCurWSConnection();
+       }
+
+
+       This example demonstrates how to catch the X ClientMessage
+       event when a window of a pfWindow of mode PFWIN_EXIT is
+       killed via the Quit or Exit option in the window manager
+       menu on the window border.
+
+       {
+           WSConnection theDisplay = pfGetCurWSConnection();
+           Atom WMProtocols = XInternAtom(theDisplay, "WM_PROTOCOLS", 1);
+           ATOM WMDeleteWindow = XInternAtom(theDisplay, "WM_DELETE_WINDOW", 1);
+           ....
+           /* in X event handling loop */
+           {
+            XEvent event;
+            XNextEvent(theDisplay, &amp;event);
+            /* in X event handling switch */
+            case ClientMessage:
+                if ((event.xclient.message_type == wm_protocols) &amp;&amp;
+                 (event.xclient.data.l[0] == wm_delete_window)) {
+                           /* handle window exit */
+                       }
+                       break;
+            .....
+           }
+       }
+
+
+
+       Swap groups can contain windows rendering to different
+       graphics pipelines to force that their double-buffering is
+       synchronized so that they are guaranteed to always be dis-
+       playing the same frame and have their hardware swapbuffers
+       happen simultaneously.  For this to work, you must first
+       have the graphics pipelines genlocked.  See the <B>genlock(7)</B>
+       man page for more informations.  Next, you must connect
+       the proper cable between the SwapReady connectors on the
+       graphics pipelines.  On the InfiniteReality this is a sim-
+       ple BNC cable of any Ohms.  The SwapGroup functionality on
+       pfWindows is only supported under OpenGL operation.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Detach from share groups and swap groups is not supported.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfStatsHwAttr, pfNewState, pfSelectWSConnection, pfGetCur-
+       WSConnection, pfuChooseFBConfig, GLXgetconfig, GLXlink,
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

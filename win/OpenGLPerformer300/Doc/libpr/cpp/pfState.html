@@ -1,0 +1,387 @@
+<HTML>
+<HEAD>
+<TITLE>pfState</TITLE>
+</HEAD>
+<BODY>
+<H1>pfState</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfState(3pf)                                         pfState(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfState,</B>  <B>pfInitState,</B>  <B>pfGetCurState,</B> <B>pfPushState,</B> <B>pfPop-</B>
+       <B>State,</B> <B>pfGetState,</B> <B>pfFlushState,</B> <B>pfBasicState,</B> <B>pfPixScale,</B>
+       <B>pfGetPixScale</B> - Create, modify and query graphics state
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;ulocks.h&gt;
+
+       #include &lt;Performer/pr/pfState.h&gt;
+
+                         <B>pfState::pfState</B>();
+
+       static pfType *   <B>pfState::getClassType</B>(void);
+
+       void              <B>pfState::select</B>(void);
+
+       void              <B>pfState::load</B>(void);
+
+       void              <B>pfState::attach</B>(pfState *state1);
+
+       void              <B>pfInitState</B>(usptr_t* arena);
+
+       pfState *         <B>pfGetCurState</B>(void);
+
+       void              <B>pfPushState</B>(void);
+
+       void              <B>pfPopState</B>(void);
+
+       void              <B>pfGetState</B>(pfGeoState *gstate);
+
+       void              <B>pfFlushState</B>(void);
+
+       void              <B>pfBasicState</B>(void);
+
+       void              <B>pfPixScale</B>(float scale);
+
+       float             <B>pfGetPixScale</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class  <B>pfState</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfState</B>.  This is also true for ancestor classes  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL Performer manages a subset of the graphics  library
+       state  for  convenience and improved performance. Further,
+       this state is conceptually partitioned into two divisions:
+       modes  and  attributes.  A mode is a simple "setting" usu-
+       ally represented by a single value while an attribute is a
+       larger collection of related modes that is encapsulated in
+       an OpenGL Performer structure, such as <B>pfFog</B>.
+
+       Modes usually have two routines to set and get them  while
+       attributes  have many routines for accessing their parame-
+       ters  and  a  <B>pf&lt;*&gt;::apply</B>  routine  which  "applies"  the
+       attribute's  characteristics  to  the  graphics system via
+       graphics library state commands.  Modes are represented by
+       basic  data  types like 'int' and 'float' while attributes
+       are pointers to opaque OpenGL Performer  structures  whose
+       contents are accessible only through function calls.
+
+       An  example  of  a  mode  is  the  shading  model  set  by
+       <B>pfShadeModel</B> and an attribute is exemplified by a  pfMate-
+       rial  which  is applied with <B>pfMaterial::apply</B>.  Each mode
+       and attribute is identified by a  <B>PFSTATE_</B>  token.   These
+       tokens     are    used    in    <B>pfGeoState::setMode</B>    and
+       <B>pfGeoState::setAttr</B> when initializing a pfGeoState and  in
+       <B>pfOverride</B> to override mode and attribute settings.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       The  following  table  lists the state components that are
+       modes.
+
+       center tab($) ; C | C | C | C L | L | L | C  .   Mode$PFS-
+       TATE_   Token$Routine(s)$Default   _   Transparency$TRANS-
+       PARENCY$pfTransparency$PFTR_OFF                 Antialias-
+       ing$ANTIALIAS$pfAntialias$PFAA_OFF       Decal$DECAL$pfDe-
+       cal$PFDECAL_OFF Face  culling$CULLFACE$pfCullFace$PFCF_OFF
+       Alpha   function$ALPHAFUNC$pfAlphaFunc$PFAF_ALWAYS   Alpha
+       reference$ALPHAREF$pfAlphaFunc$0 Lighting  enable$ENLIGHT-
+       ING$pfEnable/pfDisable$PF_OFF    Texturing   enable$ENTEX-
+       TURE$pfEnable/pfDisable$PF_OFF Fogging  enable$ENFOG$pfEn-
+       able/pfDisable$PF_OFF  Wireframe  enable$ENWIREFRAME$pfEn-
+       able/pfDisable$PF_OFF Colortable enable$ENCOLORTABLE$pfEn-
+       able/pfDisable$PF_OFF   Highlighting   enable$ENHIGHLIGHT-
+       ING$pfEnable/pfDisable$PF_OFF  Light   Point   enable$ENL-
+       POINTSTATE$pfEnable/pfDisable$PF_OFF  TexGen enable$ENTEX-
+       GEN$pfEnable/pfDisable$PF_OFF TexMat enable$ENTEXMAT$pfEn-
+       able/pfDisable$PF_OFF     TexLOD     enable$ENTEXLOD$pfEn-
+       able/pfDisable$PF_OFF
+
+       The following table lists the state  components  that  are
+       attributes.
+
+       center  tab($)  ;  C  |  C  |  C  |  C  L  |  L  | L | C .
+       Attribute$PFSTATE_   Token$Routine$Default   _    pfLight-
+       Model$LIGHTMODEL$pfLightModel::apply$NULL
+       pfLights$LIGHTS$pfLight::on$all   NULL    front    pfMate-
+       rial$FRONTMTL$pfMaterial::apply$NULL      back     pfMate-
+       rial$BACKMTL$pfMaterial::apply$NULL pfTexEnv$TEXENV$pfTex-
+       Env::apply$NULL    pfTexture$TEXTURE$pfTexture::apply$NULL
+       pfTexGen$TEXGEN$pfTexGen::apply$NULL
+       pfTexLOD$TEXLOD$pfTexLOD::apply$NULL  texture  matrix$TEX-
+       MAT$pfApplyTMat$NULL  pfFog$FOG$pfFog::apply$NULL   pfCol-
+       ortable$COLORTABLE$pfColortable::apply$NULL        pfHigh-
+       light$HIGHLIGHT$pfHighlight::apply$NULL               pfL-
+       PointState$LPOINTSTATE$pfLPointState::apply$NULL
+       pfPlane$DECAL_PLANE$pfApplyDecalPlane$NULL
+
+       State values may be established within  libpr  in  one  of
+       three ways:
+
+              1.   Immediate mode
+
+              2.   Display list mode
+
+              3.   pfGeoState mode
+
+       Like the graphics library itself, OpenGL Performer has two
+       command execution modes: immediate mode and  display  list
+       mode.   In  immediate  mode,  the setting of a mode or the
+       application of an attribute is  carried  out  immediately.
+       Any  geometry  rendered afterwards will be drawn with that
+       mode or attribute characteristics.  In display list  mode,
+       the  command  will  be "captured" by the open display list
+       (pfDispList) and will not have effect  until  the  display
+       list is closed and later drawn with <B>pfDispList::draw</B>.
+
+       All  the  routines listed in Table 1 are display-listable,
+       pfState  must  have been selected by <B>pfState::select</B>. Note
+       that neither a graphics context nor  pfState  is  required
+       when  drawing  in  display  list mode because the commands
+       will be captured by the display list.
+
+       Example 1:
+
+       /* Enable wireframe in immediate mode */
+       pfEnable(PFEN_WIREFRAME);
+
+       /* Draw 'gset' in wireframe */
+       gset-&gt;draw();
+
+
+       Example 2:
+
+       /* Enter display list mode by opening 'dlist' for appending */
+       dlist-&gt;open();
+       pfEnable(PFEN_WIREFRAME);
+       gset-&gt;draw();
+       pfDispList::close();
+
+       /* Draw 'gset' in wireframe */
+       dlist-&gt;draw();
+
+
+       It is important to realize that OpenGL Performer display
+       lists (pfDispLists) are different from graphics library
+       display lists.  A pfDispList captures only <B>libpr</B> commands
+       and does not contain low-level geometric information like
+       vertex coordinates and colors.
+
+       The pfGeoState encapsulates all of libpr state, i.e. it
+       has all mode settings and a pointer to a definition for
+       each attribute type.  Through <B>pfGeoState::setMode</B> and
+       <B>pfGeoState::setAttr</B> it is possible to set every state ele-
+       ment of a pfGeoState.  When the pfGeoState is applied
+       through <B>pfGeoState::apply</B> all the state settings encapsu-
+       lated by the pfGeoState become active.  pfGeoStates also
+       have useful inheritance properties that are discussed in
+       the pfGeoState man page.  Typical use of a pfGeoState is
+       to "build" it at database initialization time and attach
+       it to a pfGeoSet (<B>pfGeoSet::setGState</B>).  In this way the
+       pfGeoState defines the graphics state of the geometry
+       encapsulated by the pfGeoSet (pfDrawGSet will call
+       <B>pfGeoState::apply</B> if the pfGeoSet has an attached
+       pfGeoState).
+
+       Example 3:
+
+       /* Set up wireframe pfGeoState */
+       gstate = new pfGeoState;
+       gstate-&gt;setMode(PFSTATE_ENWIREFRAME, PF_ON);
+
+       /* Draw wireframe pfGeoSet in "pfGeoState" mode */
+       gstate-&gt;apply();          /* Apply 'gstate' */
+       gset-&gt;draw();               /* Draw 'gset' in wireframe */
+
+       /* Preferred method for drawing wireframe pfGeoSet */
+       single process operation.  For proper multiprocess opera-
+       tion, <B>pfInitState</B> should be called by a single process
+       before calls to <B>sproc</B> or <B>fork</B> that will generate other
+       processes using OpenGL Performer state, with an arena
+       which is shared by all application processes.  In either
+       single or multi-process operation, <B>pfInitState</B> must be
+       called before any state attributes such as pfTextures are
+       created and should only be called once.
+
+       <B>new</B>(arena) allocates a pfState from the specified memory
+       arena, or from the process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfState from the default memory arena (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfStates cannot
+       be created statically, automatically on the stack or in
+       arrays.  pfStates should be deleted with <B>pfDelete</B> rather
+       than the delete operator.  Specifically, a pfState has a
+       stack of state structures that shadow OpenGL Performer and
+       graphics library state.  This stack may be manipulated by
+       routines described below.
+
+       <B>pfState::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfState</B>.  The <B>pfType</B>* returned by <B>pfState::getClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking the virtual
+       function <B>getType</B> on any instance of class <B>pfState</B>.
+       Because OpenGL Performer allows subclassing of built-in
+       types, when decisions are made based on the type of an
+       object, it is usually better to use  the member function
+       <B>isOfType</B> to test if an object is of a type derived from a
+       Performer type rather than to test for strict equality of
+       the <B>pfType</B>*'s.
+
+       A pfState should be created for each graphics context that
+       the process draws to with libpr routines.  When a process
+       switches graphics contexts it should also switch to the
+       corresponding pfState with <B>pfState::select</B>.
+
+       <B>pfState::select</B> makes the pfState the current state.  pfS-
+       tate is a global value so it is shared by all share group
+       processes(See <B>sproc</B>).  <B>pfState::select</B> should be used when
+       switching between different graphics contexts.  It does
+       not configure the graphics context with its state set-
+       tings.  <B>pfGetCurState</B> returns a pointer to the current
+       pfState or NULL if there is no active pfState.
+
+       Each pfState structure maintains a 64-deep stack of
+       pfGeoStates.  A pfGeoState shadows all libpr modes and
+       attributes.  Changes to the current state made through any
+       of the 3 methods listed above are recorded in the top of
+       the pfGeoState stack.  <B>pfGetState</B> copies the top of the
+       pfGeoState stack into <I>gstate</I>.
+
+       <B>pfPushState</B> pushes the pfGeoState stack of the current
+       pfState.  When pushed, the configuration of the current
+       state is recorded so that when popped, that state will be
+       restored, overwriting any state changes made between push
+       and pop.  The bit vector which represents state elements
+       that are overridden by <B>pfOverride</B> is also pushed.
+
+       <B>pfPopState</B> compares the current pfGeoState with that of
+       OpenGL Performer state management which may or may not be
+       desired.
+
+       <B>pfFlushState</B> is only useful for applications which use
+       pfGeoStates.  pfGeoStates do not inherit state from each
+       other so state is pushed and popped when drawing them.
+       For performance, state is not actually popped unless a
+       subsequent pfGeoState requires it.  This means that in-
+       between pfGeoStates, the state may not be what the appli-
+       cation expects.  <B>pfFlushState</B> will return the state to the
+       global default.(See pfGeoState for more on state flush-
+       ing).  <B>pfPushState</B> calls <B>pfFlushState</B>.
+
+       <B>pfPixScale</B> sets <I>scale</I> as the value to be used in scaling
+       point and line width specifications. Global control of
+       this scale factor is important when Dynamic Video Resolu-
+       tion is in use, since points and lines must be reduced in
+       width as much as they are enlarged by the video output
+       system in order that the displayed geometry have the des-
+       ignated width in display-pixel units. <B>pfGetPixScale</B>
+       returns the current pixel scale value.
+
+       <B>pfBasicState</B> is a convenience routine for disabling all
+       modes and is useful for drawing things like text which
+       usually should not be lit or fogged.  Specifically,
+       <B>pfBasicState</B> is equivalent to the following:
+
+       /* return graphics pipeline to basic state */
+       pfDisable(PFEN_FOG);
+       pfDisable(PFEN_LIGHTING);
+       pfDisable(PFEN_TEXTURE);
+       pfDisable(PFEN_WIREFRAME);
+       pfDisable(PFEN_COLORTABLE);
+       pfDisable(PFEN_HIGHLIGHTING);
+       pfDisable(PFEN_LPOINTSTATE);
+       pfDisable(PFEN_TEXGEN);
+       pfDisable(PFEN_TEXMAT);
+
+       pfShadeModel(PFSM_GOURAUD);
+       pfAlphaFunc(0, PFAF_OFF);
+       pfCullFace(PFCF_OFF);
+       pfTransparency(PFTR_OFF);
+
+       if (multisampling-type antialiasing is not enabled)
+           pfAntialias(PFAA_OFF);
+
+       pfDecal(PFDECAL_OFF);
+
+
+       Use <B>pfGeoState::makeBasic</B> to configure every state element
+       (value, mode, and attribute) of the pfGeoState to be iden-
+       tical to the state set with <B>pfBasicState</B>.  The following
+       code fragment is equivalent to <B>pfBasicState</B>:
+
+
+       pfGeoState *gstate = new(NULL) pfGeoState();
+       gstate-&gt;makeBasic();
+       gstate-&gt;load();
+
+       pfDecal, pfDelete, pfEnable, pfFog, pfGeoSet, pfGeoState,
+       pfHighlight, pfLight, pfLightModel, pfLPointState, pfMate-
+       rial, pfOverride, pfShadeModel, pfTexEnv, pfTexGen, pfTex-
+       ture, pfTransparency
+
+
+
+                                                     pfState(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

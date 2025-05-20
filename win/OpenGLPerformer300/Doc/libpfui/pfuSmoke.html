@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+<TITLE>pfuSmoke</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuSmoke</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuSmoke(3pf)                                       pfuSmoke(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuInitSmokes,</B>  <B>pfuNewSmoke,</B> <B>pfuSmokeType,</B> <B>pfuSmokeOrigin,</B>
+       <B>pfuSmokeVelocity,</B>    <B>pfuGetSmokeVelocity,</B>     <B>pfuSmokeDir,</B>
+       <B>pfuSmokeMode,</B>  <B>pfuDrawSmokes,</B>  <B>pfuSmokeTex,</B>  <B>pfuSmokeDura-</B>
+       <B>tion,</B> <B>pfuSmokeDensity,</B> <B>pfuGetSmokeDensity,</B> <B>pfuSmokeColor</B> -
+       Routines for simulating smoke and fire.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void         <B>pfuInitSmokes</B>(void);
+
+       pfuSmoke *   <B>pfuNewSmoke</B>(void);
+
+       void         <B>pfuSmokeType</B>(pfuSmoke *smoke, int type);
+
+       void         <B>pfuSmokeOrigin</B>(pfuSmoke *smoke,   pfVec3 ori-
+                      gin, float radius);
+
+       void         <B>pfuSmokeVelocity</B>(pfuSmoke *smoke,  float tur-
+                      bulence, float speed);
+
+       void         <B>pfuGetSmokeVelocity</B>(pfuSmoke *smoke,
+                      float *turbulence, float *speed);
+
+       void         <B>pfuSmokeDir</B>(pfuSmoke *smoke, pfVec3 dir);
+
+       void         <B>pfuSmokeMode</B>(pfuSmoke *smoke, int mode);
+
+       void         <B>pfuDrawSmokes</B>(pfVec3 eye);
+
+       void         <B>pfuSmokeTex</B>(pfuSmoke *smoke, pfTexture *tex);
+
+       void         <B>pfuSmokeDuration</B>(pfuSmoke *smoke, float dur);
+
+       void         <B>pfuSmokeDensity</B>(pfuSmoke *smoke,  float dens,
+                      float diss, float expansion);
+
+       void         <B>pfuGetSmokeDensity</B>(pfuSmoke *smoke,
+                      float *dens,  float *diss,  float *expan-
+                      sion);
+
+       void         <B>pfuSmokeColor</B>(pfuSmoke *smoke,    pfVec3 bgn,
+                      pfVec3 end);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       This higher level utility is designed to show how to  eas-
+       ily  generate  smoke  effects in OpenGL Performer applica-
+       tions.
+
+       <B>pfuInitSmokes</B> allocates for, loads and sets  the  geometry
+       for  the smoke and fire textures. Call <B>pfuInitSmokes</B> after
+       <B>pfInit</B> but before <B>pfConfig</B> so that all shared data  struc-
+       tures are correctly shared among processes.
+
+       the draw process) so that the  active  smoke  objects  are
+       actually drawn.
+
+       <B>pfuSmokeType</B> can be set to any of
+              <B>PFUSMOKE_MISSILE</B>
+              <B>PFUSMOKE_EXPLOSION</B>
+              <B>PFUSMOKE_FIRE</B>
+              <B>PFUSMOKE_SMOKE</B>
+              <B>PFUSMOKE_DUST</B>
+
+       <B>pfuSmokeOrigin</B>  sets  the origin and radius of where <I>smoke</I>
+       is to occur.
+
+       <B>pfuSmokeVelocity</B> sets the speed at which <I>smoke</I> is to move.
+
+       <B>pfuGetSmokeVelocity</B>  gets the speed at which <I>smoke</I> is mov-
+       ing.
+
+       <B>pfuSmokeDir</B> sets the direction that  <I>smoke</I>  will  move  in
+       (via the vector <I>dir</I>).
+
+       <B>pfuSmokeMode</B> sets the current mode of operation for <I>smoke</I>.
+       Supported values are
+              <B>PFUSMOKE_STOP</B>
+              <B>PFUSMOKE_START</B>
+
+       <B>pfuSmokeTex</B> sets the texture to  be  used  for  the  smoke
+       effect when <I>smoke</I> is drawn.
+
+       <B>pfuSmokeDuration</B> sets the length of time <I>smoke</I> should last
+       once it is started.
+
+       <B>pfuSmokeDensity</B> sets the density,  dissipation  rate,  and
+       expansion rate of the smoke puff.
+
+       <B>pfuSmokeColor</B> sets the beginning and ending colors for the
+       smoke puff.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code  and  documentation
+       are  provided  as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+
+                                                    pfuSmoke(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

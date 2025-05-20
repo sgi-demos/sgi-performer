@@ -1,0 +1,650 @@
+<HTML>
+<HEAD>
+<TITLE>pfGeoState</TITLE>
+</HEAD>
+<BODY>
+<H1>pfGeoState</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfGeoState(3pf)                                   pfGeoState(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewGState,</B>  <B>pfGetGStateClassType,</B> <B>pfApplyGState,</B> <B>pfLoad-</B>
+       <B>GState,</B> <B>pfGStateMode,</B> <B>pfGetGStateMode,</B> <B>pfGetGStateCurMode,</B>
+       <B>pfGetGStateCombinedMode,</B>  <B>pfGStateMultiMode,</B>  <B>pfGetGState-</B>
+       <B>MultiMode,</B>  <B>pfGetGStateCurMultiMode,</B>  <B>pfGetGStateCombined-</B>
+       <B>MultiMode,</B> <B>pfGStateVal,</B> <B>pfGetGStateVal,</B> <B>pfGetGStateCurVal,</B>
+       <B>pfGetGStateCombinedVal,</B>  <B>pfGStateInherit,</B>   <B>pfGetGStateIn-</B>
+       <B>herit,</B>  <B>pfGStateAttr,</B> <B>pfGetGStateAttr,</B> <B>pfGetGStateCurAttr,</B>
+       <B>pfGetGStateCombinedAttr,</B>  <B>pfGStateMultiAttr,</B>  <B>pfGetGState-</B>
+       <B>MultiAttr,</B>  <B>pfGetGStateCurMultiAttr,</B>  <B>pfGetGStateCombined-</B>
+       <B>MultiAttr,</B>    <B>pfGStateFuncs,</B>    <B>pfGetGStateFuncs,</B>    <B>pfAp-</B>
+       <B>plyGStateTable,</B> <B>pfMakeBasicGState,</B> <B>pfGetGStateNumTextures,</B>
+       <B>pfGetCurGState,</B> <B>pfGetCurGStateTable,</B> <B>pfGetCurIndexedGState</B>
+       - Create, modify and query geometry state objects
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfGeoState *   <B>pfNewGState</B>(void *arena);
+
+       pfType *       <B>pfGetGStateClassType</B>(void);
+
+       void           <B>pfApplyGState</B>(pfGeoState *gstate);
+
+       void           <B>pfLoadGState</B>(pfGeoState *gstate);
+
+       void           <B>pfGStateMode</B>(pfGeoState *gstate,
+                        uint64_t mode, int val);
+
+       int            <B>pfGetGStateMode</B>(const pfGeoState *gstate,
+                        uint64_t mode);
+
+       int            <B>pfGetGStateCurMode</B>(const pfGeoState *gstate,
+                        uint64_t mode);
+
+       int            <B>pfGetGStateCombinedMode</B>(const pfGeoState *gstate,
+                        uint64_t mode,   const pfGeoState *com-
+                        bGState);
+
+       void           <B>pfGStateMultiMode</B>(pfGeoState *gstate,
+                        uint64_t mode, int index, int val);
+
+       int            <B>pfGetGStateMultiMode</B>(const pfGeoState *gstate,
+                        uint64_t mode, int index);
+
+       int            <B>pfGetGStateCurMultiMode</B>(const pfGeoState *gstate,
+                        uint64_t mode, int index);
+
+       int            <B>pfGetGStateCombinedMultiMode</B>(const pfGeoState *gstate,
+                        uint64_t mode,               int index,
+                        const pfGeoState *combGState);
+
+       void           <B>pfGStateVal</B>(pfGeoState *gstate,
+                        uint64_t gsval, float val);
+
+                        uint64_t gsval,  const pfGeoState *com-
+                        bGState);
+
+       void           <B>pfGStateInherit</B>(pfGeoState *gstate,
+                        uint64_t mask);
+
+       uint64_t       <B>pfGetGStateInherit</B>(const pfGeoState *gstate);
+
+       void           <B>pfGStateAttr</B>(pfGeoState *gstate,
+                        uint64_t attr, void *data);
+
+       void *         <B>pfGetGStateAttr</B>(const pfGeoState *gstate,
+                        uint64_t attr);
+
+       void
+                      *         <B>pfGetGStateCurAttr</B>(const pfGeoState *gstate,
+                        uint64_t attr);
+
+       void
+                      *         <B>pfGetGStateCombinedAttr</B>(const pfGeoState *gstate,
+                        uint64_t attr,   const pfGeoState *com-
+                        bGState);
+
+       void           <B>pfGStateMultiAttr</B>(pfGeoState *gstate,
+                        uint64_t attr, int index, void *data);
+
+       void
+                      *         <B>pfGetGStateMultiAttr</B>(const pfGeoState *gstate,
+                        uint64_t attr, int index);
+
+       void
+                      *         <B>pfGetGStateCurMultiAttr</B>(const pfGeoState *gstate,
+                        uint64_t attr, int index);
+
+       void
+                      *         <B>pfGetGStateCombinedMultiAttr</B>(const pfGeoState *gstate,
+                        uint64_t attr,               int index,
+                        const pfGeoState *combGState);
+
+       void           <B>pfGStateFuncs</B>(pfGeoState* gstate, pfGState-
+                        FuncType preFunc,         pfGStateFunc-
+                        Type postFunc, void *data);
+
+       void           <B>pfGetGStateFuncs</B>(const pfGeoState* gstate,
+                        pfGStateFuncType *preFunc,    pfGState-
+                        FuncType *postFunc, void **data);
+
+       void           <B>pfApplyGStateTable</B>(pfList *gstab);
+
+       void           <B>pfMakeBasicGState</B>(pfGeoState *gstate);
+
+       int            <B>pfGetGStateNumTextures</B>(pfGeoState *gstate);
+
+       pfGeoState *   <B>pfGetCurGState</B>(void);
+
+       pfList*        <B>pfGetCurGStateTable</B>(void);
+
+       pfGeoState*    <B>pfGetCurIndexedGState</B>(int index);
+
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfGeoState</B>.  Casting an object of class <B>pfGeoState</B>
+       to an object of class <B>pfObject</B> is taken care of automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj, int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfGeoState</B> can also be
+       used with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr, uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>gstate</I>  identifies a pfGeoState.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfGeoState is an encapsulation of libpr graphics modes
+       and attributes (see <B>pfState</B>).  For example, a pfGeoState
+       can describe a glass surface by referencing a shiny pfMa-
+       terial and enabling transparency.  When a pfGeoState is
+       applied by <B>pfApplyGState</B> it sets up the graphics state
+       through normal libpr routines such as <B>pfApplyMtl</B> and
+       <B>pfTransparency</B>.
+
+       Most pieces of state that may be manipulated through libpr
+       immediate mode routines may be specified on a per-
+       pfGeoState basis.  For customized state management,
+       pfGeoStates provide function callbacks.  In addition,
+       discussed below, pfGeoStates have the useful property of
+       order-independence so that paired pfGeoSets and
+       pfGeoStates will be rendered consistently regardless of
+       order.
+
+       pfGeoState state may either be locally set or globally
+       inherited.  By default, if a state element is not speci-
+       fied on a pfGeoState, then that pfGeoState will inherit
+       that state element from the global state.  Global state is
+       set through libpr immediate mode functions, e.g.,
+       <B>pfApplyMtl</B>, <B>pfTransparency</B>, <B>pfDecal</B>, <B>pfApplyFog</B> or through
+       <B>pfLoadGState</B> as described below. Local state is set on a
+       pfGeoState through <B>pfGStateMode</B>, <B>pfGStateAttr</B>, or
+       <B>pfGStateVal</B>.
+
+       If all state elements are locally set, then a pfGeoState
+       becomes a full graphics context since all state is defined
+       at the pfGeoState level.  While this is useful, it usually
+       makes sense to inherit most state from global default val-
+       ues and explicitly set only those state elements which are
+       expected to change often.  Examples of useful global
+       defaults are lighting model (<B>pfLightModel</B>), lights (-
+       <B>pfLight</B>), fog (<B>pfFog</B>), and transparency (<B>pfTransparency</B>,
+       usually OFF).  Highly variable state is likely to be lim-
+       ited to a small set like textures and materials.  By
+       default all pfGeoState state is inherited.
+
+       State is pushed before, and popped after pfGeoStates are
+       applied so that pfGeoStates do not inherit state from each
+       other.  As a result pfGeoStates are order-independent and
+       you need not consider the problem of one pfGeoState cor-
+       rupting another by state inheritance through the underly-
+       ing graphics library. The actual pfGeoState pop is a lazy
+       one and does not happen unless a subsequent pfGeoState
+       needs the default state restored.  This means that the
+       actual state between pfGeoStates is not necessarily the
+       global state.  If a return to global state is required,
+       call <B>pfFlushState</B> which will restore the global state.
+
+       It is a performance advantage to locally set as little
+       local pfGeoState state as possible.  This may be accom-
+       plished by setting global defaults which satisfy the
+       majority of pfGeoStates being drawn.  For example, if most
+       of your database is textured, you should enable texturing
+       at initialization time (<B>pfEnable</B>(<B>PFEN_TEXTURE</B>)) and con-
+       figure your pfGeoStates to inherit the texture enable
+       mode.
+
+       <B>pfNewGState</B> creates and returns a handle to a pfGeoState.
+       <I>arena</I> specifies a malloc arena out of which the pfGeoState
+       is allocated or <B>NULL</B> for allocation off the process heap.
+       pfGeoStates can be deleted with <B>pfDelete</B>.  All modes and
+       attributes are inherited by default.
+
+       <B>pfGetGStateClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfGeoState</B>.  The <B>pfType</B>* returned by <B>pfGetGStateClassType</B>
+       is the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of class <B>pfGeoState</B>.  Because OpenGL Per-
+       former allows subclassing of built-in types, when deci-
+       longer inherited but is set to <I>val</I>.  <I>mode</I> is a symbolic
+       token and is one of:
+
+              <B>PFSTATE_TRANSPARENCY</B>
+              <B>PFSTATE_ANTIALIAS</B>
+              <B>PFSTATE_DECAL</B>
+              <B>PFSTATE_ALPHAFUNC</B>
+              <B>PFSTATE_ENLIGHTING</B>
+              <B>PFSTATE_ENTEXTURE</B>
+              <B>PFSTATE_ENFOG</B>
+              <B>PFSTATE_CULLFACE</B>
+              <B>PFSTATE_ENWIREFRAME</B>
+              <B>PFSTATE_ENCOLORTABLE</B>
+              <B>PFSTATE_ENHIGHLIGHTING</B>
+              <B>PFSTATE_ENLPOINTSTATE</B>
+              <B>PFSTATE_ENTEXGEN</B>
+              <B>PFSTATE_ENTEXLOD</B>
+              <B>PFSTATE_ENTEXMAT</B>
+
+       <I>val</I> specifies the value of <I>mode</I> and is a symbolic token
+       appropriate to the type of <I>mode</I>. For example when <I>mode</I> =
+       <B>PFSTATE_TRANSPARENCY</B> then <I>val</I> might be <B>PFTR_ON</B>.  Only
+       modes which differ from the global state should be set.
+       Mode values are not inherited between pfGeoStates.  By
+       default all modes are inherited.  See the <B>pfState</B> manual
+       page for information on global default settings.
+
+       <B>pfGStateVal</B> sets the <I>gsval</I> value to <I>val</I>.  <I>gsval</I> is a sym-
+       bolic constant specifying the state value to set.  Once
+       set, a value is no longer inherited but is set to <I>val</I>.
+       <I>gsval</I> is a symbolic token and can be chosen from any of
+       the following list (only one choice at present):
+              <B>PFSTATE_ALPHAREF</B>
+
+       <B>pfGStateAttr</B> sets <I>attr</I> state element to <I>a</I>.  <I>attr</I> is a sym-
+       bolic constant starting with <B>PFSTATE_</B> specifying an
+       attribute and is combined with <I>data</I>, a handle to an
+       attribute structure of the appropriate <B>libpr</B> structure
+       that is returned from a <B>pfNew&lt;*&gt;</B> routine.
+
+
+              <B>PFSTATE_FRONTMTL</B>         pfMaterial*
+
+              <B>PFSTATE_BACKMTL</B>          pfMaterial*
+
+              <B>PFSTATE_TEXTURE</B>          pfTexture*
+
+              <B>PFSTATE_TEXENV</B>           pfTexEnv*
+
+              <B>PFSTATE_FOG</B>              pfFog*
+
+              <B>PFSTATE_LIGHTMODEL</B>       pfLightModel*
+
+              <B>PFSTATE_LIGHTS</B>           pfLight**
+
+              <B>PFSTATE_COLORTABLE</B>       pfColortable*
+
+              <B>PFSTATE_HIGHLIGHT</B>        pfHighlight*
+
+
+              <B>PFSTATE_DECALPLANE</B>       pfPlane*
+
+       If <I>attr</I> is <B>PFSTATE_LIGHTS</B>, <I>a</I> should be an array of
+       pfLight* of length <B>PF_MAX_LIGHTS</B> which specifies which
+       pfLights should be used by <I>gstate</I>.  Empty entries in the
+       light array should be <B>NULL</B>.
+
+       A pfGeoState ignores the <B>PFMTL_FRONT</B> and <B>PFMTL_BACK</B> set-
+       ting of a pfMaterial (see <B>pfMtlSide</B>).  Instead it uses the
+       attribute value, <B>PFSTATE_FRONTMTL</B> or <B>PFSTATE_BACKMTL</B> to
+       decide how to apply the material.  Consequently, it is
+       legal to use the same material for both front and back
+       sides.  However, pfGeoStates do not modify the pfMate-
+       rial's side value which is normally set through <B>pfMtlSide</B>.
+
+       Once set, an attribute is no longer inherited but set to
+       <I>a</I>.  Only attributes which differ from the global state
+       should be set.  Attributes are not inherited between
+       pfGeoStates.  By default, all attributes are inherited
+       from the global state.
+
+       <B>pfGStateAttr</B> increments the reference count of the sup-
+       plied attribute and decrements the reference count of the
+       replaced attribute, if there is one.  <B>pfGStateAttr</B> will
+       <I>not</I> delete any pfObject whose reference count reaches 0.
+
+       <B>pfGeoState</B> supports a few multi-valued elements. At pre-
+       sent, all these multi-valued elements are related to the
+       multi-texture OpenGL extension.  The multi-texture exten-
+       sion enables the application of multiple texture maps on a
+       single polygon in a single drawing pass. This extension
+       uses multiple texture environments to determine the blend-
+       ing among the texture units.  All <B>pfGeoState</B> functions
+       that set/get attributes and modes have multi-valued ver-
+       sions. The multi-valued versions take one additional
+       parameter: <I>index</I>. In the case of the multi-texture exten-
+       sion, this variable picks the hardware texture unit that
+       an attribute or a value refer to.
+
+       <B>pfGStateMultiAttr</B> is a version of <B>pfGStateAttr</B> used for
+       setting multi-valued attributes. A multi-values attribute
+       collapses a set of attributes into a single <B>pfGeoState</B>
+       attribute. <I>index</I> picks the texture unit that <I>attr</I> will be
+       applied to. The following attribute tokens have multiple
+       values:
+
+              <B>PFSTATE_TEXTURE</B>
+              <B>PFSTATE_TEXENV</B>
+              <B>PFSTATE_TEXGEN</B>
+              <B>PFSTATE_TEXLOD</B>
+              <B>PFSTATE_TEXMAT</B>
+
+       Similarly, <B>pfGetGStateMultiAttr</B>, <B>pfGetGStateCurMultiAttr</B>
+       and <B>pfGetGStateCombinedMultiAttr</B> are multi-valued versions
+       of <B>pfGetGStateAttr</B>, <B>pfGetGStateCurAttr</B> and
+       <B>pfGetGStateCombinedAttr</B>. All accept the above multi-value
+       attribute tokens.
+
+              <B>PFSTATE_ENTEXMAT</B>
+
+       Similarly, <B>pfGetGStateMultiMode</B>, <B>pfGetGStateCurMultiMode</B>
+       and <B>pfGetGStateCombinedMultiMode</B> are multi-value versions
+       of <B>pfGetGStateMode</B>, <B>pfGetGStateCurMode</B>  and
+       <B>pfGetGStateCombinedMode</B>.  All accept the above multi-value
+       mode tokens.
+
+       When (<I>mode</I> == <B>PFSTATE_ENTEXTURE</B>) <B>pfGeoState</B> expects a con-
+       tiguous sequence of enable values. The first disabled
+       index in this mode determines how many values <B>pfGeoState</B>
+       recognizes. For example, when calling
+       <B>pfGStateMultiMode(gstate,</B> <B>PFSTATE_ENTEXTURE,</B> <B>index,</B> <B>1)</B>
+        for index=[0, 1, 3], <B>pfGeoState</B> will process two texture
+       units and will ignore the (<I>index</I> == 3) case.  In addition,
+       if the current hardware doesn't support enough multi-tex-
+       ture units, <B>pfGeoState</B> will issue a warning and ignore
+       settings for unavailable hardware texture units.
+       <B>pfGetGStateNumTextures</B> returns the number of texture units
+       that <B>pfGeoState</B> will process.
+
+       Calling a multi-value function with (<I>index</I> == 0) is equiv-
+       alent to calling the single-value version of the function.
+
+       As discussed above, modes, values and attributes may
+       either be locally set on a pfGeoState or inherited from
+       the global state. To help resolve the inheritance charac-
+       teristics of pfGeoStates, 3 different versions of "get"
+       routines are provided for modes, values and attributes:
+
+              1.     <B>pfGetGStateMode</B>, <B>pfGetGStateVal</B>,
+                     <B>pfGetGStateAttr</B> - The exact mode, value, or
+                     attribute of the pfGeoState is returned.
+
+              2.     <B>pfGetGStateCurMode</B>, <B>pfGetGStateCurVal</B>,
+                     <B>pfGetGStateCurAttr</B> - The exact mode, value,
+                     or attribute of the pfGeoState is returned
+                     if not inherited. Otherwise the mode, value,
+                     or attribute of the currently active global
+                     pfGeoState is returned. Note that this
+                     requires that a pfState be current (see
+                     <B>pfSelectState</B>).
+
+              3.     <B>pfGetGStateCombinedMode</B>,
+                     <B>pfGetGStateCombinedVal</B>,
+                     <B>pfGetGStateCombinedAttr</B> - The exact mode,
+                     value, or attribute of the pfGeoState is
+                     returned if not inherited. Otherwise the
+                     mode, value, or attribute of the <I>combGState</I>
+                     is returned.
+
+       <B>pfGetGStateMode</B> returns the mode value corresponding to
+       <I>mode</I>.
+
+       <B>pfGetGStateVal</B> returns the pfGeoState value corresponding
+       to <I>gsval</I>.
+
+       <B>pfGetGStateAttr</B> returns the attribute handle corresponding
+       to <I>attr</I>. If <I>attr</I> is <B>PFSTATE_LIGHTS</B>, the returned value is
+       inherited unless explicitly specified by setting a mode or
+       attribute with <B>pfGStateAttr</B>, <B>pfGStateMode</B>, or <B>pfGStateVal</B>.
+       <B>pfGetGStateInherit</B> returns the bitwise OR of the tokens
+       for state which is currently inherited from the global
+       state.
+
+       <B>pfApplyGState</B> makes <I>gstate</I> the current graphics state.
+       All modes and attributes of <I>gstate</I> that are not inherited
+       are applied using libpr immediate mode commands, for exam-
+       ple, the <B>PFSTATE_TEXTURE</B> attribute is applied with
+       <B>pfApplyTex</B>.  Inherited modes and attributes that were mod-
+       ified by previous pfGeoStates are reset to their global
+       values.  State elements that are overridden (See
+       <B>pfOverride</B>) are not changed by <B>pfApplyGState</B>.
+
+       Another way to apply a pfGeoState is with <B>pfDrawGSet</B>.  If
+       a pfGeoSet has an attached pfGeoState (see <B>pfGSetGState</B>),
+       then <B>pfDrawGSet</B> will call <B>pfApplyGState</B> with the attached
+       pfGeoState so that graphics state is properly established
+       before the pfGeoSet geometry is rendered.
+
+       The following is an example of pfGeoState behavior.
+
+       Example 1:
+
+       /* Configure global default that pfGeoStates can inherit */
+       pfEnable(PFEN_LIGHTING);
+       pfApplyLModel(pfNewLModel(NULL));
+       pfLightOn(pfNewLight(NULL));
+       pfTransparency(PFTR_OFF);
+
+       /* New pfGeoState inherits everything */
+       gstate = pfNewGState(NULL);
+
+       /* Attach 'gstate' to 'gset' */
+       pfGSetGState(gset, gstate);
+
+       /* Configure 'gstate' with a transparent material */
+       pfGStateAttr(gstate, PFSTATE_FRONTMTL, mtl);
+       pfGStateMode(gstate, PFSTATE_TRANSPARENCY, PFTR_ON);
+
+
+       Method A:
+
+       /* Draw transparent 'gset' */
+       pfDrawGSet(gset);
+
+
+       Method B:
+
+       /* Remove 'gstate' from 'gset' */
+       pfGSetGState(gset, NULL);
+
+       /* Apply 'gstate' */
+       pfApplyGState(gstate);
+
+       /* Draw transparent 'gset' */
+       pfDrawGSet(gset);
+
+       pfTransparency(PFTR_ON);
+
+       /* Draw transparent 'gset' */
+       pfDrawGSet(gset);
+
+
+       In the above example, methods A, B, and C are all produce
+       the same visual result. Method A is recommended, however,
+       since the pfGeoState and pfGeoSet pair may be configured
+       at database initialization time and the use of a
+       pfGeoState provides order-independence when rendering.
+
+       The following is an example of pfGeoState inheritance:
+
+       /* Configure global default that pfGeoStates can inherit */
+       pfEnable(PFEN_LIGHTING);
+       pfApplyLModel(pfNewLModel(NULL));
+       pfLightOn(pfNewLight(NULL));
+
+       /* Assume 'redMtl' is PFMTL_FRONT */
+       pfApplyMtl(redMtl);
+
+       /* New pfGeoStates inherit everything */
+       gstateA = pfNewGState(NULL);
+       gstateB = pfNewGState(NULL);
+
+       /* Attach pfGeoStates to pfGeoSets */
+       pfGSetGState(gsetA, gstateA);
+       pfGSetGState(gsetB, gstateB);
+
+       /* Configure 'gstateA' with a green material */
+       pfGStateAttr(gstateA, PFSTATE_FRONTMTL, greenMtl);
+
+       /* Draw green 'gset' */
+       pfDrawGSet(gsetA);
+
+       /*
+        * The FRONTMTL property of gstateB is not set so it inherits
+        * the global default of 'redMtl' which will be restored
+        * as the current pfMaterial when gstateB is applied.
+        */
+
+       /* Draw red 'gset' */
+       pfDrawGSet(gsetB);
+
+       /*
+        * Note that gsetA and gsetB could be drawn in the opposite
+        * order with the same results.  This is a very important
+        * pfGeoState property.
+        */
+
+
+       <B>pfGetCurGState</B> returns the current pfGeoState that was
+       previously applied directly by <B>pfApplyGState</B> or indirectly
+       by <B>pfDrawGSet</B>.
+
+       <B>pfGStateFuncs</B> sets the callbacks and callback data pointer
+       of <I>gstate</I>. The reference count of <I>data</I> is incremented and
+       the reference count of the previous data is decremented
+       <I>preFunc</I>() of current pfGeoState
+
+
+       Notice that the post-callback invocation is delayed until
+       a subsequent pfGeoState is applied. However, <B>pfPushState</B>,
+       <B>pfPopState</B>, and <B>pfFlushState</B> will invoke any "leftover"
+       post-callback.  It is legal to call <B>pfPushState</B> and
+       <B>pfPopState</B> in the pre and post callbacks respectively but
+       is not usually necessary because any <B>libpr</B> state set
+       inside pfGeoState callbacks is considered to have been set
+       by the pfGeoState. Consequently, the global state is not
+       modified and the normal pfGeoState inheritance rules apply
+       to state set inside the callbacks.
+
+       Callbacks are passed a pointer to the parent pfGeoState
+       and the <I>data</I> pointer that was previously supplied by
+       <B>pfGStateFuncs</B>.  The return value from pfGeoState callbacks
+       is currently ignored.  <B>pfGetGStateFuncs</B> gets back the pre
+       and post pfGeoState callbacks and callback data for <I>gstate</I>
+       in <I>preFunc</I>, <I>postFunc</I>, and <I>data</I>, respectively.
+
+       A pfGeoSet may either directly reference or indirectly
+       index a pfGeoState with <B>pfGSetGState</B> and <B>pfGSetGStateIndex</B>
+       respectively.  Indexed pfGeoStates use a global table of
+       pfGeoState pointers that is set by <B>pfApplyGStateTable</B>. If
+       the global table is <B>NULL</B> or the pfGeoState index is out of
+       the range of the global table, no pfGeoState is applied,
+       otherwise the indexed pfGeoState is applied when
+       <B>pfDrawGSet</B> is called. Non-indexed pfGeoState references
+       ignore the current pfGeoState table. <B>pfGetCurGStateTable</B>
+       returns the current pfGeoState table and
+       <B>pfGetCurIndexedGState</B> returns the <I>index</I>th pfGeoState* in
+       the current pfGeoState table or <B>NULL</B> if the index cannot
+       be properly resolved.
+
+       <B>pfLoadGState</B> is similar to <B>pfApplyGState</B> except the modes
+       and attributes of <I>gstate</I> can be inherited by subsequent
+       pfGeoStates.  In other words, <I>gstate</I> loads the global
+       state.  Overridden state elements are not modified by
+       <B>pfLoadGState</B>. If set, the pre-callback of <I>gstate</I> is
+       invoked after the graphics state is loaded. As described
+       above, the post-callback is not invoked until a subsequent
+       pfGeoState is applied or <B>pfPushState</B>, <B>pfPopState</B>, or
+       <B>pfFlushState</B> is called.
+
+       <B>pfApplyGState</B>, <B>pfApplyGStateTable</B>, and <B>pfLoadGState</B> are
+       display-listable commands.  If a pfDispList has been
+       opened by <B>pfOpenDList</B>, these commands will not have imme-
+       diate effect but will be captured by the pfDispList and
+       will only have effect when that pfDispList is later exe-
+       cuted with <B>pfDrawDList</B>.  Indexed pfGeoStates are resolved
+       at display list creation time, not at display list execu-
+       tion time. In addition, pfGeoStates are "unwound" into
+       their constituent parts at display list creation time,
+       e.g., a pfGeoState may decompose into <B>pfApplyMtl</B> and
+       <B>pfTransparency</B> calls. As a result, changes to a pfGeoState
+       which have been captured by a pfDispList will *not* be
+       evident when that pfDispList is executed (<B>pfDrawDList</B>).
+       pfGeoState indexing and unwinding at display list creation
+       "off". For example, the PFSTATE_ENLIGHTING mode will be
+       set to PF_OFF, and the PFSTATE_CULLFACE mode will be set
+       to PFCF_OFF.  The following code fragment is equivalent to
+       <B>pfBasicState</B>:
+
+
+       pfGeoState *gstate = pfNewGState(NULL);
+       pfMakeBasicGState(gstate);
+       pfLoadGState(gstate);
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       In some situations it may appear that pfGeoStates do
+       inherit from each other.  This is because OpenGL Performer
+       currently does not provide any defaults for the state
+       attributes listed above such as <B>PFSTATE_TEXTURE</B> and
+       <B>PFSTATE_FRONTMTL</B>.  Consequently, if the application does
+       not explicitly set these attributes, it is possible for
+       pfGeoStates which inherit these attributes to inherit them
+       from previous pfGeoStates.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAlphaFunc, pfAntialias, pfBasicState, pfCullFace, pfDe-
+       cal, pfDelete, pfDispList, pfDrawGSet, pfEnable, pfFog,
+       pfGeoSet, pfLight, pfList, pfLPointState, pfOverride, pfS-
+       tate, pfTexture, pfTexGen, pfTransparency
+
+
+
+                                                  pfGeoState(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

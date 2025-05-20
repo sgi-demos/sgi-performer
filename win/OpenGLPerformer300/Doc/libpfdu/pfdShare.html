@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+<TITLE>pfdShare</TITLE>
+</HEAD>
+<BODY>
+<H1>pfdShare</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfdShare(3pf)                                       pfdShare(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdNewShare,</B>  <B>pfdGetGlobalShare,</B>  <B>pfdSetGlobalShare,</B>  <B>pfd-</B>
+       <B>DelShare,</B> <B>pfdPrintShare,</B> <B>pfdCountShare,</B>  <B>pfdGetSharedList,</B>
+       <B>pfdFindSharedObject,</B>  <B>pfdAddSharedObject,</B>  <B>pfdRemoveShare-</B>
+       <B>dObject,</B> <B>pfdNewSharedObject,</B> <B>pfdMakeShared,</B> <B>pfdMakeShared-</B>
+       <B>Scene,</B>  <B>pfdCleanShare,</B>  <B>pfdGetNodeGStateList</B>  - Facilitate
+       the sharing of graphics state objects in a Performer scene
+       graph.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdu.h&gt;
+
+       pfdShare *   <B>pfdNewShare</B>(void);
+
+       pfdShare *   <B>pfdGetGlobalShare</B>(void);
+
+       void *       <B>pfdSetGlobalShare</B>(pfdShare *share);
+
+       void         <B>pfdDelShare</B>(pfdShare *share, int deepDelete);
+
+       void         <B>pfdPrintShare</B>(pfdShare *share);
+
+       int          <B>pfdCountShare</B>(pfdShare *share);
+
+       pfList *     <B>pfdGetSharedList</B>(pfdShare *share,
+                      pfType *type);
+
+       pfObject *   <B>pfdFindSharedObject</B>(pfdShare *share,    pfOb-
+                      ject *object);
+
+       int          <B>pfdAddSharedObject</B>(pfdShare *share,     pfOb-
+                      ject *object);
+
+       int          <B>pfdRemoveSharedObject</B>(pfdShare *share,  pfOb-
+                      ject *object);
+
+       pfObject *   <B>pfdNewSharedObject</B>(pfdShare *share,     pfOb-
+                      ject *object);
+
+       void         <B>pfdMakeShared</B>(pfNode *node);
+
+       void         <B>pfdMakeSharedScene</B>(pfScene *scene);
+
+       int          <B>pfdCleanShare</B>(pfdShare *share);
+
+       pfList *     <B>pfdGetNodeGStateList</B>(pfNode *node);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       It  is obviously desirable to share state between database
+       objects in OpenGL Performer whenever possible.  The notion
+       of pervasive state sharing underpins the entire <B>pfGeoState</B>
+       mechanism.  Common data such as  texture,  materials,  and
+       lighting  models  are  often  duplicated in many different
+       objects throughout a database.  This collection  of  func-
+       tions provides the means necessary to easily achieve shar-
+       <B>pfdGetGlobalShare</B>  returns  the global <B>pfdShare</B> structure.
+       This structure is used by both the <B>pfdBuilder</B> and by load-
+       ers that do not use the <B>pfdBuilder</B>.
+
+       <B>pfdSetGlobalShare</B> sets the global <B>pfdShare</B> structure.
+
+       <B>pfdDelShare</B>  deletes  a <B>pfdShare</B> structure.  If <I>deepDelete</I>
+       is non-NULL, all the data referenced by the <B>pfdShare</B>  will
+       also be deleted.
+
+       <B>pfdPrintShare</B>  will print statistics about how many object
+       references are being held in the given sharing  structure.
+
+       <B>pfdCountShare</B>  returns  the total number of shared objects
+       referenced by the given sharing structure.
+
+       Each <B>pfdShare</B> structure maintains lists of shared  objects
+       with  distinct  types of objects stored in distinct lists.
+       <B>pfdGetSharedList</B> returns the list of shared objects of the
+       given type.
+
+       <B>pfdNewSharedObject</B>   returns   a  shared  object  matching
+       <I>object</I>.  If a matching object was already present  in  the
+       sharing  structure,  that  object is returned.  If no such
+       object exists, a new object is created using <I>object</I>  as  a
+       template.   This  new  object  is entered into the sharing
+       structure and is returned to the caller.
+
+       <B>pfdFindSharedObject</B>  looks  through  the  given   pfdShare
+       structure  for  an  object  matching  <I>object</I>.   A  NULL is
+       returned if no matching object is found.
+
+       <B>pfdAddSharedObject</B> adds <I>object</I> to the given sharing struc-
+       ture, if it is not already present.  The object's index in
+       the sharing list is returned.
+
+       <B>pfdRemoveSharedObject</B> removes <I>object</I> from the given  shar-
+       ing  structure,  if  it is present.  The object's index in
+       the sharing list is returned.  The object  is  deleted  if
+       its reference count reaches zero via <B>pfUnrefDelete</B>.
+
+       <B>pfdMakeShared</B> can be used to force sharing of state within
+       an already existing scene graph.   It  will  traverse  the
+       graph  rooted at <I>node</I> looking for duplicate state objects.
+       Any references to such objects will be made to point to  a
+       single shared copy, and the duplicates will be freed.
+
+       <B>pfdMakeSharedScene</B> is similar to pfdMakeShared except that
+       it works on  a  scene  and  computes  an  optimal  pfScene
+       pfGeoState  based  on all of the pfGeoStates referenced in
+       <I>scene</I>  (see  <B>pfdMakeSceneGState</B>  for  further  information
+       about  the  scene  pfGeoState  computation  itself).   The
+       pfGeoStates in <I>scene</I> are then optimized based on  the  new
+       scene  GeoState  (see <B>pfdOptimizeGStateList</B>).  Lastly, the
+       optimized pfGeoState is assigned as the scene's pfGeoState
+       so  that  the  inheritance  for the newly optimized states
+       will be effective (see <B>pfSceneGState</B>).
+
+       <B>pfdCleanShare</B> removes all shared objects that  are  refer-
+       <B>pfdGetNodeGStateList</B>  creates  and  returns  a  pfList  of
+       unique  pfGeoStates  that are referenced by geometry under
+       <I>node</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdu source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfGeoSet, pfGeoState, pfList
+
+
+
+                                                    pfdShare(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<TITLE>pfuCalcVirtualClipTexParams</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuCalcVirtualClipTexParams</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuCalcVirtualClipTexParams(3pf) pfuCalcVirtualClipTexParams(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuCalcVirtualClipTexParams</B>  -  calculate  parameters  for
+       virtual clip textures
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuCalcVirtualClipTexParams</B>(int nLevels,  int clip-
+                Size,   int invalidBorder,  float minLODTexPix,
+                float minLODLoaded,         float maxLODLoaded,
+                float bboxMinDist,           float bboxMaxDist,
+                float tradeoff,     const struct pfVirtualClip-
+                TexLimits *limits,       int *return_LODOffset,
+                int *return_numEffectiveLevels,
+                float *return_minLOD, float *return_maxLOD);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuCalcVirtualClipTexParams</B>  attempts to calculate reason-
+       able   values   for   the   four   parameters   <B>LODOffset</B>,
+       <B>numEffectiveLevels</B>,  <B>minLOD</B>,  <B>maxLOD</B>  which are need to be
+       set per-frame or per-tile for virtual clip textures, given
+       as  much  information  as the caller can provide about the
+       geometry of the scene or tile, the texture coordinate map-
+       ping, the current clip center of the clip texture, and the
+       current eyepoint.
+
+       For details on  what  the  input  parameters  mean  and  a
+       description  of  the  algorithm,  see the commented source
+       code   in   /usr/share/Performer/src/lib/libpfutil/clippa-
+       rams.C.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       ClipTexture functionality is not supported under Linux.
+
+       This  function is specifically written to work around bugs
+       and limitations inherent  in  virtual  clip  texturing  on
+       InfiniteReality graphics.  For a description of these bugs
+       and        limitations,        see         /usr/share/Per-
+       former/doc/clipmap/IRClipmapBugs.html  or  /usr/share/Per-
+       former/doc/clipmap/IRClipmapBugs.txt.   Because  of  this,
+       the behavior of this function is intricate; if it seems to
+       be doing something  mystifying,  you  may  have  to  trace
+       through the commented source code to see what it is think-
+       ing.
+
+       For examples of various uses of  this  function,  see  the
+       sample  source  code  for  the  .spherepatch and .ct scene
+       loaders, and the virtcliptex sample program:
+              /usr/share/Performer/src/lib/libpfdb/libpfspherepatch/pfspherepatch.C
+              /usr/share/Performer/src/lib/libpfdb/libpfct/pfct.C
+              /usr/share/Performer/src/sample/pguide/libpf/C/virtcliptex.c
+
+       For a general description of how to do virtual  clip  tex-
+       turing,  see  /usr/share/Performer/doc/clipmap/HowToDoVir-
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfClipTexture, pfMPClipTexture, pfuCalcTexDerivs, pfuCalc-
+       SizeFinestMipLOD, clipfly
+
+
+
+                                 pfuCalcVirtualClipTexParams(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

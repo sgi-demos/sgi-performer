@@ -1,0 +1,104 @@
+<HTML>
+<HEAD>
+<TITLE>pfuMCO</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuMCO</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuMCO(3pf)                                           pfuMCO(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuConfigMCO,</B>   <B>pfuGetNumMCOChannels,</B>  <B>pfuTileChans,</B>  <B>pfu-</B>
+       <B>TileChan</B> - Multi-Channel Option configuration utilities.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuConfigMCO</B>(pfChannel **chn, int nChans);
+
+       int    <B>pfuGetNumMCOChannels</B>(pfPipe *p);
+
+       void   <B>pfuTileChans</B>(pfChannel **chn,           int nChans,
+                int ntilesx, int ntilesy);
+
+       void   <B>pfuTileChan</B>(pfChannel **chn,          int thisChan,
+                int nChans,    float l,    float r,    float b,
+                float t);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  functions  serve  as  a generic way of initializing
+       channels when using the integrated multi-channel  hardware
+       available  on  most current SGI platorms, including Reali-
+       tyEngine, InfiniteReality, Impact,  Octane  graphics  sys-
+       tems.   The  multi-channel  technique  divides  the  frame
+       buffer into several tiles and then outputs these different
+       tiles  to  different displays through different video out-
+       puts.  This allows multiple video  outputs  to  be  driven
+       efficiently  by  one pfPipeWindow with multiple pfChannels
+       whose viewports match  the  framebuffer  boundaries.   For
+       example,  on  RealityEngine,  the MCO can be configured to
+       drive up to six display channels  at  resolutions  varying
+       from  1280x1024 60Hz non-interlaced to 640x480 30Hz inter-
+       laced.  The InfiniteReality has up to eight  channels  per
+       single  graphics  pipeline.  Impact and Octane can each do
+       four.  These framebuffer boundaries and other  information
+       can  be  queried via a pfPipeVideoChannel that is attached
+       to the desired hardware video channel.  The utility  func-
+       tions use a basic knowledge or queries of how the configu-
+       rations tile the  frame  buffer  to  configure  <B>pfChannels</B>
+       appropriately  for  most configurations.  For more details
+       on video channels, refer  to  the  <B>pfPipeVideoChannel</B>  and
+       <B>XSGIvc(3)</B> reference pages.
+
+       <B>pfuConfigMCO</B>  takes the array of <B>pfChannel</B> pointers <I>chn</I> of
+       size <I>nChans</I> and formats the viewports such that each chan-
+       nel's viewport divides the framebuffer in the same way the
+       MCO does.  Each channel is thus mapped to a different dis-
+       play.
+
+       <B>pfuGetNumMCOChannels</B>  returns the number of channel subdi-
+       visions the MCO is currently configured to use.   This  is
+       the  number  of  displays that the MCO has tiled the frame
+       buffer into based on the current video output format spec-
+       ification (see <B>setmon</B>).
+
+       bottom(<I>b</I>), and top(<I>t</I>) values where each value is between 0
+       and  1.  <I>nChans</I>  is usually the number of channel subdivi-
+       sions the MCO is configured to use. <I>thisChan</I> should be  at
+       most <I>nChans</I>.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       MCO is not currently supported under Linux.
+
+       The  libpfutil  source code, object code and documentation
+       are provided as unsupported software.  Routines  are  sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel, pfPipe, pfPipeVideoChannel, setmon, XSGIvc
+
+
+
+                                                      pfuMCO(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

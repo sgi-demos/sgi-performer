@@ -1,0 +1,86 @@
+<HTML>
+<HEAD>
+<TITLE>makeIBRimages</TITLE>
+</HEAD>
+<BODY>
+<H1>makeIBRimages</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+makeIBRimages(1pf)                             makeIBRimages(1pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>makeIBRimages</B>  -  OpenGL  Performer  tool  for  generating
+       images for image-based rendering
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>makeIBRimages</B> infile1 [ options ]
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Program <B>makeIBRimages</B> is one of  the  tool  programs  dis-
+       tributed with the OpenGL Performer high-performance graph-
+       ics library.  Its source  is  located  in  /usr/share/Per-
+       former/src/conv/.  It can be used to create images (views)
+       of the specified object from a  set  of  directions.   The
+       input  is  a file that can be read by OpenGL Performer and
+       the output is a set of images of that object that  can  be
+       directly  used as an input for a pfIBRtexture.  The images
+       are stored in a directory specified using the option -f.
+
+       If a text file 'info' is present in the output directory a
+       set  of 3D views is rendered. The file has the same syntax
+       as described above.  Each line of the info  file  contains
+       two  values:  the  angle from the horizontal plane and how
+       many views are created for that angle. The images are then
+       indexed  by  two  integer  values that are appended to the
+       name specified by the option -f. The first  value  is  the
+       index  of the ring of views and the second one indexes the
+       views within the ring.
+
+       If the info file is not present a set of N views  (set  by
+       the  option  -n) is computed around the object using hori-
+       zontal angle of  0.   In  this  case  only  one  index  is
+       appended to the image name.
+
+       If option -pfb is specified the program outputs a pfb file
+       in the specified directory. The  file  contains  a  single
+       pfIBRnode that uses the created images. Note: before load-
+       ing in perfly make sure that PFPATH is set to  the  direc-
+       tory with all images.
+
+       To  obtain  the  full  set of command line options run the
+       program <B>makeIBRimages</B> without any parameters.
+
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       If your machine does not support a single-buffered  visual
+       with  at least 8 bits per red, green, blue, and alpha com-
+       ponent the images may be missing alpha  channel.  See  the
+       number  of  alpha  bits  printed  at  the beginning of the
+       <B>makeIBRimages</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>performer</B>, <B>pfIBRtexture</B>, <B>pfIBRnode</B>
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

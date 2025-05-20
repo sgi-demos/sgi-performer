@@ -1,0 +1,279 @@
+<HTML>
+<HEAD>
+<TITLE>pfiXformer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiXformer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiXformer(3pf)                                   pfiXformer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiInit,</B>   <B>pfiGetXformerClassType,</B>   <B>pfiNewXformer,</B>  <B>pfiX-</B>
+       <B>formerModel,</B> <B>pfiSelectXformerModel,</B> <B>pfiGetXformerCurModel,</B>
+       <B>pfiGetXformerCurModelIndex,</B>  <B>pfiRemoveXformerModel,</B> <B>pfiRe-</B>
+       <B>moveXformerModelIndex,</B>  <B>pfiStopXformer,</B>   <B>pfiResetXformer,</B>
+       <B>pfiResetXformerPosition,</B>   <B>pfiCenterXformer,</B>   <B>pfiXformer-</B>
+       <B>AutoInput,</B> <B>pfiXformerMat,</B> <B>pfiGetXformerMat,</B> <B>pfiXformerMod-</B>
+       <B>elMat,</B>  <B>pfiGetXformerModelMat,</B>  <B>pfiXformerCoord,</B>  <B>pfiGetX-</B>
+       <B>formerCoord,</B>  <B>pfiXformerResetCoord,</B>  <B>pfiGetXformerResetCo-</B>
+       <B>ord,</B>  <B>pfiXformerNode,</B> <B>pfiGetXformerNode,</B> <B>pfiXformerAutoPo-</B>
+       <B>sition,</B>    <B>pfiGetXformerAutoPosition,</B>    <B>pfiXformerLimits,</B>
+       <B>pfiGetXformerLimits,</B>   <B>pfiEnableXformerCollision,</B>  <B>pfiDis-</B>
+       <B>ableXformerCollision,</B> <B>pfiGetXformerCollisionEnable,</B>  <B>pfiX-</B>
+       <B>formerCollision,</B> <B>pfiGetXformerCollisionStatus,</B> <B>pfiUpdateX-</B>
+       <B>former,</B> <B>pfiCollideXformer</B> - Performer utility  module  for
+       managing a collection of motion models.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       void              <B>pfiInit</B>(void);
+
+       extern pfType*    <B>pfiGetXformerClassType</B>(void);
+
+       pfiXformer *      <B>pfiNewXformer</B>(void* arena);
+
+       void              <B>pfiXformerModel</B>(pfiXformer* xf,
+                           int index, pfiInputXform* model);
+
+       void              <B>pfiSelectXformerModel</B>(pfiXformer* xf,
+                           int which);
+
+       pfiInputXform *   <B>pfiGetXformerCurModel</B>(pfiXformer* xf);
+
+       int               <B>pfiGetXformerCurModelIndex</B>(pfiXformer* xf);
+
+       int               <B>pfiRemoveXformerModel</B>(pfiXformer* xf,
+                           int index);
+
+       int               <B>pfiRemoveXformerModelIndex</B>(pfiXformer* xf,
+                           pfiInputXform* model);
+
+       void              <B>pfiStopXformer</B>(pfiXformer* xf);
+
+       void              <B>pfiResetXformer</B>(pfiXformer* xf);
+
+       void              <B>pfiResetXformerPosition</B>(pfiXformer* xf);
+
+       void              <B>pfiCenterXformer</B>(pfiXformer* xf);
+
+       void              <B>pfiXformerAutoInput</B>(pfiXformer* xf,
+                           pfChannel* chan,    pfuMouse* mouse,
+                           pfuEventStream* events);
+
+       void              <B>pfiXformerMat</B>(pfiXformer* xf,      PFMA-
+
+       void              <B>pfiGetXformerModelMat</B>(pfiXformer* xf,
+                           PFMATRIX mat);
+
+       void              <B>pfiXformerCoord</B>(pfiXformer* xf,    pfCo-
+                           ord *coord);
+
+       void              <B>pfiGetXformerCoord</B>(pfiXformer* xf, pfCo-
+                           ord *coord);
+
+       void              <B>pfiXformerResetCoord</B>(pfiXformer* xf,
+                           pfCoord *resetPos);
+
+       void              <B>pfiGetXformerResetCoord</B>(pfiXformer* xf,
+                           pfCoord *resetPos);
+
+       void              <B>pfiXformerNode</B>(pfiXformer* xf,      pfN-
+                           ode *node);
+
+       pfNode *          <B>pfiGetXformerNode</B>(pfiXformer* xf);
+
+       void              <B>pfiXformerAutoPosition</B>(pfiXformer* xf,
+                           pfChannel *chan, pfDCS *dcs);
+
+       void              <B>pfiGetXformerAutoPosition</B>(pfiXformer* xf,
+                           pfChannel **chan, pfDCS **dcs);
+
+       void              <B>pfiXformerLimits</B>(pfiXformer* xf,
+                           float maxSpeed,    float angularVel,
+                           float maxAccel, pfBox* dbLimits);
+
+       void              <B>pfiGetXformerLimits</B>(pfiXformer* xf,
+                           float *maxSpeed,  float *angularVel,
+                           float *maxAccel, pfBox* dbLimits);
+
+       void              <B>pfiEnableXformerCollision</B>(pfiXformer* xf);
+
+       void              <B>pfiDisableXformerCollision</B>(pfiXformer* xf);
+
+       int               <B>pfiGetXformerCollisionEnable</B>(pfiXformer* xf);
+
+       void              <B>pfiXformerCollision</B>(pfiXformer* xf,
+                           int mode, float val, pfNode* node);
+
+       int               <B>pfiGetXformerCollisionStatus</B>(pfiXformer* xf);
+
+       void              <B>pfiUpdateXformer</B>(pfiXformer* xf);
+
+       int               <B>pfiCollideXformer</B>(pfiXformer* xf);
+
+
+                         typedef struct _pfiXformer pfiXformer;
+
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>xf</I>  identifies a pfiXformer.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiXformer</B> is a facility developed to address the common
+       elements automatically if specified with
+       <B>pfiXformerAutoPosition</B>. <B>pfiXformerAutoInput</B> can be used to
+       set up mouse-based input to the pfiXformer.
+
+       A pfiXformer is a child of the pfiInputXform class and so
+       pfiInputXform routines may be called with a pfiXformer.
+       See the pfiInputXform reference page for information on
+       pfiInputXform functionality. Functionality specific to the
+       pfiXformer are discussed here.  The pfiXformer has a com-
+       plete C++ API (more complete than the C API) following the
+       conventions of general OpenGL Performer C++ API; C++ meth-
+       ods are declared in /usr/include/Performer/pfui/pfiX-
+       former.h.  This reference page only discusses the C API.
+
+       <B>pfiInit</B> should be called once before any pfiXformer rou-
+       tines and before the forked creation of any additional
+       processes that will be calling pfiXformer routines.
+
+       <B>pfiGetXformerClassType</B>  returns the <B>pfType</B>* for the class
+       <B>pfiXformer</B>.  Because OpenGL Performer allows subclassing
+       of built-in types, when decisions are made based on the
+       type of an object, it is usually better to use <B>pfIsOfType</B>
+       to test if an object is of a type derived from a Performer
+       type rather than to test for strict equality of the
+       <B>pfType</B>*'s.
+
+       <B>pfiNewXformer</B> creates a new <B>pfiXformer</B> data structure as
+       described above and returns a pointer to that structure.
+       <I>arena</I> should specify the shared arena handle returned by
+       <B>pfGetSharedArena</B> or from the process dynamic memory area.
+
+       <B>pfiXformerAutoInput</B> causes the pfiXformer to use the spec-
+       ified mouse and channel when collecting user input.  These
+       structures will be examined every frame, typically <I>xf</I> when
+       <B>pfiUpdateXformer</B> is called.  <B>pfiUpdateXformer</B> should be
+       called every frame and will "update" <I>xf</I> based on the input
+       structures specified in <B>pfiXformerAutoInput</B> and the cur-
+       rently selected motion model.
+
+       <B>pfiXformerAutoPosition</B> will cause the pfiXformer to auto-
+       matically update the view and position matrices of <I>chan</I>
+       and <I>dcs</I> automatically.  One or both of <I>chan</I> or <I>dcs</I> may be
+       NULL to prevent channel or dcs updates.
+
+       <B>pfiXformerCollision</B> specifies with what types of objects
+       <B>xf</B> should collide.  <I>mode</I> is a bit field that will be bit-
+       wise OR-ed into the collision mode of <I>xf</I>.  Possible modes
+       are <B>PFICOLLIDE_GROUND</B> and <B>PFICOLLIDE_OBJECT</B>.  <I>val</I> speci-
+       fies the minimum distance from <I>xf</I>'s origin to an object or
+       to the ground at which <I>xf</I> is considered to have collided
+       with that object.  <I>node</I> specifies the root of the subtree
+       of the scene graph against which <I>xf</I> will check for colli-
+       sions.  <B>pfiGetXformerCollisionStatus</B> returns whether or
+       not <I>xf</I> is currently colliding with something.
+
+       <B>pfiXformerLimits</B> sets the maximum speed of <I>xf</I> to <I>maxSpeed</I>,
+       the angular velocity of <I>xf</I> to <I>angularVel</I>, the maximum
+       acceleration of <I>xf</I> to <I>maxAccel</I> and the bounds within which
+       <I>xf</I> can move to be the <B>pfBox</B> <I>dbLimits</I>.  <B>pfiGetXformerLimits</B>
+       active motion model of <I>xf</I>.  <B>pfiGetXformerCurModelIndex</B>
+       will return the index of the current active motion model
+       for <I>xf</I>.
+
+       <B>pfiRemoveXformerModel</B> will remove <I>model</I> from the motion
+       model list of <B>xf</B>. <B>pfiRemoveXformerModelIndex</B> will replace
+       the motion model at <I>index</I> from the motion model list of <I>xf</I>
+       with NULL.
+
+       <B>pfiXformerMat</B> sets the current pfiXformer matrix to <I>mat</I>
+       thus resetting <I>xf</I>'s transformation matrix to <I>mat</I>.  Note
+       that this also causes the <I>xf</I>'s position as specified in
+       the coord field of the <B>pfiXformer</B> to be updated.
+       <B>pfiGetXformerMat</B> returns <I>xf</I>'s current transform matrix by
+       copying it into <I>mat</I>.
+
+       <B>pfiXformerModelMat</B> sets the current transform matrix of
+       the current motion model of <I>xf</I> to <I>mat</I> thus resetting <I>xf</I>'s
+       transformation matrix to <I>mat</I>.  Note that this also causes
+       the <I>xf</I>'s position as specified in the coord field of the
+       <B>pfiXformer</B> to be updated.  <B>pfiGetXformerModelMat</B> returns
+       the transform matrix of the current motion model of <I>xf</I> by
+       copying it into <I>mat</I>.
+
+       <B>pfiXformerCoord</B> sets the current position of the
+       <B>pfiXformer</B> <I>xf</I> to <I>coord</I> and then recalculates the overall
+       <B>pfiXformer</B> matrix again based on this new position.  Note
+       that positions are absolute and not relative to previous
+       positions. <B>pfiGetXformerCoord</B> returns the position cur-
+       rently specified by the <B>pfiXformer</B> <I>xf</I> by copying it into
+       <I>coord</I>.
+
+       <B>pfiXformerNode</B> causes the pfiXformer to use <I>node</I> to auto-
+       matically compute database limits and size based on the
+       scene graph rooted at <I>node</I>.  If the database limits have
+       been previously explicitly specified with <B>pfiXformerLimits</B>
+       or <B>pfiIXformDBLimits</B> they will not be overwritten.
+
+       <B>pfiResetXformer</B> causes the motion models, the collision
+       model, and the current position and transformation matri-
+       ces to be reset to their initial state.
+
+       <B>pfiStopXformer</B> causes the transformation matrix in <I>xf</I> to
+       stop changing by zeroing velocity and acceleration.
+
+       <B>pfiResetXformerPosition</B> causes the position of the pfiX-
+       former and its current motion model to be reset to the
+       initial position.  This stored position can be set with
+       <B>pfiXformerResetCoord</B> and queried with
+       <B>pfiGetXformerResetCoord</B>.
+
+       <B>pfiCenterXformer</B> will cause the position of the pfiXformer
+       and its current motion model to be reset to the center of
+       the database, computed using the current database limits
+       as defined by <B>pfiXformerNode</B> or <B>pfiIXformDBLimits</B>.
+
+       <B>pfiEnableXformerCollision</B>  enables the current requested
+       collisions on <B>xf</B> which will be computed upon the call to
+       <B>pfiCollideXformer</B>.  <B>pfiDisableXformerCollision</B> disables
+       process.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfiTDFXformer, pfChannel, pfChanViewMat, pfCoord, pfDCS,
+       pfGetSharedArena, pfMatrix
+
+
+
+                                                  pfiXformer(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

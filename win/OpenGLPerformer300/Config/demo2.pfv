@@ -1,0 +1,187 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+<display>
+  <pipe>
+    <pwin>
+      <fullscreen>1</fullscreen>
+      <border>0</border>
+      <chan>
+        <name>chan0</name>
+        <viewport>0,0.5,0.5,1</viewport>
+      </chan>
+      <chan>
+        <name>chan1</name>
+        <viewport>0.5,1,0.5,1</viewport>
+      </chan>
+      <chan>
+        <name>chan2</name>
+        <viewport>0,0.5,0,0.5</viewport>
+      </chan>
+      <chan>
+        <name>chan3</name>
+        <viewport>0.5,1,0,0.5</viewport>
+      </chan>
+    </pwin>
+  </pipe>
+</display>
+
+<world><name>w0</name></world>
+<world><name>w1</name></world>
+<world><name>w2</name></world>
+<world><name>w3</name></world>
+    
+<view>
+  <name>v0</name>
+  <chan chan="chan0"></chan>
+  <world>w0</world>
+</view>
+
+<view>
+  <name>v1</name>
+  <chan chan="chan1"></chan>
+  <world>w1</world>
+</view>
+
+<view>
+  <name>v2</name>
+  <chan chan="chan2"></chan>
+  <world>w2</world>
+</view>
+
+<view>
+  <name>v3</name>
+  <chan chan="chan3"></chan>
+  <world>w3</world>
+</view>
+
+<Module>
+  <class>pfvmLoader</class>
+  <scope>world,w0</scope>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>esprit.flt</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmLoader</class>
+  <scope>world,w1</scope>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>truck.pfb</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmLoader</class>
+  <scope>world,w2</scope>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>tux.pfb</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmLoader</class>
+  <scope>world,w3</scope>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>ch53.pfb</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmTrackball</class>
+  <scope>view,v0</scope>
+</Module>
+
+<Module>
+  <class>pfvmTrackball</class>
+  <scope>view,v1</scope>
+</Module>
+
+<Module>
+  <class>pfvmTrackball</class>
+  <scope>view,v2</scope>
+</Module>
+
+<Module>
+  <class>pfvmTrackball</class>
+  <scope>view,v3</scope>
+</Module>
+
+
+<Module>
+  <class>pfvmDrawStyle</class>
+  <scope>view,v0</scope>
+</Module>
+
+<Module>
+  <class>pfvmDrawStyle</class>
+  <scope>view,v1</scope>
+</Module>
+
+<Module>
+  <class>pfvmDrawStyle</class>
+  <scope>view,v2</scope>
+</Module>
+
+<Module>
+  <class>pfvmDrawStyle</class>
+  <scope>view,v3</scope>
+</Module>
+
+
+
+
+<Module>
+  <class>pfvmPicker</class>
+  <scope>view,v0</scope>
+</Module>
+
+<Module>
+  <class>pfvmPicker</class>
+  <scope>view,v1</scope>
+</Module>
+
+<Module>
+  <class>pfvmPicker</class>
+  <scope>view,v2</scope>
+</Module>
+
+<Module>
+  <class>pfvmPicker</class>
+  <scope>view,v3</scope>
+</Module>
+
+
+<Module>
+  <class>pfvmSnapshot</class>
+  <data>
+    <BaseName>winsnap</BaseName>
+    <SingleChan>0</SingleChan>
+    <SaveAlpha>0</SaveAlpha>
+    <key>F12</key>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmSnapshot</class>
+  <data>
+    <BaseName>chansnap</BaseName>
+    <SingleChan>1</SingleChan>
+    <SaveAlpha>0</SaveAlpha>
+    <key>F11</key>
+  </data>
+</Module>
+
+</viewer>
+
+
+

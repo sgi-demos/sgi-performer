@@ -1,0 +1,168 @@
+<HTML>
+<HEAD>
+<TITLE>pfVec3</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVec3</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVec3(3pf)                                           pfVec3(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfAddScaledVec3,</B>    <B>pfAddVec3,</B>   <B>pfEqualVec3,</B>   <B>pfAlmostE-</B>
+       <B>qualVec3,</B> <B>pfCombineVec3,</B> <B>pfCopyVec3,</B>  <B>pfCrossVec3,</B>  <B>pfDis-</B>
+       <B>tancePt3,</B> <B>pfDotVec3,</B> <B>pfLengthVec3,</B> <B>pfNegateVec3,</B> <B>pfNormal-</B>
+       <B>izeVec3,</B> <B>pfScaleVec3,</B> <B>pfSetVec3,</B> <B>pfSqrDistancePt3,</B>  <B>pfSub-</B>
+       <B>Vec3,</B>  <B>pfXformVec3,</B>  <B>pfXformPt3,</B>  <B>pfFullXformPt3</B> - Set and
+       operate on 3-component vectors
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       #include &lt;Performer/prmath.h&gt;
+
+       void    <B>pfAddScaledVec3</B>(pfVec3 dst,       const pfVec3 v1,
+                 float s, const pfVec3 v2);
+
+       void    <B>pfAddVec3</B>(pfVec3 dst,             const pfVec3 v1,
+                 const pfVec3 v2);
+
+       int     <B>pfEqualVec3</B>(const pfVec3 v1, const pfVec3 v2);
+
+       int     <B>pfAlmostEqualVec3</B>(const pfVec3 v1,
+                 const pfVec3 v2, float tol);
+
+       void    <B>pfCombineVec3</B>(pfVec3 dst,                float s1,
+                 const pfVec3 v1, float s2, const pfVec3 v2);
+
+       void    <B>pfCopyVec3</B>(pfVec3 dst, const pfVec3 v);
+
+       void    <B>pfCrossVec3</B>(pfVec3 dst,           const pfVec3 v1,
+                 const pfVec3 v2);
+
+       float   <B>pfDistancePt3</B>(const pfVec3 pt1, const pfVec3 pt2);
+
+       float   <B>pfDotVec3</B>(const pfVec3 v1, const pfVec3 v2);
+
+       float   <B>pfLengthVec3</B>(const pfVec3 v);
+
+       void    <B>pfNegateVec3</B>(pfVec3 dst, const pfVec3 v);
+
+       float   <B>pfNormalizeVec3</B>(pfVec3 v);
+
+       void    <B>pfScaleVec3</B>(pfVec3 dst, float s, const pfVec3 v);
+
+       void    <B>pfSetVec3</B>(pfVec3 dst, float x, float y, float z);
+
+       float   <B>pfSqrDistancePt3</B>(const pfVec3 pt1,
+                 const pfVec3 pt2);
+
+       void    <B>pfSubVec3</B>(pfVec3 dst,             const pfVec3 v1,
+                 const pfVec3 v2);
+
+       void    <B>pfXformVec3</B>(pfVec3 dst,            const pfVec3 v,
+                 const pfMatrix m);
+
+               typedef float pfVec3[3];
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Math functions for 3-component vectors.  Most of these
+       routines have macro equivalents.
+
+
+       <B>pfSetVec3</B>(dst, x, y, z): <I>dst</I>[0] = <I>x</I>, <I>dst</I>[1] = <I>y</I>, <I>dst</I>[2] =
+       <I>z</I>.  Macro equivalent is  <B>PFSET_VEC3</B>.
+
+       <B>pfCopyVec3</B>(dst, v): <I>dst</I> = <I>v</I>.  Macro equivalent is
+       <B>PFCOPY_VEC3</B>.
+
+       <B>pfNegateVec3</B>(dst, v): <I>dst</I> = -<I>v</I>.  Macro equivalent is
+       <B>PFNEGATE_VEC3</B>.
+
+       <B>pfAddVec3</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> + <I>v2</I>.  Sets <I>dst</I> to the
+       sum of vectors <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFADD_VEC3</B>.
+
+       <B>pfSubVec3</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> - <I>v2</I>.  Sets <I>dst</I> to the
+       difference of <I>v1</I> and <I>v2</I>.  Macro equivalent is  <B>PFSUB_VEC3</B>.
+
+       <B>pfScaleVec3</B>(dst, s, v): <I>dst</I> = <I>s</I> * <I>v1</I>.  Sets <I>dst</I> to the
+       vector <I>v</I> scaled by <I>s</I>.  Macro equivalent is  <B>PFSCALE_VEC3</B>.
+
+       <B>pfAddScaledVec3</B>(dst, v1, s, v2): <I>dst</I> = <I>v1</I> + <I>s</I> * <I>v2</I>.  Sets
+       <I>dst</I> to the vector <I>v1</I> plus the vector <I>v2</I> scaled by <I>s</I>.
+       Macro equivalent is  <B>PFADD_SCALED_VEC3</B>.
+
+       <B>pfCombineVec3</B>(dst, s1, v1, s2, v2): <I>dst</I> = <I>s1</I> * <I>v1</I> + <I>s2</I> *
+       <I>v2</I>.  Sets <I>dst</I> to be the linear combination of <I>v1</I> and <I>v2</I>
+       with scales <I>s1</I> and <I>s2</I>, respectively.  Macro equivalent:
+       <B>PFCOMBINE_VEC3</B>.
+
+       <B>pfNormalizeVec3</B>(v): <I>v</I> = <I>v</I> / length(<I>v</I>).  Normalizes the
+       vector <I>v</I> to have unit length and returns the original
+       length of the vector.
+
+       <B>pfCrossVec3</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> X <I>v2</I>.  Sets <I>dst</I> to the
+       cross-product of two vectors <I>v1</I> and <I>v2</I>.
+
+       <B>pfXformVec3</B>(dst, v, m): <I>dst</I> = <I>v4</I> * <I>m</I> (<I>v4</I>[i]=<I>v[i]</I> i=0, 1,
+       2; <I>v4</I>[3] = 0).  Transforms <I>v</I> as a vector by the matrix <I>m</I>.
+
+       <B>pfXformPt3</B>(dst, v, m): <I>dst</I> = <I>v4</I> * <I>m</I> (<I>v4</I>[i]=<I>v[i]</I> i=0, 1, 2;
+       <I>v4</I>[3] = 1).  Transforms <I>v</I> as a point by the matrix <I>m</I> using
+       the 4X3 submatrix.
+
+       <B>pfFullXformPt3</B>(dst, v, m): <I>dst</I> = <I>v4</I> * <I>m</I> (<I>v4</I>[i]=<I>v[i]</I> i=0,
+       1, 2; <I>v4</I>[3] = 1).  Transforms <I>v</I> as a point by the matrix <I>m</I>
+       using the full 4X4 matrix and scaling <I>dst</I> by the resulting
+       w coordinate.
+
+       <B>pfDotVec3</B>(v1, v2) = <I>v1</I> dot <I>v2</I> = <I>v1</I>[0] * <I>v2</I>[0] + <I>v1</I>[1] *
+       <I>v2</I>[1] + <I>v1</I>[2] * <I>v2</I>[2].  Returns dot product of the vectors
+       <I>v1</I> and <I>v2</I>.  Macro equivalent is  <B>PFDOT_VEC3</B>.
+
+       <B>pfLengthVec3</B>(v) = |v| = sqrt(<I>v</I> dot <I>v</I>).  Returns length of
+       Returns distance between two points <I>v1</I> and <I>v2</I>.  Macro
+       equivalent is  <B>PFDISTANCE_PT3</B>.
+
+       <B>pfEqualVec3</B>(v1, v2) = (<I>v1</I> == <I>v2</I>).  Tests for strict compo-
+       nent-wise equality of two vectors <I>v1</I> and <I>v2</I> and returns
+       FALSE or TRUE.  Macro equivalent is  <B>PFEQUAL_VEC3</B>.
+
+       <B>pfAlmostEqualVec3</B>(v1, v2, tol).  Tests for approximate
+       component-wise equality of two vectors <I>v1</I> and <I>v2</I>.  It
+       returns FALSE or TRUE depending on whether the absolute
+       value of the difference between each pair of components is
+       less than the tolerance <I>tol</I>.  Macro equivalent is
+       <B>PFALMOST_EQUAL_VEC3</B>.
+
+       Routines can accept the same vector as source, destina-
+       tion, or as a repeated operand.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfMatrix, pfVec2, pfVec4
+
+
+
+                                                      pfVec3(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

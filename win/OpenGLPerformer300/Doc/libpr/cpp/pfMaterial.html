@@ -1,0 +1,339 @@
+<HTML>
+<HEAD>
+<TITLE>pfMaterial</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMaterial</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMaterial(3pf)                                   pfMaterial(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMaterial,</B> <B>pfGetCurMtl</B> - Create, modify and query a mate-
+       rial.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfMaterial.h&gt;
+
+                         <B>pfMaterial::pfMaterial</B>();
+
+       static pfType *   <B>pfMaterial::getClassType</B>(void);
+
+       void              <B>pfMaterial::setSide</B>(int side);
+
+       int               <B>pfMaterial::getSide</B>(void);
+
+       void              <B>pfMaterial::setAlpha</B>(float alpha);
+
+       float             <B>pfMaterial::getAlpha</B>(void);
+
+       void              <B>pfMaterial::setShininess</B>(float shininess);
+
+       float             <B>pfMaterial::getShininess</B>(void);
+
+       void              <B>pfMaterial::setColor</B>(int color, float r,
+                           float g, float b);
+
+       void              <B>pfMaterial::getColor</B>(int color,
+                           float *r, float *g, float *b);
+
+       void              <B>pfMaterial::setColorMode</B>(int side,
+                           int mode);
+
+       int               <B>pfMaterial::getColorMode</B>(int side);
+
+       void              <B>pfMaterial::apply</B>(void);
+
+       pfMaterial *      <B>pfGetCurMtl</B>(int side);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfMaterial</B> is derived from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class  <B>pfMaterial</B>.  This is also true for ancestor classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       In  conjunction  with other lighting parameters, a pfMate-
+       rial defines the appearance of  illuminated  geometry.   A
+       pfMaterial defines the reflectance characteristics of sur-
+       faces such as diffuse color and shininess.  See the OpenGL
+       <B>glMaterial(3g)</B>  man  page  for  more  details on materials
+       parameters.
+
+       <B>new</B>(arena) allocates a pfMaterial from the specified  mem-
+       ory arena, or from the process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfMaterial from the default memory arena  (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfMaterials can-
+       not be created statically, automatically on the  stack  or
+       in  arrays.   pfMaterials  should be deleted with <B>pfDelete</B>
+       rather than the delete operator.
+
+       <B>pfMaterial::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfMaterial</B>.        The       <B>pfType</B>*      returned      by
+       <B>pfMaterial::getClassType</B>  is  the  same  as  the   <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfMaterial</B>.   Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than  to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfMaterial::setSide</B>  receives  a  symbolic  token,  one of
+       <B>PFMTL_FRONT</B>, <B>PFMTL_BACK</B>, or  <B>PFMTL_BOTH</B>  indicating  which
+       side of a polygon the material should affect.  If lighting
+       is to affect the back sides of polygons, two-sided  light-
+       ing  must  be enabled.  Two-sided lighting requires a two-
+       sided pfLightModel (see <B>pfLightModel::setTwoSide</B>) and that
+       face culling be disabled (see <B>pfCullFace</B>) so that backfac-
+       ing polygons are not rejected.
+
+       <B>pfMaterial::getSide</B> returns the side(s)  affected  by  the
+       pfMaterial.
+
+       color mode other  than  <B>PFMTL_CMODE_OFF</B>  and  transparency
+       will   be   taken   from   geometry   colors.  In  OpenGL,
+       <B>pfMaterial::setAlpha</B> sets the alpha of the  AMBIENT,  DIF-
+       FUSE,  EMISSIVE,  and SPECULAR colors.  However, it is the
+       DIFFUSE alpha that determines the  resulting  alpha  value
+       from the lighting calculation.
+
+       <B>pfMaterial::getAlpha</B>  returns the alpha of the pfMaterial.
+
+       <B>pfMaterial::setShininess</B> specifies the specular scattering
+       exponent,  or  the  shininess,  of the given material.  It
+       receives a floating point value in the range 0.0 to 128.0.
+       The default shininess value is 0.0, which effectively dis-
+       ables specular reflection.
+
+       <B>pfMaterial::getShininess</B>  returns  the  shininess  of  the
+       pfMaterial.
+
+       <B>pfMaterial::setColor</B>  sets a specific color of the pfMate-
+       rial.  <I>color</I> indicates which color is to be set by  <I>r</I>,  <I>g</I>,
+       and   <I>b</I>   and  is  one  of  <B>PFMTL_AMBIENT</B>,  <B>PFMTL_DIFFUSE</B>,
+       <B>PFMTL_EMISSION</B>, or  <B>PFMTL_SPECULAR</B>.   The  default  colors
+       are:
+
+       center  tab($)  ;  c  |  c  c c lB | c c c .  Light Compo-
+       nent$Red$Green$Blue _ PFMTL_AMBIENT$0.2$0.2$0.2 PFMTL_DIF-
+       FUSE$0.8$0.8$0.8  PFMTL_EMISSION$0.0$0.0$0.0  PFMTL_SPECU-
+       LAR$0.0$0.0$0.0
+
+       <B>pfMaterial::getColor</B> copies the <I>color</I>  of  the  pfMaterial
+       into  <I>r</I>,  <I>g</I>,  and  <I>b</I>.  <I>color</I> may be one of  <B>PFMTL_AMBIENT</B>,
+       <B>PFMTL_DIFFUSE</B>, <B>PFMTL_EMISSION</B>, or <B>PFMTL_SPECULAR</B>.
+
+       <B>pfMaterial::setColorMode</B> specifies how pfGeoSet and Graph-
+       ics Library color commands affect the pfMaterial.  <I>side</I> is
+       the same symbolic token used for  <B>pfMaterial::setSide</B>  and
+       indicates  which  side  <I>mode</I>  affects.  <I>mode</I> is a symbolic
+       token specifying which color property of the  material  is
+       replaced by color commands:
+
+              <B>PFMTL_CMODE_AMBIENT_AND_DIFFUSE</B>, RGB color commands
+              will replace the DIFFUSE and AMBIENT color property
+              of  the current material. This is the default pfMa-
+              terial color mode.
+
+              <B>PFMTL_CMODE_AMBIENT</B>,  RGB   color   commands   will
+              replace  the  AMBIENT color property of the current
+              material.
+
+              <B>PFMTL_CMODE_DIFFUSE</B>,  RGB   color   commands   will
+              replace  the  DIFFUSE color property of the current
+              material.
+
+              <B>PFMTL_CMODE_EMISSION</B>,  RGB  color   commands   will
+              replace  the EMISSION color property of the current
+              material.
+
+              <B>PFMTL_CMODE_SPECULAR</B>,  RGB  color   commands   will
+              replace  the SPECULAR color property of the current
+              material colors are always used.  <B>PFMTL_CMODE_COLOR</B>
+              is not available in OpenGL and will be  treated  as
+              <B>PFMTL_CMODE_OFF</B>.
+
+
+       Materials do not have a single alpha; rather, the AMBIENT,
+       DIFFUSE, SPECULAR, and  EMISSIVE  colors  have  individual
+       alphas  which are replaced along with red, green, and blue
+       when the appropriate color mode is enabled.
+
+       When enabled, <B>pfMaterial::setColorMode</B> can offer  substan-
+       tial  performance gains by drastically reducing the number
+       of different pfMaterials required by a  database.  Instead
+       of  using a different pfMaterial for every unique material
+       color, <B>pfMaterial::setColorMode</B> can take a color component
+       from  the  geometry,  rather than from the pfMaterial. For
+       example, if <I>mode</I> is <B>PFMTL_CMODE_DIFFUSE</B>, then the  diffuse
+       color component of the pfMaterial is ignored. Instead, the
+       color specified by  a  pfGeoSet  or  the  color  specified
+       through the Graphics Library (e.g.  <B>glColor(3g)</B> in OpenGL)
+       becomes    the    new     diffuse     color.      However,
+       <B>pfMaterial::getColor</B>  will  still return the original dif-
+       fuse color.
+
+       The the pfMaterial of <I>mtl</I>  must  be  enabled  (other  than
+       <B>PFMTL_CMODE_COLOR</B>  or  <B>PFMTL_CMODE_OFF</B>)  for the colors (-
+       <B>PFGS_COLOR4</B>) of any pfGeoSets which use the pfMaterial  to
+       have  effect. Note that the only way to display per-vertex
+       colors    on    lit     pfGeoSets     is     to     enable
+       <B>pfMaterial::setColorMode</B>  on  the  pfMaterial  used by the
+       pfGeoSets; specifically, pfGeoSets do not support  a  dif-
+       ferent pfMaterial for each vertex.
+
+       The  default color mode is <B>PFMTL_CMODE_AMBIENT_AND_DIFFUSE</B>
+       which causes both diffuse and ambient material  colors  to
+       be  replaced  by  geometry  color commands.  Specifically,
+       this setting allows colors specified by pfGeoSets to  have
+       effect.   When lighting is disabled, the color mode is set
+       to <B>PFMTL_CMODE_OFF</B>.
+
+       <B>pfMaterial::getColorMode</B> returns the  color  mode  of  the
+       pfMaterial corresponding to <I>side</I>.
+
+       <B>pfMaterial::apply</B> makes the pfMaterial the current pfMate-
+       rial.  If lighting is enabled (see below), the  pfMaterial
+       will    be   applied   to   all   geometry   drawn   after
+       <B>pfMaterial::apply</B> is called.  Modifications to the pfMate-
+       rial,  such  as  changing  the  diffuse color, will not be
+       applied until <B>pfMaterial::apply</B> is called with the pfMate-
+       rial.
+
+       For geometry to be illuminated the following must be true:
+
+              1.   Lighting   must   be    enabled:    <B>pfEnable</B>(-
+                   <B>PFEN_LIGHTING</B>),
+
+              2.   A     pfLightModel     must     be    applied:
+                   <B>pfLightModel::apply</B>,
+
+                   diffuse       and       specular      effects:
+                   <B>pfGeoSet::setAttr</B>,  <B>PFGS_NORMAL3</B>.  Note   that
+                   ambient and emissive lighting does not require
+                   normals.
+
+       The front and back material state elements are  identified
+       by  the  <B>PFSTATE_FRONTMTL</B> and <B>PFSTATE_BACKMTL</B> tokens.  Use
+       these tokens with <B>pfGeoState::setAttr</B> to set the materials
+       of a pfGeoState and with <B>pfOverride</B> to override subsequent
+       material changes.:
+
+       Example 1: Define a 50%  transparent,  shiny  red  plastic
+       material
+
+
+       /* Make it red */
+       redMtl-&gt;setColor(PFMTL_DIFFUSE, 1.0f, 0.0f, 0.0f);
+
+       /* Disable color mode so the PFMTL_DIFFUSE color is not ignored */
+       redMtl-&gt;setColorMode(PFMTL_FRONT, PFMTL_CMODE_OFF);
+
+       /* Make it shiny */
+       redMtl-&gt;setColor(PFMTL_SPECULAR, 1.0f, 1.0f, 1.0f);
+       redMtl-&gt;setShininess(16.0f);
+
+       /* Make it 50% transparent */
+       redMtl-&gt;setAlpha(0.5f);
+
+       /* Set the front material of a pfGeoState */
+       gstate-&gt;setMode(PFSTATE_ENLIGHTING, PF_ON);
+       gstate-&gt;setMode(PFSTATE_TRANSPARENCY, PFTR_ON);
+       gstate-&gt;setAttr(PFSTATE_FRONTMTL, redMaterial);
+
+       /* Attach gstate to gset */
+       gset-&gt;setGState(gstate);
+
+       /* Set normal array. 'gset' is non-indexed */
+       gset-&gt;setAttr(PFGS_NORMAL3, PFGS_PER_VERTEX, norms, NULL);
+
+       /* Draw transparent, shiny red gset */
+       gset-&gt;draw();
+
+
+       Example 2:
+
+       mtl-&gt;setSide(PFMTL_FRONT);
+       mtl-&gt;apply();
+
+       /* Override so that all geometry uses 'mtl' as front material */
+       pfOverride(PFSTATE_FRONTMTL, PF_ON);
+
+
+       When setting the pfMaterial(s) of a pfGeoState using
+       <B>pfGeoState::setAttr</B>, the side of the material is ignored.
+       Instead, the <B>PFSTATE</B> token defines which side the material
+       should be applied to.  For example,
+
+       gstate-&gt;setAttr(PFSTATE_FRONTMTL, mtl)
+
+       when that pfDispList is later drawn with <B>pfDispList::draw</B>.
+
+       <B>pfGetCurMtl</B> receives a symbolic token specifying the side
+       of interest, one of <B>PFMTL_FRONT</B> or <B>PFMTL_BACK</B>, and returns
+       a pointer to the currently active material for that side,
+       or NULL if there is no active pfMaterial.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       lmbind, lmcolor, lmdef, pfCullFace, pfDelete, pfDispList,
+       pfEnable, pfGSetAttr, pfGeoState, pfLight, pfLightModel,
+       pfLightOn, pfLModelTwoSide, pfObject, pfState, pfTrans-
+       parency
+
+
+
+                                                  pfMaterial(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

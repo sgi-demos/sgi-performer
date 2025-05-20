@@ -1,0 +1,432 @@
+<HTML>
+<HEAD>
+<TITLE>pfMatrix</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMatrix</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMatrix(3pf)                                       pfMatrix(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMatrix</B> - Set and operate on 4x4 matrices.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLinMath.h&gt;
+
+       void*          <B>pfMatrix::operator</B> <B>new</B>(size_t);
+
+       void*          <B>pfMatrix::operator</B>              <B>new</B>(size_t,
+                        void *arena);
+
+                      <B>pfMatrix::pfMatrix</B>();
+
+                      <B>pfMatrix::pfMatrix</B>(float a00,    float a01,
+                        float a02,     float a03,    float a10,
+                        float a11,    float a12,     float a13,
+                        float a20,     float a21,    float a22,
+                        float a23,    float a30,     float a31,
+                        float a32, float a33);
+
+       void           <B>pfMatrix::makeIdent</B>(void);
+
+       void           <B>pfMatrix::makeTrans</B>(float x,       float y,
+                        float z);
+
+       void           <B>pfMatrix::makeScale</B>(float x,       float y,
+                        float z);
+
+       void           <B>pfMatrix::makeRot</B>(float degrees,   float x,
+                        float y, float z);
+
+       void           <B>pfMatrix::makeQuat</B>(const pfQuat&amp; q);
+
+       void           <B>pfMatrix::makeEuler</B>(float h,       float p,
+                        float r);
+
+       void           <B>pfMatrix::makeVecRotVec</B>(const pfVec3&amp; v1,
+                        const pfVec3&amp; v2);
+
+       void           <B>pfMatrix::makeCoord</B>(const pfCoord *c);
+
+       void           <B>pfMatrix::getOrthoQuat</B>(pfQuat&amp; dst);
+
+       void           <B>pfMatrix::getOrthoCoord</B>(pfCoord* dst);
+
+       int            <B>pfMatrix::getMatType</B>(void);
+
+       void           <B>pfMatrix::setRow</B>(int row, float x, float y,
+                        float z, float w);
+
+       void           <B>pfMatrix::getRow</B>(int row,         float *x,
+                        float *y, float *z, float *w);
+
+       void           <B>pfMatrix::setCol</B>(int col, float x, float y,
+                        float z, float w);
+
+       void           <B>pfMatrix::setCol</B>(int col, const pfVec3&amp; v);
+
+       void           <B>pfMatrix::getCol</B>(int col, pfVec3&amp; dst);
+
+       void           <B>pfMatrix::set</B>(const float *m);
+
+       void           <B>pfMatrix::copy</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::add</B>(const pfMatrix&amp; m1,
+                        const pfMatrix&amp; m2);
+
+       void           <B>pfMatrix::sub</B>(const pfMatrix&amp; m1,
+                        const pfMatrix&amp; m2);
+
+       void           <B>pfMatrix::scale</B>(float s, pfMatrix&amp; m);
+
+       void           <B>pfMatrix::transpose</B>(pfMatrix&amp; m);
+
+       void           <B>pfMatrix::mult</B>(const pfMatrix&amp; m1,
+                        const pfMatrix&amp; m2);
+
+       void           <B>pfMatrix::preMult</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::postMult</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::preTrans</B>(float x,        float y,
+                        float z, pfMatrix&amp; m);
+
+       void           <B>pfMatrix::postTrans</B>(const pfMatrix&amp; m,
+                        float x, float y, float z);
+
+       void           <B>pfMatrix::preRot</B>(float degrees,    float x,
+                        float y, float z, pfMatrix&amp; m);
+
+       void           <B>pfMatrix::postRot</B>(const pfMatrix&amp; mat,
+                        float degrees,     float x,    float y,
+                        float z, );
+
+       void           <B>pfMatrix::preScale</B>(float x,        float y,
+                        float z, pfMatrix&amp; m);
+
+       void           <B>pfMatrix::postScale</B>(const pfMatrix&amp; m,
+                        float x, float y, float z);
+
+       int            <B>pfMatrix::invertFull</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::invertAff</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::invertOrtho</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::invertOrthoN</B>(const pfMatrix&amp; m);
+
+       int            <B>pfMatrix::invertIdent</B>(const pfMatrix&amp; m);
+
+       void           <B>pfMatrix::equal</B>(const pfMatrix&amp; m2);
+
+       void           <B>pfMatrix::almostEqual</B>(const pfMatrix&amp; m2,
+                        float tol);
+
+       pfMatrix       <B>pfMatrix::operator</B> <B>+</B>(const pfMatrix&amp; v);
+
+       pfMatrix       <B>pfMatrix::operator</B> <B>-</B>(const pfMatrix&amp; v);
+
+       pfMatrix&amp;      <B>pfMatrix::operator</B> <B>+=</B>(const pfMatrix&amp; m);
+
+       pfMatrix&amp;      <B>pfMatrix::operator</B> <B>-=</B>(const pfMatrix&amp; m);
+
+       pfMatrix&amp;      <B>pfMatrix::operator</B> <B>=</B>(const pfMatrix&amp; v);
+
+       pfMatrix&amp;      <B>pfMatrix::operator</B> <B>*=</B>(const pfMatrix&amp; m);
+
+       pfMatrix       <B>pfMatrix::operator</B> <B>*=</B>(const pfMatrix&amp; m);
+
+       pfMatrix       <B>pfMatrix::operator</B>     <B>*</B>(const pfMatrix&amp; v,
+                        float d);
+
+       pfMatrix       <B>pfMatrix::operator</B>  <B>*</B>(float d,  const pfMa-
+                        trix&amp; v);
+
+       pfMatrix       <B>pfMatrix::operator</B>     <B>/</B>(const pfMatrix&amp; v,
+                        float d);
+
+
+                      struct pfCoord
+                      {
+                         pfVec3       xyz;
+                         pfVec3       hpr;
+                      };
+
+                      struct pfMatrix
+                      {
+                         float  mat[4][4];
+                      };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Routines for pfMatrix, a 4X4 matrix.
+
+       Most accesses to pfMatrix go through pfMatrix::operator[],
+       but pfMatrix is a public struct whose data member mat is
+       directly accessible, e.g.  for passing to a routine
+       expecting a float* such as glLoadMatrixf.  The default
+       constructor <B>pfMatrix()</B> is empty and does not initialize
+       the values in the matrix.  An initializing constructor
+       <B>pfMatrix</B>(float, ... float) accepts the initial values in
+       row major order, i.e. mat[0][0], mat[0][1], mat[0][2],
+       mat[0][3],
+
+       <B>new</B>(arena) allocates a pfMatrix from the specified memory
+       arena, or from the heap if <I>arena</I> is NULL.  <B>new</B> allocates a
+       pfMatrix from the default memory arena (<B>pfGetSharedArena</B>).
+       pfMatrices can also be created automatically on the stack
+       or statically.  pfMatrices allocated with <B>new</B> can be
+       deleted with <B>delete</B> or <B>pfDelete</B>.
+
+       <B>pfMatrix::makeIdent</B> sets the pfMatrix to the identity
+       matrix.  <B>PFMAKE_IDENT_MAT</B> is an equivalent macro.
+
+       translates by (<I>x</I>, <I>y</I>, <I>z</I>).  Equivalent macro:
+       <B>PFMAKE_TRANS_MAT</B>.
+
+       <B>pfMatrix::makeScale</B> sets the pfMatrix to the matrix which
+       scales by <I>x</I> in the X direction, by <I>y</I> in the Y direction
+       and by <I>z</I> in the Z direction.  Equivalent macro:
+       <B>PFMAKE_SCALE_MAT</B>
+
+       <B>pfMatrix::makeRot</B> sets the pfMatrix to the matrix which
+       rotates by <I>degrees</I> about the axis denoted by the unit vec-
+       tor (<I>x</I>, <I>y</I>, <I>z</I>).  If (<I>x</I>, <I>y</I>, <I>z</I>) is not normalized, results
+       are undefined.
+
+       <B>pfMatrix::makeQuat</B> builds a rotation matrix that expresses
+       the rotation defined by the quaternion <I>q</I>.
+
+       <B>pfMatrix::makeEuler</B> sets the pfMatrix to a rotation matrix
+       composed of the Euler angles <I>h</I>, <I>p</I>, <I>r</I>: <I>h</I> specifies heading,
+       the rotation about the Z axis; <I>p</I> specifies pitch, the
+       rotation about the X axis; and, <I>r</I> specifies roll, rotation
+       about the Y axis.  The matrix created is <I>the</I> <I>pfMatrix</I> =
+       R*P*H, where R is the roll transform, P is the pitch
+       transform and H is the heading transform.  All rotations
+       follow the right hand rule.  The convention is natural for
+       a model in which +Y is "forward," +Z is "up" and +X is
+       "right".  This routine uses <B>pfSinCos</B> which is faster than
+       the libm counterpart, but has less resolution (see
+       <B>pfSinCos</B>).
+
+       <B>pfMatrix::makeVecRotVec</B> sets the pfMatrix to the rotation
+       matrix which rotates the vector <I>v1</I> onto <I>v2</I>, i.e. <I>v2</I> = <I>v1</I> *
+       <I>dst</I>.  <I>v2</I> must be normalized.  The rotation axis is always
+       chosen to be perpendicular to both <I>v0</I> and <I>v1</I> so that the
+       rotation angle is as small as possible.  Note that the
+       result is ambiguous only when <I>v0</I> == -<I>v1</I>; in this case the
+       rotation axis is chosen to be an arbitrary vector perpen-
+       dicular to <I>v0</I> and <I>v1</I>.
+
+       <B>pfMatrix::makeCoord</B> sets the pfMatrix to the matrix which
+       rotates by the Euler transform specified by <I>c</I>-&gt;hpr and
+       translates by <I>c</I>-&gt;xyz, i.e. <I>dst</I> = R*P*H*T, where R is the
+       roll transform, P is the pitch transform and H is the
+       heading transform, and T is the translation transform.
+
+       <B>pfMatrix::getOrthoQuat</B> constructs a quaternion pfMatrix
+       equivalent to the rotation expressed by the orthonormal
+       matrix <I>m</I>.
+
+       <B>pfMatrix::getOrthoCoord</B> returns in the pfMatrix the trans-
+       lation and rotation of the orthonormal matrix, <I>m</I>.  The
+       returned pitch ranges from -90 to +90 degrees.  Roll and
+       heading range from -180 to +180.
+
+       <B>pfMatrix::setMatType</B> allows the specification of informa-
+       tion about the type of transformation the matrix repre-
+       sents.  This information allows Performer to speed up some
+       operations.  The matrix type is specified as the OR of
+
+              PFMAT_TRANS:
+              PFMAT_SCALE:
+                   matrix includes a uniform scale in the left
+                   upper 3X3 submatrix.
+
+              PFMAT_NONORTHO:
+                   matrix includes a non-uniform scale in the
+                   left upper 3X3 submatrix.
+
+              PFMAT_PROJ:
+                   matrix includes projections.
+
+              PFMAT_HOM_SCALE:
+                   mat[4][4] != 1.
+
+              PFMAT_MIRROR:
+                   matrix includes mirroring transformation that
+                   switches between right handed and left handed
+                   coordinate systems.
+
+       <B>pfMatrix::getMatType</B> computes the type of matrix.  This
+       information can be useful if a matrix is to be used
+       repeatedly, e.g. to transform many objects, but is some-
+       what time consuming to compute.
+
+       <B>pfMatrix::setRow</B>.  <I>mat</I>[<I>row</I>][0] = <I>x</I>, <I>mat</I>[<I>row</I>][1] = <I>y</I>,
+       <I>mat</I>[<I>row</I>][2] = <I>z</I>, <I>mat</I>[<I>row</I>][3] = <I>w</I>.  Use the arguments to
+       set row <I>row</I> of the pfMatrix.  <I>row</I> must be 0, 1, 2, or 3.
+       Equivalent macro: <B>PFSET_MAT_ROW</B>.
+
+       <B>pfMatrix::getRow</B>.  <I>*x</I> = <I>mat</I>[<I>row</I>][0], <I>*y</I> = <I>mat</I>[<I>row</I>][1], <I>*z</I>
+       = <I>mat</I>[<I>row</I>][2], <I>*w</I> = <I>mat</I>[<I>row</I>][3].  Get the arguments to row
+       <I>row</I> of the pfMatrix.  <I>row</I> must be 0, 1, 2, or 3.  Equiva-
+       lent macro: <B>PFGET_MAT_ROW</B>.
+
+       <B>pfMatrix::setCol</B>.  <I>mat</I>[0][<I>col</I>] = <I>x</I>, <I>mat</I>[1][<I>col</I>] = <I>y</I>,
+       <I>mat</I>[2][<I>col</I>] = <I>z</I>, <I>mat</I>[3][<I>col</I>] = <I>w</I>.  Use the arguments to
+       set col <I>col</I> of the pfMatrix.  <I>col</I> must be 0, 1, 2, or 3.
+       Equivalent macro: <B>PFSET_MAT_COL</B>.
+
+       <B>pfMatrix::getCol</B>.  <I>*x</I> = <I>mat</I>[0][<I>col</I>], <I>*y</I> = <I>mat</I>[1][<I>col</I>], <I>*z</I>
+       = <I>mat</I>[2][<I>col</I>], <I>*w</I> = <I>mat</I>[3][<I>col</I>].  Get the arguments to col
+       <I>col</I> of the pfMatrix.  <I>col</I> must be 0, 1, 2, or 3.  Equiva-
+       lent macro: <B>PFGET_MAT_COL</B>.
+
+       <B>pfMatrix::setRow</B>.  <I>mat</I>[<I>row</I>][i] = <I>v</I>[i], i = 0, 1, 2.  Set
+       row <I>row</I> of the pfMatrix to the vector <I>v</I>.  <I>row</I> must be 0,
+       1, 2, or 3.  Equivalent macro: <B>PFSET_MAT_ROWVEC3</B>.
+
+       <B>pfMatrix::getRow</B>.  <I>mat</I>[i] = <I>m</I>[<I>row</I>][i], i = 0, 1, 2.
+       Return row <I>row</I> of <I>m</I> and in the pfMatrix.  <I>row</I> must be 0,
+       1, 2, or 3.  Equivalent macro: <B>PFGET_MAT_ROWVEC3</B>.
+
+       <B>pfMatrix::setCol</B>.  <I>mat</I>[i][<I>col</I>] = <I>v</I>[i], i = 0, 1, 2.  Set
+       column <I>col</I> of the pfMatrix to the vector <I>v</I>.  <I>col</I> must be
+       0, 1, 2, or 3.  Equivalent macro: <B>PFSET_MAT_COLVEC3</B>.
+
+       <B>pfMatrix::getCol</B>.  <I>mat</I>[i] = <I>m</I>[i][<I>col</I>], i = 0, 1, 2.
+       Return column <I>col</I> of <I>m</I> in the pfMatrix.  <I>col</I> must be 0, 1,
+       2, or 3.  Equivalent macro: <B>PFGET_MAT_COLVEC3</B>.
+       the matrix which translates by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfMatrix::postTrans</B>: <I>mat</I> = <I>m</I> * T(<I>x</I>,<I>y</I>,<I>z</I>), where T(<I>x</I>,<I>y</I>,<I>z</I>) is
+       the matrix which translates by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfMatrix::preRot</B>: <I>mat</I> = R(<I>degrees</I>, <I>x</I>,<I>y</I>,<I>z</I>) * <I>m</I>, where
+       R(<I>degrees</I>,<I>x</I>,<I>y</I>,<I>z</I>) is the matrix which rotates by <I>degrees</I>
+       about the axis (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfMatrix::postRot</B>: <I>mat</I> = <I>m</I> * R(<I>degrees</I>, <I>x</I>,<I>y</I>,<I>z</I>), where
+       R(<I>degrees</I>,<I>x</I>,<I>y</I>,<I>z</I>) is the matrix which rotates by <I>degrees</I>
+       about the axis (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfMatrix::preScale</B>: <I>mat</I> = S(<I>x</I>,<I>y</I>,<I>z</I>) * <I>m</I>, where S(<I>x</I>,<I>y</I>,<I>z</I>) is
+       the matrix which scales by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfMatrix::postScale</B>: <I>mat</I> = <I>m</I> * S(<I>x</I>,<I>y</I>,<I>z</I>), where S(<I>x</I>,<I>y</I>,<I>z</I>) is
+       the matrix which scales by (<I>x</I>,<I>y</I>,<I>z</I>).
+
+       <B>pfMatrix::add</B>: <I>mat</I> = <I>m1</I> + <I>m2</I>.  Sets the pfMatrix to the
+       sum of <I>m1</I> and <I>m2</I>.
+
+       <B>pfMatrix::sub</B>: <I>mat</I> = <I>m1</I> - <I>m2</I>.  Sets the pfMatrix to the
+       difference of <I>m1</I> and <I>m2</I>.
+
+       <B>pfMatrix::scale</B>: <I>mat</I> = <I>s</I> * <I>m</I>.  Sets the pfMatrix to the
+       product of the scalar <I>s</I> and the matrix <I>m</I>.  This multiplies
+       the full 4X4 matrix and is not a 3D geometric scale.
+
+       <B>pfMatrix::transpose</B>: <I>mat</I> = Transpose(<I>m</I>).  Sets the pfMa-
+       trix to the transpose of <I>m</I>.
+
+       <B>pfMatrix::mult</B>: <I>mat</I> = <I>m1</I> * <I>m2</I>.  Sets the pfMatrix to the
+       product of <I>m1</I> and <I>m2</I>.
+
+       <B>pfMatrix::postMult</B>: <I>mat</I> = <I>mat</I> *<I>m</I>.  Postmultiplies the
+       pfMatrix by <I>m</I>.
+
+       <B>pfMatrix::preMult</B>: <I>mat</I> = <I>m</I> * <I>mat</I>.  Premultiplies the pfMa-
+       trix by <I>m</I>.
+
+       <B>pfMatrix::invertFull</B>, <B>pfMatrix::invertAff</B>,
+       <B>pfMatrix::invertOrtho</B>, <B>pfMatrix::invertOrthoN</B>, and
+       <B>pfMatrix::invertIdent</B>, set the pfMatrix to the inverse of
+       <I>m</I> for general, affine, orthogonal, orthonormal and iden-
+       tity matrices respectively.  They are listed here in order
+       of decreasing generality and increasing speed.  If the
+       matrix <I>m</I> is not of the type specified in the routine name,
+       the result is undefined.  <B>pfMatrix::invertFull</B> returns
+       FALSE if the matrix is singular and TRUE otherwise.
+
+       <B>pfMatrix::equal</B>(m2) = (<I>pfMatrix.mat</I> == <I>m2</I>).  Tests for
+       strict component-by-element equality of the pfMatrix and
+       <I>m2</I> and returns FALSE or TRUE.  Macro equivalent:
+       <B>PFEQUAL_MAT</B>.
+
+       <B>pfMatrix::almostEqual</B>(m2, tol).  Tests for approximate
+       element-by-element equality of the pfMatrix and <I>m2</I>.  It
+       returns FALSE or TRUE depending on whether the absolute
+
+       <B>int</B> <B>operator</B> <B>==</B>(const pfMatrix&amp;) Equality comparison oper-
+       ator.
+
+       <B>pfMatrix</B> <B>operator</B> <B>+</B>(const pfMatrix&amp;) <B>pfMatrix</B> <B>operator</B>
+       <B>-</B>(const pfMatrix&amp;) Component-wise binary matrix addition
+       and subtraction operators.
+
+       <B>pfMatrix&amp;</B> <B>operator</B> <B>+=</B>(const pfMatrix&amp;); <B>pfMatrix&amp;</B> <B>operator</B>
+       <B>-=</B>(const pfMatrix&amp;); Component-wise matrix addition and
+       subtraction operators.
+
+       <B>pfMatrix&amp;</B> <B>operator</B> <B>=</B>(const pfMatrix&amp;) Set the matrix from
+       another matrix.
+
+       <B>pfMatrix&amp;</B> <B>operator</B> <B>*=</B>(const pfMatrix&amp;) <B>pfMatrix</B> <B>operator</B>
+       <B>*=</B>(const pfMatrix&amp;) Performs right multiplication with
+       anther matrix.
+
+       <B>pfMatrix</B> <B>operator</B> <B>*</B>(const pfMatrix&amp;, float) <B>pfMatrix</B> <B>oper-</B>
+       <B>ator</B> <B>*</B>(float, const pfMatrix&amp;) <B>pfMatrix</B> <B>operator</B> <B>/</B>(const
+       pfMatrix&amp;, float) Component-wise binary scalar multiplica-
+       tion and division operators.
+
+       Routines can accept the same matrix as source, destina-
+       tion, or as a repeated operand.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Some of these routines use pfSinCos and pfSqrt, which are
+       faster but have less resolution than the libm counter-
+       parts.  (See <B>pfSinCos</B>) When using overloaded operators in
+       C++, assignment operators, e.g.  "+=", are somewhat more
+       efficient than the corresponding binary operators, e.g.
+       "+", because the latter construct a temporary intermediate
+       object.  Use assignment operators or macros for binary
+       operations where optimal speed is important.
+
+       C++ does not support array deletion (i.e. <B>delete[]</B>) for
+       arrays of objects allocated new operators that take addi-
+       tional arguments.  Hence, the array deletion operator
+       <B>delete[]</B> should not be used on arrays of objects created
+       with <B>new</B>(arena) pfMatrix[n].
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfSinCos, pfSqrt, pfVec3, pfVec4
+
+
+
+                                                    pfMatrix(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

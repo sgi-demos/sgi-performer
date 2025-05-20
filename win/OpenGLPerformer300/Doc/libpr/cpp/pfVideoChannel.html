@@ -1,0 +1,367 @@
+<HTML>
+<HEAD>
+<TITLE>pfVideoChannel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVideoChannel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVideoChannel(3pf)                           pfVideoChannel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfVideoChannel,</B>  <B>pfGetCurVChan</B>  - Create, modify and query
+       video channel state
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfVideoChannel.h&gt;
+
+                         <B>pfVideoChannel::pfVideoChannel</B>();
+
+       pfType *          <B>pfVideoChannel::getClassType</B>(void);
+
+       void              <B>pfVideoChannel::apply</B>(void);
+
+       void              <B>pfVideoChannel::setCallig</B>(pfCalligraphic *callig);
+
+       void              <B>pfVideoChannel::setFullRect</B>(void);
+
+       void              <B>pfVideoChannel::setId</B>(int index);
+
+       pfWSVideoChannelInfo
+                         <B>pfVideoChannel::getInfo</B>(void);
+
+       void              <B>pfVideoChannel::setOutputOrigin</B>(int xo,
+                           int yo);
+
+       void              <B>pfVideoChannel::setOutputSize</B>(int xs,
+                           int ys);
+
+       void              <B>pfVideoChannel::setScale</B>(float xs,
+                           float ys);
+
+       void              <B>pfVideoChannel::setAreaScale</B>(float s);
+
+       void              <B>pfVideoChannel::setWSWindow</B>(pfWSWindow wsWin);
+
+       float             <B>pfVideoChannel::getAreaScale</B>(void);
+
+       pfCalligraphic*   <B>pfVideoChannel::getCallig</B>(void);
+
+       int               <B>pfVideoChannel::getId</B>(void);
+
+       void              <B>pfVideoChannel::getOrigin</B>(int *xo,
+                           int *yo);
+
+       void              <B>pfVideoChannel::getOutputOrigin</B>(const int *xo,
+                           int *yo);
+
+       void              <B>pfVideoChannel::getOutputSize</B>(const int *xs,
+                           int *ys);
+
+       void              <B>pfVideoChannel::getMinScale</B>(const float *xs,
+                           float *ys);
+
+       void              <B>pfVideoChannel::getMaxScale</B>(const float *xs,
+                           float *ys);
+
+       int               <B>pfVideoChannel::getMode</B>(int _mode);
+
+       void              <B>pfVideoChannel::getScale</B>(const float *xs,
+                           float *ys);
+
+       void              <B>pfVideoChannel::getSize</B>(int *xs,
+                           int *ys);
+
+       void              <B>pfVideoChannel::setScreen</B>(int screen);
+
+       int               <B>pfVideoChannel::getScreen</B>(void);
+
+       pfWSWindow        <B>pfVideoChannel::getWSWindow</B>(void);
+
+       void              <B>pfVideoChannel::applyVChan</B>(void);
+
+       void              <B>pfVideoChannel::bindVChan</B>(void);
+
+       void              <B>pfVideoChannel::select</B>(vchan);
+
+       void              <B>pfVideoChannel::unbindVChan</B>(void);
+
+       int               <B>pfVideoChannel::isBound</B>(const void);
+
+       int               <B>pfVideoChannel::isActive</B>(const void);
+
+       pfVideoChannel *  <B>pfGetCurVChan</B>(void);
+
+
+                         /* typedef of X-based Performer Types */
+                         typedef XSGIvcChannelInfo         *pfWSVideoChannelInfo;
+
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfVideoChannel</B> is derived from
+       the parent class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B> are also directly usable with
+       objects of class <B>pfVideoChannel</B>.  This is also true for
+       ancestor classes of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfVideoChannel</B> can also
+       be used with these functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <B>pfVideoChannel</B> capability is used to query and control
+       the state and output area of a hardware video channel.
+       This support is done through the XSGIvc video control X
+       extension for SGI platforms.  See the <B>XSGIvc</B> man page for
+       more information on this library.  The <B>pfVideoChannel</B> only
+       accesses video hardware in the action routines of
+       <B>pfVideoChannel::apply</B>, <B>pfVideoChannel::bind</B>, and
+       <B>pfVideoChannel::unbind</B>.  All parameters set on the
+       pfVideoChannel take effect turning these actions.  These
+       actions require that a pfWSWindow be set on the
+       <B>pfVideoChannel</B> via <B>pfVideoChannel::setWSWindow</B>.
+
+       <B>new</B>(arena) allocates a pfVideoChannel from the specified
+       memory arena, or from the heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfVideoChannel from the default memory arena
+       (see <B>pfGetSharedArena</B>).  Like other pfObjects,
+       pfVideoChannel cannot be created statically, automatically
+       on the stack or in arrays.  pfVideoChannel should be
+       deleted with <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfVideoChannel::setMode</B> sets a given mode to <I>val</I> where
+       <I>mode</I> may be one of the following:
+
+              <B>PFVCHAN_SYNC</B>
+                     sets the video boundary upon which changes
+                     to the video channel origin and size should
+                     take effect: <B>PFVCHAN_SYNC_SWAP</B> for swap-
+                     buffers (the default) and <B>PFVCHAN_SYNC_FIELD</B>
+                     for a field, or vertical retrace, boundary.
+                     For resizing for load management, the
+                     default swapbuffers boundary is usually
+                     appropriate. Allowing changes to the origin
+                     and size take effect on the following field
+                     boundary allows the panning of video output
+                     from the visible color buffer asynchronous
+                     to drawing and so should be used in conjunc-
+                     tion with the <B>PFVCHAN_AUTO_APPLY</B> mode and
+                     doing a <B>select</B> on the pfVideoChannel.
+
+              <B>PFVCHAN_AUTO_APPLY</B>
+                     accepts a boolean value indicating if
+                     changes to <I>vchan</I> should be applied automati-
+                     cally, as opposed to waiting for an explicit
+                     call to <B>apply</B>. This is done if <I>vchan</I> has
+                     been selected via <B>pfVideoChannel::select</B> to
+                     be the current active pfVideoChannel. The
+                     changes are not applied by the set routines
+
+       specified <I>mode</I> for <I>vchan</I>.
+
+       <B>pfVideoChannel::setFullRect</B> will cause the output area of
+       the video channel to be reset to its full size.
+
+       <B>pfVideoChannel::setId</B> will cause the pfVideoChannel to
+       refer to the hardware video channel indicated by <I>index</I>.
+       This is the same index used by the XSGIvc routines.
+
+       <B>pfVideoChannel::setOutputOrigin</B> will set the origin of the
+       output area of the video channel to be the lower-left
+       channel relative coordinates of <I>xo</I>, <I>yo</I>.  The actual screen
+       origin of the video channel can be gotten with
+       <B>pfVideoChannel::getOrigin</B>.
+
+       <B>pfVideoChannel::setOutputSize</B> will set the size of the
+       output area of the video channel to be that specified by
+       <I>xs</I>, <I>ys</I>.  The size of the video channel can not be set
+       larger than its full size which can be queried with
+       <B>pfVideoChannel::getSize</B>.
+
+       <B>pfVideoChannel::setAreaScale</B> will scale the X and Y dimen-
+       sions of the output area of the video channel to achieve a
+       scaling of the drawing area by <I>s</I>. The implementation is to
+       scale both X and Y by the square root of <I>s</I>, so that com-
+       pound effect on area is <I>s</I>.  For example a 1000-pixel
+       square display area scaled by 0.5 would result in a
+       707-pixel square render area, since 707*707 is
+       0.5*1000*1000 (the actual X and Y resolutions are subject
+       to hardware constrains as well).  The maximum scale
+       allowed is 1.0 which will reset the channel output area to
+       its full size.
+
+       <B>pfVideoChannel::setScale</B> will scale the size of the X and
+       Y dimensions output area of the video channel by specified
+       by <I>xs</I>, <I>ys</I>. The minimum and and maximum scaling allowed is
+       that set by <B>pfVideoChannel::setMinScale</B> and
+       <B>pfVideoChannel::setMaxScale</B>.  The minimum and maximum
+       scale bounds default to 0.25 and 1.0, respectively.
+
+       <B>pfVideoChannel::setMinScale</B> will set the lower bound on
+       the allowable pixel scale values for the X and Y dimen-
+       sions of the pfVideoChannel.
+
+       <B>pfVideoChannel::setMaxScale</B> will set the upper bound on
+       the allowable pixel scale values for the X and Y dimen-
+       sions of the pfVideoChannel.
+
+       <B>pfVideoChannel::setWSWindow</B> sets the WSWindow for the
+       pfVideoChannel to be <I>wsWin</I>.  This window should be the
+       WSDrawable that is connected to the main GL context being
+       displayed into that video channel.  This can be gotten
+       from a pfWindow or pfPipeWindow with
+       pfWindow::getWSDrawable <B>or</B> <B>pfPipeWindow::getWSDrawable</B>,
+       respectively.  Video channel resize operations will be
+       triggered by the swapping of the display buffers for that
+       GL context.  If <I>wsWin</I> is NULL, it will cause an unbind of
+       the video channel from its current WSWindow upon the next
+       call to <B>pfVideoChannel::apply</B>.  If <I>wsWin</I> is not null, the
+
+       <B>pfVideoChannel::getMinDeltas</B> will return the minimum reso-
+       lution of resize for X and Y that the video channel size
+       can be changed in <I>dx</I> and <I>dy</I>, respectively.
+
+       <B>pfVideoChannel::getOutputOrigin</B> will return the origin of
+       the output area of the video channel in <I>xo</I>, <I>yo</I>.
+
+       <B>pfVideoChannel::getOutputSize</B> will return the size of the
+       output area of the video channel in <I>xs</I> and <I>ys</I>.
+
+       <B>pfVideoChannel::getAreaScale</B> will return the area scale
+       the video channel. This value represents the ratio of
+       drawn to displayed area in pixels. For example a
+       1000-pixel square display scaled to 707-pixels would
+       return an area scale value of to 0.5, since 707*707 is
+       0.5*1000*1000.
+
+       <B>pfVideoChannel::getScale</B> will return the scale of the X
+       and Y dimensions output area of the video channel in <I>xs</I>
+       and <I>ys</I>.
+
+       <B>pfVideoChannel::getMinScale</B> will return the lower bound on
+       pixel scale of the X and Y dimensions in <I>xs</I> and <I>ys</I>. The
+       default pixel scale lower bound is 0.25.
+
+       <B>pfVideoChannel::getMaxScale</B> will return the upper bound on
+       pixel scale of the X and Y dimensions in <I>xs</I> and <I>ys</I>. The
+       default pixel scale upper bound is 1.0.
+
+       <B>pfVideoChannel::setScreen</B> sets the screen number of the
+       pfVideoChannel to <I>screen</I> and <B>pfVideoChannel::getScreen</B>
+       returns the screen number of the pfVideoChannel.
+
+       <B>pfVideoChannel::getSize</B> will return the full size of the
+       video channel in <I>xs</I> and <I>ys</I>.
+
+       <B>pfVideoChannel::bind</B> forces a bind of the video channel to
+       the WSWindow set with <B>pfVideoChannel::setWSWindow</B>.
+
+       <B>pfVideoChannel::unbind</B> forces an unbind of the video from
+       its current WSWindow.  This will also cause the video
+       channel to reset its output area to the configuration it
+       had before the channel was bound.
+
+       <B>pfVideoChannel::isBound</B> returns a boolean value indicating
+       whether or not the the pfVideoChannel is currently bound
+       to a window and able to be resized.
+
+       <B>pfVideoChannel::isActive</B> returns a boolean value indicat-
+       ing whether or not the the pfVideoChannel is currently
+       active and able to produce video output.
+
+       <B>pfVideoChannel::select</B> makes <I>vchan</I> the current
+       pfVideoChannel in the process. This should be done in a
+       rendering process if the purpose is for using the
+       <B>PFVCHAN_AUTO_APPLY</B> mode.
+
+       <B>pfGetCurVChan</B> will return a pointer to the current
+       <B>pfVideoChannel::setCallig</B> set the <I>callig</I> to use with this
+       pfVideoChannel. If a light-point board (see pfCalli-
+       graphic) has been initialized before pfConfig, then each
+       pfVideoChannel automatically create a pfCalligraphic with
+       its screen as the Light Point Board id, and its display id
+       as the channel to use on the Light Point Board.
+
+       <B>pfVideoChannel::getCallig</B> returns the pfCalligraphic in
+       use with this pfVideoChannel, or NULL if none are used (so
+       only Raster Light Points are available).
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfVideoChannel functionality is not currently supported
+       under Linux.
+
+       An XSGIvc video channel may only be bound to a single win-
+       dow at a time on the system.  Only  a single pfVideoChan-
+       nel may bind a hardware video channel.
+
+       On InfiniteReality, changes to video channel origin and
+       size require an active graphics context and so should be
+       made in a rendering process to avoid a graphics context
+       change which can be expensive.
+
+       See the sample program /usr/share/Per-
+       former/src/pguide/libpr/C/queryvchan.c for an example of
+       how to query general video channel attributes.  See the
+       sample program /usr/share/Per-
+       former/src/pguide/libpr/C/vchan.c for a basic resizing
+       example using pfVideoChannels.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfGetNumScreenVChans, pfState,
+       pfWindow, XSGIvc, glXSGIvcQueryChannelInfo, glXBindChan-
+       nelToWindowSGIX.
+
+
+
+                                              pfVideoChannel(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

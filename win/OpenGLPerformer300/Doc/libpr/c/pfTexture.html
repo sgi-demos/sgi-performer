@@ -1,0 +1,907 @@
+<HTML>
+<HEAD>
+<TITLE>pfTexture</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTexture</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTexture(3pf)                                     pfTexture(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewTex,</B>   <B>pfGetTexClassType,</B>   <B>pfTexName,</B>  <B>pfGetTexName,</B>
+       <B>pfTexImage,</B>  <B>pfGetTexImage,</B>  <B>pfTexFormat,</B>  <B>pfGetTexFormat,</B>
+       <B>pfTexFilter,</B>  <B>pfTexAnisotropy,</B>  <B>pfGetTexAnisotropy,</B> <B>pfGet-</B>
+       <B>TexFilter,</B> <B>pfTexRepeat,</B> <B>pfGetTexRepeat,</B>  <B>pfTexBorderColor,</B>
+       <B>pfGetTexBorderColor,</B>  <B>pfTexBorderType,</B> <B>pfGetTexBorderType,</B>
+       <B>pfTexSpline,</B> <B>pfGetTexSpline,</B> <B>pfTexDetail,</B>  <B>pfGetTexDetail,</B>
+       <B>pfGetTexDetailTex,</B>   <B>pfDetailTexTile,</B>  <B>pfGetDetailTexTile,</B>
+       <B>pfTexList,</B>   <B>pfGetTexList,</B>   <B>pfTexFrame,</B>    <B>pfGetTexFrame,</B>
+       <B>pfTexLoadMode,</B>    <B>pfGetTexLoadMode,</B>   <B>pfTexLevel,</B>   <B>pfGet-</B>
+       <B>TexLevel,</B> <B>pfTexLODRange,</B> <B>pfGetTexLODRange,</B>  <B>pfGetCurTexLO-</B>
+       <B>DRange,</B> <B>pfGetTexLODBias,</B> <B>pfTexLODBias,</B> <B>pfGetCurTexLODBias,</B>
+       <B>pfTexLoadOrigin,</B> <B>pfGetTexLoadOrigin,</B> <B>pfTexLoadSize,</B> <B>pfGet-</B>
+       <B>TexLoadSize,</B>     <B>pfApplyTex,</B>    <B>pfFormatTex,</B>    <B>pfLoadTex,</B>
+       <B>pfTexLoadImage,</B> <B>pfGetTexLoadImage,</B> <B>pfLoadTexLevel,</B> <B>pfLoad-</B>
+       <B>TexFile,</B>  <B>pfSaveTexFile,</B>  <B>pfSubloadTex,</B> <B>pfSubloadTexLevel,</B>
+       <B>pfFreeTexImage,</B> <B>pfIdleTex,</B>  <B>pfIsTexLoaded,</B>  <B>pfIsTexFormat-</B>
+       <B>ted,</B>  <B>pfApplyTexMinLOD,</B>  <B>pfApplyTexMaxLOD,</B>  <B>pfApplyTexLOD-</B>
+       <B>Bias,</B> <B>pfGetCurTex,</B> <B>pfApplyTMat</B> - Create, modify and  query
+       texture
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfTexture *    <B>pfNewTex</B>(void *arena);
+
+       pfType *       <B>pfGetTexClassType</B>(void);
+
+       void           <B>pfTexName</B>(pfTexture *tex,
+                        const char *name);
+
+       const char *   <B>pfGetTexName</B>(const pfTexture *tex);
+
+       void           <B>pfTexImage</B>(pfTexture *tex,     uint* image,
+                        int comp, int ns, int nt, int nr);
+
+       void           <B>pfGetTexImage</B>(const pfTexture *tex,
+                        uint **image,    int *comp,    int *ns,
+                        int *nt, int *nr);
+
+       void           <B>pfTexFormat</B>(pfTexture *tex,     int format,
+                        int type);
+
+       int            <B>pfGetTexFormat</B>(const pfTexture *tex,
+                        int format);
+
+       void           <B>pfTexFilter</B>(pfTexture *tex,       int filt,
+                        int type);
+
+       void           <B>pfTexAnisotropy</B>(pfTexture *tex,
+                        int degree);
+
+       int            <B>pfGetTexAnisotropy</B>(pfTexture *tex);
+
+       int            <B>pfGetTexFilter</B>(const pfTexture *tex,
+
+       void           <B>pfTexBorderColor</B>(pfTexture* tex,
+                        pfVec4 clr);
+
+       void           <B>pfGetTexBorderColor</B>(pfTexture* tex,
+                        pfVec4 *clr);
+
+       void           <B>pfTexBorderType</B>(pfTexture* tex, int type);
+
+       int            <B>pfGetTexBorderType</B>(pfTexture* tex);
+
+       void           <B>pfTexSpline</B>(pfTexture *tex,       int type,
+                        pfVec2 *pts, float clamp);
+
+       void           <B>pfGetTexSpline</B>(const pfTexture *tex,
+                        int type, pfVec2 *pts, float *clamp);
+
+       void           <B>pfTexDetail</B>(pfTexture *tex,      int level,
+                        pfTexture *detail);
+
+       void           <B>pfGetTexDetail</B>(const pfTexture *tex,
+                        int *level, pfTexture **detail);
+
+       pfTexture *    <B>pfGetTexDetailTex</B>(const pfTexture *tex);
+
+       void           <B>pfDetailTexTile</B>(pfTexture *tex,      int j,
+                        int k, int m, int n, int scram);
+
+       void           <B>pfGetDetailTexTile</B>(const pfTexture *tex,
+                        int *j,   int *k,    int *m,    int *n,
+                        int *scram);
+
+       void           <B>pfTexList</B>(pfTexture *tex, pfList *list);
+
+       pfList *       <B>pfGetTexList</B>(const pfTexture *tex);
+
+       void           <B>pfTexFrame</B>(pfTexture *tex, float frame);
+
+       float          <B>pfGetTexFrame</B>(const pfTexture *tex);
+
+       void           <B>pfTexLoadMode</B>(pfTexture *tex,     int mode,
+                        int val);
+
+       int            <B>pfGetTexLoadMode</B>(const pfTexture *tex,
+                        int mode);
+
+       void           <B>pfTexLevel</B>(pfTexture *tex,       int level,
+                        pfTexture *ltex);
+
+       pfTexture *    <B>pfGetTexLevel</B>(pfTexture *tex, int level);
+
+       void           <B>pfTexLODRange</B>(pfTexture* tex,    float min,
+                        float max);
+
+       void           <B>pfGetTexLODRange</B>(pfTexture* tex,
+                        float *min, float *max);
+
+       void           <B>pfGetCurTexLODRange</B>(pfTexture* tex,
+                        float *min, float *max);
+                        float *biasR);
+
+       void           <B>pfTexLODBias</B>(pfTexture* tex,   float biasS,
+                        float biasT, float biasR);
+
+       void           <B>pfGetCurTexLODBias</B>(pfTexture* tex,
+                        float *biasS,             float *biasT,
+                        float *biasR);
+
+       void           <B>pfTexLoadOrigin</B>(pfTexture *tex,  int which,
+                        int xo, int yo);
+
+       void           <B>pfGetTexLoadOrigin</B>(pfTexture *tex,
+                        int which, int *xo, int *yo);
+
+       void           <B>pfTexLoadSize</B>(pfTexture *tex,       int xs,
+                        int ys);
+
+       void           <B>pfGetTexLoadSize</B>(const pfTexture *tex,
+                        int *xs, int *ys);
+
+       void           <B>pfApplyTex</B>(pfTexture *tex);
+
+       void           <B>pfFormatTex</B>(pfTexture *tex);
+
+       void           <B>pfLoadTex</B>(pfTexture *tex);
+
+       void           <B>pfTexLoadImage</B>(pfTexture* tex,
+                        uint *image);
+
+       uint *         <B>pfGetTexLoadImage</B>(const pfTexture* tex);
+
+       void           <B>pfLoadTexLevel</B>(pfTexture *tex, int level);
+
+       int            <B>pfLoadTexFile</B>(pfTexture *tex, char *fname);
+
+       void           <B>pfSaveTexFile</B>(pfTexture *tex, char *fname);
+
+       void           <B>pfSubloadTex</B>(pfTexture* tex,    int source,
+                        uint *image,    int xsrc,     int ysrc,
+                        int srcwid,     int xdst,     int ydst,
+                        int xsize, int ysize);
+
+       void           <B>pfSubloadTexLevel</B>(pfTexture* tex,
+                        int source,    uint *image,   int xsrc,
+                        int ysrc,     int srcwid,     int xdst,
+                        int ydst,     int xsize,     int ysize,
+                        int level);
+
+       void           <B>pfFreeTexImage</B>(pfTexture *tex);
+
+       void           <B>pfIdleTex</B>(pfTexture *tex);
+
+       int            <B>pfIsTexLoaded</B>(const pfTexture *tex);
+
+       int            <B>pfIsTexFormatted</B>(const pfTexture *tex);
+
+       void           <B>pfApplyTexMinLOD</B>(float min);
+
+       void           <B>pfApplyTMat</B>(pfMatrix *mat);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfTexture</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfTexture</B>.  Casting an object of class <B>pfTexture</B>  to
+       an  object  of  class  <B>pfObject</B> is taken care of automati-
+       cally.  This is also true for casts to objects of ancestor
+       classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of  class <B>pfTexture</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>tex</I>  identifies a pfTexture.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfNewTex</B> creates and returns  a  handle  to  a  pfTexture.
+       <I>arena</I>  specifies a malloc arena out of which the pfTexture
+       is allocated or <B>NULL</B> for allocation off the process  heap.
+       pfTextures can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetTexClassType</B>   returns  the  <B>pfType</B>*  for  the  class
+       <B>pfTexture</B>.  The <B>pfType</B>* returned by  <B>pfGetTexClassType</B>  is
+
+       <B>pfLoadTexFile</B>  opens  and loads the IRIS image file speci-
+       fied by <I>fname</I>, using the global search  paths  set  up  by
+       <B>pfFilePath</B>  and  the  environment  variable <B>PFPATH</B> to find
+       <I>file</I>.  The loaded image is then formatted and used as  the
+       image  for <I>tex</I>.  Image memory is allocated out of the mal-
+       loc arena in which the pfTexture was created.  A return of
+       FALSE indicates failure, TRUE success.
+
+       <B>pfLoadTexFile</B> also sets the name of <I>tex</I> to the pathname of
+       the file that was loaded (see <B>pfTexName</B>).
+
+       <B>pfSaveTexFile</B> can be used to save a  texture  to  an  IRIS
+       image  file specified by <I>fname</I> which contains the complete
+       path and name of the file to  be  created.   A  return  of
+       FALSE indicates failure, TRUE success.
+
+       <B>pfTexImage</B>  sets the image used by <I>tex</I>.  <I>image</I> is an array
+       of texel data. <B>pfTexImage</B> only copies the pointer to <I>image</I>
+       and  does  not  make  a separate copy of the texture data.
+       <I>image</I> should be a pointer returned from  <B>pfMalloc</B>  so  the
+       image  may be properly reference counted (see <B>pfMalloc</B> and
+       <B>pfObject</B>).
+
+       The texture image is loaded from left to right, bottom  to
+       top.   Texel rows must be aligned on long word boundaries,
+       so rows must be byte-padded to the end of each row to  get
+       the  proper alignment.  <I>comp</I> is the number of 8-bit compo-
+       nents per image pixel.  1, 2, 3, and 4 component  textures
+       are supported.  <I>ns</I>, <I>nt</I>, <I>nr</I> are the number of texels in the
+       s,  t,  and  r  dimensions  of  <I>image</I>.   See  the   OpenGL
+       <B>glTexImage(3g)</B> man page for a more detailed description of
+       texture formats.  <B>pfGetTexImage</B> returns the texture  image
+       parameters  of  <I>tex</I>.   Any  or  all  of  the  arguments to
+       <B>pfGetTexImage</B> may be NULL, in which case  those  arguments
+       are ignored.
+
+       <B>pfFreeTexImage</B>  frees  the texture image memory associated
+       with <I>tex</I> after  the  next  <B>pfApplyTex</B>  is  called  if  the
+       image's  reference  count  is 0.  The texture image memory
+       should be allocated by <B>pfMalloc</B> and may be shared  between
+       multiple  pfTextures.   However, one should take care with
+       <B>pfFreeTexImage</B> if <I>tex</I> is to be  used  in  multiple  OpenGL
+       windows.   If  the  image is freed on the first <B>pfApplyTex</B>
+       then it will not be around when <I>tex</I> is applied in a second
+       window.   In this case the image should be freed only when
+       <I>tex</I> has been applied in all windows.
+
+       <B>pfTexName</B> assigns the character string <I>name</I> to <I>tex</I>.  Names
+       are  useful for sharing textures in order to optimize tex-
+       ture memory usage.  A pfTexture's  name  is  also  set  by
+       <B>pfLoadTexFile</B>  which  sets the name to the pathname of the
+       file that was loaded.  <B>pfGetTexName</B> returns  the  name  of
+       <I>tex</I>.
+
+       <B>pfTexFormat</B> specifies how the texture image memory associ-
+       ated with <I>tex</I> is formatted by <B>pfFormatTex</B>.   <I>format</I>  is  a
+       symbolic  token  specifying  which  format  to  set and is
+       <B>PFTEX_INTERNAL_FORMAT</B>,                 <B>PFTEX_IMAGE_FORMAT</B>,
+       array is sized and packed and can be one  of  <B>PFTEX_PACK_8</B>
+       for  8  bit  components in packed bytes (the default),  or
+       <B>PFTEX_PACK_16</B> for images presented  as  16bit  components,
+       <B>PFTEX_UNSIGNED_SHORT_5_5_5_1</B>  or  one of the OpenGL packed
+       pixels &lt;type&gt; tokens.  The tokens  for  <B>PFTEX_IMAGE_FORMAT</B>
+       describe  the  type  of image data in the array and can be
+       <B>PFTEX_LUMINANCE</B>,     <B>PFTEX_LUMINANCE_ALPHA</B>,     <B>PFTEX_RGB</B>,
+       <B>PFTEX_RGBA</B>,  or  one  of  the OpenGL &lt;format&gt; tokens.  The
+       tokens for  <B>PFTEX_INTERNAL_FORMAT</B>  include  the  component
+       names  use  in the format and number of bits per component
+       in the format.  Internal formats with fewer bits per texel
+       can have faster performance.  For reasonable texture load-
+       ing    performance,    the    <B>PFTEX_EXTERNAL_FORMAT</B>    and
+       <B>PFTEX_INTERNAL_FORMAT</B>  should  be  of  corresponding types
+       (same number of components, if specified,  and  same  bits
+       per  component).   If the <B>PFTEX_EXTERNAL_FORMAT</B> is set and
+       the <B>PFTEX_INTERNAL_FORMAT</B> has not been  set,  OpenGL  Per-
+       former    will    automatically    select    a    matching
+       <B>PFTEX_INTERNAL_FORMAT</B> token.  The  internal  formats,  and
+       the number of bits per texel for each, are:
+
+              <B>PFTEX_RGB_5</B>                   <I>16-bit</I>  texels.   The
+                                            default  3  component
+                                            internal format.
+
+              <B>PFTEX_RGB_4</B>                   <I>16-bit</I>  texels.   The
+                                            default  3  component
+                                            internal   format  if
+                                            <B>PFTEX_RGB_5</B>  is   not
+                                            available     (IMPACT
+                                            systems).
+
+              <B>PFTEX_RGB5_A1</B>                 <I>16-bit</I> texels.
+
+              <B>PFTEX_RGBA_4</B>                  <I>16-bit</I>  texels.   The
+                                            default  4  component
+                                            internal format.
+
+              <B>PFTEX_IA_8</B>                    <I>16-bit</I> texels.
+
+              <B>PFTEX_I_12A_4</B>                 <I>16-bit</I>  texels.   The
+                                            default  2  component
+                                            internal format.
+
+              <B>PFTEX_I_8</B>                     <I>16-bit</I>  texels.   The
+                                            default  1  component
+                                            internal format.
+
+              <B>PFTEX_I_16</B>                    <I>16-bit</I> texels.
+
+              <B>PFTEX_IA_12</B>                   <I>24-bit</I> texels.
+
+              <B>PFTEX_RGBA_8</B>                  <I>32-bit</I> texels.
+
+              <B>PFTEX_RGB_12</B>                  <I>48-bit</I> texels.
+
+              <B>PFTEX_RGBA_12</B>                 <I>48-bit</I> texels.
+       There are additional boolean format options:
+
+                        specifies  that the texture is to be used
+                        as a detail texture.  Once a texture  has
+                        been specified to be a detail texture, it
+                        can no longer be used as a base  texture.
+                        Calling  <B>pfApplyTex</B>  on  a detail texture
+                        will bind the texture to the detail  tar-
+                        get, not the base target.
+
+              <B>PFTEX_SUBLOAD_FORMAT</B>
+                        is  a  boolean  mode  that specifies that
+                        texture is to be able  to  be  loaded  in
+                        pieces,   if  supported  on  the  current
+                        machine.  <I>type</I> should be either <B>PF_ON</B>  or
+                        <B>PF_OFF</B>.  If an image has been assigned to
+                        the pfTexture, it will  be  automatically
+                        downloaded upon formatting.  This type of
+                        texture may  be  formatted  with  a  NULL
+                        image,  in  which case, no image is auto-
+                        matically downloaded upon formatting.  If
+                        the  texture  is  swapped out of hardware
+                        texture memory, the  image  will  not  be
+                        automatically  restored  upon  pfApplyTex
+                        unless the  <B>PFTEX_BASE_AUTO_SUBLOAD</B>  mode
+                        has been specified for the <B>pfTexLoadMode</B>.
+                        and can  always  be  explicitly  reloaded
+                        with  <B>pfLoadTex</B>.  This format also speci-
+                        fies that all loads of the  texture  will
+                        use  the origin, size and image specified
+                        by  <B>pfTexLoadOrigin</B>,  <B>pfTexLoadSize</B>,  and
+                        <B>pfTexLoadImage</B>.   If the current graphics
+                        hardware  configuration  cannot   support
+                        texture  subloading,  this  mode  will be
+                        ignored.  In OpenGL,  this  requires  the
+                        <B>EXT_subtexture</B>    extension;    see   the
+                        <B>EXT_subtexture</B>  section  of  the   OpenGL
+                        <B>glIntro(3g)</B>  man  page  for more informa-
+                        tion.    If    <B>PFTEX_SUBLOAD_FORMAT</B>    is
+                        enabled,  <B>pfFreeTexImage</B>  should  not  be
+                        used as long as the texture is in use.
+
+       See the  OpenGL  <B>glTexImage2D(3g)</B>  and  <B>glTexSubImage</B>  man
+       pages for a description of texture formats and correspond-
+       ing texture loading behavior.  <B>pfGetTexFormat</B> returns  the
+       format mode corresponding to <I>format</I>.
+
+       <B>pfTexRepeat</B>  specifies  a  texture coordinate repeat func-
+       tion.  <I>wrap</I> is a symbolic token that specifies which  tex-
+       ture coordinate(s) are affected by the repeat function and
+       is  one  of  <B>PFTEX_WRAP</B>,  <B>PFTEX_WRAP_R</B>,  <B>PFTEX_WRAP_S</B>,  or
+       <B>PFTEX_WRAP_T</B>.  <I>mode</I> is a symbolic token that specifies how
+       texture coordinates outside the range 0.0 through 1.0  are
+       handled.  <I>mode</I> token values may be one of: <B>PFTEX_REPEAT</B> or
+       <B>PFTEX_CLAMP</B>.   The  default  texture  repeat  function  is
+       <B>PFTEX_REPEAT</B>  for all texture coordinates.  <B>pfGetTexRepeat</B>
+       returns the texture coordinate repeat function correspond-
+       ing to <I>wrap</I>.
+
+       <B>pfTexFilter</B>  sets a filter function used by <I>tex</I>.  <I>type</I> may
+       be    one     of     <B>PFTEX_MINFILTER</B>,     <B>PFTEX_MAGFILTER</B>,
+       to be substituted in texture application for fast  perfor-
+       mance  on  the current graphics platform.  All filters may
+       include basic interpolation tokens:
+              <B>PFTEX_POINT</B>
+              <B>PFTEX_LINEAR</B>
+              <B>PFTEX_BILINEAR</B>
+              <B>PFTEX_TRILINEAR</B>
+              <B>PFTEX_QUADLINEAR</B> - for 3D texture only.
+
+       Additionally, filters may specify additional  minification
+       or magnification functions.
+
+       center tab($) ; c s c | c l | l  .  Texture Filter Table _
+       Filter$PFTEX_ tokens _ <B>PFTEX_MINFILTER</B>$<B>PFTEX_MIPMAP</B>
+
+       <B>PFTEX_MAGFILTER</B>$<B>PFTEX_DETAIL_LINEAR</B>   $<B>PFTEX_MODULATE</B>   $-
+       <B>PFTEX_ADD</B> $<B>PFTEX_DETAIL_COLOR</B> $<B>PFTEX_DETAIL_ALPHA</B>
+
+       <B>PFTEX_MAGFILTER_ALPHA</B>$<B>PFTEX_DETAIL</B>    $<B>PFTEX_MODULATE</B>   $-
+       <B>PFTEX_ADD</B>    $<B>PFTEX_DETAIL_ALPHA</B>     $<B>PFTEX_SHARPEN</B>     $-
+       <B>PFTEX_SHARPEN_ALPHA</B>
+
+       <B>PFTEX_MAGFILTER_COLOR</B>$<B>PFTEX_DETAIL</B>    $<B>PFTEX_MODULATE</B>   $-
+       <B>PFTEX_ADD</B>  $<B>PFTEX_DETAIL_COLOR</B>   $<B>PFTEX_SHARPEN_COLOR</B>   $-
+       <B>PFTEX_SHARPEN</B>
+
+       For  convenience,  there  are compound tokens that include
+       the most of usual filter combinations:
+
+              <B>PFTEX_MIPMAP_POINT</B>
+              <B>PFTEX_MIPMAP_LINEAR</B>
+              <B>PFTEX_MIPMAP_BILINEAR</B>
+              <B>PFTEX_MIPMAP_TRILINEAR</B>
+              <B>PFTEX_MIPMAP_QUADLINEAR</B>
+              <B>PFTEX_MAGFILTER_COLOR</B>
+              <B>PFTEX_MAGFILTER_ALPHA</B>
+              <B>PFTEX_SHARPEN_COLOR</B>
+              <B>PFTEX_SHARPEN_ALPHA</B>
+              <B>PFTEX_DETAIL_COLOR</B>
+              <B>PFTEX_DETAIL_ALPHA</B>
+              <B>PFTEX_DETAIL_LINEAR</B>
+              <B>PFTEX_MODULATE_DETAIL</B>
+              <B>PFTEX_ADD_DETAIL</B>
+              <B>PFTEX_BICUBIC_LEQUAL</B>
+              <B>PFTEX_BICUBIC_GEQUAL</B>
+              <B>PFTEX_BICUBIC_LEQUAL</B>
+              <B>PFTEX_BICUBIC_GEQUAL</B>
+              <B>PFTEX_BILINEAR_LEQUAL</B>
+              <B>PFTEX_BILINEAR_GEQUAL</B>
+
+       If the desired filter requires support that is not present
+       on  the current graphics platform, that part of the speci-
+       fied   filter   will   be   ignored.    See   the   OpenGL
+       <B>glTexImage(3g)</B>  mans page for descriptions of texture fil-
+       ter types.  The default  filter  types  are:  magfilter  =
+       <B>PFTEX_BILINEAR</B>,  minfilter  =  <B>PFTEX_MIPMAP_TRILINEAR</B>  for
+       both   InfiniteReality    and    Reality    Engine,    and
+       <B>PFTEX_MIPMAP_LINEAR</B> otherwise.  <B>pfGetTexFilter</B> returns the
+       filter type of <I>filter</I>.
+       The maximum  degree  of  anisotopy  can  be  queried  with
+       <B>pfQuerySys()</B>.    Anisotropic  filtering  is  supported  on
+       OpenGL  implementations  that  support   the   GL_EXT_tex-
+       ture_filter_anisotropic  extension.   <B>pfQueryFeature()</B> can
+       be used to determine if anisotropic filtering is supported
+       on  the  current  platform.   If  the environment variable
+       PF_MAX_ANISOTROPY is set, then an  anisotropic  filter  of
+       the  value  specified by PF_MAX_ANISOTROPY will be applied
+       to pfTextures that do not set the degree of anisotropy.
+
+       Textures are  permitted  to  have  explicit  borders.   By
+       default,  these  borders are not enabled.  Texture borders
+       can be enabled by  setting  a  texture  border  type  with
+       <B>pfTexBorderType</B> where <I>type</I> is one of the following tokens:
+       <B>PFTEX_BORDER_NONE</B>,         <B>PFTEX_BORDER_COLOR</B>,          or
+       <B>PFTEX_BORDER_TEXELS</B>.   The  default texture border type is
+       <B>PFTEX_BORDER_NONE</B>.  If  <B>PFTEX_BORDER_COLOR</B>  is  specified,
+       the  corresponding  texture  border  color may be set with
+       <B>pfTexBorderColor</B>.  The default  texture  border  color  is
+       black.   If  <B>PFTEX_BORDER_TEXELS</B>  borders are enabled on a
+       pfTexture, it is assumed that the corresponding image  for
+       that  pfTexture  includes the border texels and the corre-
+       sponding size of the pfTexture also  includes  the  border
+       texels.  <B>pfGetTexBorderType</B> will return the texture border
+       type and <B>pfGetTexBorderColor</B> will return the texture  bor-
+       der color.  If the current graphics hardware configuration
+       does not support the selected  border  type,  it  will  be
+       ignored.  Texel borders are only available in OpenGL oper-
+       ation.  Texture borders should be used only when there  is
+       strong motivation and with extreme caution.  Texel borders
+       can add considerable texture storage requirements  to  the
+       pfTexture and cause subsequent performance degradations.
+
+       <B>pfTexDetail</B>  sets  <I>detail</I>  as the detail texture of <I>tex</I> or
+       disables detailing of <I>tex</I> if <I>detail</I> is <B>NULL</B>. The level  of
+       magnification  between the base texture and detail texture
+       is a non-positive number specified by  <I>level</I>  and  may  be
+       <B>PFTEX_DEFAULT</B>.  The detail texture is replicated as neces-
+       sary to create a resulting texture that is  2^<B>level</B>  times
+       the  size  of the base (level 0) texture.  The default tex
+       level is four which creates a  16:1  mapping  from  detail
+       texels to base texels.  <B>pfTexDetail</B> will also set the mag-
+       nification  filter  of  <I>tex</I>  to  <B>PFTEX_MODULATE_DETAIL</B>  or
+       <B>PFTEX_BILINEAR</B> if detailing is enabled or disabled respec-
+       tively.  See the OpenGL <B>glDetailTexFuncSGIS</B> man page for a
+       description  of  detail  texture filters and splines.  For
+       use with OpenGL, the OpenGL <B>GL_SGIS_detail_texture</B>  exten-
+       sion is required.  Once a texture has been specified to be
+       a detail texture, it can no longer be used as a base  tex-
+       ture.   Calling  <B>pfApplyTex</B>  on a detail texture will bind
+       the texture to the detail target,  not  the  base  target.
+       Please  also see the additional notes on using detail tex-
+       tures below.
+
+       <B>pfGetTexDetail</B> returns the detail texture of <I>tex</I> in <I>detail</I>
+       or  <B>NULL</B>  if  the  texture is not detailed, and the detail
+       texture level in <I>level</I>.  The  level  of  magnification  at
+       which   detail   is  actually  applied  is  controlled  by
+       <B>pfTexSpline</B>.  <B>pfGetTexDetailTex</B> returns the detail texture
+       be a  detail  texture  whose  corresponding  magnification
+       level  will  be -<I>level</I>. <B>pfGetTexLevel</B> will return the tex-
+       ture for the specified <I>level</I>.
+
+       <B>pfTexLODRange</B> sets directly on  the  current  texture  the
+       range  of levels of detail to be accessible.  This has the
+       same basic  functionality  as  the  same  control  on  the
+       pfTexLOD  attribute  (see  the  <B>pfTexLOD</B> man page for more
+       information).    The   state   enable   for   TEXLOD    (-
+       <B>PFSTATE_ENTEXLOD</B> on a pfGeoState or <B>pfEnable(PFEN_TEXLOD)</B>)
+       is ignored for an LOD range set on a pfTexture.   A  range
+       set  on  a  pfTexture  will take priority over a currently
+       applied pfTexLOD attribute unless <B>pfOverride</B> has been  set
+       for  <B>PFSTATE_TEXLOD</B>.  To completely unset the LOD range on
+       a  pfTexture,  set  the  min  and  max  values   both   to
+       <B>PFTEX_DEFAULT</B>.   <B>pfGetTexLODRange</B>  will return the texture
+       LOD range set on the pfTexture.  If the  range  are  unset
+       the  value  <B>PFTEX_DEFAULT</B> will be returned in <I>min</I> and <I>max</I>.
+       <B>pfGetCurTexLODRange</B> will return the current effective  LOD
+       range  being  applied to the given pfTexture and considers
+       values inherited from the current global  state.   If  the
+       values are completely unset, GL defaults will be returned.
+       NULL arguments to <B>pfGetTexLODRange</B> and <B>pfGetCurTexLODRange</B>
+       are legal (they are ignored).
+
+       <B>pfTexLODBias</B>  sets  directly  on  the current texture bias
+       parameters to be used in the texture level of detail  com-
+       putation.   This  has  the same basic functionality as the
+       same control on the pfTexLOD attribute (see  the  <B>pfTexLOD</B>
+       man  page  for  more  information).   The state enable for
+       TEXLOD    (<B>PFSTATE_ENTEXLOD</B>    on    a    pfGeoState    or
+       <B>pfEnable(PFEN_TEXLOD)</B>) is ignored for an LOD bias set on a
+       pfTexture.  A bias setting on a pfTexture will take prior-
+       ity  over  a  currently  applied pfTexLOD attribute unless
+       <B>pfOverride</B> has been set for <B>PFSTATE_TEXLOD</B>.  To completely
+       unset  the  LOD  range on a pfTexture, set the bias values
+       both to <B>PFTEX_DEFAULT</B>.  <B>pfGetTexLODBias</B>  will  return  the
+       texture  LOD  bias  values.  If the bias values are unset,
+       <B>PFTEX_DEFAULT</B>  will  be  returned  in  the  bias   values.
+       <B>pfGetCurTexLODBias</B>  will  return the current effective LOD
+       bias being applied to the given  pfTexture  and  considers
+       values  inherited  from  the current global state.  If the
+       values are completely unset, GL defaults will be returned.
+       NULL  arguments  to <B>pfGetTexLODBias</B> and <B>pfGetCurTexLODBias</B>
+       are legal (they are ignored).
+
+       <B>pfTexSpline</B> sets the parameters of a  cubic  interpolating
+       spline  used  in certain magnification filters.  <I>type</I> is a
+       symbolic token specifying a particular filter  spline  and
+       is   either  <B>PFTEX_SHARPEN_SPLINE</B>  or  <B>PFTEX_DETAIL_SPLINE</B>
+       which correspond to magfilters for sharpen (<B>PFTEX_SHARPEN</B>)
+       and     detail     texture    (<B>PFTEX_MODULATE_DETAIL</B>    or
+       <B>PFTEX_ADD_DETAIL</B>) respectively.  <I>pts</I> is an array of pfVec2
+       of length 4 which specifies the control points of the fil-
+       ter spline.  A control point is of the form (-LOD, scale).
+       The  specified LOD is negative since it indicates a magni-
+       fication LOD.  The spline is clamped to <I>clamp</I>.   If  <I>clamp</I>
+       is <B>PFTEX_DEFAULT</B>, the spline will be automatically clamped
+       to its maximum value.  If <I>clamp</I> is zero, no clamping  will
+
+       <B>pfTexList</B> sets a pfList of pfTexture*, <I>list</I>, on the pfTex-
+       ture,  <I>tex</I>.   <B>pfGetTexList</B>  returns  the   texture   list.
+       <B>pfTexFrame</B>  selects  a  frame from the texture list of <I>tex</I>
+       upon <B>pfApplyTex</B>.  The default frame value  is  (-1)  which
+       selects  the base texture.  <B>pfGetTexFrame</B> returns the cur-
+       rent pfTexture frame.  <B>pfTexList</B> and  <B>pfTexFrame</B>  together
+       provide a mechanism for doing texture animations or manag-
+       ing multiple textures on geometry.  The base pfTexture  is
+       applied to the geometry, but different pfTextures from the
+       set in the list are selected based on the frame  value  in
+       the    base   texture.   The   <B>PFTEX_LOAD_LIST</B>   mode   to
+       <B>pfTexLoadMode</B> controls how textures replace previous  tex-
+       ture  from  the  same  list for efficient hardware texture
+       memory management.
+
+       <B>pfFormatTex</B> creates a GL/hardware ready  texture  for  the
+       specified  pfTexture,  <I>tex</I>.   All pfTexture parameters are
+       take into account.  Changing any parameter on a  pfTexture
+       will    cause    it    to   need   to   be   re-formatted.
+       <B>pfIsTexFormatted</B> will return the formatted  state  of  the
+       texture.   <B>pfGetGLHandle</B>  will  return  the  handle to the
+       resulting GL texture, valid only for the current  GL  con-
+       text.
+
+       <B>pfLoadTex</B> downloads the specified texture source to graph-
+       ics hardware texture memory allocated  to  <I>tex</I>.   Repeated
+       calls  to  <B>pfLoadTex</B>  will  reload  the image specified by
+       <B>pfTexLoadImage</B> or else  the  main  texture  image  set  by
+       <B>pfTexImage</B> or <B>pfLoadTexFile</B> down into the graphics subsys-
+       tem, allowing the contents of  the  texture  image  to  be
+       changed  dynamically.  If a reformatting of the texture is
+       required, <B>pfFormatTex</B> will be  called  automatically.   If
+       the texture is of format <B>PFTEX_SUBLOAD_FORMAT</B> and the cur-
+       rent  graphics  hardware  configuration  supports  texture
+       subloading,  then  the  origin  and  size  specified  with
+       <B>pfTexLoadOrigin</B>   and   <B>pfTexLoadSize</B>   will   be    used.
+       <B>pfIsTexLoaded</B>  will  return  whether  or not the specified
+       pfTexture is currently resident in hardware  texture  mem-
+       ory.   However,  <B>pfIsTexLoaded</B> will not reflect whether or
+       not additional changes made to the contents of the texture
+       image have been downloaded.
+
+       <B>pfLoadTexLevel</B> will load a specific level of the pfTexture
+       and is available in OpenGL only.  The <I>level</I> may be a  non-
+       zero  positive number to refer to a minification level, or
+       may be <B>PFTEX_LEVEL_BASE</B>  to  refer  to  the  base  texture
+       level, <B>PFTEX_LEVEL_ALL</B> to refer to all levels, or may be a
+       non-positive number to refer to a detail level.  <B>pfLoadTex</B>
+       and  <B>pfLoadTexLevel</B>  change  the  current  pfTexture to be
+       undefined.
+
+       <B>pfSubloadTex</B>  downloads  a  specified  texture  source  to
+       graphics hardware memory allocated to <I>tex</I> according to the
+       specified source, image, origin, width of complete  image,
+       destination,  and  subload  size,   which may be different
+       than the load parameters in <I>tex</I>.  The width of the  source
+       images  is  specified in <I>srcwidth</I> and may be (-1) to refer
+       to the width of the base texture.  <I>srcwidth</I>  is  used  for
+       non-zero positive number to refer to a minification level,
+       or  may  be  <B>PFTEX_LEVEL_BASE</B> to refer to the base texture
+       level, <B>PFTEX_LEVEL_ALL</B> to refer to all levels, or may be a
+       non-positive   number   to   refer   to  a  detail  level.
+       <B>pfSubloadTex</B>  and  <B>pfSubloadTexLevel</B>  change  the  current
+       pfTexture to be undefined.
+
+       <B>pfTexLoadImage</B> can be used to update a location for texels
+       to be downloaded from without causing  a  reformatting  of
+       the  pfTexture  and without loosing the main image pointer
+       on the pfTexture.  This specified <I>image</I> pointer will  then
+       be  used for texture downloads triggered by <B>pfApplyTex</B> and
+       <B>pfLoadTex</B>.  If <I>image</I> is NULL, then texture downloads  will
+       go  back to using the main image pointer on the pfTexture,
+       set     through     <B>pfTexImage</B>      or      <B>pfLoadTexFile</B>.
+       <B>pfGetTexLoadImage</B>  will  return  the  previously  set load
+       image of <I>tex</I>.
+
+       Portions of a texture images may be updated by  specifying
+       a <B>pfTexLoadOrigin</B> and <B>pfTexLoadSize</B>.  <B>pfTexLoadOrigin</B> sets
+       the origin of the texture  image  source  or  destination,
+       according  to  <I>which</I>.  <B>pfTexLoadSize</B> sets the texture area
+       size, in texels, that is to be downloaded.  These settings
+       will  affect  future  texture  loads that are triggered by
+       <B>pfApplyTex</B> and <B>pfLoadTex</B>.   <B>pfGetTexLoadSize</B>  will  return
+       the  previously  set load size of <I>tex</I>.  <B>pfGetTexLoadOrigin</B>
+       will return the source  or  destination  load  origin,  as
+       specified  by  <I>which</I>  of  <I>tex</I>.   The  x  or  y argument to
+       <B>pfGetTexLoadSize</B> <B>pfGetTexLoadOrigin</B> may be NULL, in  which
+       case it is ignored.
+
+       <B>pfTexLoadMode</B> sets parameters that configure texture down-
+       loading, specified by <I>mode</I> to <I>val</I>.  <I>mode</I>  may  be  one  of
+       <B>PFTEX_LOAD_SOURCE</B>,  <B>PFTEX_LOAD_BASE</B>,  or  <B>PFTEX_LOAD_LIST</B>.
+       Values for the <B>PFTEX_LOAD_SOURCE</B> select the source for the
+       texture image data and may be one of <B>PFTEX_IMAGE</B> to select
+       the image specified by <B>pfTexImage</B>, <B>PFTEX_SOURCE_VIDEO</B>  for
+       video  texture,  or <B>PFTEX_SOURCE_FRAMEBUFFER</B>.  The default
+       texture  load  source  is   <B>PFTEX_SOURCE_IMAGE</B>.    Texture
+       sources of <B>PFTEX_SOURCE_VIDEO</B> and <B>PFTEX_SOURCE_FRAMEBUFFER</B>
+       also require the <B>PFTEX_SUBLOAD_FORMAT</B> and set it automati-
+       cally.   The  <B>PFTEX_LOAD_BASE</B>  mode controls how base tex-
+       tures are loaded.  The default, <B>PFTEX_BASE_APPLY</B> will do a
+       load  of  the specified texture source when the texture is
+       dirty  upon   a   <B>pfApplyTex</B>   of   the   pfTexture.   The
+       <B>PFTEX_BASE_AUTO_SUBLOAD</B>  will  automatically  replace  the
+       texture from the specified texture source upon every  call
+       to <B>pfApplyTex</B>.  The <B>PFTEX_LOAD_LIST</B> mode controls how tex-
+       tures from the texture list  are  loaded.  New  selections
+       from the texture list may be loaded in the following ways:
+       <B>PFTEX_LIST_APPLY</B>, the default,  will  apply  the  selected
+       pfTexture from the texture list; <B>PFTEX_LIST_AUTO_IDLE</B> will
+       idle the previous pfTexture selected from the list so that
+       its  graphics  texture  memory will be freed.  If the base
+       texture   is    formatted    with    <B>PFTEX_SUBLOAD_FORMAT</B>,
+       <B>PFTEX_LIST_SUBLOAD</B>  will  replace the texture image of the
+       base texture with the  texture  image  from  the  selected
+       pfTexture of the texture list. <B>PFTEX_LIST_AUTO_SUBLOAD</B> re-
+       uses the hardware texture memory of the base  texture  and
+       <I>mode</I> for <I>tex</I>.
+
+       <B>pfApplyTex</B> makes <I>tex</I> the current texture.  When  texturing
+       is  enabled  (see  below), this texture will be applied to
+       all geometry drawn after <B>pfApplyTex</B> is called.   Only  one
+       pfTexture  may  be  active  at a time although many may be
+       defined.  If formatting or downloading of the  texture  is
+       required   at   the   time  of  the  call  to  <B>pfApplyTex</B>,
+       <B>pfFormatTex</B> and <B>pfLoadTex</B> will  be  called  automatically.
+       Modifications  to  <I>tex</I>,  such as changing the filter type,
+       will not have effect until <B>pfApplyTex</B> is called with  <I>tex</I>.
+       <B>pfGetCurTex</B> returns the currently active pfTexture.
+
+       <B>pfApplyTex</B>  will  automatically  apply  the detail texture
+       associated with <I>tex</I> and will disable detail  texturing  if
+       <I>tex</I> has no associated detail texture.
+
+       For geometry to be textured, the following must be true:
+
+              1.   Texturing    must   be   enabled:   <B>pfEnable</B>(-
+                   <B>PFEN_TEXTURE</B>)
+
+              2.   A pfTexEnv must be applied: <B>pfApplyTEnv</B>
+
+              3.   A pfTexture must be applied: <B>pfApplyTex</B>
+
+              4.   Geometry  must   have   texture   coordinates:
+                   <B>pfGSetAttr</B>, <B>PFGS_TEXCOORD2</B>
+
+       The   texture   state   element   is   identified  by  the
+       <B>PFSTATE_TEXTURE</B> token.  Use this token  with  <B>pfGStateAttr</B>
+       to  set the texture of a pfGeoState and with <B>pfOverride</B> to
+       override subsequent texture changes:
+
+       Example 1:
+
+       /* Apply texture environment to be used by textured geometry */
+       pfApplyTEnv(tev);
+
+       /* Set up textured pfGeoState */
+       pfGStateMode(gstate, PFSTATE_ENTEXTURE, PF_ON);
+       pfGStateAttr(gstate, PFSTATE_TEXTURE, tex);
+
+       /* Attach gstate to gset */
+       pfGSetGState(gset, gstate);
+
+       /* Set texture coordinate array. 'gset' is non-indexed */
+       pfGSetAttr(gset, PFGS_TEXCOORD2, PFGS_PER_VERTEX, tcoords,NULL);
+
+       /* Draw textured gset */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       pfApplyTex(tex);
+
+       /* Override so that all textured geometry uses 'tex' */
+       pfOverride(PFSTATE_TEXTURE, PF_ON);
+       is no longer needed in texture memory and may be replaced
+       by new textures.  <B>pfIsTexLoaded</B> returns TRUE or FALSE
+       depending on whether <I>tex</I> is already loaded in texture mem-
+       ory or not.  With these two commands it is possible to
+       implement a rudimentary texture paging mechanism.
+
+       <B>pfApplyTex</B> and <B>pfIdleTex</B> are display-listable commands.
+       If a pfDispList has been opened by <B>pfOpenDList</B>, <B>pfApplyTex</B>
+       and <B>pfIdleTex</B> will not have immediate effect but will be
+       captured by the pfDispList and will only have effect when
+       that pfDispList is later drawn with <B>pfDrawDList</B>.
+
+       <B>pfApplyTexMinLOD</B> sets the minLOD value in the graphics
+       context in a frame accurate manner. The command passes its
+       argument directly to the DRAW process by storing the min-
+       LOD value in a display list. In the DRAW process, the
+       OpenGL context is directly set with the minLOD value; the
+       minLOD value in the parent pfTexture class is unaffected.
+       This command is useful when the minLOD value must be
+       changed multiple times per frame during scene graph
+       traversal; for example, in scene graph callbacks support-
+       ing virtual cliptexures.
+
+       <B>pfApplyTexMaxLOD</B> sets the maxLOD value in the graphics
+       context in a frame accurate manner. The command passes its
+       argument directly to the DRAW process by storing the
+       maxLOD value in a display list. In the DRAW process, the
+       OpenGL context is directly set with the maxLOD value; the
+       maxLOD value in the parent pfTexture class is unaffected.
+       This command is useful when the maxLOD value must be
+       changed multiple times per frame during scene graph
+       traversal; for example, in scene graph callbacks support-
+       ing virtual cliptexures.
+
+
+       <B>pfApplyTexLODBias</B> sets the S, T and R bias values in the
+       graphics context in a frame accurate manner. The command
+       passes its arguments directly to the DRAW process by stor-
+       ing the bias values in a display list. In the DRAW pro-
+       cess, the OpenGL context is directly set with the bias
+       values; the S, T, and R bias values  in the parent pfTex-
+       ture class are unaffected. This command is useful when the
+       bias values must be changed multiple times per frame dur-
+       ing scene graph traversal; for example, in scene graph
+       callbacks supporting virtual cliptexures.
+
+       <B>pfApplyTMat</B> will apply the pfMatrix <I>mat</I> to the global
+       state and the current GL texture matrix to transform tex-
+       ture coordinates.  The GL matrix mode will be left in
+       model view mode.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Since textures are an expensive hardware resource, the
+       sharing of textures is highly recommended.  For best per-
+       formance on machines which support hardware texturing, all
+       textures should fit in hardware texture memory.  Other-
+       wise, the GL must page textures from main memory into the
+       graphics pipeline with a corresponding performance hit.
+              for storage in hardware texture memory in OpenGL
+              will simply fail to work if they do not have sizes
+              that are a power of two.
+
+              Share pfTextures between pfGeoStates and share
+              pfGeoStates between pfGeoSets whenever possible.
+
+              Minimize the number of distinct detail and sharpen
+              splines.
+
+              Check the graphics state statistics (see the
+              <B>pfStats</B> man page) to see if hardware texture memory
+              is being swapped.  As an additional diagnostic,
+              <B>pfIsTexLoaded</B> can be used in a pfGeoState callback
+              before applying a pfTexture to see if a load or
+              swap will be required.
+       For OpenGL operation, detail texturing requires the
+       <B>GL_SGIS_detail_texture</B> OpenGL extension and the sharpen
+       filter requires the <B>GL_SGIS_sharpen_texture</B> extension.
+       <B>pfIsTexLoaded</B> requires the <B>EXT_texture_object</B> OpenGL
+       extension.  See the <B>EXT_texture_object</B> section of the
+       OpenGL <B>glIntro(3g)</B> man page for more information.
+
+       A texture source of <B>PFTEX_VIDEO</B> is supported only on
+       InfiniteReality and RealityEngine graphics systems.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       MIPmap levels cannot be loaded or subloaded unless the
+       have been explicitly defined with <B>pfTexLevel</B>.
+
+       For <B>PFTEX_SOURCE_VIDEO</B> textures under OpenGL operation,
+       the GL read source will need to be reset whenever the cur-
+       rent GL window is changed.  Additionally, Libpf applica-
+       tions will need to reset their GL read source (-
+       <B>glXMakeCurrentReadSGI</B>) every frame in the drawing process.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfEnable, pfFilePath, pfGeoState,
+       pfGetGLHandle, pfMalloc, pfObject, pfOverride, pfState,
+       pfStats, pfTexEnv, pfTexLOD, tevbind, tevdef, texbind,
+       texdef, glTexImage, glDetailTexFuncSGIS, glSharpenTexFunc-
+       SGIS, glXMakeCurrentReadSGI
+
+
+
+                                                   pfTexture(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

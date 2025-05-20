@@ -1,0 +1,500 @@
+<HTML>
+<HEAD>
+<TITLE>pfCullProgram</TITLE>
+</HEAD>
+<BODY>
+<H1>pfCullProgram</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfCullProgram(3pf)                             pfCullProgram(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCullProgramResetPgm,</B>  <B>pfCullProgramAddPgmOpcode,</B> <B>pfCull-</B>
+       <B>ProgramAddPgmInstruction,</B>       <B>pfCullProgramNumPolytopes,</B>
+       <B>pfGetCullProgramNumPolytopes,</B>       <B>pfCullProgramPolytope,</B>
+       <B>pfGetCullProgramPolytope,</B>  <B>pfCullProgramFlags,</B>  <B>pfGetCull-</B>
+       <B>ProgramFlags,</B>  <B>pfCullProgramTestPolytope,</B> <B>pfCullProgramAd-</B>
+       <B>dBinParent,</B>  <B>pfCullProgramIsSubbinOf,</B>  <B>pfCullProgramReset-</B>
+       <B>BinParents</B> - Specifies a set of operations applied to each
+       node and each pfGeoSet during cull traversal.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void          <B>pfCullProgramResetPgm</B>(pfCullProgram* cullprogram);
+
+       void          <B>pfCullProgramAddPgmOpcode</B>(pfCullProgram* cullprogram,
+                       int opcode, int data);
+
+       void          <B>pfCullProgramAddPgmInstruction</B>(pfCullProgram* cullprogram,
+                       _pfCullPgInstruction instruction,
+                       int data);
+
+       void          <B>pfCullProgramNumPolytopes</B>(pfCullProgram* cullprogram,
+                       int i);
+
+       int           <B>pfGetCullProgramNumPolytopes</B>(pfCullProgram* cullprogram);
+
+       void          <B>pfCullProgramPolytope</B>(pfCullProgram* cullprogram,
+                       int index, pfPolytope *pol);
+
+       pfPolytope*   <B>pfGetCullProgramPolytope</B>(pfCullProgram* cullprogram,
+                       int index);
+
+       void          <B>pfCullProgramFlags</B>(pfCullProgram* cullprogram,
+                       int which, int value);
+
+       int           <B>pfGetCullProgramFlags</B>(pfCullProgram* cullprogram,
+                       int which);
+
+       int           <B>pfCullProgramTestPolytope</B>(pfCullProgram* cullprogram,
+                       int index);
+
+       void          <B>pfCullProgramAddBinParent</B>(pfCullProgram* cullprogram,
+                       int bin);
+
+       int           <B>pfCullProgramIsSubbinOf</B>(pfCullProgram* cullprogram,
+                       int bin);
+
+       void          <B>pfCullProgramResetBinParents</B>(pfCullProgram* cullprogram);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfCullProgram</B> is  derived  from
+       the  parent  class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B>  are  also  directly  usable  with
+       objects  of  class  <B>pfCullProgram</B>.   Casting  an object of
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfCullProgram</B> can also be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfCullProgram  is a class that is used to set up a cull
+       program, a sequence of instructions that are executed  for
+       each  scene  graph  node and each pfGeoSet during the cull
+       traversal.  There can be two separate cull  programs,  one
+       for  nodes  and  one for pfGeoSets.  The node cull program
+       uses a set of polytopes. Based on the position of the node
+       with  respect  to  each  polytope (inside, outside, inter-
+       sects) it can determine whether the  node  is  culled  out
+       (good  for  occlusion  culling)  or  whether all pfGeoSets
+       under this node are  assigned  to  a  specific  bin.   The
+       pfGeoSet  cull  program  also  uses a set of polytopes and
+       assigns each pfGeoSet to a  different  bin  based  on  the
+       position  of the pfGeoSet with respect to each polytope or
+       it culls out the pfGeoSet.  The best use of cull  programs
+       is  for  occlusion culling or in multi-pass rendering when
+       in some passes only parts of the scene have to be rendered
+       and  being  able  to assign these part to a bin can reduce
+       the rendering time.
+
+       There is always a default pfCullProgram present on pfChan-
+       nel.   To  access it, you can call <B>LcpfGetChanCullProgram</B>.
+       Then you can set the  program's  instructions,  the  poly-
+       topes,  and  enable  the  cull  program  by  setting  flag
+       <B>PFCULL_PROGRAM</B> using  <B>pfChanTravMode</B>  (see  pfChannel  for
+       pfCullProgramAddPgmOpcode(cullPgm, opcode1, data1);
+        ...
+       pfCullProgramAddPgmOpcode(cullPgm, opcodeN, dataN);
+
+       pfCullProgramResetPgm(cullPgm, PFCULLPG_NODE_PROGRAM);
+       pfCullProgramAddPgmOpcode(cullPgm, opcode1, data1);
+        ...
+       pfCullProgramAddPgmOpcode(cullPgm, opcodeM, dataM);
+
+       pfCullProgramNumPolytopes(cullPgm, 2);
+       pfCullProgramPolytope(cullPgm, ptope1);
+       pfCullProgramPolytope(cullPgm, ptope2);
+
+
+
+       You can define both node and pfGeoSet cull program at once
+       by setting the flag in <B>pfCullProgramResetPgm</B> to
+       PFCULLPG_GEOSET_PROGRAM | PFCULLPG_NODE_PROGRAM.
+
+
+       POLYTOPES
+
+       Cull program polytopes are standard pfPolytopes.  They
+       could be used to defined various areas: it could be some
+       subset of a view frustum in which the geometry is drawn
+       using different attributes, it could be a bounding box
+       around some area of interest and so on.
+
+       To initialize cull program polytopes, you set the number
+       of polytopes that are used by cull programs using
+       <B>pfCullProgramNumPolytopes</B>.  Then create new pfPolytope in
+       the shared arena and set it using <B>pfCullProgramPolytope</B>.
+       The polytopes are indexed from 0.  Polytopes are shared
+       between the node and pfGeoSet cull program, even if they
+       are different.
+
+
+       To modify a polytope of certain index during the simula-
+       tion, you get a pointer to the polytope using
+       <B>pfGetCullProgramPolytope</B>, modify it, and then call
+       <B>pfCullProgramPolytope</B>.
+
+
+
+       PREDEFINED CULL PROGRAM INSTRUCTIONS
+
+       A cull program is a set of instructions that operate on
+       bins and defined polytopes. Instructions are defined in
+       sequence. First, you reset the default program (which con-
+       sists of return instruction only) using
+       <B>pfCullProgramResetPpgm</B> and then specify each instruction
+       by its opcode (<B>pfCullProgramAddPgmOpcode</B>) or directly by
+       specifying a function (<B>pfCullProgramAddPgmInstruction</B>).
+       Each instruction has associated an integer value, used as
+       a parameter for the instruction.
+
+       The cull program starts with the bin that is associated
+       with the pfGeoSet and as it is executed it modifies it.
+       The output is the new bin assignment.
+                   intersection), <B>PFIS_MAYBE</B> <B>|</B> <B>PFIS_TRUE</B> (all
+                   in).
+
+
+              <B>PFCULLPG_TEST_IS_SUBBIN_OF</B> <B>b</B>
+                   Test whether the bin that has been determined
+                   up to this point is a subbin of bin <I>b</I>. The
+                   result is 1 or 0.  Note that bin <I>b</I> is consid-
+                   ered a subbin of itself.
+
+
+              <B>PFCULLPG_TEST_IS_TRANSPARENT</B>
+                   Test whether the pfGeoSet is transparent.  The
+                   parameter is ignored. The result is 1 or 0.
+
+
+              <B>PFCULLPG_TEST_IS_LIGHT_POINT</B>
+                   Test whether the pfGeoSet belongs to a light
+                   point bin.  The parameter is ignored. The
+                   result is 1 or 0.
+
+
+              <B>PFCULLPG_ASSIGN_BIN_MAYBE</B> <B>b</B>
+                   Assign bin <I>b</I> to the pfGeoSet if the result of
+                   the last polytope test was <B>PFIS_MAYBE</B>.
+
+
+              <B>PFCULLPG_ASSIGN_BIN_TRUE</B> <B>b</B>
+                   Assign bin <I>b</I> to the pfGeoSet if the result of
+                   the last binary test was 1.
+
+
+              <B>PFCULLPG_ASSIGN_BIN_ALL_IN</B> <B>b</B>
+                   Assign bin <I>b</I> to the pfGeoSet if the result of
+                   the last polytope test was  <B>PFIS_MAYBE</B> <B>|</B>
+                   <B>PFIS_TRUE</B>.
+
+
+              <B>PFCULLPG_ASSIGN_BIN_ALL_OUT</B> <B>b</B>
+                   Assign bin <I>b</I> to the pfGeoSet if the result of
+                   the last polytope test was  <B>PFIS_FALSE</B>.
+
+
+              <B>PFCULLPG_ASSIGN_BIN_FALSE</B> <B>b</B>
+                   Assign bin <I>b</I> to the pfGeoSet if the result of
+                   the last polytope test was 0.
+
+
+
+              <B>PFCULLPG_ASSIGN_BIN</B> <B>b</B>
+                   Assign bin <I>b</I> to the pfGeoSet.
+
+
+
+              <B>PFCULLPG_ADD_BIN_MAYBE</B> <B>b</B>
+                   Assign a subbin of bin <I>b</I> and the existing bin
+                   to the pfGeoSet if the result of the last
+                   polytope test was <B>PFIS_MAYBE</B>. If the existing
+                   bin is -1, the instruction operates as an
+                   binary test was 1.
+
+
+              <B>PFCULLPG_ADD_BIN_ALL_IN</B> <B>b</B>
+                   Assign a subbin of bin <I>b</I> and the existing bin
+                   to the pfGeoSet if the result of the last
+                   polytope test was  <B>PFIS_MAYBE</B> <B>|</B> <B>PFIS_TRUE</B>.
+
+
+              <B>PFCULLPG_ADD_BIN_ALL_OUT</B> <B>b</B>
+                   Assign a subbin of bin <I>b</I> and the existing bin
+                   to the pfGeoSet if the result of the last
+                   polytope test was  <B>PFIS_FALSE</B>.
+
+
+              <B>PFCULLPG_ADD_BIN_FALSE</B> <B>b</B>
+                   Assign a subbin of bin <I>b</I> and the existing bin
+                   to the pfGeoSet if the result of the last
+                   polytope test was 0.
+
+
+
+              <B>PFCULLPG_ADD_BIN</B> <B>b</B>
+                   Assign a subbin of bin <I>b</I> and the existing bin
+                   to the pfGeoSet.
+
+
+
+              <B>PFCULLPG_JUMP_MAYBE</B> <B>c</B>
+                   Skip next <I>c</I> instructions if the result of the
+                   last polytope test was <B>PFIS_MAYBE</B>. If <I>c</I> is
+                   negative, go back <I>|c|-1</I> instructions.
+
+
+              <B>PFCULLPG_JUMP_TRUE</B> <B>c</B>
+                   Skip next <I>c</I> instructions if the result of the
+                   last binary test was 1.
+
+
+              <B>PFCULLPG_JUMP_ALL_IN</B> <B>c</B>
+                   Skip next <I>c</I> instructions if the result of the
+                   last polytope test was  <B>PFIS_MAYBE</B> <B>|</B>
+                   <B>PFIS_TRUE</B>.
+
+
+              <B>PFCULLPG_JUMP_ALL_OUT</B> <B>c</B>
+                   Skip next <I>c</I> instructions if the result of the
+                   last polytope test was  <B>PFIS_FALSE</B>.
+
+
+              <B>PFCULLPG_JUMP_FALSE</B> <B>c</B>
+                   Skip next <I>c</I> instructions if the result of the
+                   last polytope test was 0.
+
+
+
+              <B>PFCULLPG_JUMP</B> <B>c</B>
+                   Skip next <I>c</I> instructions.
+
+                   the following binary flags:
+                   <B>PFCULLPG_CULL_ON_ALL_IN</B>,
+                   <B>PFCULLPG_CULL_ON_ALL_OUT</B>, <B>PFCULLPG_CULL</B>,
+                   <B>PFCULLPG_TEST_TRANSPARENCY</B>,
+                   <B>PFCULLPG_DONT_TEST_TRANSPARENCY</B>,
+                   <B>PFCULLPG_TEST_LPOINTS</B>, and
+                   <B>PFCULLPG_DONT_TEST_LPOINTS</B>.
+
+                   The first three flags determine whether the
+                   node or the pfGeoSet is culled out, optionally
+                   based on the result of the last polytope test.
+                   In that case any bin assignment made by the
+                   cull program is ignored.
+
+                   The last four flags control whether an addi-
+                   tional test for the pfGeoSet being transparent
+                   or being a light point is performed.  These
+                   flags have effect only on the pfGeoSet cull
+                   program. If the pfGeoSet is transparent or is
+                   a light point, the pfGeoSet is assigned a sub-
+                   bin of the transparent bin or the light point
+                   bin and the bin resulting from the cull pro-
+                   gram.
+
+                   If initially the pfGeoSet has no bin assigned
+                   to it, both the transparency and light point
+                   tests are performed (to follow the operation
+                   of a regular cull traversal).  If those tests
+                   are not needed the two DONT_TEST flags can be
+                   used.  If the pfGeoSet has initially assigned
+                   a bin, the tests are not performed unless the
+                   binary flags specify so.
+
+                   If you need to perform any of these two tests
+                   earlier, for example, to differentiate bin
+                   assignment based on transparency, you can use
+                   instructions <B>PFCULLPG_TEST_IS_TRANSPARENT</B> and
+                   <B>PFCULLPG_TEST_IS_LIGHT_POINT</B>.
+
+
+       USER-DEFINED CULL PROGRAM INSTRUCTIONS
+
+       The user may provide his/her own instructions. The
+       instruction has to be a function, that takes two parame-
+       ters, a pointer to pfCullProgram and and an integer value
+       (the instruction parameter). The instruction has to return
+       a value by which the instruction counter is increased - 1
+       for all instructions except jump instructions. Actually,
+       it is possible to write whole cull programs as a single
+       user-defined instruction.
+
+       There are two variables user-defined instruction can
+       access during the execution of a cull program and there
+       are several useful methods they may use. The variables
+       are:
+
+              <B>currentResult</B>
+                   stores the result of the last polytope test or
+                   a binary test.
+
+              <B>pfCullProgramTestPolytope(pgm,n)</B>
+                     Test polytope <I>n</I> using the pfGeoSet's bound-
+                     ing box <B>bbox</B> or node's bounding sphere.  It
+                     is recommended to use this function rather
+                     than doing the test directly because the
+                     result is often already known by testing the
+                     nodes above the current pfGeoSet or node and
+                     the test can be avoided.
+
+
+              <B>pfCullProgramAddBinParent(pgm,b)</B>
+                     The cull program keeps the list of parents
+                     that identify the current bin (to avoid cre-
+                     ating many subbins that may not be needed).
+                     This function adds a new parent <I>b</I>, which
+                     could be also a subbin.
+
+
+              <B>pfCullProgramIsSubbinOf(pgm,b)</B>
+                     Tests whether the current bin is a subbin of
+                     bin <I>b</I>.
+
+
+              <B>pfCullProgramResetBinParents(pgm)</B>
+                     This method resets the list of parents of
+                     the current bin.
+
+       For example, the predefined instruction
+       <B>PFCULLPG_ASSIGN_BIN_MAYBE</B> can be implemented as:
+
+
+       int MyAssignBinMaybe(pfCullProgram *pgm, int data)
+       {
+           if(pgm-&gt;currentResult &amp; PFIS_MAYBE) {
+               pfCullProgramResetBinParents(pgm);
+               pfCullProgramAddBinParent(pgm, data);
+           }
+           return 1;
+       }
+
+
+
+       CULL TRAVERSAL
+
+       To reduce the amount of testing performed for each
+       pfGeoSet, each node of the tree is tested against all cull
+       program polytopes (only when cull programs are enabled).
+       If the test is conclusive, that is the bounding sphere of
+       the node is inside or outside of a polytope, children of
+       the node are not tested against the given polytope.  It is
+       recommended to use the node cull program only to determine
+       culling and assign bins only at the pfGeoSet level using
+       the pfGeoSet cull program.
+
+       If culling to the view frustum is enabled (flag
+       <B>PFCULL_VIEW</B> set in <B>pfChanTravMode</B> - see pfChannel for more
+       details) it is done before the cull program is executed.
+       In this case pfGeoSets that are not intersecting view
+       frustum are culled out and cull program is not executed
+       <B>OCCLUSION</B> <B>CULLING</B> <B>USING</B> <B>CULL</B> <B>PROGRAMS</B>
+
+       In order to use cull programs for occlusion culling you
+       have to choose the occluders in the scene, for example
+       walls in a room or the walls of the nearest buldings in a
+       city. Then you have to create a polytope around the
+       occluder. If it is a rectangle one face for the rectangle
+       and 4 faces for edges - 4 planes each defined by the edge
+       and the eye. You have to update the polytope or polytopes
+       every time the eye or the occluder moves.
+
+       You can find and example of occlusion culling in
+       /usr/share/Performer/src/pguide/libpf/C++/occlusionCull.C.
+       The sample program also includes a function that for a
+       polygon defined by 4 vertices creates a polytope that can
+       be used by a cull program to perform occlusion culling.
+
+       At present the polytopes have to be convex. Consequently,
+       in case two occluders are touching but their common shape
+       is concave they have to be defined as two polytopes. In
+       that case the geometry that is occluded by both occluders
+       and that spans their common boundary is not culled out. To
+       avoid that problem, you can define a convex polytope that
+       contains both shapes (a convex hull) and then define con-
+       vex cut areas that are not part of the occluders. This way
+       you can also add holes in occluders. As long as you start
+       with a convex polytope, you can subtract as many convex
+       polytops as you need.
+
+       The cull program then looks like:
+
+
+       PFCULLPG_TEST_POLYTOPE, 0 // convex hull
+       PFCULLPG_JUMP_ALL_IN, 1
+       PFCULLPG_RETURN, 0        // no cull
+
+       PFCULLPG_TEST_POLYTOPE, 1 // first cutout area
+       PFCULLPG_JUMP_ALL_OUT, 1
+       PFCULLPG_RETURN, 0        // no cull
+
+
+       PFCULLPG_TEST_POLYTOPE, N // n-th cutout area
+       PFCULLPG_JUMP_ALL_OUT, 1
+       PFCULLPG_RETURN, 0        // no cull
+
+       PFCULLPG_RETURN, PFCULLPG_CULL
+
+
+       See /usr/share/Performer/src/pguide/libpf/C++/occlusion-
+       CullConcave.C for an example.
+
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfObject, pfChannel
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

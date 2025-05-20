@@ -1,0 +1,480 @@
+<HTML>
+<HEAD>
+<TITLE>pfMemory</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMemory</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMemory(3pf)                                       pfMemory(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGetMemoryClassType,</B>  <B>pfGetType,</B>  <B>pfIsOfType,</B>  <B>pfIsExact-</B>
+       <B>Type,</B> <B>pfGetTypeName,</B> <B>pfGetMemory,</B> <B>pfGetData,</B> <B>pfRef,</B>  <B>pfUn-</B>
+       <B>ref,</B>   <B>pfUnrefDelete,</B>   <B>pfUnrefGetRef,</B>  <B>pfGetRef,</B>  <B>pfCopy,</B>
+       <B>pfDelete,</B> <B>pfIsFluxed,</B> <B>pfCompare,</B> <B>pfPrint,</B> <B>pfMalloc,</B> <B>pfCal-</B>
+       <B>loc,</B> <B>pfRealloc,</B> <B>pfFree,</B> <B>pfGetArena,</B> <B>pfGetSize,</B> <B>pfGetMemor-</B>
+       <B>yArenaBytesUsed,</B> <B>pfStrdup</B> - Reference, copy, delete, print
+       and query pfMemory
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfType *       <B>pfGetMemoryClassType</B>(void);
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+
+       pfMemory *     <B>pfGetMemory</B>(const void *ptr);
+
+       void *         <B>pfGetData</B>(const void *ptr);
+
+       int            <B>pfRef</B>(void *ptr);
+
+       int            <B>pfUnref</B>(void *ptr);
+
+       int            <B>pfUnrefDelete</B>(void *ptr);
+
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+
+       int            <B>pfGetRef</B>(const void *ptr);
+
+       int            <B>pfCopy</B>(void *dst, void *src);
+
+       int            <B>pfDelete</B>(void *ptr);
+
+       int            <B>pfIsFluxed</B>(void *ptr);
+
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+
+       void *         <B>pfMalloc</B>(size_t nbytes, void *arena);
+
+       void *         <B>pfCalloc</B>(size_t numelem,     size_t elsize,
+                        void *arena);
+
+       void *         <B>pfRealloc</B>(void *ptr, size_t nbytes);
+       int            <B>pfGetMemoryArenaBytesUsed</B>();
+
+       char *         <B>pfStrdup</B>(const char *str, void *arena);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfMemory  is  the  base  class from which all major OpenGL
+       Performer classes are derived and is also the type used by
+       the  OpenGL  Performer  memory allocation routines such as
+       <B>pfMalloc</B> and <B>pfFree</B>.
+
+       Because most OpenGL Performer data structures are  derived
+       from  pfMemory,  they  inherit  the  functionality  of the
+       pfMemory routines described here.  In practice this  means
+       you  can  use the pfMemory routines listed above with most
+       any OpenGL Performer object, such as  pfMaterial,  pfList,
+       pfFog,  pfFrustum,  pfChannel,  pfGroup, pfGeode or with a
+       data pointer returned by <B>pfMalloc</B>.
+
+       pfMemory supports the following:
+
+              1.     Typed data structures.
+
+              2.     Memory arena allocation.
+
+              3.     Memory chunks which know their size.
+
+              4.     Reference counting.
+
+       with only a 4 word overhead.
+
+       Although the OpenGL Performer  general  memory  allocation
+       routines  (<B>pfMalloc</B>)  create pfMemories, they return void*
+       so the application can treat the allocation as  raw  data.
+       Consequently,  all  routines  that  would  normally take a
+       pfMemory* take a void* and infer the  pfMemory  handle  so
+       that  applications  can treat pfMemory as raw memory. How-
+       ever, one caveat is that routines which  take  raw  memory
+       such  as  <B>pfGSetAttr</B>  or  <B>pfFree</B>  should  not  be passed a
+       pointer to static data since the routines may not be  able
+       to  successfully infer the pfMemory handle from the void*.
+
+
+                ---------------  &lt;------ pfMemory*
+               | pfMemory      |
+               | header        |
+               |               |
+                ---------------  &lt;------ void* returned by
+               |               |         allocation routines
+               | raw data      |
+               .               .
+               .               .
+               .               .
+               |               |
+                ---------------
+
+
+       Routines which convert between pfMemory* and void* are:
+
+              void* -&gt; pfMemory*: <B>pfGetMemory</B>
+
+       routines supports the same feature set including reference
+       counts, copy, and delete for pfMemories used as OpenGL
+       Performer data types like pfGeoSet as well as for pfMemo-
+       ries used as raw data like pfGeoSet attribute arrays.
+
+       <B>pfGetMemoryClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfMemory</B>.  The <B>pfType</B>* returned by <B>pfGetMemoryClassType</B> is
+       the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfMemory</B>.  Because OpenGL Performer
+       allows subclassing of built-in types, when decisions are
+       made based on the type of an object, it is usually better
+       to use <B>pfIsOfType</B> to test if an object is of a type
+       derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       All objects derived from pfMemory have a type identifier
+       (pfType*) that is returned by <B>pfGetType</B>
+
+       Example 1: API sharing.
+
+       dcs = pfNewDCS();
+
+       /* pfDCS uses pfGroup routine */
+       pfAddChild(dcs, geode);
+
+       /* pfDCS uses pfNode routine */
+       pfNodeTravMask(dcs, PFTRAV_ISECT, DCS_MASK, PFTRAV_SELF | PFTRAV_DESCEND, PF_SET);
+
+
+       Each data type derived from pfMemory has an associated
+       routine for getting a pointer to its corresponding pfType,
+       e.g.  <B>pfGetDCSClassType()</B> returns the pfType* correspond-
+       ing to the pfDCS class.  The exact type of an object is
+       tested by comparing its pfType* to that returned by one of
+       these <B>pfGet&lt;*&gt;ClassType</B> routines or with the <B>pfIsExactType</B>
+       test, e.g.
+
+
+            if (pfGetType(obj) == pfGetGroupClassType()) ...
+
+            if (pfIsExactType(obj, pfGetGroupClassType())) ...
+
+
+
+       But since OpenGL Performer allows subclassing and the cre-
+       ation of new types in C++, it's more often desirable to
+       know whether a particular object is of a type derived from
+       a particular type defined by OpenGL Performer.  In partic-
+       ular, exact type tests makes application code more likely
+       to fail on scene graphs produced by database loaders that
+       use subclassing.  <B>pfIsOfType</B> performs this test and
+       returns TRUE if <I>mem</I>'s type is derived from <I>type</I>:
+
+            if (pfIsOfType(obj, pfGetGroupClassType())) ...
+
+       If 'obj' is a pfDCS, then the above conditional would
+       evaluate TRUE since pfDCS is derived from pfGroup.
+
+       <B>pfGetTypeName</B> returns a string that identifies the type of
+       deletion, since it is highly dangerous to delete a pfMem-
+       ory which is still being used, i.e., its reference count
+       is greater than 0.
+
+       Reference counts may be incremented and decremented by
+       <B>pfRef</B> and <B>pfUnref</B> respectively.  <B>pfGetRef</B> returns the ref-
+       erence count of <I>mem</I>.  <B>pfUnrefGetRef</B> decrements the refer-
+       ence count and returns the new value, as an atomic opera-
+       tion, i.e. it is guaranteed that no other process can
+       change the value or free the memory between the decrement
+       and the time the value is read.  <B>pfUnrefDelete</B> will decre-
+       ment the reference count of <I>mem</I> and delete it if the count
+       is &lt;= 0.  Thus it is equivalent to calling <B>pfUnref</B> fol-
+       lowed by <B>pfDelete</B>, as an atomic operation.
+
+       <B>pfDelete</B> frees the memory associated with <I>mem</I> if its ref-
+       erence count is &lt;= 0.  When an object is freed, it decre-
+       ments the reference count of all pfMemories that it once
+       referenced and will delete any of these pfMemories with
+       reference counts that are &lt;= 0.  Thus, <B>pfDelete</B> will fol-
+       low all reference chains until it encounters a pfMemory
+       which it cannot delete. Note that the reference count of a
+       pfNode is incremented each time it is added as a child to
+       a pfGroup. Thus, a pfNode must be removed from all its
+       parents before it can be deleted.
+
+       When multiprocessing in a <B>libpf</B> application, pfNodes
+       should be <B>pfDelete</B>ed only in the APP or DBASE processes as
+       should <B>libpr</B> objects that are referenced directly or indi-
+       rectly by pfNodes, like pfGeoSets and pfGeoStates. If you
+       wish to delete objects in processes other than the APP or
+       DBASE, use <B>pfAsyncDelete</B>.
+
+       Example 2: Deletion
+
+
+       pfMaterial     *mtl;
+       pfTexture *tex;
+       pfGeoState     *brickStyle, *woodStyle;
+       pfGeoSet  *brickWall, *woodWall;
+
+       mtl = pfNewMtl(arena);
+
+       brickStyle = pfNewGState(arena);
+       tex = pfNewTex(arena);
+       pfLoadTexFile(tex, "brick.rgb");
+       pfGStateAttr(brickStyle, PFSTATE_TEXTURE, tex);
+       pfGStateAttr(brickStyle, PFSTATE_FRONTMTL, mtl);
+
+       woodStyle = pfNewGState(arena);
+       tex = pfNewTex(arena);
+       pfLoadTexFile(tex, "wood.rgb");
+       pfGStateAttr(woodStyle, PFSTATE_TEXTURE, tex);
+       pfGStateAttr(woodStyle, PFSTATE_FRONTMTL, mtl);
+
+       brickWall = pfNewGSet(arena);
+       pfGSetGState(brickWall, brickStyle);
+       pfGSetAttr(brickWall, PFGS_COORD3, PFGS_PER_VERTEX, coords);
+
+        * have been deleted. coords and mtl have not been deleted
+        * since they are referenced by brickWall and brickStyle respectively.
+       */
+
+
+
+       <B>pfDelete</B> returns the following:
+
+              tab($) ; c l .  FALSE$<I>mem</I> was not deleted TRUE$<I>mem</I>
+              was deleted -1$<I>mem</I> is not a pfMemory
+
+       <B>pfDelete</B> is implemented for all OpenGL Performer objects
+       except the following:
+
+              pfPipe
+              pfChannel
+              pfEarthSky
+              pfBuffer
+              pfPipeWindow
+              pfTraverser
+              pfState
+              pfDataPool
+
+       <B>pfIsFluxed</B> returns TRUE if a pfMemory is actually the data
+       portion of a pfFluxMemory that is part of a pfFlux.  It
+       returns FALSE otherwise.  Calling <B>pfRef</B>, <B>pfUnref</B>,
+       <B>pfUnrefDelete</B>, <B>pfUnrefGetRef</B>, <B>pfGetRef</B>, or <B>pfDelete</B> on a
+       Fluxed pfMemory, will actually call the function on the
+       parent pfFlux.
+
+       <B>pfCopy</B> copies <I>src</I> into <I>dst</I>.  <B>pfCopy</B> is not recursive - it
+       does not follow reference chains but instead copies only
+       the first- level references. The reference counts of
+       objects newly referenced by <I>dst</I> are incremented by one
+       while those counts of objects previously reverenced by <I>dst</I>
+       are decremented by one. Objects whose reference counts
+       reach 0 during <B>pfCopy</B> are <I>not</I> deleted.  A value of <B>TRUE</B>
+       will be returned if the copy successfully completes and
+       <B>FALSE</B> will be returned if an error is encountered.  If the
+       destination object is a growable object (such as a <B>pfList</B>)
+       then it will automatically grow as needed and as memory
+       permits to hold the copy of the source object.  If the
+       destination object is not a growable object and the <I>src</I>
+       object is larger than the destination object, no copy will
+       be done and a value of <B>FALSE</B> will be returned.
+
+       <B>pfCopy</B> is currently not implemented for any libpf data
+       structures and is not implemented for the following libpr
+       data structures:
+
+              pfState
+              pfDataPool
+
+       <B>pfCompare</B> compares the object <I>p1</I> to the object <I>p2</I>.  If the
+       objects are identical, a value of 0 will be returned.
+       Upon the first difference, a value of (1) will be returned
+       if <I>p1</I> had a greater value and a value of (-1) will be
+       returned if <I>p2</I> had a greater value.  <B>pfCompare</B> is recur-
+       sive on known defined objects and their sub objects but is
+       <B>pfPrint</B> Prints information to a file about the specified
+       pfMemory <I>mem</I>.  The <I>file</I> argument specifies the file.  If
+       <I>file</I> is <B>NULL</B>, the listing is printed to stderr.  <B>pfPrint</B>
+       takes a verbosity indicator, <I>verbose</I>.  Valid selections in
+       order of increasing verbosity are:
+
+              tab($) ; l l .  <B>PFPRINT_VB_OFF</B>$no printing
+              <B>PFPRINT_VB_ON</B>$minimal printing (default)
+              <B>PFPRINT_VB_NOTICE</B>$minimal printing (default)
+              <B>PFPRINT_VB_INFO</B>$considerable printing
+              <B>PFPRINT_VB_DEBUG</B>$exhaustive printing
+
+       If <I>mem</I> is a type of pfNode, then <I>which</I> specifies whether
+       the print traversal should only traverse the current node
+       (<B>PFTRAV_SELF</B>) or print out the entire scene graph rooted
+       by node <I>mem</I> by traversing <I>node</I> and its descendents in the
+       graph (<B>PFTRAV_SELF</B> | <B>PFTRAV_DESCEND</B>).  If <I>mem</I> is a
+       pfFrameStats, then <I>which</I> specifies a bitmask of frame
+       statistics classes that should be printed.  If <I>mem</I> is a
+       pfGeoSet, then <I>which</I> is ignored and information about that
+       pfGeoSet is printed according to the verbosity indicator.
+       The output contains the types, names and bounds of the
+       nodes and pfGeoSets in the hierarchy.  This routine is
+       provided for debugging purposes only and the content and
+       format may change in future releases.
+
+       Example 3: Print entire contents of a pfGeoSet, <I>gset</I>, to
+       stderr.
+
+       pfPrint(gset, NULL, PFPRINT_VB_DEBUG, NULL);
+
+
+       Example 4: Print entire scene graph under node to a file
+       <I>file</I> with default verbosity.
+
+       file = fopen ("scene.out","w");
+       pfPrint(scene, PFTRAV_SELF | PFTRAV_DESCEND, PFPRINT_VB_ON, fp);
+       fclose(file);
+
+
+       Example 5: Print select classes of a pfFrameStats struc-
+       ture, <I>stats</I>, to stderr.
+
+       pfPrint(stats, PFSTATS_ENGFX | PFFSTATS_ENDB | PFFSTATS_ENCULL, PFSTATS_ON, NULL);
+
+
+       pfMalloc and the related routines provide a consistent
+       method to allocate memory, either from the user's heap
+       (using the C-library <B>malloc</B> function) or from a shared
+       memory arena (using the IRIX <B>amalloc</B> function).  In addi-
+       tion, these routines provide a reference counting mecha-
+       nism used by OpenGL Performer to efficiently manage mem-
+       ory.
+
+       <B>pfMalloc</B> operates identically to the C-library <B>malloc</B>
+       function, except that a shared memory arena may be speci-
+       fied to allocate the memory from.  If <I>arena</I> is NULL, mem-
+       ory is allocated from the heap, otherwise memory is allo-
+       cated from <I>arena</I> which must be a previously configured
+
+       In all cases, a pointer to the allocated memory block is
+       returned or NULL if there is not enough available memory.
+
+       The data pointer returned by <B>pfMalloc</B>, <B>pfCalloc</B>, and
+       <B>pfRealloc</B> is actually part of a pfMemory object that,
+       among other things, provides a reference count.  Reference
+       counts are used to keep track of how many times each allo-
+       cated block of memory is referenced or instanced.  All
+       OpenGL Performer libpr objects (pfMemory) are created with
+       <B>pfMalloc</B> so their reference counts are updated by appro-
+       priate libpr routines. Examples of references follow:
+
+       Example 6:
+
+       tex = pfNewTex(NULL);
+
+       /* Attach 'tex' to gstate0 and gstate1 */
+       pfGStateAttr(gstate0, PFSTATE_TEXTURE, tex);
+       pfGStateAttr(gstate1, PFSTATE_TEXTURE, tex);
+
+       /* The reference count of 'tex' is now 2 */
+
+       /* Remove 'tex' from gstate1 */
+       pfGStateAttr(gstate1, PFSTATE_TEXTURE, NULL);
+
+       /* The reference count of 'tex' is now 1 */
+
+
+       Example 7:
+
+       coords = (pfVec3*) pfMalloc(sizeof(pfVec3) * numVerts, arena);
+
+       /* Attach 'coords' to non-indexed pfGeoSet, 'gset' */
+       pfGSetAttr(gset, PFGS_COORD3, PFGS_PER_VERTEX, coords, NULL);
+
+       /* The reference count of 'coords' is now 1 */
+
+
+       Example 8:
+
+       /* Attach 'gstate0' to 'gset' */
+       pfGSetGState(gset, gstate0);
+
+       /* The reference count of 'gstate0' is now incremented by 1 */
+
+
+       <B>pfFree</B> frees the memory associated with <I>ptr</I>.  It is an
+       error to <B>pfFree</B> memory that was not allocated by <B>pfMalloc</B>,
+       <B>pfCalloc</B>, or <B>pfRealloc</B>.  It is also an error to use any
+       method other than <B>pfFree</B> or <B>pfDelete</B> to free memory allo-
+       cated by <B>pfMalloc</B>, <B>pfCalloc</B>, or <B>pfRealloc</B>.
+
+       <B>pfFree</B> does not honor the reference count of <I>ptr</I>.  This
+       means that you can free a chunk of memory that is still
+       being used (which means that its reference count is &gt; 0)
+       with potentially disastrous results. Typical failure modes
+       are in the form of mysterious memory corruption and seg-
+       mentation violations.
+       more details on <B>pfDelete</B>.
+
+       <B>pfGetArena</B> returns the arena pointer which <I>ptr</I> was allo-
+       cated from or NULL if <I>ptr</I> was allocated from the process
+       heap.
+
+       <B>pfGetSize</B> returns the size in bytes of the memory refer-
+       enced by <I>ptr</I> or 0 if <I>ptr</I> is not a <B>pfMalloc</B> pointer.
+
+       <B>pfGetMemoryArenaBytesUsed</B> returns the number of bytes cur-
+       rently allocated from the shared arena.  It takes into
+       account all the Performer calls that allocate or free
+       shared arena memory (<B>pfMalloc</B>, <B>pfCalloc</B>, <B>pfRealloc</B>,
+       <B>pfDelete</B>, <B>pfFree</B>, new on any Performer class, etc).  This
+       call is only available in the <I>DEBUG</I> libraries.  It is
+       meant for debugging memory leaks and therefore is not nec-
+       essary in the optimized libraries. If called with opti-
+       mized libraries, it returns (-1). This call makes it eas-
+       ier to distinguish between memory leaks and memory frag-
+       mentation: If the arena grows but the number of bytes used
+       doesn't then the program in question causes memory frag-
+       mentation but doesn't leak.
+
+       <B>pfStrdup</B> duplicates the NULL-terminated string <I>str</I> by
+       allocating storage in the shared memory arena defined by
+       the <I>arena</I> argument.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       <B>pfPrint</B> is not yet implemented for pfGeoStates and other
+       state structures, and is not implemented for pfPaths or
+       pfLists.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       acreate, calloc, free, malloc, realloc, pfInitArenas
+
+
+
+                                                    pfMemory(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

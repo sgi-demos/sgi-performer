@@ -1,0 +1,151 @@
+<HTML>
+<HEAD>
+<TITLE>pfuEventQueue</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuEventQueue</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuEventQueue(3pf)                             pfuEventQueue(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuNewEventQ,</B>  <B>pfuResetEventStream,</B> <B>pfuResetEventQ,</B> <B>pfuAp-</B>
+       <B>pendEventQStream,</B>    <B>pfuAppendEventQ,</B>     <B>pfuEventQStream,</B>
+       <B>pfuGetEventQStream,</B> <B>pfuGetEventQEvents,</B> <B>pfuIncEventQFrame,</B>
+       <B>pfuEventQFrame,</B> <B>pfuGetEventQFrame,</B> <B>pfuIncEventStreamFrame,</B>
+       <B>pfuEventStreamFrame,</B>  <B>pfuGetEventStreamFrame</B> - Event queue
+       and event stream management utilities
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       pfuEventQueue *    <B>pfuNewEventQ</B>(pfDataPool *dp, int id);
+
+       void               <B>pfuResetEventStream</B>(pfuEventStream *es);
+
+       void               <B>pfuResetEventQ</B>(pfuEventQueue *eq);
+
+       void               <B>pfuAppendEventQStream</B>(pfuEventQueue *dst,
+                            pfuEventStream *src);
+
+       void               <B>pfuAppendEventQ</B>(pfuEventQueue *dst,
+                            pfuEventQueue *src);
+
+       void               <B>pfuEventQStream</B>(pfuEventQueue *eq,
+                            pfuEventStream *es);
+
+       pfuEventStream *   <B>pfuGetEventQStream</B>(pfuEventQueue *eq);
+
+       void               <B>pfuGetEventQEvents</B>(pfuEventStream *events,
+                            pfuEventQueue *eq);
+
+       void               <B>pfuIncEventQFrame</B>(pfuEventQueue *eq);
+
+       void               <B>pfuEventQFrame</B>(pfuEventQueue *eq,
+                            int val);
+
+       int                <B>pfuGetEventQFrame</B>(pfuEventQueue *eq);
+
+       void               <B>pfuIncEventStreamFrame</B>(pfuEventStream *es);
+
+       void               <B>pfuEventStreamFrame</B>(pfuEventStream *es,
+                            int val);
+
+       int                <B>pfuGetEventStreamFrame</B>(pfuEventStream *es);
+
+
+
+       typedef struct _pfuEventStream
+
+       {
+
+           int   buttonFlags;
+
+           int   frameStamp;
+
+
+           int   devVal[PFUDEV_MAX_INDEVS];
+
+           int   keyQ[PFUDEV_MAX_INKEYS];
+
+           int   keyCount[PFUDEV_KEY_MAP_SIZE];
+
+       } pfuEventStream;
+
+
+
+       <B>PARAMETERS</B>
+
+       <I>es</I>  identifies a pfuEventStream
+
+       <I>eq</I>  identifies a pfuEventQueue
+
+       <I>dp</I>  identifies a pfDataPool
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions provide a means to manage streams
+       and queues of X and GL input events. <B>pfuEventQueue</B>s
+       are compressed frames of events. <B>pfuEventStream</B>s
+       are sequences of events. They offer a way to manip-
+       ulate <B>pfuEventQueue</B>s.
+
+       <B>pfuNewEventQ</B> creates, initializes and returns a new
+       event queue. <I>dp</I> is the <B>pfDataPool</B> from which memory
+       for the new event queue is allocated. <I>id</I> is the
+       handle by which the event queue is identified. New
+       memory is allocated for the event queue only if an
+       event queue with the same <I>id</I> is not already present
+       in <I>dp</I>.
+
+       <B>pfuResetEventStream</B> resets the event stream <I>es</I> to a
+       null event stream. <B>pfuResetEventQ</B> resets the event
+       stream associated with the event queue <I>eq</I>.
+
+       <B>pfuAppendEventQStream</B> appends the event stream <I>src</I>
+       to the event queue <I>dst</I>. This is done by copying the
+       events in <I>src</I> to the end of the event stream asso-
+       ciated with <I>dst</I>. <B>pfuAppendEventQ</B> appends the event
+       stream associated with <I>src</I> to <I>dst</I>.
+
+       <B>pfuEventQStream</B> sets the event stream associated
+       with <I>eq</I> to be <I>es</I>. <B>pfuGetEventQStream</B> returns a
+       pointer to the event stream associated with <I>eq</I>.
+
+       <B>pfuGetEventQEvents</B> copies the event stream associ-
+       ated with <I>src</I> into <I>dst</I>.
+
+       <B>pfuIncEventQFrame</B> increments the frame stamp of the
+       event stream associated with <I>eq</I> by 1 or sets the
+       frame stamp to 0 if it is negative.
+
+       <B>pfuEventQFrame</B> sets the frame stamp of the event
+       stream associated with <I>eq</I> to <I>val</I>. <B>pfuGetEventQFrame</B>
+       returns the frame stamp of the event stream associ-
+       ated with <I>eq</I>.
+       returns the frame stamp of the event stream <I>es</I>.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDataPool, pfuGUI, pfuInitInput
+
+
+
+                                               pfuEventQueue(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

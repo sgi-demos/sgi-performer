@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>pfvSelector</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvSelector</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvSelector(3pf)                                 pfvSelector(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvSelector</B> - Manage Object selection and user interaction
+       for a scene or a subset of a scene
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvPicker.h&gt;
+
+       virtual int    <B>pfvSelector::startSelection</B>( pfvPicker* p,
+                        int event );
+
+       virtual int    <B>pfvSelector::updateSelection</B>( pfvPicker* p,
+                        int event, pfvPickerRequest* req );
+
+       virtual void   <B>pfvSelector::endSelection</B>( pfvPicker* p );
+
+       virtual int    <B>pfvSelector::startManip</B>( pfvPicker* p,
+                        int event );
+
+       virtual int    <B>pfvSelector::updateManip</B>( pfvPicker* p,
+                        int event, pfvPickerRequest* req );
+
+       virtual int    <B>pfvSelector::getPermissions</B>( pfvPicker* p,
+                        pfvInteractor* ia,  int event, int rea-
+                        son );
+
+       int            <B>pfvSelector::isSelecting</B>();
+
+       int            <B>pfvSelector::isManipulating</B>();
+
+       virtual int    <B>pfvSelector::toggleSelection</B>( pfvPicker* p,
+                        pfvSelector* slave );
+
+       virtual int    <B>pfvSelector::joinSelection</B>( pfvPicker* p,
+                        pfvSelector* master, int ev );
+
+       virtual int    <B>pfvSelector::manageSelection</B>( pfvPicker* p,
+                        pfList* slaves );
+
+       pfvSelector*   <B>pfvSelector::getMaster</B>();
+
+       pfList*        <B>pfvSelector::getSlaves</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The  pfvSelector class extends the pfvInteractor class and
+       is used in conjunction with pfvPicker  objects  in  imple-
+       menting  application-specific user-interaction.  pfvSelec-
+       tors differ from pfvInteractors in that they are  able  to
+       request  and  enter SELECT state. when a pfvSelector is in
+       SELECT state, it is referred to as  the  picker's  current
+       selector and plays a major role in the control of all user
+       interaction.
+
+       Instances of pfvSelector objects are not  expected  to  be
+       created   by  applications;  instead  applications  should
+       derive their own classes from pfvSelector,  and  implement
+       Alternatively, this can happen if  method  pfvPicker::set-
+       State  or pfvPicker::grantRequest were called with request
+       state including PFPICKER_SELECT, and  a  pointer  to  this
+       selector as the requested selector.
+
+       Once  in  SELECT  mode,  selector  will  receive  calls to
+       <B>pfvSelector::updateSelection</B>  at  least  once  every  time
+       pfvPicker::update  is  called (usually once per frame). If
+       events have been collected by picker, they will be sent to
+       selector      as      the      event      parameter     to
+       <B>pfvSelector::updateSelection</B>. The req parameter points  to
+       a  pfvPickerRequest structure initialized to picker's cur-
+       rent state, which can be modified by selector in order  to
+       request a new picker state.
+
+       Note  that  while in SELECT state, selector can also allow
+       other pfvInteractors to enter HLITE state, or  to  respond
+       to  FOCUS_EVENTS, and even to enter INTERACT state without
+       selector losing its SELECT state.
+
+       <B>pfvSelector::endSelection</B>  is  called  by  the  picker  to
+       notify  selector  that it must exit its SELECT state. This
+       will   happen    if    method    pfvPicker::setState    or
+       pfvPicker::grantRequest were called, requesting a deselec-
+       tion, or the selection of a different pfvSelector.
+
+       <B>pfvSelector::startManip</B> is called by the picker  in  order
+       to  offer selector a chance to accept MANIP state. Usually
+       this will happen in response to a request made by selector
+       itself   through   methods  updateHlite,  specialFocus  or
+       updateSelection.  Alternatively, this can happen if method
+       pfvPicker::setState or pfvPicker::grantRequest were called
+       with request state including PFPICKER_MANIP, and a pointer
+       to this selector as requested selector.
+
+       <B>pfvSelector::updateManip</B>  is  called  by picker instead of
+       updateSelection while selector is in  MANIP  state.  MANIP
+       state  for  a  pfvSelector is much like the INTERACT state
+       for an pfvInteractor and it  is  usually  associated  with
+       carrying  out an interaction over a number of frames, such
+       as dragging a slider.
+
+       While in MANIP state, no other interactor  is  allowed  to
+       interfere  with selector, thus HLITE or FOCUS_EVENT states
+       will not be allowed.
+
+       <B>pfvSelector::getPermissions</B> is called by the  picker  when
+       selector  is  in SELECT state in order to obtain a permis-
+       sion mask that will be passed on to other  pfvInteractors.
+       Picker calls <B>pfvSelector::getPermissions</B> in several situa-
+       tions: When picker is about to offer HLITE  state  to  the
+       interactor  associated  with  the  geometry  under current
+       focus,  when  picker  is   about   to   call   pfvInterac-
+       tor::updateHlite  or  pfvInteractor::updateInteraction for
+       picker's current interactor, when picker is about to  call
+       pfvInteractor::specialFocus  in order to offer an event to
+       interactor associated  with  the  geometry  under  current
+       focus.
+
+       The  following methods are intended to make it possible to
+       join multiple pfvSelector objects in  multiple-selections.
+       However,  the  use  of these methods is not recommended as
+       they are likely to be modified  or  eliminated  in  future
+       releases:
+
+       <B>pfvSelector::toggleSelection</B>,  <B>pfvSelector::joinSelection</B>,
+       <B>pfvSelector::manageSelection</B>,      <B>pfvSelector::getMaster</B>,
+       <B>pfvSelector::getSlaves</B>
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       For  examples  of  uses  of the pfvPicker API, look at the
+       sample          code          in           /usr/share/Per-
+       former/src/pguide/libpfv/picker  and  the README file con-
+       tained in that directory.
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvPicker, pfvInteractor, pfvmPicker
+
+
+
+                                                 pfvSelector(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

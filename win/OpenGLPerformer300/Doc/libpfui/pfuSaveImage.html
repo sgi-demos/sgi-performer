@@ -1,0 +1,68 @@
+<HTML>
+<HEAD>
+<TITLE>pfuSaveImage</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuSaveImage</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuSaveImage(3pf)                               pfuSaveImage(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuCalcNormalizedChanXY,</B>  <B>pfuSaveImage</B>  -  Capture  screen
+       images.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuCalcNormalizedChanXY</B>(float* px,       float* py,
+                pfChannel* chan, int xpos, int ypos);
+
+       int    <B>pfuSaveImage</B>(char* name,     int xorg,    int yorg,
+                int xsize, int ysize, int alpha);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuCalcNormalizedChanXY</B> normalizes the window  coordinates
+       (<I>xpos</I>,  <I>ypos</I>) to <I>chan</I>'s viewport and returns the resulting
+       normalized position in (<I>px</I>, <I>py</I>).  The mapping  is  defined
+       so  that  (<I>px</I>, <I>py</I>) range from (0, 0) to (1, 1) when (<I>xpos</I>,
+       <I>ypos</I>) is within <I>chan</I>'s viewport.
+
+       <B>pfuSaveImage</B> saves the image rectangle that spans the win-
+       dow  coordinates  (<I>xorg</I>,  <I>yorg</I>)  to  (<I>xorg</I> + <I>xsize</I>, <I>yorg</I> +
+       <I>ysize</I>) into an image file with the name  <I>name</I>.  The  <I>alpha</I>
+       boolean  argument  specifies if only an RGB image (<I>alpha</I> =
+       0) or a complete RGBA image (<I>alpha</I> = 1) is desired.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code  and  documentation
+       are  provided  as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChannel
+
+
+
+                                                pfuSaveImage(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,166 @@
+*************************************************************************
+
+	OpenWorlds VRML 2.0 Loader for Performer 2.2
+
+	Copyright (C) 1997. DRaW Computing Assoc. Inc., 
+		    Philadelphia, USA.
+		   All Rights Reserved.
+
+*************************************************************************
+
+Welcome to OpenWorlds VRML 2.0 loader for Performer 2.2.  With this 
+distribution, we have brought in  VRML 2.0 geometry loading
+capabilities into Performer 2.2. 
+
+The following document describes the OpenWorlds VRML 2.0 Loader for 
+IRIS Performer.  The loader is included with the IRIS Performer
+2.2 release or may be obtained by calling DRaW Computing.  Please direct
+suggestions and report any problems to DRaW Computing Technical Support:
+
+    DRaW Computing
+    Technical Support
+    3508 Market St., Suite 203
+    Philadelphia PA 19104
+
+    email: support@openworlds.com
+
+When reporting bugs, please make sure to let us know:
+
+	1) The Performer version you are using
+	2) The loader revision you are using
+	3) Your hardware platform 
+	4) Your operating system version
+	5) Installed software patches
+
+If you would like to receive full VRML 2.0 support and updates, 
+please contact DRaW Computing at the above address.
+
+To load a VRML 2.0 file into Performer, you have to use the
+pfdLoadFile function, and pass in the appropriate file. To test how it
+works you can use Perfly application with the .wrl file. For example,
+	
+	perfly floops.wrl
+
+What are the features that are supported in this release?
+---------------------------------------------------------
+
+With this VRML 2.0 loader, we primarily have geometry loading into
+Performer. Basic geometry nodes like Sphere, Cone, Cylinder, Box and
+related nodes like Shape, Material, Appearance are supported. Also
+complex geometries can be obtained through the use of IndexedFaceSet
+node. You can also do geometric manipulations to nodes using Group
+nodes and Transform nodes. You can also make very complex structures
+using PROTOs, where you can group many geometry nodes.
+
+Update : In this current release, we have added TextureTransform, 
+ImageTexture, ElevationGrid and other nodes.
+
+What are the other features we support?
+---------------------------------------
+
+The OpenWorlds libraries provide complete VRML 2.0 support including
+animation, ROUTEs, Scripting etc. Also, with OpenWorlds, you can make
+Performer use world files across the network. 
+Imagine running an animation in Performer with the VRML file located 
+on a server thousands of miles away! Imagine making the objects move 
+in Performer! Imagine writing a Java or a C++ Script node with 
+Performer! Imagine using a VR device like Spaceball or HeadTracker 
+with Performer in the VRML context!
+
+Are you looking for VRML 2.0 loader for an earlier version of Performer?
+------------------------------------------------------------------------
+
+All you need to do is contact us.
+
+How can you get all this and more?
+----------------------------------
+
+DRaW Computing Associates Inc. specializes in VRML toolkits and other
+VR techniques. If you are interested in getting complete VRML 2.0
+support with Performer, or to get regular updates, patches, and
+support you can contact us at:
+
+	DRaW Computing Associates Inc.
+	3508 Market Street, Suite 203
+	Philadelphia, PA 19104
+
+	Phone : 1.215.382.0390
+	Fax : 1.215.382.0391
+	Email : info@openworlds.com
+	http://www.openworlds.com
+
+Also look for the openworlds demonstration in the Friend of Perfomer 2.2 CDrom.
+
+
+
+ Loading an VRML 2.0 database 
+--------------------------------
+
+The function pfdLoadFile_wrl loads an VRML 2.0 world file (.wrl
+extension) and converts the VRML 2.0 hierarchy into
+an IRIS Performer in-memory hierarchy. It returns a pointer to the root
+of the resulting IRIS Performer hierarchy or NULL if the file was not
+found or not converted properly.  The C language declaration for
+pfdLoadFile_wrl is as follows:
+
+#include <Performer/pf.h>
+
+pfNode*	pfdLoadFile_wrl ( const char* file );
+
+The loader does NOT generate an IRIS Performer hierarchy that is 
+one-to-one with the VRML 2.0 hierarchy.  However, there is a 
+rough correlation between VRML 2.0 and IRIS Performer that is listed
+below:
+
+	  VRML 2.0		IRIS Performer node
+	-------------		-------------------
+	Group			pfDCS
+	Transform		pfDCS
+	Shape			pfDCS (if top level node)
+	Appearance		pfGeoState
+	Material		pfMaterial
+	geometry nodes		pfGeoSet + pfGeoState + pfMaterial	
+	Directionalight		pfLightSource
+	SpotLight		pfLightSource
+	PointLight		pfLightPoint
+
+The following is a list of issues that will help you understand how
+the loader works and how to get the best performance out of your database:
+
+- VRML 2.0 Group and Tranform Nodes are always converted to a pfDCS to
+  allow runtime changes to the matrix.  If a Shape node is a top level
+  node it is converted to a pfDCS, otherwise it is not attached at all
+  and it's children are added directly to it's parent.
+
+- Default Normals are generated and creaseAngle information is
+  calculated according to the VRML 2.0 spec.
+
+- All of the geometry primitives (Box, Cone, Sphere, and Cylinder) are
+  currently generated by the pfdNew* routines.
+
+
+Known Bugs and Work Arounds.
+----------------------------
+
+- In an IndexedFaceSet the faces must be specified in
+  counter-clockwise order, the clockwise order option is currently not
+  implemented
+
+- Default lighting in a scene has been known to occasionally mess up
+  colors specified in an IndexFaceSet rather than the Material node.
+  If you find the colors appear to be wrong, turning off lighting will
+  fix it in this case.
+
+- For IndexedFaceSets with normals specified, the creaseAngle is not
+  used. 
+
+- Cylinders always have a top and a bottom, regardless of how the
+  field is set, and Cones always have a bottom.
+
+- Switch, Collision and Billboard behave basically as Group node,
+  full functionalities are being worked on.
+
+*************************************************************************
+*************************************************************************
+*************************************************************************
+

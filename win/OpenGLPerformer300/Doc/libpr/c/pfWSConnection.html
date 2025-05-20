@@ -1,0 +1,232 @@
+<HTML>
+<HEAD>
+<TITLE>pfWSConnection</TITLE>
+</HEAD>
+<BODY>
+<H1>pfWSConnection</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfWSConnection(3pf)                           pfWSConnection(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGetCurWSConnection,</B>  <B>pfOpenWSConnection,</B>  <B>pfSelectWSCon-</B>
+       <B>nection,</B> <B>pfOpenScreen,</B> <B>pfCloseWSConnection,</B> <B>pfGetWSConnec-</B>
+       <B>tionName,</B>      <B>pfGetScreenSize,</B>      <B>pfGetNumScreenVChans,</B>
+       <B>pfChooseFBConfig,</B>  <B>pfChooseFBConfigData</B>  -  Window  system
+       utility routines
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfWSConnection   <B>pfGetCurWSConnection</B>(void);
+
+       pfWSConnection   <B>pfOpenWSConnection</B>(const char *str,
+                          int shared);
+
+       void             <B>pfSelectWSConnection</B>(pfWSConnection ws);
+
+       pfWSConnection   <B>pfOpenScreen</B>(int screen, int shared);
+
+       void             <B>pfCloseWSConnection</B>(pfWSConnection ws);
+
+       const char*      <B>pfGetWSConnectionName</B>(pfWSConnection ws);
+
+       void             <B>pfGetScreenSize</B>(int screen,       int *x,
+                          int *y);
+
+       void             <B>pfGetNumScreenVChans</B>(int screen);
+
+       pfFBConfig       <B>pfChooseFBConfig</B>(pfWSConnection ws,
+                          int screen, int *attr);
+
+       pfFBConfig       <B>pfChooseFBConfigData</B>(void **dst, pfWSCon-
+                          nection ws,  int screen,   int *attr,
+                          void *arena);
+
+
+                        /* typedef of X-based Performer Types */
+                        typedef Display         *pfWSConnection;
+                        typedef XVisualInfo      pfFBConfig;
+                        typedef Window           pfWSWindow;
+                        typedef Drawable         pfWSDrawable;
+
+                        /* typedef of GL-based Performer Types */
+                        typedef GLXContext       pfGLContext;
+
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>ws</I>  identifies a pfWSConnection.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions provide a single API for communicating
+       with the window system.
+
+       These routines communicate with the window system via a
+       <B>pfWSConnection</B> to a window server.  This connection is
+       the multiple-keyboard machines.  A pfWSConnection has a
+       default screen on which windows will be opened if no other
+       screen is explicitly named (such as through <B>pfWinScreen</B>).
+       This default screen is determined by the <B>DISPLAY</B> environ-
+       ment variable, and is screen 0 if the <B>DISPLAY</B> variable is
+       unset.
+
+       A <B>pfWSWindow</B> is a window-server X window.  A <B>pfWSDrawable</B>
+       is a window system primitive that may be connected to a GL
+       drawing context.  A <B>pfWSDrawable</B> includes Pixmaps.
+       <B>pfGLContext</B> is the GL context that is attached to the
+       <B>pfWSDrawable</B>.
+
+       Windows have framebuffer resources associated with them,
+       such as a zbuffer, stencil planes, and possibly multisam-
+       ple buffers.  A framebuffer configuration can be created
+       by <B>pfChooseFBConfig</B>, or <B>pfChooseWinFBConfig</B>, and is
+       returned in a <B>pfFBConfig</B>.
+
+       <B>pfGetCurWSConnection</B> returns the current connection to the
+       window system.  If there is no current open connection,
+       one is opened on the default display (using the <B>DISPLAY</B>
+       environment variable).
+
+       <B>pfOpenWSConnection</B> opens the window server connection
+       named by <I>str</I> and if <I>shared</I> is true, this connection will
+       be shared with OpenGL Performer and made the current libpr
+       window system connection via a call to
+       <B>pfSelectWSConnection</B>.
+
+       <B>pfOpenScreen</B> opens a local window server connection with
+       the default screen of <I>screen</I>.  If <I>screen</I> is (-1), the
+       default screen as set by the <B>DISPLAY</B> environment variable
+       will be used, or screen 0 if this variable is unset. Note
+       that all window system connections can communication with
+       all screens managed by that window server, regardless of
+       the value of the default screen.
+
+       <B>pfSelectWSConnection</B> sets the current OpenGL Performer
+       libpr window system connection to be <I>ws</I>. The <B>DISPLAY</B> envi-
+       ronment variable for that process will be set to the con-
+       nection name for <I>ws</I> using the <B>putenv(3C)</B> command.  This
+       window system connection will be that returned by
+       <B>pfGetCurWSConnection</B>.
+
+       <B>pfCloseWSConnection</B> will close the specified window server
+       connection via XCloseDisplay. If <I>ws</I> was the currently
+       selected libpr, window server connection, the current con-
+       nection will be reset to NULL.
+
+       <B>pfGetWSConnectionName</B> will return the string name for the
+       window system connection.  In the X window system, this
+       corresponds to the string returned by the <B>XDisplayString</B>
+       call.
+
+       <B>pfGetScreenSize</B> returns the X and Y size of <I>screen</I> for the
+       server of the current window system connection in <I>x</I> and <I>y</I>.
+
+       <B>pfGetNumScreenVChans</B> returns the number of active hardware
+       <I>screen</I> is (-1), the default screen for the window system
+       connection will be used. The attribute tokens and their
+       values match the OpenGL GLX tokens (see <B>glXChooseVisual</B>
+       for additional information). These tokens and their values
+       are (booleans are true if present and should NOT be fol-
+       lowed by any values):
+
+            <B>PFFB_USE_GL</B>
+                   Boolean, true if present. Use GLX rendering
+                   (the default).
+
+            <B>PFFB_BUFFER_SIZE</B>
+                   Depth of the color buffer
+
+            <B>PFFB_LEVEL</B>
+                   Level in plane stacking.  0 is the main win-
+                   dow.  negative numbers are underlay planes,
+                   positive numbers are overlay planes.
+
+            <B>PFFB_RGBA</B>
+                   Boolean, does RGBA mode if present
+
+            <B>PFFB_DOUBLEBUFFER</B>
+                   Boolean, does double buffering if present
+
+            <B>PFFB_STEREO</B>
+                   Boolean, does stereo buffering if present
+
+            <B>PFFB_AUX_BUFFERS</B>
+                   Number of auxiliary buffers
+
+            <B>PFFB_RED_SIZE</B>
+                   Number of red component bits
+
+            <B>PFFB_GREEN_SIZE</B>
+                   Number of green component bits
+
+            <B>PFFB_BLUE_SIZE</B>
+                   Number of blue component bits
+
+            <B>PFFB_ALPHA_SIZE</B>
+                   Number of alpha component bits
+
+            <B>PFFB_DEPTH_SIZE</B>
+                   Number of depth bits
+
+            <B>PFFB_STENCIL_SIZE</B>
+                   Number of stencil bits
+
+            <B>PFFB_ACCUM_RED_SIZE</B>
+                   Number of red accumulation bits
+
+            <B>PFFB_ACCUM_GREEN_SIZE</B>
+                   Number of green accumulation bits
+
+            <B>PFFB_ACCUM_BLUE_SIZE</B>
+                   Number of blue accumulation bits
+
+            <B>PFFB_ACCUM_ALPHA_SIZE</B>
+
+       The list must be terminated with a <B>NULL</B> or <B>None</B>.  OpenGL
+       Performer will try to use a multisample buffer with 8 sam-
+       ples per pixel unless the number of samples or number of
+       multisample buffers has been explicitly set to 0 in the
+       attribute array.  The default Performer framebuffer con-
+       figuration looks like:
+
+       static int FBAttrs[] =
+       {
+           PFFB_RGBA,
+           PFFB_DOUBLEBUFFER,
+           PFFB_DEPTH_SIZE, 24,
+           PFFB_RED_SIZE, 8,
+           PFFB_SAMPLES, 8,
+           PFFB_STENCIL_SIZE, 4,
+           None
+       };
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfWindow, glXChooseVisual, GLXgetconfig, XOpenDisplay,
+       XCloseDisplay
+
+
+
+                                              pfWSConnection(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<TITLE>pfSeg</TITLE>
+</HEAD>
+<BODY>
+<H1>pfSeg</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfSeg(3pf)                                             pfSeg(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfSeg,</B> <B>pfTriIsectSeg</B> - Set and operate on line segments
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfGeoMath.h&gt;
+
+              <B>pfSeg::pfSeg</B>();
+
+              <B>pfSeg</B>(const pfVec3&amp; p1, const pfVec3&amp; p2);
+
+              <B>pfSeg</B>(const pfVec3&amp; _pos,   float azi,  float elev,
+                float len);
+
+              <B>pfSeg</B>(const pfVec3&amp; _pos,       const pfVec3&amp; _dir,
+                float _length);
+
+       void   <B>pfSeg::clip</B>(const pfSeg *seg, float d1, float d2);
+
+       void   <B>pfSeg::makePts</B>(const pfVec3 &amp;p1, const pfVec3 &amp;p2);
+
+       void   <B>pfSeg::makePolar</B>(const pfVec3 &amp;pos,      float azi,
+                float elev, float len);
+
+       int    <B>pfSeg::closestPtsOn</B>(const pfSeg *seg2,
+                pfVec3 &amp;ptOn1, pfVec3 &amp;ptOn2);
+
+       int    <B>pfTriIsectSeg</B>(const pfVec3 v1,     const pfVec3 v2,
+                const pfVec3 v3, const pfSeg *seg, float *d);
+
+
+              struct pfSeg
+              {
+                  pfVec3      pos;
+                  pfVec3      dir;
+                  float       length;
+              };
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A <B>pfSeg</B> represents a line segment starting at <I>pos</I>, extend-
+       ing for a length <I>length</I> in the direction <I>dir</I>.  The rou-
+       tines assume that <I>dir</I> is of unit length, otherwise the
+       results are undefined.  pfSeg is a public struct whose
+       data members <I>pos</I>, <I>dir</I> and <I>length</I> may be operated on
+       directly.
+
+       The default constructor <B>pfSeg</B>() is empty and does no ini-
+       tialization.  There are also three other constructors to
+       initialize the pfSeg from two points , polar coordinates,
+       or position/direction/length.  These constructors corre-
+       spond directly to makePts, makePolar, and direct initial-
+       ization.  <B>new</B>(arena) allocates a pfSeg from the specified
+       memory arena, or from the heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfSeg from the default memory arena (see
+       <B>pfGetSharedArena</B>).  pfSegs can also be created automati-
+       Values of <I>d1</I> &lt; 0 and <I>d2</I> &gt; <I>seg</I>-&gt;length can be used to
+       extend the segment.
+
+       <B>pfSeg::makePts</B> sets the pfSeg to the segment which starts
+       at the point <I>p1</I> and ends at the point <I>p2</I>.
+
+       <B>pfSeg::makePolar</B> sets the pfSeg to the segment which
+       starts at <I>pos</I> and has length <I>length</I> and points in the
+       direction specified by <I>azi</I> and <I>elev</I>.  <I>azi</I> specifies the
+       azimuth (or heading), which is the angle which the projec-
+       tion of the segment in the X-Y plane makes with the +Y
+       axis.  <I>elev</I> specifies the elevation (or pitch), the angle
+       with respect to the X-Y plane.  The positive Y axis is
+       <I>azi</I>=0 and <I>elev</I>=0.  Azimuth follows the right hand rule
+       about the Z axis, i.e. +90 degrees is the -X axis.  Simi-
+       larly, elevation follows the right hand rule about the X
+       axis, i.e. +90 degrees is the +Z axis.
+
+       <B>pfSeg::closestPtsOn</B> returns the two closest points on the
+       implicit pfSeg and <I>seg2</I>.  If the two segments are parallel
+       FALSE is returned and the contents of ptOn1 and ptOn2 are
+       undefined.
+
+       <B>pfTriIsectSeg</B> tests the line segment <I>seg</I> for intersection
+       with the triangle defined by the three vertices <I>v1</I>, <I>v2</I>,
+       and <I>v3</I>.  <B>pfTriIsectSeg</B> returns TRUE or FALSE.  If <I>d</I> is
+       non-null, on return it contains the length position of the
+       intersection between 0 and seg-&gt;length.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfNodeIsectSegs, pfGSetIsectSegs, pfVec3
+
+
+
+                                                       pfSeg(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

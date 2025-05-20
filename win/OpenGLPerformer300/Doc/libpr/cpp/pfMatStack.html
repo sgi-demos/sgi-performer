@@ -1,0 +1,206 @@
+<HTML>
+<HEAD>
+<TITLE>pfMatStack</TITLE>
+</HEAD>
+<BODY>
+<H1>pfMatStack</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfMatStack(3pf)                                   pfMatStack(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfMatStack</B> - Create and manipulate a matrix stack.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLinMath.h&gt;
+
+                         <B>pfMatStack::pfMatStack</B>();
+
+                         <B>pfMatStack::pfMatStack</B>(int size);
+
+       static pfType *   <B>pfMatStack::getClassType</B>(void);
+
+       void              <B>pfMatStack::reset</B>(void);
+
+       int               <B>pfMatStack::push</B>(void);
+
+       int               <B>pfMatStack::pop</B>(void);
+
+       void              <B>pfMatStack::preMult</B>(const pfMatrix &amp;m);
+
+       void              <B>pfMatStack::postMult</B>(const pfMatrix &amp;m);
+
+       void              <B>pfMatStack::load</B>(const pfMatrix &amp;m);
+
+       void              <B>pfMatStack::get</B>(pfMatrix &amp;m);
+
+       pfMatrix *        <B>pfMatStack::getTop</B>(void);
+
+       int               <B>pfMatStack::getDepth</B>(void);
+
+       void              <B>pfMatStack::preTrans</B>(float x,   float y,
+                           float z);
+
+       void              <B>pfMatStack::postTrans</B>(float x,  float y,
+                           float z);
+
+       void              <B>pfMatStack::preRot</B>(float degrees,
+                           float x, float y, float z);
+
+       void              <B>pfMatStack::postRot</B>(float degrees,
+                           float x, float y, float z);
+
+       void              <B>pfMatStack::preScale</B>(float xs, float ys,
+                           float zs);
+
+       void              <B>pfMatStack::postScale</B>(float xs,
+                           float ys, float zs);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfMatStack</B> is derived from  the
+       parent  class  <B>pfObject</B>, so each of these member functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class  <B>pfMatStack</B>.  This is also true for ancestor classes
+       of class <B>pfObject</B>.
+
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfMatStack</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  routines  allow  the creation and manipulation of a
+       stack of 4x4 matrices.
+
+       <B>new</B>(arena) allocates a pfMatStack from the specified  mem-
+       ory arena, or from the process heap if <I>arena</I> is NULL.  <B>new</B>
+       allocates a pfMatStack from the default memory arena  (see
+       <B>pfGetSharedArena</B>).  Like other pfObjects, pfMatStacks can-
+       not be created statically, automatically on the  stack  or
+       in arrays.  The default constructor creates a matrix stack
+       64 deep.  Another constructor is  provided  that  takes  a
+       <I>size</I>   argument.    pfMatStacks  should  be  deleted  with
+       <B>pfDelete</B> rather than the delete  operator.   <I>size</I>  is  the
+       number  of  pfMatrix's  in  the matrix stack.  The initial
+       depth is 1 and the top of stack is the identity matrix.
+
+       <B>pfMatStack::getClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfMatStack</B>.        The       <B>pfType</B>*      returned      by
+       <B>pfMatStack::getClassType</B>  is  the  same  as  the   <B>pfType</B>*
+       returned  by  invoking the virtual function <B>getType</B> on any
+       instance of class <B>pfMatStack</B>.   Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  the member function <B>isOfType</B> to test if an object
+       is of a type derived from a Performer type rather than  to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       <B>pfMatStack::reset</B>  sets  the stack depth to 1 and sets the
+       top of stack to the identity matrix.
+       <B>pfMatStack::preMult</B> pre-multiplies the top of the stack by
+       the  matrix  <I>m</I>  and replaces the top of the stack with the
+       product.  Thus if <I>T</I> is the top of the stack, the operation
+       replaces  <I>T</I> with <I>m</I>*<I>T</I>.  This order corresponds to that used
+       by OpenGL's <I>glMultMatrix</I>.   <B>pfMatStack::postMult</B>  operates
+       similarly  but  using post-multiplication, calculating <I>T</I>*<I>m</I>
+       instead.
+
+       <B>pfMatStack::load</B> replaces the top of the  stack  with  the
+       matrix <I>m</I>.
+
+       <B>pfMatStack::get</B>  copies  the  top  of  the matrix into the
+       matrix <I>m</I>.  <B>pfMatStack::getTop</B> returns a pointer to the top
+       of the matrix stack.
+
+       <B>pfMatStack::getDepth</B>  returns  the  current  depth  of the
+       stack.  Initially the depth is <I>1</I>.
+
+       The following transformations pre- and post- multiply  the
+       top of the matrix stack:
+
+       <B>pfMatStack::preTrans</B>   and  <B>pfMatStack::postTrans</B>  respec-
+       tively pre- and post- multiply the top of the matrix stack
+       by  the translation matrix generated by the coordinates <I>x</I>,
+       <I>y</I> and <I>z</I>.  (See <B>pfMatrix::makeTrans</B>).
+
+       <B>pfMatStack::preRot</B>  and  <B>pfMatStack::postRot</B>  respectively
+       pre- and post- multiply the top of the matrix stack by the
+       rotation by <I>degrees</I> about the axis defined by (<I>x</I>,  <I>y</I>,  <I>z</I>).
+       (See <B>pfMatrix::makeRot</B>).  The results are undefined if the
+       vector (<I>x</I>, <I>y</I>, <I>z</I>) is not normalized.
+
+       <B>pfMatStack::preScale</B>  and  <B>pfMatStack::postScale</B>   respec-
+       tively pre- and post- multiply the top of the matrix stack
+       by a  scaling  matrix.   (See  <B>pfMatrix::makeScale</B>).   The
+       matrix  scales by <I>x</I> in the X direction, <I>y</I> and the Y direc-
+       tion and <I>z</I> in the Z direction.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       <B>pfMatStack::preRot</B> and  <B>pfMatStack::postRot</B>  use  pfSinCos
+       which  is  faster  than the libm counterpart, but has less
+       resolution.
+
+       pfMatStack is not related to the GL matrix stack.
+
+       IMPORTANT: The argument order of degrees and axis  to  the
+       <B>pfMatStack::preRot</B>  are not the same as to the correspond-
+       ing routine <B>pfRotMStack</B> in the IRIS Performer 1.0 and IRIS
+       Performer  1.1  releases. This change was first introduced
+       in the IRIS Performer 1.2 release and is present in subse-
+       quent releases of OpenGL Performer.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete,  pfMakeRotMat,  pfMakeScaleMat,  pfMakeTransMat,
+       pfMatrix, pfSinCos, multmatrix
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+<TITLE>pfuXFont</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuXFont</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuXFont(3pf)                                       pfuXFont(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuLoadXFont,</B>   <B>pfuMakeXFontBitmaps,</B>   <B>pfuMakeRasterXFont,</B>
+       <B>pfuGetXFontWidth,</B>    <B>pfuGetXFontHeight,</B>    <B>pfuGetCurXFont,</B>
+       <B>pfuSetXFont,</B> <B>pfuCharPos,</B> <B>pfuDrawString,</B> <B>pfuDrawStringPos</B> -
+       X Window string drawing routines
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuLoadXFont</B>(char *fontName, pfuXFont *fnt);
+
+       void   <B>pfuMakeXFontBitmaps</B>(pfuXFont *fnt);
+
+       void   <B>pfuMakeRasterXFont</B>(char *fontName, pfuXFont *fnt);
+
+       int    <B>pfuGetXFontWidth</B>(pfuXFont *f, const char *str);
+
+       int    <B>pfuGetXFontHeight</B>(pfuXFont *f);
+
+       void   <B>pfuGetCurXFont</B>(pfuXFont *f);
+
+       void   <B>pfuSetXFont</B>(pfuXFont *f);
+
+       void   <B>pfuCharPos</B>(float x, float y, float z);
+
+       void   <B>pfuDrawString</B>(const char *s);
+
+       void   <B>pfuDrawStringPos</B>(const char *s,  float x,  float y,
+                float z);
+
+
+              typedef struct pfuXFont
+              {
+                  int   size;
+                  int    handle;
+                  XFontStruct *info;
+              } pfuXFont;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These functions do simple text drawing using X Windows
+       fonts and string drawing facilities.
+
+       Call <B>pfuLoadXFont</B> to load the X Window font named by <I>font-</I>
+       <I>Name</I> into <I>fnt</I>.  Application programs will usually call
+       <B>pfuMakeRasterXFont</B> rather than calling this function
+       directly.
+
+       <B>pfuMakeXFontBitmaps</B> allocates display lists under OpenGL
+       for writing the font <I>fnt</I> on the screen.  This is a neces-
+       sary step after calling <B>pfuLoadXFont</B> and before calling
+       <B>pfuDrawString</B> or <B>pfuDrawStringPos</B>.  Application programs
+       will usually call <B>pfuMakeRasterXFont</B> rather than calling
+       this function directly.
+
+       of the string <I>str</I> drawn on the screen in font <I>f</I>.
+
+       <B>pfuGetXFontHeight</B> returns the height (Y dimension) in pix-
+       els of the font <I>f</I>.
+
+       <B>pfuGetCurXFont</B> sets <I>f</I> to the current X Window font for
+       drawing.
+
+       <B>pfuSetXFont</B> sets the current X Window font to be <I>f</I>.
+
+       <B>pfuCharPos</B> sets the current drawing position on the
+       screen.  See <B>glRasterPos3f</B> in OpenGL for more details.
+
+       <B>pfuDrawString</B> draws the string <I>s</I> at the current drawing
+       position.
+
+       <B>pfuDrawStringPos</B> draws the string <I>s</I> at the provided coor-
+       dinates.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDataPool, glRasterPos3f
+
+
+
+                                                    pfuXFont(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

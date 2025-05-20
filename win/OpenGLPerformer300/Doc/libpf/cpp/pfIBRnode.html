@@ -1,0 +1,323 @@
+<HTML>
+<HEAD>
+<TITLE>pfIBRnode</TITLE>
+</HEAD>
+<BODY>
+<H1>pfIBRnode</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfIBRnode(3pf)                                     pfIBRnode(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfIBRnode</B>  -  Represents an object by an precomputed image
+       from a close view.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfIBRnode.h&gt;
+
+                        <B>pfIBRnode::pfIBRnode</B>();
+
+       void             <B>pfIBRnode::setIBRtexture</B>(pfIBRtexture *tex);
+
+       pfIBRtexture *   <B>pfIBRnode::getIBRtexture</B>(void);
+
+       void             <B>pfIBRnode::setFlags</B>(int which,
+                          int value);
+
+       int              <B>pfIBRnode::getFlags</B>(int which);
+
+       void             <B>pfIBRnode::setAngles</B>(int i,  float horAn-
+                          gle, float verAngle);
+
+       void             <B>pfIBRnode::getAngles</B>(int i, float &amp;horAn-
+                          gle, float &amp;verAngle);
+
+       int              <B>pfIBRnode::getNumAngles</B>(void);
+
+       void             <B>pfIBRnode::setProxyTexCoords</B>(pfVec2 ***texCoords);
+
+       pfVec2 ***       <B>pfIBRnode::getProxyTexCoords</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer class <B>pfIBRnode</B> is derived from the
+       parent class <B>pfBillboard</B>, so each of  these  member  func-
+       tions  of  class <B>pfBillboard</B> are also directly usable with
+       objects of class <B>pfIBRnode</B>.  This is also true for  ances-
+       tor classes of class <B>pfBillboard</B>.
+
+       void       <B>pfBillboard::setPos</B>(int i,  const pfVec3 &amp;xyzO-
+                    rigin);
+       void       <B>pfBillboard::getPos</B>(int i, pfVec3 &amp;xyzOrigin);
+       void       <B>pfBillboard::setPosFlux</B>(pfFlux *flux);
+       pfFlux *   <B>pfBillboard::getPosFlux</B>(void);
+       void       <B>pfBillboard::setMode</B>(int mode, int val);
+       int        <B>pfBillboard::getMode</B>(int mode);
+       void       <B>pfBillboard::setAxis</B>(const pfVec3 &amp;axis);
+       void       <B>pfBillboard::getAxis</B>(pfVec3 &amp;axis);
+
+
+       Since the class <B>pfBillboard</B> is  itself  derived  from  the
+       parent  class <B>pfGeode</B>, objects of class <B>pfIBRnode</B> can also
+       be used with these functions designed for objects of class
+       <B>pfGeode</B>.
+
+       int          <B>pfGeode::addGSet</B>(pfGeoSet* gset);
+       int          <B>pfGeode::removeGSet</B>(pfGeoSet* gset);
+
+       Since  the class <B>pfGeode</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class <B>pfIBRnode</B> can also be  used
+       with these functions designed for objects of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfNode::getParent</B>(int i);
+       int            <B>pfNode::getNumParents</B>(void);
+       void           <B>pfNode::setBound</B>(pfSphere *bsph, int mode);
+       int            <B>pfNode::getBound</B>(pfSphere *bsph);
+       pfNode*        <B>pfNode::clone</B>(int mode);
+       pfNode*        <B>pfNode::bufferClone</B>(int mode,
+                        pfBuffer *buf);
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class  <B>pfIBRnode</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class  <B>pfIBRnode</B>  can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfIBRnode  is  used  for very complex objects. Unlike a
+       pfBillboard, a parent class of pfIBRnode, the  texture  on
+       pfGeoSets  of  a  pfIBRnode  is not static, but it changes
+       based on the view direction for each pfGeoSet. This  is  a
+       basic technique used in image based rendering where a com-
+       plex object is represented by a set of images  taken  from
+       many directions around the object. When the object is ren-
+       dered for each view direction several  closest  views  are
+       blended together.
+
+       <B>new</B> <B>pfIBRnode</B> creates and returns a handle to a pfIBRnode.
+       Like other pfNodes, pfIBRnodes are always  allocated  from
+       shared  memory  and  cannot  be created statically, on the
+       stack or in arrays.  pfIBRnodes should  be  deleted  using
+       <B>pfDelete</B> rather than the delete operator.
+
+       Each  pfIBRnode  has associated a single pfIBRtexture with
+       it that stores a set of images of the  complex  object  as
+       viewed  from  different  directions. Each pfGeoSet is then
+       rendered with a  texture  representing  the  view  of  the
+       object from the given direction.  A pfIBRtexture is speci-
+       fied using <B>pfIBRnode::setIBRtexture</B>.
+
+       The initial orientation of the complex object can be  con-
+       trolled  by  specifying the rotation from horizontal plane
+       and  from  vertical  plane  for   each   pfGeoSet,   using
+       <B>pfIBRnode::setAngles</B>.   These  angles  are  very useful in
+       case of trees, for example, because you can use  different
+       angles  for  each  instance  of  the  tree. The trees then
+       appear different although they all use the same  pfIBRtex-
+       ture.  The first value is ignored in case only one ring of
+       views around the object is used.
+
+       An pfIBRnode has to be set up  so  that  the  pfIBRtexture
+       applied to it can modify properly the image at each frame.
+       For this purpose, the user has to set the texture  of  the
+       pfGeoState  associated with each pfGeoSet of the pfIBRnode
+       to         the         texture         returned         by
+       <B>pfIBRtexture::getDefaultTexture</B>.   If the pfIBRtexture has
+       the flag PFIBR_USE_REG_COMBINERS set multitexturing should
+       be  enabled and texture coordinates for additional texture
+       units   have   to   be   specified.    See    file    sam-
+       ple/pguide/C++/IBRnode.C for an example.  If the pfIBRtex-
+       ture has the flag PFIBR_3D_VIEWS enabled,  set  the  bill-
+       board rotation (PFBB_ROT) to PFBB_AXIAL_ROT.
+       made  based on the type of an object, it is usually better
+       to use  the member function <B>isOfType</B> to test if an  object
+       is  of a type derived from a Performer type rather than to
+       test for strict equality of the <B>pfType</B>*'s.
+
+       LIMITATIONS
+
+       Currently, a pfIBRtexture applied to a  pfIBRnode  is  not
+       properly  rotated  when  the  pfIBRnode is viewed from the
+       top. This may result in visible rotation  of  the  texture
+       with respect to the ground.
+
+       PFIBRNODE WITH PROXY
+
+       By default it is assumed that the geosets of the pfIBRnode
+       specify rectangles that are always facing the viewer (like
+       billboards).  This approach is very fast but it requires a
+       large number of views to limit the artifacts  due  to  the
+       differences between the neighboring views.
+
+       To reduce the number of views required to obtain a reason-
+       able image of the complex object from any direction we can
+       use  an  a shape that approximates the surface of the com-
+       plex object instead of a billboard.  This shape is  called
+       a  proxy.  The closer the proxy is to the original surface
+       the fewer views of the objects are required. Optimally one
+       creates a proxy that contains a relatively small number of
+       primitives and that is very close to the original surface.
+       The  proxy  can  be  created using a new tool <B>makeIBRproxy</B>
+       (see below).
+
+       Compared to default mapping of views on a billboard  there
+       are  only  minor  changes. Instead of billboard the node's
+       geosets contain the proxy geometry. The pfIBRtexture asso-
+       ciated  with  the node has set flag PFIBR_USE_PROXY. There
+       is an array of texture coordinates, indexed  by  the  view
+       index and the geoset index.  These texture coordinates can
+       be defined and queried by <B>pfIBRnode::setProxyTexCoords</B> and
+       <B>pfIBRnode::getProxyTexCoords</B> Note: it is is more efficient
+       to store the proxy in one geoset.
+
+       Optionally, it is possible to  specify  different  geosets
+       for  each view (if PFIBR_NEAREST flag is set in the pfIBR-
+       texture assigned to the pfIBRnode) or for  each  group  of
+       views if the views are blended. In this case the flag PFI-
+       BRN_VARY_PROXY_GEOSETS    has    to    be    set     using
+       <B>pfIBRnode::setFlagss</B>  This  can be useful for removing the
+       invisible parts of the proxy (invisible from the range  of
+       views  in the group) or for sorting of the proxy triangles
+       to avoid artifacts when edges of the  proxy  textures  are
+       transparent.   The  array  of  texture coordinates is then
+       organized as follows: the first index is the view index or
+       the  group index (if the views are blended) and the second
+       index is the geoset index times the number of views  in  a
+       group  (1  for  nearest  view)  - grouped by geosets, thus
+       there are texture coordinates for the  geoset  0  for  all
+       views  in  the  group then geoset 1, etc.  The geosets are
+       organized as follows: if the proxy has <I>n</I> geosets and there
+       are  <I>v</I>  views  or  groups  of  views the pfIBRnode has <I>n*v</I>
+       <B>MAKEIBRPROXY</B>
+
+       <B>makeIBRproxy</B>  takes a complex object and creates a simpli-
+       fied surface around the object so that the object is fully
+       inside the surface.  Currently, the user specifies a maxi-
+       mum allowed distance between the proxy  and  the  original
+       surface and the initial distance of the first proxy itera-
+       tion (usually around the half of the maximum distance). In
+       the  final  version  the  distances  will be automatically
+       relaxed to be able to specify desired number of triangles.
+
+       As an additional input the user may control the resolution
+       of a grid used for determining the initial surface and  to
+       speed  up the computations. Optionally the initial surface
+       may be supplied by the  user  (sometimes  it  could  be  a
+       scaled-up  version  of  the complex object if the scale-up
+       version fully  contains  the  original  object).   Do  not
+       select too coarse grid because you can miss some important
+       features of the object, for example, cow's legs may become
+       connected.  On  the  other  hand, too fine grid results in
+       having too fine initial mesh which considerably slows down
+       the algorithm.
+
+       Run  makeIBRproxy without any parameter to get the list of
+       all command line options.
+
+
+       <B>MAKEPROXYIMAGES</B>
+
+       <B>makeProxyImages</B> creates textures for the proxy.  makeProx-
+       yImages  works similarly as makeIBRimages but it addresses
+       issues with mapping the views (textures) on the proxy. The
+       problem is that there may be surfaces (backfacing surfaces
+       or surfaces obstructed by  another  surface)  that  become
+       visible  when the proxy is rotated away from the direction
+       of the view. The projection of the object from  the  given
+       view does not contain information for these surfaces.
+
+       To eliminate this problem makeProxyImages renders the com-
+       plex object several times for each  view  direction,  each
+       time removing parts that obstruct some front facing trian-
+       gles of the proxy. The textures assigned to  these  trian-
+       gles  are  added  to  the regular view (view of the object
+       with no parts removed)  using  texture  palettizing  algo-
+       rithm.   This  algorithm  deals  with  triangular  texture
+       patches to reduce the required  space.   The  texture  for
+       backfacing polygons can be taken from the nearest view and
+       also added to the texture (optionally).  At the  end  each
+       view has associated a single texture with it that contains
+       texture patches for  all  front-facing  triangles  of  the
+       proxy  and  those backfacing triangles that can be visible
+       from neighboring views.
+
+       It is possible that all the texture patches will  not  fit
+       around  the original view. Right now those texture patches
+       that do not fit are ignored.  In the  final  version  they
+       will be iteratively scaled untill they fit.
+
+       Run  makeProxyImages without any parameter to get the list
+
+
+                                                   pfIBRnode(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

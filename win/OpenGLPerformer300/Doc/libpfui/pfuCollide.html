@@ -1,0 +1,115 @@
+<HTML>
+<HEAD>
+<TITLE>pfuCollide</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuCollide</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuCollide(3pf)                                   pfuCollide(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuCollisionChan,</B>   <B>pfuGetCollisionChan,</B>  <B>pfuCollideSetup,</B>
+       <B>pfuCollideGrnd,</B> <B>pfuCollideObj,</B> <B>pfuCollideGrndObj</B> - Terrain
+       following and collision routines.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void          <B>pfuCollisionChan</B>(pfChannel *chan);
+
+       pfChannel *   <B>pfuGetCollisionChan</B>(void);
+
+       void          <B>pfuCollideSetup</B>(pfNode *node,      int mode,
+                       int mask);
+
+       int           <B>pfuCollideGrnd</B>(pfCoord *coord, pfNode *node,
+                       pfVec3 zpr);
+
+       int           <B>pfuCollideObj</B>(pfSeg *seg,   pfNode *objNode,
+                       pfVec3 hitPos, pfVec3 hitNorm);
+
+       int           <B>pfuCollideGrndObj</B>(pfCoord *coord,       pfN-
+                       ode *grndNode,  pfVec3 zpr,  pfSeg *seg,
+                       pfNode *objNode,          pfVec3 hitPos,
+                       pfVec3 hitNorm);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       This  collection  of simple routines provides intersection
+       traversals for basic collision detection and  ground  fol-
+       lowing.   Examples of <B>pfuCollide</B> usage can be found in the
+       OpenGL Performer transformation utility, <B>pfuXformer</B>.
+
+       <B>pfuCollisionChan</B> sets the channel from which to derive LOD
+       scale  and  viewing information. This is used to determine
+       which LOD to collide against.
+
+       <B>pfuGetCollisionChan</B> returns the  current  channel  set  by
+       <B>pfuCollisionChan.</B>
+
+       <B>pfuCollideSetup</B> sets the intersection mask of the subgraph
+       rooted by <I>node</I> to <I>mask</I>. The values <I>mask</I> can take  are  the
+       same as in <B>pfNodeTravMask</B>. <I>mode</I> is either
+
+              <B>PFUCOLLIDE_STATIC</B>
+                     Geometry below <I>node</I> is considered static and
+                     intersection caching will  be  enabled  (see
+                     <B>pfNodeTravMask</B>) or
+
+              <B>PFUCOLLIDE_DYNAMIC</B>
+                     Geometry  below  <I>node</I>  is considered dynamic
+                     and intersection caching will not be enabled
+                     (see <B>pfNodeTravMask</B>)
+
+       Best intersection performance is achieved for static geom-
+       etry.
+       the intersection point.
+
+       <B>pfuCollideObj</B> intersects <I>seg</I> with the subgraph  rooted  by
+       <I>objNode</I>  and  returns <B>PFUCOLLIDE_OBJECT</B> if an intersection
+       was found and <B>FALSE</B> otherwise.  The intersection point and
+       surface  normal  is returned in <I>hitPos</I> and <I>hitNorm</I> respec-
+       tively.  <I>seg</I> is typically a velocity vector used to detect
+       collisions in the direction of travel.
+
+       <B>pfuCollideGrndObj</B>  is the combination of <B>pfuCollideObj</B> and
+       <B>pfuCollideGrnd</B>. It may  provide  better  performance  over
+       calling  these routines separately when <I>grndNode</I> and <I>objN-</I>
+       <I>ode</I> are identical.  The  return  value  is  a  bitmask  of
+       <B>PFUCOLLIDE_GROUND</B> and <B>PFUCOLLIDE_OBJECT</B> indicating whether
+       the downward-directed ray and/or the line segment hit any-
+       thing.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The  libpfutil  source code, object code and documentation
+       are provided as unsupported software.  Routines  are  sub-
+       ject to change in future releases.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfHit, pfNode, pfNodeIsectSegs, pfNodeTravMask
+
+
+
+                                                  pfuCollide(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

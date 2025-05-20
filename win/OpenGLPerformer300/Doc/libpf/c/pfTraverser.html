@@ -1,0 +1,325 @@
+<HTML>
+<HEAD>
+<TITLE>pfTraverser</TITLE>
+</HEAD>
+<BODY>
+<H1>pfTraverser</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfTraverser(3pf)                                 pfTraverser(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfCullResult,</B>    <B>pfGetCullResult,</B>   <B>pfGetParentCullResult,</B>
+       <B>pfGetTravChan,</B> <B>pfGetTravMat,</B>  <B>pfGetTravNode,</B>  <B>pfGetTravIn-</B>
+       <B>dex,</B> <B>pfGetTravPath</B> - Set and get traversal masks, callback
+       functions  and  callback   data,   and   get   pfTraverser
+       attributes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void             <B>pfCullResult</B>(int result);
+
+       int              <B>pfGetCullResult</B>(void);
+
+       int              <B>pfGetParentCullResult</B>(void);
+
+       pfChannel *      <B>pfGetTravChan</B>(const pfTraverser *trav);
+
+       void             <B>pfGetTravMat</B>(const pfTraverser *trav,
+                          pfMatrix mat);
+
+       pfNode *         <B>pfGetTravNode</B>(const pfTraverser *trav);
+
+       int              <B>pfGetTravIndex</B>(const pfTraverser *trav);
+
+       const pfPath *   <B>pfGetTravPath</B>(const pfTraverser *trav);
+
+
+                        typedef int (*pfNodeTravFuncType)(pfTraverser *trav, void *userData);
+
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>node</I>   identifies a pfNode
+
+       <I>which</I>  identifies the traversal: <B>PFTRAV_ISECT</B>, <B>PFTRAV_APP</B>,
+              <B>PFTRAV_CULL</B> or <B>PFTRAV_DRAW</B>, denoting the intersec-
+              tion, application, cull or draw traversals respec-
+              tively.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       OpenGL Performer provides four major traversals: intersec-
+       tion, application, cull, and draw that are often abbrevi-
+       ated as <B>ISECT</B>, <B>APP</B>, <B>CULL</B>, and <B>DRAW</B>.  A traversal is typi-
+       cally an in-order traversal of a directed acyclic graph of
+       pfNodes otherwise known as a subgraph.  The actual traver-
+       sal method, traverser structure, and traversal initiation
+       used depends on the traversal type as well as the multi-
+       processing mode as shown in the following table.
+
+
+
+
+
+
+
+       center tab($); C | C | C | C L | L | L | L .  Traver-
+       sal$Traverser$Traversee$Trigger _
+       PFTRAV_ISECT$pfSegSet$subgraph$pfNodeIsectSegs(),
+       $$$pfChanNodeIsectSegs PFTRAV_APP$pfTra-
+       verser$pfScene$pfApp()
+
+       CULL_DL_DRAW is set$$$  PFTRAV_CULL$pfChan-
+       nel$pfScene$pfCull()  PFTRAV_DRAW$pfChannel$pfDis-
+       pList$pfDraw()
+
+       CULL_DL_DRAW is not set$$$  PFTRAV_CULL$pfChan-
+       nel$pfScene$pfDraw()  PFTRAV_DRAW$$$
+
+       Typical traversal callback usage:
+
+
+              <B>ISECT</B>
+                   Collision detection, terrain following, line
+                   of sight
+
+              <B>APP</B>  Application-specific behavior, motors
+
+              <B>CULL</B> Custom level-of-detail selection, culling
+
+              <B>DRAW</B> Custom rendering
+
+       When <B>PFMPCULL_DL_DRAW</B> is not set in the multiprocessing
+       mode argument to <B>pfMultiprocess</B> (and the cull and draw
+       stages are in the same process), then <B>pfDraw</B> simultane-
+       ously culls and draws the pfScene attached to the pfChan-
+       nel by <B>pfChanScene</B>.  Otherwise, <B>pfCull</B> culls and builds up
+       a pfDispList which is later rendered by <B>pfDraw</B>.
+
+       If the traversal CULL mask and node CULL mask AND to zero
+       at a node, the CULL traversal disables view culling and
+       trivially accepts the node and all its descendents.  Note
+       that unlike other traversals, a mask result of 0 does not
+       prune the node.
+
+       If the traversal DRAW mask and node DRAW mask AND to zero
+       at a node, the CULL traversal prunes the node, so descen-
+       dents are neither CULL-traversed nor drawn.
+
+       If the traversal APP mask and the node APP mask AND to
+       zero, the APP traversal prunes the node and its descen-
+       dents.
+
+       If the ISECT masks AND to zero, the ISECT traversal prunes
+       the node.  The intersection mask is typically used to con-
+       trol traversals of different types of objects, e.g.  dif-
+       ferent bits may indicate ground, water, foliage, and
+       buildings, so they may be intersected selectively.  See (-
+       <B>pfNodeTravMask</B>).
+
+       In many respects a traversal appears to the user as an
+       atomic action.  The user configures a traverser, triggers
+       it with the appropriate routine and awaits the results.
+       Node callbacks are supported to provide user extensibility
+       and configuration into this scenario.  They are user-sup-
+       The pre- or post-callbacks for the cull and intersection
+       traversals may return <B>PFTRAV_CONT</B>, <B>PFTRAV_PRUNE</B>,
+       <B>PFTRAV_TERM</B> to indicate that traversal should continue
+       normally, skip this node or terminate the traversal,
+       respectively.  <B>PFTRAV_PRUNE</B> is equivalent to <B>PFTRAV_CONT</B>
+       for the post-callback. Currently, the return value from
+       the draw callbacks is ignored.
+
+       <B>pfCullResult</B>, <B>pfGetCullResult</B>, and <B>pfGetParentCullResult</B>
+       can all be called in the pre-cull callback and all but
+       <B>pfCullResult</B> may be called in the post-cull callback.
+       <B>pfGetCullResult</B> returns the result of the cull for the
+       node that the cull callback is associated with.
+       <B>pfGetParentCullResult</B> returns the cull result for the par-
+       ent of the node that the cull callback is associated with.
+       When called within the pre-cull callback, <B>pfCullResult</B>
+       specifies the result of cull for the node that the pre-
+       cull callback is associated with.  This essentially
+       replaces default OpenGL Performer cull processing with
+       user-defined culling.  <I>result</I> is a token which specifies
+       the result of the cull test and should be one of:
+
+              <B>PFIS_FALSE</B>
+                   Node is entirely outside the viewing frustum
+                   and should be pruned.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B>
+                   Node is partially inside the viewing frustum
+                   and the children of the node should be cull-
+                   tested.
+
+              <B>PFIS_MAYBE</B> | <B>PFIS_TRUE</B> | <B>PFIS_ALL_IN</B>
+                   Node is totally inside the viewing frustum so
+                   all the children of the node should be triv-
+                   ially accepted without further cull testing.
+
+       If <B>pfCullResult</B> is not called within the pre-cull call-
+       back, OpenGL Performer will use its default geometric
+       culling mechanism that compares node bounding volumes to
+       the current culling frustum to determine if the node may
+       be within view.
+
+       In the post-cull callback <B>pfGetCullResult</B> will return the
+       result of the cull set by <B>pfCullResult</B> or the result of
+       the default cull if <B>pfCullResult</B> was not called.
+
+       The evaluation order of the cull and draw traversal masks
+       and callbacks is illustrated in the following pseudo-code:
+
+       Example 1: Cull and draw traversal mask and callback eval-
+       uation order.
+
+       /* Return if draw mask test fails */
+       if ((drawMask &amp; nodeDrawMask) == 0)
+           return PFTRAV_CONT;
+
+       /* Call pre-cull callback */
+       if (preCull)
+       {
+
+       /* Disable view culling if cull mask test fails */
+       if ((cullMask &amp; nodeCullMask) == 0)
+           disableViewCulling();
+
+       /* Perform default culling if pfCullResult was not called */
+       if (!userCalledpfCullResultInThePreCullCallback)
+           cullResult = cullTest(node);
+
+       if (cullResult == PFIS_FALSE)
+       {
+           /* Call post-cull callback */
+           if (postCull)
+           {
+               rtn = (*postCull)(traverser, cullData);
+
+               if (rtn == PFTRAV_PRUNE)
+                   return PFTRAV_CONT;
+               else if (rtn == PFTRAV_TERM)
+                   return PFTRAV_TERM;
+           }
+           return PFTRAV_CONT;
+       }
+       else
+       /* Trivially accept node and all its children */
+       if (cullResult == PFIS_ALL_IN)
+           disableViewCulling();
+
+       /* Call pre-draw callback */
+       if (preDraw)
+           (*preDraw)(traverser, drawData);
+
+       evaluateNodeAndItsChildren();
+
+       /* Call post-draw callback */
+       if (postDraw)
+           (*postDraw)(traverser, drawData);
+
+       /* Call post-cull callback */
+       if (postCull)
+       {
+           rtn = (*postCull)(traverser, cullData);
+
+           if (rtn == PFTRAV_PRUNE)
+               return PFTRAV_CONT;
+           else
+           if (rtn == PFTRAV_TERM)
+               return PFTRAV_TERM;
+       }
+
+       return PFTRAV_CONT;
+
+
+       Example 2: Use of DRAW callbacks to save and restore
+       state.
+
+       extern int
+       preDraw(pfTraverser *trav, void *data)
+       {
+       extern int
+       postDraw(pfTraverser *trav, void *data)
+       {
+           pfPopState();
+
+           return PFTRAV_CONT;
+       }
+
+       /*
+        * Set up draw callbacks and user data to draw 'geode' in
+        * EYE_LINEAR texgen mode.
+        */
+
+
+       pfTexGen  *tgen;
+
+       tgen = pfNewTGen(pfGetSharedArena());
+
+       pfTGenMode(tgen, PF_S, PFTG_EYE_LINEAR);
+       pfTGenMode(tgen, PF_T, PFTG_EYE_LINEAR);
+
+       pfNodeTravFuncs(geode, PFTRAV_DRAW, preDraw, postDraw);
+       pfNodeTravData(geode, PFTRAV_DRAW, tgen);
+
+
+
+       <B>libpr</B> graphics calls like <B>pfApplyTGen</B> should be made in a
+       DRAW callback only. Specifically, <B>libpr</B> graphics calls
+       made in a CULL callback are not legal and have undefined
+       behavior.
+
+       The intersection, application, cull and draw callbacks are
+       passed a pfTraverser which can be used to query the chan-
+       nel, current transformation matrix and current node.
+       <B>pfGetTravChan</B> returns the current channel for the cull,
+       and draw traversal.  It returns the current channel for
+       intersection traversals initiated with <B>pfChanNodeIsectSegs</B>
+       and <B>NULL</B> for intersection traversals initiated with
+       <B>pfNodeIsectSegs</B>.
+
+       <B>pfGetTravMat</B> sets <I>mat</I> to the current transformation
+       matrix, which is the concatenation of the matrices from
+       the root of the scene down to and including the current
+       node.  Since no transformation hierarchy is retained in
+       the draw process, in a draw callback, the current matrix
+       should be queried using the <B>getmatrix</B> or <B>pfGetModelMat</B>/-
+       <B>pfGetViewMat</B> routines.
+
+       <B>pfGetTravNode</B> returns the current node being traversed and
+       <B>pfGetTravIndex</B> returns the child index of the current
+       node, i.e.- the index of the current node in its parent's
+       list of children.  <B>pfGetTravPath</B> returns a pointer to the
+       list of nodes which defines the path from the scene graph
+       root to the current node.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The post-cull callback is a good place to implement custom
+       level-of-detail mechanisms.
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

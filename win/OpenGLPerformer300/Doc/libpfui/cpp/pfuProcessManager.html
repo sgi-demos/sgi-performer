@@ -1,0 +1,260 @@
+<HTML>
+<HEAD>
+<TITLE>pfuProcessManager</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuProcessManager</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuProcessManager(3pf)                     pfuProcessManager(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuProcessManager,</B>  <B>pfuDefaultProcessManager,</B> <B>pfuFreeAllC-</B>
+       <B>PUs</B> - Priority, processes and processor  assignment  func-
+       tions
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil/pfuProcessManager.h&gt;
+
+       static
+                                        void                      <B>pfuProcessManager::select</B>(pfuBaseProcessManager *);
+
+       static
+                                        void                      <B>pfuProcessManager::setMode</B>(int mode,
+                                          int val);
+
+       static
+                                        int                       <B>pfuProcessManager::setMode</B>(int mode);
+
+       void                             <B>pfuProcessManager::setCreateFunc</B>(pfuProcessHandlerFuncType func,
+                                          uint mask);
+
+       void                             <B>pfuProcessManager::getCreateFunc</B>(pfuProcessHandlerFuncType *func,
+                                          uint *mask);
+
+       void                             <B>pfuProcessManager::setPlaceFunc</B>(pfuProcessHandlerFuncType func,
+                                          uint mask);
+
+       void                             <B>pfuProcessManager::getPlaceFunc</B>(pfuProcessHandlerFuncType *func,
+                                          uint *mask);
+
+       void                             <B>pfuProcessManager::setPrioritizeFunc</B>(pfuProcessHandlerFuncType func,
+                                          uint mask);
+
+       void                             <B>pfuProcessManager::getPrioritizeFunc</B>(pfuProcessHandlerFuncType *func,
+                                          uint *mask);
+
+       static
+                                        void                      <B>pfuProcessManager::reconfigure</B>(void);
+
+       static
+                                        void                      <B>pfuProcessManager::release</B>(void);
+
+       static pfuBaseProcessManager
+                                        *   <B>pfuProcessManager::getCur</B>(void);
+
+       static
+                                        void                      <B>pfuDefaultProcessManager::init</B>(void);
+
+       int                              <B>pfuFreeAllCPUs</B>(void);
+
+       typedef
+                                        int                      <B>(*pfuProcessHandlerFuncType)</B>(int _pipe,
+                                          uint _stage,
+                                          pid_t _pid);
+
+
+       <B>pfuProcessManager::select</B>  will select the current process
+       manager.  <B>pfuProcessManager::getCur</B> will return a  pointer
+       to the current process manager.
+
+       <B>pfuProcessManager::setMode</B> will set the specified <I>mode</I> for
+       the currently active process manager to the  given  value,
+       <I>val</I>.   The modes and associated values are to be supported
+       by all process managers are:
+
+              <B>PFUPM_CONTINUOUS</B>         takes a boolean  value  to
+                                       indicate continuous opera-
+                                       tion and placement of  new
+                                       processes,  or if explicit
+                                       calls to  reconfigure  the
+                                       process manager need to be
+                                       made  to  trigger  process
+                                       control.
+
+              <B>PFUPM_LOCK_DOWN</B>          takes  a  boolean value to
+                                       indicate  if  locking   of
+                                       processes   to  processors
+                                       and potential isolation of
+                                       those   processors  should
+                                       occur.  The default  value
+                                       is <B>FALSE</B>.
+
+              <B>PFUPM_PRIORITIES</B>         takes  a  boolean value to
+                                       indicate   if    processes
+                                       should   be   given   non-
+                                       degrading priorties.   The
+                                       default value is <B>FALSE</B>.
+       <B>pfuProcessManager::getMode</B>  will  return the current value
+       of <I>mode</I> for the currently active process manager.
+
+       <B>pfuProcessManager::reconfigure</B> will force the current pro-
+       cess  manager  to  do a replacement of all registered pro-
+       cesses according to the current mode settings.
+
+       <B>pfuProcessManager::release</B> will force the release of  iso-
+       lated  CPUs and processes registered with the current pro-
+       cess manager.  Processes will have non-degrading priorties
+       removed and will be allowed to run on any CPU.
+
+       <B>pfuDefaultProcessManager::init</B>  will  create  and select a
+       process manager with a default policy.  The pfuDefaultPro-
+       cessManger  uses the <B>pfCreateProcessFunc</B> API to register a
+       callback function with libpf that will be called upone the
+       creation     of     any    OpenGL    Performer    process.
+       <B>pfuGetProcessMiscCPU</B> is used to determine which CPU is  to
+       be  considered  the non-real-time miscellaneous CPU (typi-
+       cally CPU 0).  The pfuDefaultProcessManger will place Per-
+       former  processes  onto  processors  and set non-degrading
+       priorities on critical processes as described below.   The
+       routines  implementing  these  features  utilize  the IRIX
+       REACT facilities.   Refer  to  the  IRIX  REACT  technical
+       report,  and  the  <B>sysmp(2)</B>  and <B>realtime(5)</B> man pages for
+       detailed information on these concepts.
+
+       on  the same CPU.  If there are still not sufficient CPUs,
+       extra cull and draw processes will be placed on  the  last
+       CPU.   2. Next, the <B>LPOINT</B> process(es) are given their own
+       CPUs if there are enough available CPUs.  Otherwise,  they
+       will  be  given  the last CPU.  3. Next, <B>ISECT</B> and <B>COMPUTE</B>
+       processes are given their CPUs or paired if there  is  one
+       additional  CPU  or  else given the MISC CPU.  4. Finally,
+       the <B>DBASE</B> and <B>QUEUE</B> process(es) are given their  own  CPUs
+       or paired if there is one additional CPU or else given the
+       MISC CPU.
+
+       Multipipe mappings are as follows.
+
+       If NumCPUs &gt;= 2 + 2*NumPipes
+       then each cull and draw process can have its own CPU and are placed together
+       on a CPU node. The application is placed on CPU 1 with UNIX getting CPU 0.
+
+       If NumCPUs == 1 + 2*NumPipes
+       then the application shares CPU 0 with UNIX.
+
+       Otherwise, if NumCPUs &gt;= 2 + NumPipes
+       then cull and draw processes for each pipe are paired together.
+
+       The LPoint processes are also  given their own CPUs if there are enough
+       available CPUs.  Otherwise, they are grouped together on a single CPU,
+       their own if there is on extra, else the last CPU.
+
+
+       The pfuProcessManager provides 2 mechanisms of extensibil-
+       ity: C++ subclassing and C callbacks. The pfuBaseProcess-
+       Manager and pfuDefaultProcessManager can both be sub-
+       classed and new instances can be made the current process
+       manager.  In addition, custom user callbacks can be
+       assigned to hand specific types of processes defined by
+       the <B>PFU_PROC_*</B> mask or unknown processes.
+
+       <B>pfuProcessManager::setCreateFunc</B> sets a custom user call-
+       back for handling the creation of new processes.  The
+       return value should be <B>PFU_CB_CONT</B> if the user has decided
+       to let the pfuProcessManager handle the function and
+       <B>PFU_CB_TERM</B> if the user has processed it.  The current
+       user function and associated mask is gotten with
+       <B>pfuProcessManager::getCreateFunc</B>.
+
+       <B>pfuProcessManager::setPlaceFunc</B> sets a custom user call-
+       back for handling the processor placement of new pro-
+       cesses.  The placement function should return the chosen
+       CPU number or (-1) if the user has choosen to not handle
+       the process. The cpu placement will be done upon the
+       explicit or automatic call by the process manager to place
+       processes.  <B>pfuProcessManager::getPlaceFunc</B> will return
+       the current user placement function and process mask.
+
+       <B>pfuProcessManager::setPrioritizeFunc</B> sets a custom user
+       callback for handling the processor prioritization of new
+       processes.  The function should return the chosen priority
+       relative to the app process or <B>PFUMP_NOPRI</B> if the user has
+       choosen to not handle the process.  The process priority
+       will be set upon the explicit or automatic call by the
+       <B>c/usr/share/Performer/src/sample/C++/common/main.C</B>:
+
+           /* Initialization and start of pfuProcess Manager */
+           pfuInitDefaultProcessManager;
+           .....
+           //
+           // Configure OpenGL Performer and fork extra processes if
+           // configured for multiprocessing.
+           //
+           pfConfig();
+
+           // Tell ProcessManager to configure the system
+           pfuProcessManagerMode(PFUPM_CONTINUOUS, 1);
+           pfuProcessManagerMode(PFUPM_LOCK_DOWN, 1);
+           pfuProcessManagerMode(PFUPM_PRIORITIES, 1);
+           pfuReconfigureProcessManager;
+           // Initialization of pfuProcess Manager
+           pfuDefaultProcessManager::init();
+           .....
+           //
+           // Configure OpenGL Performer and fork extra processes if
+           // configured for multiprocessing.
+           //
+           pfConfig();
+
+           // Tell ProcessManager to configure the system
+           pfuProcessManager::setMode(PFUPM_CONTINUOUS, 1);
+           pfuProcessManager::setMode(PFUPM_LOCK_DOWN, 1);
+           pfuProcessManager::setMode(PFUPM_PRIORITIES, 1);
+           pfuProcessManager::reconfigure();
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       CPU isolation or restriction functionality is not cur-
+       rently supported under Linux.
+
+       Isolating a CPU to run specific processes requires super-
+       user permission.  Setting non-degrading priorities on pro-
+       cesses requires super-user permission.
+
+       CPU 0 should <I>never</I> be isolated.
+
+       A utility shell script is provided in /usr/share/Per-
+       former/src/tools/freeproc that can be run as super-user to
+       clean up after a program that exits ungracefully.
+
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfConfig, pfConfigStage, pfCreateProcessFunc, pfuGetPro-
+       cessMiscCPU, realtime, sysmp, schedctl, sched_setscheduler
+
+
+
+                                           pfuProcessManager(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,81 @@
+<HTML>
+<HEAD>
+<TITLE>pfGLMatrix</TITLE>
+</HEAD>
+<BODY>
+<H1>pfGLMatrix</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfGLMatrix(3pf)                                   pfGLMatrix(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfScale,</B> <B>pfTranslate,</B> <B>pfRotate,</B> <B>pfPushMatrix,</B> <B>pfPushIdent-</B>
+       <B>Matrix,</B> <B>pfPopMatrix,</B> <B>pfLoadMatrix,</B> <B>pfMultMatrix</B> -  Operate
+       on graphics library matrix stack
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void   <B>pfScale</B>(float x, float y, float z);
+
+       void   <B>pfTranslate</B>(float x, float y, float z);
+
+       void   <B>pfRotate</B>(int axis, float degrees);
+
+       void   <B>pfPushMatrix</B>(void);
+
+       void   <B>pfPushIdentMatrix</B>(void);
+
+       void   <B>pfPopMatrix</B>(void);
+
+       void   <B>pfLoadMatrix</B>(pfMatrix m);
+
+       void   <B>pfMultMatrix</B>(pfMatrix m);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These  functions  are  similar to the corresponding OpenGL
+       graphics library matrix stack commands.  The only  differ-
+       ence  is  that  these  OpenGL  Performer  commands  may be
+       applied to and retained in  a  <B>pfDispList</B>  for  subsequent
+       activation.
+
+       <B>pfRotate</B> accepts the values <B>PF_X</B>, <B>PF_Y</B>, and <B>PF_Z</B> to select
+       the axis of rotation.
+
+       <B>pfPushIdentMatrix</B> is equivalent  to  calling  <B>pfPushMatrix</B>
+       followed  with  a  call  to  <B>pfLoadMatrix</B> with an identity
+       matrix.
+
+       These routines are all display-listable  commands.   If  a
+       pfDispList has been opened by <B>pfDispList::open</B>, these com-
+       mands will not have immediate effect but will be  captured
+       by  the  pfDispList  and  will  only have effect when that
+       pfDispList is later drawn with <B>pfDispList::draw</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       loadmatrix, multmatrix, popmatrix, pushmatrix, rot, scale,
+       translate
+
+
+
+                                                  pfGLMatrix(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

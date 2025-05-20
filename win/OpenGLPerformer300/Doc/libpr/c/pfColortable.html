@@ -1,0 +1,193 @@
+<HTML>
+<HEAD>
+<TITLE>pfColortable</TITLE>
+</HEAD>
+<BODY>
+<H1>pfColortable</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfColortable(3pf)                               pfColortable(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewCtab,</B> <B>pfGetCtabClassType,</B> <B>pfGetCtabSize,</B> <B>pfApplyCtab,</B>
+       <B>pfCtabColor,</B> <B>pfGetCtabColor,</B> <B>pfGetCtabColors,</B> <B>pfGetCurCtab</B>
+       - Specify color table properties
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfColortable *   <B>pfNewCtab</B>(int size, void *arena);
+
+       pfType *         <B>pfGetCtabClassType</B>(void);
+
+       int              <B>pfGetCtabSize</B>(const pfColortable *ctab);
+
+       void             <B>pfApplyCtab</B>(pfColortable *ctab);
+
+       int              <B>pfCtabColor</B>(pfColortable *ctab,
+                          int index, pfVec4 color);
+
+       int              <B>pfGetCtabColor</B>(const pfColortable *ctab,
+                          int index, pfVec4 color);
+
+       pfVec4
+                        *         <B>pfGetCtabColors</B>(const pfColortable *ctab);
+
+       pfColortable *   <B>pfGetCurCtab</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class <B>pfColortable</B> is derived from
+       the parent class <B>pfObject</B>, so each of these  member  func-
+       tions  of  class  <B>pfObject</B>  are  also directly usable with
+       objects of class <B>pfColortable</B>.  Casting an object of class
+       <B>pfColortable</B>  to an object of class <B>pfObject</B> is taken care
+       of automatically.  This is also true for casts to  objects
+       of ancestor classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>, objects of class <B>pfColortable</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfColortable is a 'color  indexing'  mechanism  used  by
+       pfGeoSets.   It  is  <I>not</I>  related  to the graphics library
+       hardware rendering notion of <I>color</I> <I>index</I> <I>mode</I>.  If  pfCol-
+       ortable operation is enabled, pfGeoSets will be drawn with
+       the colors defined in the current globally  active  pfCol-
+       ortable  rather  than using the pfGeoSet's own local color
+       list.  This facility can be used for  instant  large-scale
+       color manipulation of geometry in a scene.
+
+       <B>pfNewCtab</B>  creates and returns a handle to a pfColortable.
+       <I>arena</I> specifies a malloc arena out  of  which  the  pfCol-
+       ortable  is  allocated or <B>NULL</B> for allocation off the pro-
+       cess heap.  <I>size</I> is the number of pfVec4 color elements to
+       allocate  for  the  pfColortable.   pfColortables  can  be
+       deleted with <B>pfDelete</B>.
+
+       The number  of  color  elements  in  the  pfColortable  is
+       returned by <B>pfGetCtabSize</B>.
+
+       <B>pfGetCtabClassType</B>  returns  the  <B>pfType</B>*  for  the  class
+       <B>pfColortable</B>.  The <B>pfType</B>* returned by  <B>pfGetCtabClassType</B>
+       is  the same as the <B>pfType</B>* returned by invoking <B>pfGetType</B>
+       on any instance of  class  <B>pfColortable</B>.   Because  OpenGL
+       Performer allows subclassing of built-in types, when deci-
+       sions are made based on the type of an object, it is  usu-
+       ally  better to use <B>pfIsOfType</B>to test if an object is of a
+       type derived from a Performer type rather than to test for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfApplyCtab</B>  selects  <I>ctab</I>  as  the current, global pfCol-
+       ortable.   If  colorindex  mode  is  enabled   (<B>pfEnable</B>(-
+       <B>PFEN_COLORTABLE</B>)),  then all subsequent pfGeoSets will use
+       the pfVec4 array supplied by the global color table rather
+       than  their  own local color array.  Colorindex mode works
+       for both indexed and non-indexed pfGeoSets.
+
+       <B>pfApplyCtab</B> is a display-listable command.   If  a  pfDis-
+       pList has been opened by <B>pfOpenDList</B>, <B>pfApplyCtab</B> will not
+       have immediate effect but will be captured by  the  pfDis-
+       pList  and  will  only have effect when that pfDispList is
+       later drawn with <B>pfDrawDList</B>.
+
+       <B>pfGetCurCtab</B> returns the currently active pfColortable  or
+       <B>NULL</B> if there is none active.
+
+       Colors  in  a pfColortable are pfVec4's which specify red,
+       green, blue, and alpha in the range  [0..1].   <B>pfCtabColor</B>
+
+       The  pfColortable  state  element  is  identified  by  the
+       <B>PFSTATE_COLORTABLE</B>   token.    Use   this    token    with
+       <B>pfGStateAttr</B>  to  set the pfColortable of a pfGeoState and
+       with <B>pfOverride</B> to override subsequent colortable changes.
+
+       Example 1:
+
+       /* Set up 'colorindexed' pfGeoState */
+       pfGStateAttr(gstate, PFSTATE_COLORTABLE, ctab);
+       pfGStateMode(gstate, PFSTATE_ENCOLORTABLE, PF_ON);
+
+       /* Attach gstate to gset */
+       pfGSetGState(gset, gstate);
+
+       /* Draw gset colorindexed with ctab */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       pfEnable(PFEN_COLORTABLE);
+       pfApplyCtab(ctab);
+
+       /*
+        * Override active pfColortable to 'ctab' and colorindex enable
+        * to PF_ON.
+        */
+       pfOverride(PFSTATE_COLORTABLE | PFSTATE_ENCOLORTABLE, PF_ON);
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfColortables can be used to simulate FLIR (Forward Look-
+       ing Infrared) and NVG (Night Vision Goggles) and for
+       monochrome display devices which separate video components
+       for stereo display purposes. More flexible FLIR and NVG
+       simulation is available through the use of indexed
+       pfGeoStates.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfEnable, pfGeoSet, pfGeoState,
+       pfOverride, pfState
+
+
+
+                                                pfColortable(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

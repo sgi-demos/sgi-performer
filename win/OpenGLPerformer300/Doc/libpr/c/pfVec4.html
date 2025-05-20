@@ -1,0 +1,142 @@
+<HTML>
+<HEAD>
+<TITLE>pfVec4</TITLE>
+</HEAD>
+<BODY>
+<H1>pfVec4</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfVec4(3pf)                                           pfVec4(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfAddScaledVec4,</B>  <B>pfAddVec4,</B>  <B>pfAlmostEqualVec4,</B> <B>pfCombin-</B>
+       <B>eVec4,</B> <B>pfCopyVec4,</B> <B>pfDistancePt4,</B> <B>pfDotVec4,</B>  <B>pfEqualVec4,</B>
+       <B>pfLengthVec4,</B>  <B>pfNegateVec4,</B> <B>pfNormalizeVec4,</B> <B>pfScaleVec4,</B>
+       <B>pfSetVec4,</B> <B>pfSqrDistancePt4,</B> <B>pfSubVec4,</B> <B>pfXformVec4</B> -  Set
+       and operate on 4-component vectors
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       #include &lt;Performer/prmath.h&gt;
+
+       void    <B>pfAddScaledVec4</B>(pfVec3 dst,       const pfVec3 v1,
+                 float s, const pfVec3 v2);
+
+       void    <B>pfAddVec4</B>(pfVec4 dst,             const pfVec4 v1,
+                 const pfVec4 v2);
+
+       int     <B>pfAlmostEqualVec4</B>(pfVec4 v1,      const pfVec4 v2,
+                 float tol);
+
+       void    <B>pfCombineVec4</B>(pfVec4 dst,                float s1,
+                 const pfVec4 v1, float s2, const pfVec4 v2);
+
+       void    <B>pfCopyVec4</B>(pfVec4 dst, const pfVec4 v);
+
+       float   <B>pfDistancePt4</B>(const pfVec4 pt1, const pfVec4 pt2);
+
+       float   <B>pfDotVec4</B>(const pfVec4 v1, const pfVec4 v2);
+
+       int     <B>pfEqualVec4</B>(const pfVec4 v1, const pfVec4 v2);
+
+       float   <B>pfLengthVec4</B>(const pfVec4 v);
+
+       void    <B>pfNegateVec4</B>(pfVec4 dst, const pfVec4 v);
+
+       float   <B>pfNormalizeVec4</B>(pfVec4 v);
+
+       void    <B>pfScaleVec4</B>(pfVec4 dst, float s, const pfVec4 v);
+
+       void    <B>pfSetVec4</B>(pfVec4 dst, float x,  float y,  float z,
+                 float w);
+
+       float   <B>pfSqrDistancePt4</B>(const pfVec4 pt1,
+                 const pfVec4 pt2);
+
+       void    <B>pfSubVec4</B>(pfVec4 dst,             const pfVec4 v1,
+                 const pfVec4 v2);
+
+       void    <B>pfXformVec4</B>(pfVec4 dst,            const pfVec4 v,
+                 const pfMatrix m);
+
+
+               typedef float pfVec4[4];
+
+
+       <B>pfCopyVec4</B>(dst, v): <I>dst</I> = <I>v</I>.  Macro equivalent is
+       <B>PFCOPY_VEC4</B>.
+
+       <B>pfNegateVec4</B>(dst, v): <I>dst</I> = -<I>v</I>.  Macro equivalent is
+       <B>PFNEGATE_VEC4</B>.
+
+       <B>pfAddVec4</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> + <I>v2</I>.  Sets <I>dst</I> to the
+       sum of vectors <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFADD_VEC4</B>.
+
+       <B>pfSubVec4</B>(dst, v1, v2): <I>dst</I> = <I>v1</I> - <I>v2</I>.  Sets <I>dst</I> to the
+       difference of <I>v1</I> and <I>v2</I>.  Macro equivalent is <B>PFSUB_VEC4</B>.
+
+       <B>pfScaleVec4</B>(dst, s, v): <I>dst</I> = <I>s</I> * <I>v1</I>.  Sets <I>dst</I> to the
+       vector <I>v</I> scaled by <I>s</I>.  Macro equivalent is <B>PFSCALE_VEC4</B>.
+
+       <B>pfAddScaledVec4</B>(dst, v1, s, v2): <I>dst</I> = <I>v1</I> + <I>s</I> * <I>v2</I>.  Sets
+       <I>dst</I> to the vector <I>v1</I> plus the vector <I>v2</I> scaled by <I>s</I>.
+       Macro equivalent is <B>PFADD_SCALED_VEC4</B>.
+
+       <B>pfCombineVec4</B>(dst, s1, v1, s2, v2): <I>dst</I> = <I>s1</I> * <I>v1</I> + <I>s2</I> *
+       <I>v2</I>.  Sets <I>dst</I> to be the linear combination of <I>v1</I> and <I>v2</I>
+       with scales <I>s1</I> and <I>s2</I>, respectively.  Macro equivalent is
+       <B>PFCOMBINE_VEC4</B>.
+
+       <B>pfNormalizeVec4</B>(v):  <I>v</I> = <I>v</I> / length(<I>v</I>).  Normalizes the
+       vector <I>v</I> to have unit length and returns the original
+       length of the vector.
+
+       <B>pfXformVec4</B>(dst, v, m): <I>dst</I> = <I>v</I> * <I>m</I>.  Transforms <I>v</I> by the
+       matrix <I>m</I>.
+
+       <B>pfDotVec4</B>(v1, v2) = <I>v1</I> dot <I>v2</I> = <I>v1</I>[0] * <I>v2</I>[0] + <I>v1</I>[1] *
+       <I>v2</I>[1] + <I>v1</I>[2] * <I>v2</I>[2] + <I>v1</I>[3] * <I>v2</I>[3].  Returns dot prod-
+       uct of the vectors <I>v1</I> and <I>v2</I>.  Macro equivalent is
+       <B>PFDOT_VEC4</B>.
+
+       <B>pfLengthVec4</B>(v) = |v| = sqrt(<I>v</I> dot <I>v</I>).  Returns length of
+       the vector <I>v</I>.  Macro equivalent is <B>PFLENGTH_VEC4</B>.
+
+       <B>pfSqrDistancePt4</B>(v1, v2) = (<I>v1</I> - <I>v2</I>) dot (<I>v1</I> - <I>v2</I>).
+       Returns square of distance between two points <I>v1</I> and <I>v2</I>.
+       Macro equivalent is <B>PFSQR_DISTANCE_PT4</B>.
+
+       <B>pfDistancePt4</B>(v1, v2) = sqrt((<I>v1</I> - <I>v2</I>) dot (<I>v1</I> - <I>v2</I>)).
+       Returns distance between two points <I>v1</I> and <I>v2</I>.  Macro
+       equivalent is <B>PFDISTANCE_PT4</B>.
+
+       <B>pfEqualVec4</B>(v1, v2) = (<I>v1</I> == <I>v2</I>).  Tests for strict compo-
+       nent-wise equality of two vectors <I>v1</I> and <I>v2</I> and returns
+       FALSE or TRUE.  Macro equivalent is <B>PFEQUAL_VEC4</B>.
+
+       <B>pfAlmostEqualVec4</B>(v1, v2, tol).  Tests for approximate
+       component-wise equality of two vectors <I>v1</I> and <I>v2</I>.  It
+       returns FALSE or TRUE depending on whether the absolute
+       value of the difference between each pair of components is
+       less than the tolerance <I>tol</I>.  Macro equivalent is
+       <B>PFALMOST_EQUAL_VEC4</B>.
+
+
+
+                                                      pfVec4(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

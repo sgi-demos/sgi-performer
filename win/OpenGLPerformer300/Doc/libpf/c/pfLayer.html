@@ -1,0 +1,328 @@
+<HTML>
+<HEAD>
+<TITLE>pfLayer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLayer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLayer(3pf)                                         pfLayer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewLayer,</B>  <B>pfGetLayerClassType,</B> <B>pfLayerMode,</B> <B>pfGetLayer-</B>
+       <B>Mode,</B> <B>pfLayerPlane,</B> <B>pfGetLayerPlane,</B>  <B>pfLayerBase,</B>  <B>pfGet-</B>
+       <B>LayerBase,</B> <B>pfLayerDecal,</B> <B>pfGetLayerDecal</B> - Create, modify,
+       and query layer nodes for decals and coplanar polygons.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfLayer *   <B>pfNewLayer</B>(void);
+
+       pfType *    <B>pfGetLayerClassType</B>(void);
+
+       void        <B>pfLayerMode</B>(pfLayer *layer, int mode);
+
+       int         <B>pfGetLayerMode</B>(const pfLayer *layer);
+
+       void        <B>pfLayerPlane</B>(pfLayer *layer, pfPlane *plane);
+
+       pfPlane *   <B>pfGetLayerPlane</B>(const pfLayer *layer);
+
+       void        <B>pfLayerBase</B>(pfLayer *layer, pfNode *base);
+
+       pfNode *    <B>pfGetLayerBase</B>(const pfLayer *layer);
+
+       void        <B>pfLayerDecal</B>(pfLayer *layer, pfNode *decal);
+
+       pfNode *    <B>pfGetLayerDecal</B>(const pfLayer *layer);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfLayer</B>  is  derived  from  the
+       parent class <B>pfGroup</B>, so each of these member functions of
+       class <B>pfGroup</B> are also directly  usable  with  objects  of
+       class  <B>pfLayer</B>.   Casting an object of class <B>pfLayer</B> to an
+       object of class <B>pfGroup</B> is taken  care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfGroup</B>.
+
+       int        <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+       int        <B>pfInsertChild</B>(pfGroup *group,  int index,  pfN-
+                    ode *child);
+       int        <B>pfReplaceChild</B>(pfGroup *group,     pfNode *old,
+                    pfNode *new);
+       int        <B>pfRemoveChild</B>(pfGroup *group, pfNode* child);
+       int        <B>pfSearchChild</B>(pfGroup *group, pfNode* child);
+       pfNode *   <B>pfGetChild</B>(const pfGroup *group, int index);
+       int        <B>pfGetNumChildren</B>(const pfGroup *group);
+       int        <B>pfBufferAddChild</B>(pfGroup *group,           pfN-
+                    ode *child);
+       int        <B>pfBufferRemoveChild</B>(pfGroup *group,        pfN-
+                    ode *child);
+
+
+       Since the class <B>pfGroup</B> is itself derived from the  parent
+       class  <B>pfNode</B>,  objects  of class <B>pfLayer</B> can also be used
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>, objects of class <B>pfLayer</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>, objects of class <B>pfLayer</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>layer</I>  identifies a pfLayer.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       On Z-buffer based machines, numerical precision can  cause
+       distracting artifacts when rendering coplanar geometry.  A
+       pfLayer is a  node  derived  from  pfGroup  that  supports
+       proper drawing of coplanar geometry on OpenGL platforms.
+
+       A  pfLayer  can be thought of as a stack of geometry where
+       each layer has visual priority over the  geometry  beneath
+       it  in  the stack.  An example of a 3 layer stack consists
+       of stripes which are layered over a runway which  is  lay-
+       ered  over  the ground. The bottommost layer is called the
+       "base" while the other layers are called  "decals".   When
+       using  certain  hardware mechanisms (<B>PFDECAL_BASE_STENCIL</B>)
+       to implement pfLayers, the "base" is  special  because  it
+       defines  the  depth  values  which  are  used to determine
+       pfLayer visibility with respect to  other  scene  geometry
+       and which are written to the depth buffer.
+
+       <B>pfNewLayer</B>  creates  and  returns  a  handle to a pfLayer.
+       Like other pfNodes, pfLayers  are  always  allocated  from
+       shared memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetLayerClassType</B>  returns  the  <B>pfType</B>*  for  the class
+       <B>pfLayer</B>.  The <B>pfType</B>* returned by  <B>pfGetLayerClassType</B>  is
+       the  same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfLayer</B>.  Because  OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  <B>pfIsOfType</B>  to  test  if  an  object is of a type
+       derived from a Performer type  rather  than  to  test  for
+       strict equality of the <B>pfType</B>*'s.
+
+       Since  pfLayer is derived from pfGroup, pfGroup API may be
+       used to manipulate its child list.  OpenGL Performer  con-
+       siders  child  0  to  be  the base geometry and children 1
+       through N-1 to be decals.  Decals are  rendered  in  order
+       such  that  decal[i+1]  is  drawn  atop decal[i]. In other
+       words, decal[i+1] has visual priority over  decal[i]  even
+       though  they  are  coplanar.  <B>pfLayerBase</B> and <B>pfLayerDecal</B>
+       are convenience routines for setting the  base  and  decal
+       children  of  <I>layer</I> in the common case where there is only
+       one  decal  child.   <B>pfGetLayerBase</B>  and   <B>pfGetLayerDecal</B>
+       return the base and first child of <I>layer</I>.
+
+       The  <I>mode</I> argument to <B>pfLayerMode</B> specifies which hardware
+       mechanism to use and is one of:
+
+                   is 8.
+
+              <B>PFDECAL_BASE_DISPLACE</B> | <B>PFDECAL_LAYER_OFFSET</B>
+                   Use  slope-based   polygon   displacement   to
+                   slightly  displace  the  depth values of decal
+                   geometry closer to the eye so they have visual
+                   priority.  In addition, decal geometry is off-
+                   set a constant amount to  eliminate  anomalies
+                   caused by geometry which is nearly perpendicu-
+                   lar to the view.  Each decal is displaced  and
+                   offset  more  than its predecessor to properly
+                   resolve priority between decals.  The  maximum
+                   number of decals is 8.
+
+              <B>PFDECAL_BASE_STENCIL</B>
+                   Use the stencil-buffer logic to determine vis-
+                   ibility of decal geometry.  There is no  limit
+                   to the number of decals.
+
+              <B>PFDECAL_BASE_FAST</B>
+                   Use  a  decaling  mechanism appropriate to the
+                   hardware that produces the  fastest,  but  not
+                   necessarily the highest quality, decaling.
+
+              <B>PFDECAL_BASE_HIGH_QUALITY</B>
+                   Use  a  decaling  mechanism appropriate to the
+                   hardware that produces  the  highest  quality,
+                   but not necessarily the fastest, decaling.
+
+       The  decal  mode  may also include the <B>PFDECAL_PLANE</B> token
+       OR-ed with one of the above tokens which will  enable  the
+       use  of the decal reference plane (set with <B>pfLayerPlane</B>).
+       This    can    offer    much     higher     quality     of
+       <B>PFDECAL_BASE_DISPLACE</B> type layers.
+
+       The    default    layer    mode    is   <B>PFDECAL_BASE_FAST</B>.
+       <B>pfGetLayerMode</B> returns the mode of <I>layer</I>.
+
+       The different pfLayer modes offer  quality-feature  trade-
+       offs listed in the table below:
+
+       center  tab($);  C | C | C | C L | L | L | L.  $<B>DISPLACE</B>$-
+       <B>STENCIL</B>$<B>(DISPLACE</B>  <B>|</B>  <B>OFFSET)</B>  _  Quality$medium$high$high
+       Sorting$enabled$disabled$enabled           Coplanarity$not
+       required$required$not required Multipass$ok$not ok$ok Con-
+       tainment$not required$required$not required
+
+       The <B>STENCIL</B> mechanism offers the best image quality but at
+       a performance cost since the base and layer geometry  must
+       be rendered in order, obviating any benefits of sorting by
+       graphics state offered by  <B>pfChanBinSort</B>.  When  multisam-
+       pling  on RealityEngine, this mechanism also significantly
+       reduces pixel fill performance.  The performance impact is
+       not  as  severe in InfiniteReality systems.  An additional
+       constraint is that <B>STENCIL</B>ed layers must  be  coplanar  or
+       decal geometry may incorrectly show through base geometry.
+       A subtle but important issue with <B>STENCIL</B>ed layers is that
+       they  are  unsuitable  for multipass renderings (projected
+       textures) since multiple surfaces are visible at  a  given
+       changes, and because there is no pixel fill  rate  penalty
+       when  it  is  in use. The <B>OFFSET</B> mechanism adds a constant
+       offset to the decal geometry. This mode can be very expen-
+       sive  (RealityEngine) so when using it the database should
+       be sorted with <B>PFSTATE_DECAL</B> as the first sorting key (see
+       <B>pfChanBinSort</B>).   Both  <B>DISPLACE</B> mechanisms do not require
+       that geometry within a single layer be coplanar  and  also
+       produce  a single visible surface at each pixel for multi-
+       pass renderings. The main disadvantage is that decal geom-
+       etry  may  incorrectly  poke through other geometry due to
+       the displacement of the decal geometry. Another  disadvan-
+       tage is that the maximum number of decals is 8.
+
+       The  performance  differences between <B>STENCIL</B> and <B>DISPLACE</B>
+       modes are hardware-dependent so some  experimentation  and
+       benchmarking  is  required  to determine the most suitable
+       method for your application.
+
+       <B>pfLayerPlane</B> sets a reference plane to  be  used  for  all
+       geometry  under the pfLayer node.  <B>pfGetLayerPlane</B> returns
+       the reference plane, or NULL if no such plane  is  set  on
+       the pfLayer.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Using <B>PFDECAL_BASE_STENCIL</B> for pfLayer nodes requires sev-
+       eral steps for proper operation. First, the graphics hard-
+       ware  must  support stencil plane rendering. Secondly, the
+       graphics context must be  configured  with  at  least  one
+       stencil  plane,  and the lowest order bit of the allocated
+       stencil planes  be  reserved  for  OpenGL  Performer  use.
+       <B>pfInitGfx</B>  configures  the  graphics  context in just this
+       way.
+
+       The use of displacements for rendering  coplanar  geometry
+       can  cause visual artifacts such as decals "Z fighting" or
+       "flimmering" when viewed perpendicularly, and the  "punch-
+       ing through" of decals that should mask base geometry when
+       both are viewed obliquely.  The  former  artifact  can  be
+       eliminated    by    specifying   <B>PFDECAL_BASE_DISPLACE</B>   |
+       <B>PFDECAL_LAYER_OFFSET</B> as the layer mode. Subtle details  of
+       this rendering mode are described in the <B>pfDecal</B> man page.
+       If unacceptable  artifacts  still  persist,  the  database
+       should be modified to eliminate the need for coplanar ren-
+       dering or <B>PFDECAL_BASE_HIGH_QUALITY</B> should be used.
+
+       When using <B>PFDECAL_LAYER_OFFSET</B>, the minimum depth  buffer
+       range set with <B>lsetdepth</B> must be incremented an extra 1024
+       * max layers so the negative displacement  of  the  layers
+       does not wrap.  <B>pfInitGfx</B> does this automatically.
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       OpenGL  Performer  properly renders coplanar geometry only
+       on machines that have a hardware stencil buffer  allocated
+       or which support displaced polygon rendering.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfChanBinSort,  pfDecal, pfGroup, pfInitGfx, pfLookupNode,
+       pfNode, pfDelete
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+<world><name>w0</name></world>
+<world><name>w1</name></world>
+
+<Module>
+  <class>pfvmLoader</class>
+  <scope>world,w0</scope>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>esprit.flt</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmLoader</class>
+  <scope>world,w1</scope>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>tux.pfb</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmWorldSwitcher</class>
+  <data> 
+    <switch>
+      <key>F12</key>
+      <world>w0</world>
+      <fadetime>1</fadetime>
+      <fadecol>0.5,0.5,0.9,1</fadecol>
+    </switch>
+
+    <switch>
+      <key>F12</key>
+      <world>w1</world>
+      <fadetime>1</fadetime>
+      <fadecol>0.5,0.5,0.9,1</fadecol>
+    </switch>
+  </data>
+</Module>
+
+</viewer>
+
+

@@ -1,0 +1,336 @@
+<HTML>
+<HEAD>
+<TITLE>pfb</TITLE>
+</HEAD>
+<BODY>
+<H1>pfb</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfb(3pf)                                                 pfb(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdLoadFile_pfb,</B>  <B>pfdStoreFile_pfb,</B>  <B>pfdConverterMode_pfb,</B>
+       <B>pfdGetConverterMode_pfb,</B>  <B>pfdConverterVal_pfb,</B>  <B>pfdGetCon-</B>
+       <B>verterVal_pfb,</B>    <B>pfdConverterAttr_pfb,</B>   <B>pfdGetConverter-</B>
+       <B>Attr_pfb,</B>  <B>pfdUserData_pfb,</B>   <B>pfdAddCustomNode_pfb,</B>   <B>pfd-</B>
+       <B>DeleteCustomNode_pfb,</B>  <B>pfdLoadData_pfb,</B>  <B>pfdStoreData_pfb,</B>
+       <B>pfdDescendObject_pfb,</B> <B>pfdLoadObjectRef_pfb,</B> <B>pfdStoreObjec-</B>
+       <B>tRef_pfb,</B> <B>-</B> Utilities for loading and storing <B>pfb</B> files in
+       Performer applications.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdb/pfpfb.h&gt;
+
+       pfNode*            <B>pfdLoadFile_pfb</B>(const char *fileName);
+
+       int                <B>pfdStoreFile_pfb</B>(pfNode *root,
+                            const char *fileName);
+
+       void               <B>pfdConverterMode_pfb</B>(int mode,
+                            int value);
+
+       int                <B>pfdGetConverterMode_pfb</B>(int mode);
+
+       void               <B>pfdConverterVal_pfb</B>(int which,
+                            float val);
+
+       float              <B>pfdGetConverterVal_pfb</B>(int which);
+
+       void               <B>pfdConverterAttr_pfb</B>(int which,
+                            void *attr);
+
+       void*              <B>pfdGetConverterAttr_pfb</B>(int which);
+
+       int                <B>pfdCrypt_pfb</B>(uint *key, pfdEncryptFunc-
+                            Type_pfb encrypt_func,  pfdDecrypt-
+                            FuncType_pfb decrypt_func);
+
+       int                <B>pfdUserData_pfb</B>(pfdDescendUserDataFuncType_pfb descend_func,
+                            pfdStoreUserDataFunc-
+                            Type_pfb store_func,   pfdLoadUser-
+                            DataFuncType_pfb load_func);
+
+       int                <B>pfdAddCustomNode_pfb</B>(pfType *type,
+                            const char *name,    pfdDescendCus-
+                            tomNodeFuncType_pfb descend_func,
+                            pfdStoreCustomNodeFunc-
+                            Type_pfb store_func,     pfdNewCus-
+                            tomNodeFuncType_pfb new_func,  pfd-
+                            LoadCustomNodeFunc-
+                            Type_pfb load_func);
+
+       int                <B>pfdDeleteCustomNode_pfb</B>(pfType *type);
+
+       size_t             <B>pfdLoadData_pfb</B>(void *data,   int size,
+                            void *handle);
+
+       int                <B>pfdLoadObjectRef_pfb</B>(pfObject **obj,
+                            void *handle);
+
+       int                <B>pfdStoreObjectRef_pfb</B>(pfObject *obj,
+                            void *handle);
+
+       typedef void       <B>(*pfdDecryptFuncType_pfb)</B>(int size,
+                            uint *key, void *data);
+
+       typedef void       <B>(*pfdEncryptFuncType_pfb)</B>(int size,
+                            uint *key, void *src, void *dst);
+
+       typedef
+                          int        <B>(*pfdDescendUserDataFuncType_pfb)</B>(void *udata,
+                            pfObject *parent, void *handle);
+
+       typedef
+                          int        <B>(*pfdStoreUserDataFuncType_pfb)</B>(void *udata,
+                            pfObject *parent, void *handle);
+
+       typedef void
+                          *     <B>(*pfdLoadUserDataFuncType_pfb)</B>(void *handle);
+
+       typedef
+                          int        <B>(*pfdDescendCustomNodeFuncType_pfb)</B>(pfNode *node,
+                            void *handle);
+
+       typedef
+                          int        <B>(*pfdStoreCustomNodeFuncType_pfb)</B>(pfNode *node,
+                            void *handle);
+
+       typedef pfNode *   <B>(*pfdNewCustomNodeFuncType_pfb)</B>(void);
+
+       typedef
+                          int        <B>(*pfdLoadCustomNodeFuncType_pfb)</B>(pfNode *node,
+                            void *handle);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdLoadFile_pfb</B>  builds  in-memory data structures from an
+       external pfb database file.  If no path  to  the  file  is
+       given, the directories in the active Performer file search
+       path (see <B>pfFilePath</B>) are scanned for the given  filename.
+       <B>pfdLoadFile_pfb</B> may only be called after <B>pfConfig</B>.
+
+       <B>pfdStoreFile_pfb</B>  writes  a  subgraph of a Performer scene
+       rooted at <I>root</I> to a file named <I>fileName</I> in the <B>pfb</B> format.
+
+       <B>pfdConverterMode_pfb</B>,             <B>pfdGetConverterMode_pfb</B>,
+       <B>pfdConverterAttr_pfb</B>,             <B>pfdGetConverterAttr_pfb</B>,
+       <B>pfdConverterVal_pfb</B>  and  <B>pfdGetConverterVal_pfb</B> allow the
+       user to access and alter the modes, attributes and  values
+       of the <B>pfb</B> loader/storer.  The <B>pfb</B> converter modes are:
+
+              <B>PFPFB_SAVE_TEXTURE_IMAGE</B>
+                   By default texture images are not saved in <B>pfb</B>
+                   files if the name of the file names  an  image
+                   file.   Setting  this mode to <B>PF_ON</B> forces the
+                   texture image to be saved.
+
+                   By  default graphics state objects loaded from
+                   <B>pfb</B> files are shared using the global <B>pfdShare</B>
+                   structure  (see  <B>pfdGetGlobalShare</B>).   Setting
+                   this mode to <B>PF_OFF</B> disables this sharing.
+
+              <B>PFPFB_COMPILE_GL</B>
+                   This  mode  controls  the   setting   of   the
+                   <B>PFGS_COMPILE_GL</B> draw mode for <B>pfGeoSets</B> loaded
+                   from    <B>pfb</B>    files.     It    defaults    to
+                   <B>PFPFB_COMPILE_GL_OFF</B>         which        sets
+                   <B>PFGS_COMPILE_GL</B>  to  <B>PF_OFF</B>.   Setting  it  to
+                   <B>PFPFB_COMPILE_GL_ON</B>  sets  <B>PFGS_COMPILE_GL</B>  to
+                   <B>PF_ON</B>.          Setting         it          to
+                   <B>PFPFB_COMPILE_GL_AS_SAVED</B>      will      cause
+                   <B>PFGS_COMPILE_GL</B> to be set the same way  as  it
+                   was when the <B>pfb</B> file was created.
+
+       There are currently no <B>pfb</B> converter values or attributes.
+
+       The <B>pfb</B> format supports encryption  of  vertex  and  image
+       data.   Control  of  encryption/decryption is done through
+       <B>pfdCrypt_pfb</B>.  To enable encryption <I>key</I> should  be  a  non
+       <B>NULL</B>  pointer to an array of unsigned integers.  The first
+       element of the array is the number of elements in the rest
+       of the array.  <B>Pfb</B> has its own built in encryption/decryp-
+       tion functions.  To use these NULL  should  be  passed  to
+       <I>encrypt</I><B>_</B><I>func</I>  and  <I>decrypt</I><B>_</B><I>func</I>.  One can define there own
+       encryption/decryption functions  by  setting  <I>encrypt</I><B>_</B><I>func</I>
+       and  <I>decrypt</I><B>_</B><I>func</I>  to  appropriate  functions  of the type
+       <B>pfdEncryptFuncType_pfb</B>  and   <B>pfdDecryptFuncType_pfb</B>.    A
+       function  of  type  <B>pfdEncryptFuncType_pfb</B>  should encrypt
+       <I>size</I> bytes of data from <I>src</I> and put the result in <I>dst</I>.   A
+       function  of  type  <B>pfdDecryptFuncType_pfb</B>  should decrypt
+       <I>size</I> bytes of data from <I>data</I> and leaving  the  results  in
+       <I>data</I>.   For  both  these  functions  <I>key</I> is the key set in
+       <B>pfdCrypt_pfb</B>.
+
+       There are some portions of a performer scene graph that it
+       can  be  impossible  to  know how to store or load without
+       application specific knowledge.  Two examples of this  are
+       <B>pfUserData</B>  and  custom  <B>pfType</B>s.  For this reason one can
+       set  up  call   backs   for   the   <B>pfdStoreFile_pfb</B>   and
+       <B>pfdLoadFile_pfb</B>  to  call  to handle this data.  The func-
+       tions          <B>pfdLoadData_pfb</B>,          <B>pfdStoreData_pfb</B>,
+       <B>pfdDescendObject_pfb</B>,       <B>pfdLoadObjectRef_pfb</B>,      and
+       <B>pfdStoreObjectRef_pfb</B> are meant to be called by these call
+       backs.
+
+              <B>pfdLoadData_pfb</B>  reads <I>size</I> bytes of data into <I>data</I>
+              from the <B>pfb</B> file that is specified by <I>handle</I>.   It
+              should    be    called   by   the   <I>store</I><B>_</B><I>func</I>   of
+              <B>pfdUserData_pfb</B> and <B>pfdCustomNode_pfb</B>.
+
+              <B>pfdStoreData_pfb</B> writes <I>size</I>  bytes  of  data  from
+              <I>data</I> into the <B>pfb</B> file that is specified by <I>handle</I>.
+              It  should  be  called   by   the   <I>store</I><B>_</B><I>func</I>   of
+              <B>pfdUserData_pfb</B> and <B>pfdCustomNode_pfb</B>.
+
+              <B>pfdDescendObject_pfb</B>  descends  a  <B>pfObject</B> pointer
+              <B>pfdUserData_pfb</B> and <B>pfdCustomNode_pfb</B>.
+
+              <B>pfdStoreObjectRef_pfb</B>  writes  a  reference  to the
+              <B>pfObject</B> pointed to by <I>obj</I> into the <B>pfb</B>  file  that
+              is specified by <I>handle</I>.  It should be called by the
+              <I>store</I><B>_</B><I>func</I>       of       <B>pfdUserData_pfb</B>       and
+              <B>pfdCustomNode_pfb</B>.   It  should  only be called for
+              those <B>pfObject</B> that <B>pfdDescendObject_pfb</B> returned 0
+              on.
+
+              <B>pfdLoadObjectRef_pfb</B>   reads   a   reference  to  a
+              <B>pfObject</B> from the <B>pfb</B> file  that  is  specified  by
+              <I>handle</I>.  At some later time, but before the comple-
+              tion  of  <B>pfdLoadFile_pfb</B>,  the  address   of   the
+              <B>pfObject</B>  that  was referenced will be written into
+              the pointer location pointed to by  <I>obj</I>.   This  is
+              done  because at the time that <B>pfdLoadObjectRef_pfb</B>
+              is called the referenced object might not have been
+              read   from  the  <B>pfb</B>  file.   <B>pfdLoadObjectRef_pfb</B>
+              should   be   called   by    the    <I>load</I><B>_</B><I>func</I>    of
+              <B>pfdUserData_pfb</B> and <B>pfdCustomNode_pfb</B>.
+
+
+       <B>pfUserData</B> can be of many forms.  It can be a pointer to a
+       block of memory, a pointer to some <B>pfObject</B>, or a  pointer
+       to  a  complex  structure  containing many other pointers.
+       <B>pfdUserData_pfb</B> can be called to set up call backs to han-
+       dle  the storing and loading of complex user data.  To set
+       up a custom user data store  <I>descend</I><B>_</B><I>func</I>  and  <I>store</I><B>_</B><I>func</I>
+       must  be  defined.  To set up a custom load <I>load</I><B>_</B><I>func</I> must
+       be defined.
+
+       The    <I>descend</I><B>_</B><I>func</I>    must     be     of     the     type
+       <B>pfdDescendUserDataFuncType_pfb</B>.   If  defined  it will get
+       called for each piece of user data that is not  a  pointer
+       to  a  savable <B>pfObject</B>.  <I>udata</I> is the pointer to the user
+       data.  <I>parent</I> is the parent <B>pfObject</B>  of  the  user  data.
+       <I>handle</I>  defines  the  current  <B>pfb</B> file.  The <I>descend</I><B>_</B><I>func</I>
+       should call <B>pfdDescendObject_pfb</B> for  any  <B>pfObject</B>s  that
+       are referenced by the user data.  It should return 0 if it
+       wants to store this user data.  It  should  return  -1  if
+       this user data should not be stored.
+
+       The     <I>store</I><B>_</B><I>func</I>     must     be     of     the     type
+       <B>pfdStoreUserDataFuncType_pfb</B>.   If  defined  it  will  get
+       called  for  each piece of user data that the <I>descend</I><B>_</B><I>func</I>
+       said should be stored.  <I>udata</I> is the pointer to  the  user
+       data.   <I>parent</I>  is  the  parent <B>pfObject</B> of the user data.
+       <I>handle</I> defines  the  current  <B>pfb</B>  file.   The  <I>store</I><B>_</B><I>func</I>
+       should  call  <B>pfdStoreData_pfb</B>  and  <B>pfdStoreObjectRef_pfb</B>
+       zero or more times each to store  the  data  and  <B>pfObject</B>
+       references of this user data.
+
+       The      <I>load</I><B>_</B><I>func</I>     must     be     of     the     type
+       <B>pfdLoadUserDataFuncType_pfb</B>.  It will get called for  each
+       piece  of  user  data that is not a pointer to a <B>pfObject</B>.
+       <I>handle</I> defines the current <B>pfb</B> file.  The <I>load</I><B>_</B><I>func</I> should
+       call <B>pfdLoadData_pfb</B> and <B>pfdLoadObjectRef_pfb</B> zero or more
+       times each to load the data  and  <B>pfObject</B>  references  of
+                  descend the pfObject;
+              }
+              else if (descend_func)
+              {
+                  if (descend_func(user_data))
+                   mark it for storing;
+              }
+              else if (pfGetSize(user_data) &gt; 0)
+                  mark it for storing;
+
+
+       <B>pfUserData</B> is stored based on the following scheme:
+
+              if (user_data is a pointer to savable pfObject)
+                  store the a reference to that object;
+              else if (store_func)
+                  store_func(user_data);
+              else if (pfGetSize(user_data) &gt; 0)
+                  store pfGetSize(user_data) bytes of data;
+
+
+
+       <B>Pfb</B> files have the ability to store custom <B>pfNode</B>s.  You
+       should call <B>pfdAddCustomNode_pfb</B> for each custom <B>pfNode</B>.
+       <I>type</I> is the <B>pfType</B> of the custom node.  <B>name</B> is a string
+       that will be used to identify the custom nodes type in the
+       <B>pfb</B> file.  <I>descend</I><B>_</B><I>func</I>, <I>store</I><B>_</B><I>func</I>, <I>new</I><B>_</B><I>func</I>, and
+       <I>load</I><B>_</B><I>func</I> are call back functions.  To store a custom node
+       <I>descend</I><B>_</B><I>func</I> and <I>store</I><B>_</B><I>func</I> must be defined.  To load a
+       custom node <I>new</I><B>_</B><I>func</I> and <I>load</I><B>_</B><I>func</I> must be defined.
+
+       The <I>descend</I><B>_</B><I>func</I> must be of the type
+       <B>pfdDescendCustomNodeFuncType_pfb</B>.  If defined it will get
+       called for each custom node of <B>pfType</B> <I>type</I> found in the
+       scene graph.  <I>node</I> is the pointer to the custom node.
+       <I>handle</I> defines the current <B>pfb</B> file.  The <I>descend</I><B>_</B><I>func</I>
+       should call <B>pfdDescendObject_pfb</B> for any <B>pfObject</B>s that
+       are referenced by the custom node and not part of its par-
+       ent <B>pfType</B>.
+
+       The <I>store</I><B>_</B><I>func</I> must be of the type
+       <B>pfdStoreCustomNodeFuncType_pfb</B>.  If defined it will get
+       called for each custom node of <B>pfType</B> <I>type</I> found in the
+       scene graph.  <I>node</I> is the pointer to the custom node.
+       <I>handle</I> defines the current <B>pfb</B> file.  The <I>store</I><B>_</B><I>func</I>
+       should call <B>pfdStoreData_pfb</B> and <B>pfdStoreObjectRef_pfb</B>
+       zero or more times each to store the custom data and
+       <B>pfObject</B>s references of <I>node</I>.  It should not store any of
+       the data of the standard Performer pfNode type it is
+       derived from.
+
+       The <I>new</I><B>_</B><I>func</I> must be of the type
+       <B>pfdNewCustomNodeFuncType_pfb</B>.  It should new a <B>pfNode</B> of
+       <B>pfType</B> <B>type</B>.
+
+       The <I>load</I><B>_</B><I>func</I> must be of the type
+       <B>pfdLoadCustomNodeFuncType_pfb</B>.  If defined it will get
+       called for each custom node of <B>pfType</B> <I>type</I> found in the
+       <B>pfb</B> file.  <I>node</I> is the pointer to the custom node.  At the
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfdb source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfdLoadFile(3pf), pfb(5pf)
+
+
+
+                                                         pfb(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

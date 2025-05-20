@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+
+<viewer>
+
+<Module>
+  <class>pfvmLoader</class>
+  <data> 
+    <filepath>/usr/share/Performer/data</filepath>
+    <model><filename>esprit.flt</filename></model>
+    <model><filename>pfLightSource.pfb</filename></model>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmNavigator</class>
+  <data>
+    <dzone>0.2</dzone>
+    <deltaH>0.2</deltaH>
+    <deltaP>0.2</deltaP>
+    <initSpeed>0.005</initSpeed>
+    <minSpeed>0.001</minSpeed>
+    <maxSpeed>1</maxSpeed>
+    <deltaSpeed>1.05</deltaSpeed>
+    <deltaStrafe>0.08</deltaStrafe>
+    <deltaZ>0.08</deltaZ>
+    <default_xyz>4.257874,-3.484028,1.827368</default_xyz>
+    <default_hpr>47.197811,-13.806307,0.000000</default_hpr>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmDrawStyle</class>
+  <data>
+    <Texture>1</Texture>
+    <Backface>0</Backface>
+    <Lighting>0</Lighting>
+    <DrawStyle>0</DrawStyle>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmEarthSky</class>
+  <data>
+    <mode>skyGrnd</mode>
+    <SkyTopColor>0,0,1,1</SkyTopColor>
+    <SkyBotColor>0.4,0.4,1,1</SkyBotColor>
+    <HorizColor>0.7,0.7,0.99,1</HorizColor>
+    <GrndFarColor>0.1,0.4,0.1,1</GrndFarColor>
+    <GrndNearColor>0,0.5,0.1,1</GrndNearColor>
+    <CloudBotColor>0.7,0.2,0.6,1</CloudBotColor>
+    <CloudTopColor>0.8,0.3,0.7,1</CloudTopColor>
+    <ClearColor>0,0,0,1</ClearColor>
+
+    <GrndHt>0</GrndHt>
+
+    <HorizAngle>10</HorizAngle>
+    <CloudTop>20000</CloudTop>
+    <CloudBot>20000</CloudBot>
+    <TZoneBot>15000</TZoneBot>
+    <TZoneTop>25000</TZoneTop>
+    <GrndFogTop>1000</GrndFogTop>
+    <DistFactor>1</DistFactor>
+
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmLogo</class>
+  <data>
+    <logo>
+      <TexName>/usr/share/Performer/data/logo.128.rgb</TexName>
+      <Pos>0.01,0.21,0.79,0.99</Pos>
+      <TexCoords>0,1,0,1</TexCoords>
+      <Color>1.0,1.0,1.0,1</Color>
+    </logo>
+  </data>
+</Module>
+
+<Module>
+  <class>pfvmPicker</class>
+</Module>
+
+<Module>
+  <class>pfvmSnapshot</class>
+  <data>
+    <BaseName>pfsnap</BaseName>
+    <SingleChan>0</SingleChan>
+    <SaveAlpha>0</SaveAlpha>
+    <key>ENTER</key>
+  </data>
+</Module>
+
+</viewer>
+
+

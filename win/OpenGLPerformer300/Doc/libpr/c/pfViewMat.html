@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<TITLE>pfViewMat</TITLE>
+</HEAD>
+<BODY>
+<H1>pfViewMat</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfViewMat(3pf)                                     pfViewMat(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfModelMat,</B>    <B>pfGetModelMat,</B>   <B>pfViewMat,</B>   <B>pfGetViewMat,</B>
+       <B>pfInvViewMat,</B>  <B>pfGetInvViewMat,</B>  <B>pfProjMat,</B>  <B>pfGetProjMat,</B>
+       <B>pfInvModelMat,</B>  <B>pfGetInvModelMat,</B>  <B>pfNearPixDist,</B>  <B>pfGetN-</B>
+       <B>earPixDist,</B> <B>pfTexMat,</B> <B>pfGetTexMat</B>  -  Set/get  shadows  of
+       viewing,  modeling, texturing, and inverse modeling matri-
+       ces; set/get near plane pixel distance
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       void    <B>pfModelMat</B>(pfMatrix mat);
+
+       void    <B>pfGetModelMat</B>(pfMatrix mat);
+
+       void    <B>pfViewMat</B>(pfMatrix mat);
+
+       void    <B>pfGetViewMat</B>(pfMatrix mat);
+
+       void    <B>pfInvViewMat</B>(pfMatrix mat);
+
+       void    <B>pfGetInvViewMat</B>(pfMatrix mat);
+
+       void    <B>pfProjMat</B>(pfMatrix mat);
+
+       void    <B>pfGetProjMat</B>(pfMatrix mat);
+
+       void    <B>pfInvModelMat</B>(pfMatrix mat);
+
+       void    <B>pfGetInvModelMat</B>(pfMatrix mat);
+
+       void    <B>pfNearPixDist</B>(float npd);
+
+       float   <B>pfGetNearPixDist</B>(void);
+
+       void    <B>pfTexMat</B>(pfMatrix mat);
+
+       void    <B>pfGetTexMat</B>(pfMatrix mat);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Certain  eyepoint-dependent  features  require   knowledge
+       about  the viewing and modeling matrices as well as knowl-
+       edge about the mapping of eye to window coordinates.  Cur-
+       rent  eyepoint-dependent  features  include pfLPointState,
+       which renders <B>PFGS_POINTS</B> pfGeoSets as "light points"  and
+       pfSprite, which rotates geometry to face the viewer.
+
+       <B>pfViewMat</B>,    <B>pfProjMat</B>,    <B>pfModelMat</B>,    <B>pfTexMat</B>    and
+       <B>pfNearPixDist</B> set the current viewing  matrix,  projection
+       matrix,  modeling  matrix, texture matrix, and distance to
+       the near (view) plane in pixels. These routines in no  way
+       affect  the  graphics library or its transformation stack.
+       They only specify values used internally by  <B>libpr</B>.  <B>libpf</B>
+       applications  do  not  need  to call these routines unless
+       they modify associated values through the graphics library
+       pfLPointState and pfSprite both require  the  viewing  and
+       modeling  matrices.   The inverse modeling matrix is auto-
+       matically computed  by  OpenGL  Performer  when  necessary
+       unless   it   is   specified   by   the  application  with
+       <B>pfInvModelMat</B>. pfLPointState also requires  the  distance,
+       measured in pixels, from the eyepoint to the near plane of
+       the viewing frustum.  This value is required in  order  to
+       render  light  points  at  their  proper  screen size. Use
+       <B>pfNearPixDist</B>  to  set  the  "near  pixel  distance"   and
+       <B>pfGetNearPixDist</B>  to get it.  pfCalligraphic requieres the
+       projection matrix also to be set before  caling  pfPrepro-
+       cessDList.  It also make use of the inverse viewing matrix
+       that  is  automatically  computed  unless  specified  with
+       <B>pfInvViewMat</B>.
+
+       <B>pfViewMat</B>  makes <I>mat</I> the current viewing matrix.  <I>mat</I> is a
+       4x4 homogeneous matrix which defines the  view  coordinate
+       system such that the upper 3x3 submatrix defines the coor-
+       dinate system axes and the bottom vector defines the coor-
+       dinate  system  origin.  OpenGL Performer defines the view
+       direction to be along the  positive  Y  axis  and  the  up
+       direction to be the positive Z direction, e.g., the second
+       row of <I>mat</I> defines the viewing direction and the third row
+       defines  the  up direction in world coordinates.  <I>mat</I> must
+       be orthonormal or  results  are  undefined.   <B>pfGetViewMat</B>
+       copies the current viewing matrix into <I>mat</I>.
+
+       <B>pfModelMat</B>   makes   <I>mat</I>   the  current  modeling  matrix.
+       <B>pfGetModelMat</B> copies the current modeling matrix into <I>mat</I>.
+
+       <B>pfProjMat</B>   makes   <I>mat</I>  the  current  projection  matrix.
+       <B>pfGetProjMat</B> copies the  current  projection  matrix  into
+       <I>mat</I>.
+
+       <B>pfViewMat</B>, <B>pfModelMat</B>, <B>pfProjMat</B>, <B>pfTexMat</B>, <B>pfInvModelMat</B>,
+       <B>pfInvViewMat</B>, and <B>pfNearPixDist</B> are  all  display-listable
+       commands.  If a pfDispList has been opened by <B>pfOpenDList</B>,
+       these commands will not have immediate effect but will  be
+       captured  by the pfDispList and will only have effect when
+       that pfDispList is later drawn with <B>pfDrawDList</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfLPointState, pfSprite, pfDispList
+
+
+
+                                                   pfViewMat(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

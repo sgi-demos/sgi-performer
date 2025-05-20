@@ -1,0 +1,223 @@
+<HTML>
+<HEAD>
+<TITLE>pfvmLoader</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvmLoader</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvmLoader(3pf)                                   pfvmLoader(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvmLoader</B> - Loader module for pfvViewer
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfvm/pfvmLoader.h&gt;
+
+                          <B>pfvmLoader::pfvmLoader</B>();
+
+       char*              <B>pfvmLoader::getFilePath</B>();
+
+       void               <B>pfvmLoader::setFilePath</B>(char*path);
+
+       int                <B>pfvmLoader::getNumModels</B>();
+
+       pfvmLoaderModel*   <B>pfvmLoader::getModel</B>(int i);
+
+       pfvmLoaderModel*   <B>pfvmLoader::findModel</B>(char*_name);
+
+       int                <B>pfvmLoader::addModel</B>(pfvmLoaderModel* model);
+
+       pfvmLoaderModel*   <B>pfvmLoader::addModel</B>(char* filename);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfvmLoader</B> is derived from  the
+       parent  class <B>pfvModule</B>, so each of these member functions
+       of class <B>pfvModule</B> are also directly usable  with  objects
+       of  class  <B>pfvmLoader</B>.   This  is  also  true for ancestor
+       classes of class <B>pfvModule</B>.
+
+       int            <B>pfvModule::getScope</B>();
+       int            <B>pfvModule::getScopeIndex</B>();
+       pfvObject*     <B>pfvModule::getScopeTarget</B>();
+       void           <B>pfvModule::bindCallback</B>(int which);
+       void           <B>pfvModule::unbindCallback</B>(int which);
+       int            <B>pfvModule::getCBMask</B>();
+       virtual void   <B>pfvModule::preConfig</B>();
+       virtual void   <B>pfvModule::postConfig</B>();
+       virtual void   <B>pfvModule::enterView</B>(pfvView*v);
+       virtual void   <B>pfvModule::exitView</B>(pfvView*v);
+       virtual void   <B>pfvModule::enterWorld</B>();
+       virtual void   <B>pfvModule::exitWorld</B>();
+       virtual void   <B>pfvModule::sync</B>();
+       virtual void   <B>pfvModule::frame</B>();
+       virtual void   <B>pfvModule::preCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postCull</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::preDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::postDraw</B>(pfvDispChan*chan);
+       virtual void   <B>pfvModule::overlay</B>(pfvDispChan*chan);
+       int            <B>pfvModule::bindKeys</B>(char*keys);
+       int            <B>pfvModule::unbindKeys</B>(char*keys)
+       char*          <B>pfvModule::getEventMask</B>()
+       void           <B>pfvModule::setEventMask</B>(char* str);
+       virtual int    <B>pfvModule::handleEvent</B>(int evType,
+                        char key);
+       uint64_t       <B>pfvModule::getViewMask</B>();
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       Since the class <B>pfvobject</B> is itself derived from the  par-
+       ent  class  <B>pfObject</B>, objects of class <B>pfvmLoader</B> can also
+       be used with these functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfvmLoader</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       pfvmLoader is a basic module  that  allows  models  to  be
+       loaded into pfvViewer applications.
+
+       <B>setFilePath()</B>  sets  the  filepath  in  which to look when
+       loading models.
+
+       <B>getFilePath()</B> returns the filepath.
+
+       <B>getNumModels()</B> returns the number of  pfvmLoaderModels  in
+       the loader's model list.
+
+       <B>addModel(pfvmLoaderModel*</B>  <B>model)</B>  adds  model  to   pfvm-
+       Loader's  list  of  models,  returning  the index of added
+       model in list.
+
+       <B>addModel(char*</B> <B>filename)</B>  creates  a  new  pfvmLoaderModel
+       instance,  assignes it the specified filename, and adds it
+       to pfvmLoader's list of models. Method returns  a  pointer
+       to the newly created pfvmLoaderModel.
+
+
+
+       ========
+       <B>XML</B> <B>tags</B>
+       ========
+
+
+
+           &lt;module&gt;
+               &lt;class&gt;pfvmLoader&lt;/class&gt;
+               &lt;data&gt;
+                   ...
+                   parameters
+                   ...
+               &lt;/data&gt;
+           &lt;/module&gt;
+
+
+       where <B>parameters</B> is one of the following:
+
+       <B>&lt;Name&gt;string&lt;/Name&gt;</B> where <B>string</B> is the name assigned to
+       the module.
+
+       <B>&lt;FilePath&gt;string&lt;/FilePath&gt;</B> sets the filepath for loading
+       models to <B>string</B>.
+
+       <B>&lt;Model&gt;pfvmLoaderModel&lt;/Model&gt;</B> is for for adding a new
+       model to the loader's model list.  The XML tags for the
+       pfvmLoaderModel class go inside the <B>&lt;Model&gt;</B> tags here.
+       See man <B>pfvmLoaderModel</B> for the tags specific to this
+       class.
+
+
+       =======
+       <B>Scoping</B>
+       =======
+
+       A pfvmLoader module can be scoped globally, to a single
+       view, or to a single world.
+
+       If scoped to a world, pfvmLoader will add loaded geometry
+       to the pfScene associated with its target world.
+
+       If scoped to a view, pfvmLoader will add loaded geometry
+       to the pfvView itself, through method pfvView::addNode.
+       Such geometry will be dynamically added and removed from
+       pfvWorld's scenes when view switches from one world to
+       another. Also, such geometry will only be visible inside
+       module's target view, even though other views may be view-
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The source code for the pfvmLoader Module is provided and
+       can be found in /usr/share/Per-
+       former/src/pguide/libpfv/viewer/modules/pfvmLoader
+
+       For examples of pfvViewer XML configuration files, look at
+       the sample .pfv files in /usr/share/Performer/config.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvmLoaderModel, pfvModule, pfvViewer, pfvXml, pfdLoad-
+       File, pfFilePath
+
+
+
+                                                  pfvmLoader(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,241 @@
+<HTML>
+<HEAD>
+<TITLE>pfLightModel</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLightModel</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLightModel(3pf)                               pfLightModel(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewLModel,</B> <B>pfGetLModelClassType,</B> <B>pfApplyLModel,</B> <B>pfLMode-</B>
+       <B>lAtten,</B> <B>pfGetLModelAtten,</B> <B>pfLModelLocal,</B> <B>pfGetLModelLocal,</B>
+       <B>pfLModelTwoSide,</B>    <B>pfGetLModelTwoSide,</B>   <B>pfLModelAmbient,</B>
+       <B>pfGetLModelAmbient,</B> <B>pfGetCurLModel</B> -  Create,  modify  and
+       query lighting model
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfLightModel *   <B>pfNewLModel</B>(void *arena);
+
+       pfType *         <B>pfGetLModelClassType</B>(void);
+
+       void             <B>pfApplyLModel</B>(pfLightModel *lm);
+
+       void             <B>pfLModelAtten</B>(pfLightModel *lm, float a0,
+                          float a1, float a2);
+
+       void             <B>pfGetLModelAtten</B>(const pfLightModel *lm,
+                          float *a0, float *a1, float *a2);
+
+       void             <B>pfLModelLocal</B>(pfLightModel *lm, int l);
+
+       int              <B>pfGetLModelLocal</B>(const pfLightModel *lm);
+
+       void             <B>pfLModelTwoSide</B>(pfLightModel *lm, int t);
+
+       int              <B>pfGetLModelTwoSide</B>(const pfLightModel *lm);
+
+       void             <B>pfLModelAmbient</B>(pfLightModel *lm,
+                          float r, float g, float b);
+
+       void             <B>pfGetLModelAmbient</B>(const pfLightModel *lm,
+                          float *r, float *g, float *b);
+
+       pfLightModel *   <B>pfGetCurLModel</B>(void);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfLightModel</B>  is  derived  from
+       the  parent  class <B>pfObject</B>, so each of these member func-
+       tions of class <B>pfObject</B>  are  also  directly  usable  with
+       objects of class <B>pfLightModel</B>.  Casting an object of class
+       <B>pfLightModel</B> to an object of class <B>pfObject</B> is taken  care
+       of  automatically.  This is also true for casts to objects
+       of ancestor classes of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>lm</I>  identifies a pfLightModel.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfLightModel  defines  characteristics  of the hardware
+       lighting model  used  to  illuminate  geometry.   See  the
+       OpenGL  <B>glLightModel(3g)</B>  man  page  for  more  details on
+       lighting environments and individual parameters.
+
+       <B>pfNewLModel</B> creates and returns a  handle  to  a  pfLight-
+       Model.   <I>arena</I>  specifies  a malloc arena out of which the
+       pfLightModel is allocated or <B>NULL</B> for allocation  off  the
+       process  heap.   A  NULL  pointer  is returned to indicate
+       failure.  pfLightModels can be deleted with <B>pfDelete</B>.
+
+       <B>pfGetLModelClassType</B> returns the  <B>pfType</B>*  for  the  class
+       <B>pfLightModel</B>.       The      <B>pfType</B>*      returned      by
+       <B>pfGetLModelClassType</B> is the same as the  <B>pfType</B>*  returned
+       by   invoking   <B>pfGetType</B>   on   any   instance  of  class
+       <B>pfLightModel</B>.  Because OpenGL Performer allows subclassing
+       of  built-in  types,  when decisions are made based on the
+       type of an object, it is usually better to use  <B>pfIsOfType</B>
+       to test if an object is of a type derived from a Performer
+       type rather than  to  test  for  strict  equality  of  the
+       <B>pfType</B>*'s.
+
+       <B>pfLModelAtten</B>  sets  the  lighting attenuation factors for
+       <I>lm</I>.  <I>a1</I>, <I>a2</I>, and <I>a3</I> specify the constant, linear, and sec-
+       ond-order  attenuation  factors, respectively.  These fac-
+       tors are associated with  all  non-infinite  lights.   The
+       default values for constant, linear, and quadratic attenu-
+       ation factors are 1.0, 0.0, and 0.0, respectively,  effec-
+       tively disabling each.  Note that OpenGL light attenuation
+       is done per-light.  See the <B>pfLightAtten</B> man page for more
+       information.
+
+       <B>pfGetLModelAtten</B>  copies  the lighting attenuation factors
+
+       <B>pfGetLModelLocal</B>  returns  a  boolean   value   signifying
+       whether  or  not  the effective viewpoint in <I>lm</I> is a local
+       viewpoint.
+
+       <B>pfLModelTwoSide</B> specifies whether two-sided lighting is to
+       be  used in the given light model.  The default is <B>PF_OFF</B>,
+       disabling two-sided lighting.  See the OpenGL <B>glLightModel</B>
+       man page for more details on two-sided lighting.
+
+       <B>pfGetLModelTwoSide</B>  returns  the setting of <I>lm</I>'s two-sided
+       lighting mode.
+
+       <B>pfLModelAmbient</B> receives three floating  point  values  in
+       the  range from 0.0 through 1.0 to set the red, green, and
+       blue, values for the amount of the ambient  light  associ-
+       ated with the scene for the given light model.
+
+       <B>pfGetLModelAmbient</B>  copies the red, green, and blue compo-
+       nents of the ambient in the given  light  model  into  the
+       parameters  <I>r</I>,  <I>g</I>, and <I>b</I>, respectively.  The default value
+       for the ambient red, green, and blue light  components  is
+       0.2.
+
+       <B>pfApplyLModel</B>  causes  <I>lm</I>,  with  its current settings, to
+       become the  current  lighting  model.   When  lighting  is
+       enabled  (See  below), this lighting model will be applied
+       to all geometry drawn after <B>pfApplyLModel</B> is called.  Mod-
+       ifications  to  <I>lm</I>, such as changing the ambient color, or
+       setting two-sided lighting,  will  not  be  applied  until
+       <B>pfApplyLModel</B> is called with <I>lm</I>.
+
+       For  geometry  to  be  illuminated,  the following must be
+       true:
+
+              1.   Lighting   must   be    enabled:    <B>pfEnable</B>(-
+                   <B>PFEN_LIGHTING</B>)
+
+              2.   A pfLightModel must be applied: <B>pfApplyLModel</B>
+
+              3.   A pfMaterial must be applied: <B>pfApplyMtl</B>
+
+              4.   One or more pfLights must be on: <B>pfLightOn</B>
+
+              5.   Illuminated   geometry   must   have  normals:
+                   <B>pfGSetAttr</B>, <B>PFGS_NORMAL3</B>
+
+       The lighting model state  element  is  identified  by  the
+       <B>PFSTATE_LIGHTMODEL</B>    token.     Use   this   token   with
+       <B>pfGStateAttr</B> to set the lighting model of a pfGeoState and
+       with  <B>pfOverride</B>  to  override  subsequent  lighting model
+       changes:
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       Example 1:
+
+       pfLModelTwoSide(lmodel, PF_ON);
+
+       /* Set up two-sided lighting pfGeoState */
+       pfGSetGState(gset, gstate);
+
+       /* Set normal array. 'gset' is non-indexed */
+       pfGSetAttr(gset, PFGS_NORMAL3, PFGS_PER_VERTEX, norms, NULL);
+
+       /* Draw lit, two-sided gset */
+       pfDrawGSet(gset);
+
+
+       Example 2:
+
+       pfApplyLModel(lmodel);
+
+       /* Override so that all geometry is lit with 'lmodel' */
+       pfOverride(PFSTATE_LIGHTMODEL, PF_ON);
+
+
+       <B>pfApplyLModel</B> is a display-listable command.  If a pfDis-
+       pList has been opened by <B>pfOpenDList</B>, <B>pfApplyLModel</B> will
+       not have immediate effect but will be captured by the
+       pfDispList and will only have effect when that pfDispList
+       is later drawn with <B>pfDrawDList</B>.
+
+       <B>pfGetCurLModel</B> returns a pointer to the currently active
+       pfLightModel, or NULL if there is no active pfLightModel.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDelete, pfDispList, pfGeoState, pfLight, glLightModel,
+       pfMaterial, pfObject, pfState, lmbind, lmcolor, lmdef
+
+
+
+                                                pfLightModel(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

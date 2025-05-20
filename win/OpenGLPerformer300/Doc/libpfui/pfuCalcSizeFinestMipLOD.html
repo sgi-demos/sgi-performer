@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<TITLE>pfuCalcSizeFinestMipLOD</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuCalcSizeFinestMipLOD</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuCalcSizeFinestMipLOD(3pf)         pfuCalcSizeFinestMipLOD(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuCalcSizeFinestMipLOD</B>  -  estimate  min texture LOD that
+       will used for rendering a scene
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       float   <B>pfuCalcSizeFinestMipLOD</B>(pfFrustum *cullFrust,
+                 int viewportWidth,         int viewportHeight,
+                 float heightAboveTerrain,  float min_dst_dxyz,
+                 int maxtexsize)
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfuCalcSizeFinestMipLOD</B>  attempts  to  calculate  a  tight
+       lower bound on the min (finest) texture mipmap LOD  (level
+       of  detail)  that mipmapping hardware will use to render a
+       scene, given the view frustum, viewport  size  in  pixels,
+       distance from the eye to the closest point (or to bounding
+       volume) in object space, a lower bound on the  min  change
+       in  texture  coords  (s,t)  per  change  in  object coords
+       (x,y,z), and the texture size  (which  is  used  only  for
+       clamping the result, which can otherwise be unbounded).
+
+       For  more  explicit details and a description of the algo-
+       rithm and its assumptions, see the comment at the  top  of
+       the   source   file   /usr/share/Performer/src/lib/libpfu-
+       til/mipmin.c.
+
+       The resulting LOD calculated by this  function  is  useful
+       for  virtual  clip  texturing,  in  which typically only a
+       small fixed number  of  contiguous  texture  LODs  can  be
+       accessed  at  a time, and the application has control over
+       which LOD that window of contiguous  levels  should  start
+       (the  "virtual  LOD  offset").   In such a situation it is
+       wise to choose an LOD Offset that is  less  than  the  LOD
+       returned  by pfuCalcSizeFinestMipLOD but as close to it as
+       possible, so as to maximize the number of levels the hard-
+       ware  has to work with and thereby increase the effective-
+       ness of mipmapping.
+
+       Typically the LOD calculated by this function is  used  to
+       determine  the  <B>minLODTexPix</B>  argument to be passed to the
+       <B>pfuCalcVirtualClipTexParams</B>  function  along  with   other
+       information about the texture, scene, and eyepoint.
+
+       For  examples  of  various  uses of this function, see the
+       sample source code for  the  .spherepatch  and  .ct  scene
+       loaders, and the virtcliptex sample program:
+              /usr/share/Performer/src/lib/libpfdb/libpfspherepatch/pfspherepatch.C
+              /usr/share/Performer/src/lib/libpfdb/libpfct/pfct.C
+              /usr/share/Performer/src/sample/pguide/libpf/C/virtcliptex.c
+
+       The  libpfutil  source code, object code and documentation
+       are provided as unsupported software.  Routines  are  sub-
+       ject to change in future releases.
+
+                                     pfuCalcSizeFinestMipLOD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+<TITLE>pfDBaseFunc</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDBaseFunc</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDBaseFunc(3pf)                                 pfDBaseFunc(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfDBaseFunc,</B> <B>pfGetDBaseFunc,</B> <B>pfAllocDBaseData,</B> <B>pfGetDBase-</B>
+       <B>Data,</B> <B>pfPassDBaseData,</B> <B>pfDBase</B> -  Set  database  callback,
+       allocate and pass database data.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void              <B>pfDBaseFunc</B>(pfDBaseFuncType func);
+
+       pfDBaseFuncType   <B>pfGetDBaseFunc</B>(void);
+
+       void *            <B>pfAllocDBaseData</B>(int bytes);
+
+       void *            <B>pfGetDBaseData</B>(void);
+
+       void              <B>pfPassDBaseData</B>(void);
+
+       void              <B>pfDBase</B>(void);
+
+
+                         typedef void (*pfDBaseFuncType)(void *userData);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <I>func</I> argument to <B>pfDBaseFunc</B> specifies the database
+       callback function.  This function will be invoked by
+       <B>pfFrame</B> and will be passed a pointer to a data buffer
+       allocated by <B>pfAllocDBaseData</B>.  If a separate process is
+       allocated for database processing by the <B>PFMP_FORK_DBASE</B>
+       mode to <B>pfMultiprocess</B>, then <B>pfFrame</B> will cause <I>func</I> to be
+       called in the separate (<B>DBASE</B>) process.  <B>pfGetDBaseFunc</B>
+       returns the database callback or <B>NULL</B> if none is set.
+
+       The database function's primary purpose is to provide
+       asynchronous database creation and deletion when using the
+       pfBuffer mechanism and a forked <B>DBASE</B> process (see
+       <B>PFMP_FORK_DBASE</B>, <B>pfMultiprocess</B>, and <B>new</B> <B>pfBuffer</B>).
+
+       When the database function is in a separate process, it
+       will run asynchronously with the rest of the rendering
+       pipeline. Specifically, if the database function takes
+       more than a frame time, the rendering pipeline will not be
+       affected.
+
+       If a database function has been specified by <B>pfDBaseFunc</B>,
+       it must call <B>pfDBase</B> to carry out default OpenGL Performer
+       database processing. <B>pfDBase</B> should only be called from
+       within the <B>DBASE</B> callback in the <B>DBASE</B> process just like
+       <B>pfCull</B> and <B>pfDraw</B> should only be called in the pfChannel
+       <B>CULL</B> and <B>DRAW</B> callbacks (<B>pfChannel::setTravFunc</B>) respec-
+       tively. If a database function has not been specified or
+       is <B>NULL</B>, OpenGL Performer automatically calls <B>pfDBase</B> from
+       <B>pfFrame</B>.
+
+       When the database function is forked, <B>pfPassDBaseData</B>
+       should be used to copy the database data into internal
+       OpenGL Performer memory when the next <B>pfFrame</B> is called.
+       Once <B>pfFrame</B> is called, the application may modify data in
+       the database data buffer without fear of colliding with
+       the forked database function. However, modifications to
+       the database data chunk made by the <B>DBASE</B> process will not
+       be visible to the <B>APP</B> process, i.e, there is no "upstream"
+       propagation of passthrough data.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Currently, <B>pfDBase</B> carries out asynchronous deletion
+       requests made with <B>pfAsyncDelete</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfAsyncDelete, pfConfig, pfFrame, pfMultiprocess, new,
+       pfBuffer
+
+
+
+                                                 pfDBaseFunc(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

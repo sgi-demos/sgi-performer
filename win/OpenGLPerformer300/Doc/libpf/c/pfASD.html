@@ -1,0 +1,1199 @@
+<HTML>
+<HEAD>
+<TITLE>pfASD</TITLE>
+</HEAD>
+<BODY>
+<H1>pfASD</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfASD(3pf)                                             pfASD(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewASD,</B>   <B>pfGetASDClassType,</B>   <B>pfASDAttr,</B>  <B>pfGetASDAttr,</B>
+       <B>pfASDMorphAttrs,</B>  <B>pfGetASDMorphAttrs,</B>  <B>pfGetASDActiveGeom,</B>
+       <B>pfASDNumBaseFaces,</B>   <B>pfGetASDNumBaseFaces,</B>   <B>pfASDGStates,</B>
+       <B>pfGetASDGStates,</B> <B>pfGetASDGState,</B> <B>pfGetASDNumGStates,</B> <B>pfAS-</B>
+       <B>DLODState,</B> <B>pfGetASDLODState,</B> <B>pfASDLODStateIndex,</B> <B>pfGetASD-</B>
+       <B>LODStateIndex,</B> <B>pfASDSyncGroup,</B> <B>pfGetASDSyncGroup,</B> <B>pfASDEn-</B>
+       <B>ableClipRings,</B> <B>pfASDNumClipRings,</B> <B>pfASDClipRings,</B> <B>pfGetAS-</B>
+       <B>DClipRings,</B> <B>pfGetASDNumClipRings,</B> <B>pfASDCalcVirtualClipTex-</B>
+       <B>ParamsFunc,</B>  <B>pfGetASDCalcVirtualClipTexParamsFunc,</B>  <B>pfASD-</B>
+       <B>FaceBBoxes,</B> <B>pfGetASDFaceBBoxes,</B>  <B>pfASDFaceBBox,</B>  <B>pfGetASD-</B>
+       <B>FaceBBox,</B>  <B>pfASDBBox,</B> <B>pfGetASDBBox,</B> <B>pfASDConfig,</B> <B>pfASDMax-</B>
+       <B>MorphDepth,</B> <B>pfGetASDMaxMorphDepth,</B> <B>pfASDEvalMethod,</B>  <B>pfGe-</B>
+       <B>tASDEvalMethod,</B>  <B>pfASDEvalFunc,</B>  <B>pfGetASDEvalFunc,</B>  <B>pfASD-</B>
+       <B>Mask,</B> <B>pfASDCullEnlarge,</B>  <B>pfASDMorphWeight,</B>  <B>pfASDUnsetMor-</B>
+       <B>phWeight,</B>  <B>pfASDInitMask,</B>  <B>pfASDClearAllMasks,</B> <B>pfASDIsPag-</B>
+       <B>ing,</B>  <B>pfASDIsPageMaster,</B>  <B>pfASDInitPaging,</B>  <B>pfASDTileSize,</B>
+       <B>pfGetASDTileSize,</B>  <B>pfASDPageSize,</B> <B>pfGetASDPageSize,</B> <B>pfASD-</B>
+       <B>TotalTiles,</B> <B>pfGetASDTotalTiles,</B> <B>pfASDMaxTileMemSize,</B> <B>pfGe-</B>
+       <B>tASDMaxTileMemSize,</B>  <B>pfASDOrigin,</B>  <B>pfGetASDOrigin,</B>  <B>pfASD-</B>
+       <B>PageFname,</B> <B>pfGetASDPageFname,</B>  <B>pfASDAddQueryArray,</B>  <B>pfASD-</B>
+       <B>DeleteQueryArray,</B>  <B>pfASDQueryArrayElement,</B>  <B>pfASDContains-</B>
+       <B>QueryArray,</B>   <B>pfASDAddQueryTriangles,</B>    <B>pfASDDeleteQuery-</B>
+       <B>GeoSet,</B>    <B>pfASDAddQueryGeoSet,</B>   <B>pfASDReplaceQueryGeoSet,</B>
+       <B>pfASDProjectPointFinestPositionNormal,</B>       <B>pfASDProject-</B>
+       <B>PointFinestPosition,</B> <B>pfASDGetQueryArrayPositionSpan</B> - Cre-
+       ate pfASD, specify pfASD properties.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfASD*                                  <B>pfNewASD</B>(void);
+
+       pfType*                                 <B>pfGetASDClassType</B>(void);
+
+       void                                    <B>pfASDAttr</B>(pfASD* _asd,
+                                                 int _which,
+                                                 int _type,
+                                                 int _size,
+                                                 void *_attr);
+
+       void                                    <B>pfGetASDAttr</B>(pfASD* _asd,
+                                                 int _which,
+                                                 int *_type,
+                                                 int *_size,
+                                                 void **_attr);
+
+       void                                    <B>pfASDMorphAttrs</B>(pfASD* _asd,
+                                                 int _mc);
+
+       int                                     <B>pfGetASDMorphAttrs</B>(pfASD* _asd);
+
+       void                                    <B>pfGetASDActiveGeom</B>(pfASD* _asd,
+                                                 pfChan-
+                                                 nel *_chan,
+
+       void                                    <B>pfASDGStates</B>(pfASD* _asd,
+                                                 pfGeoState **gs,
+                                                 int num);
+
+       void                                    <B>pfGetASDGStates</B>(pfASD* _asd,
+                                                 pfGeoState ***gs,
+                                                 int *num);
+
+       pfGeoState*                             <B>pfGetASDGState</B>(pfASD* _asd,
+                                                 int num);
+
+       int                                     <B>pfGetASDNumGStates</B>(pfASD* _asd);
+
+       void                                    <B>pfASDLODState</B>(pfASD *_asd,
+                                                 pfLOD-
+                                                 State *ls);
+
+       void                                    <B>pfGetASDLODState</B>(pfASD *_asd);
+
+       void                                    <B>pfASDLODStateIndex</B>(pfASD *_asd,
+                                                 int index);
+
+       void                                    <B>pfGetASDLODStateIndex</B>(pfASD *_asd);
+
+       void                                    <B>pfASDSyncGroup</B>(pfASD* _asd,
+                                                 uint _sync-
+                                                 Group);
+
+       uint                                    <B>pfGetASDSyncGroup</B>(pfASD* _asd);
+
+       void                                    <B>pfASDEnableClipRings</B>(pfASD* _asd);
+
+       void                                    <B>pfASDNumClipRings</B>(pfASD* _asd,
+                                                 int _num-
+                                                 rings);
+
+       void                                    <B>pfASDClipRings</B>(pfASD* _asd,
+                                                 float *_rings);
+
+       float*                                  <B>pfGetASDClipRings</B>(pfASD* _asd);
+
+       int                                     <B>pfGetASDNumClipRings</B>(pfASD* _asd);
+
+       void                                    <B>pfASDCalcVirtualClipTexParamsFunc</B>(pfASD* _asd,
+                                                 pfASDCalcVir-
+                                                 tualClipTex-
+                                                 ParamsFunc-
+                                                 Type _func);
+
+       pfASDCalcVirtualClipTexParamsFuncType   <B>pfGetASDCalcVirtualClipTexParamsFunc</B>(pfASD* _asd);
+
+       void                                    <B>pfASDFaceBBoxes</B>(pfASD* _asd,
+                                                 pfBox *_box);
+
+       pfBox*                                  <B>pfGetASDFaceBBoxes</B>(pfASD* _asd);
+
+       void                                    <B>pfASDFaceBBox</B>(pfASD* _asd,
+                                                 pfBox *_faceb-
+                                                 box,
+
+       void                                    <B>pfASDBBox</B>(pfASD* _asd,
+                                                 pfBox *_box);
+
+       void                                    <B>pfGetASDBBox</B>(pfASD* _asd,
+                                                 pfBox *_box);
+
+       void                                    <B>pfASDConfig</B>(pfASD* _asd);
+
+       void                                    <B>pfASDMaxMorphDepth</B>(pfASD* _asd,
+                                                 int _m,
+                                                 float _mor-
+                                                 phweightcon-
+                                                 straint);
+
+       void                                    <B>pfGetASDMaxMorphDepth</B>(pfASD* _asd,
+                                                 int *_m,
+                                                 float *_mor-
+                                                 phweightcon-
+                                                 straint);
+
+       void                                    <B>pfASDEvalMethod</B>(pfASD* _asd,
+                                                 int method);
+
+       int                                     <B>pfGetASDEvalMethod</B>(pfASD* _asd);
+
+       void                                    <B>pfASDEvalFunc</B>(pfASD* _asd,
+                                                 pfTerrainEval-
+                                                 Func-
+                                                 Type _eval);
+
+       pfTerrainEvalFuncType                   <B>pfGetASDEvalFunc</B>(pfASD* _asd);
+
+       void                                    <B>pfASDMask</B>(pfASD* _asd,
+                                                 uint _which,
+                                                 uint _mask,
+                                                 int _id);
+
+       void                                    <B>pfASDCullEnlarge</B>(pfASD* _asd,
+                                                 float fov,
+                                                 float near,
+                                                 float far);
+
+       void                                    <B>pfASDMorphWeight</B>(pfASD* _asd,
+                                                 int _vertid,
+                                                 float _mor-
+                                                 phweight);
+
+       void                                    <B>pfASDUnsetMorphWeight</B>(pfASD* _asd,
+                                                 int _vertid);
+
+       void                                    <B>pfASDInitMask</B>(pfASD* _asd,
+                                                 uint _which);
+
+       void                                    <B>pfASDClearAllMasks</B>(pfASD* _asd,
+                                                 uint _which);
+
+       int                                     <B>pfASDIsPaging</B>(pfASD* _asd);
+
+       int                                     <B>pfASDIsPageMaster</B>(pfASD* _asd);
+
+       void                                    <B>pfASDPageSize</B>(pfASD* _asd,
+                                                 short **_page);
+
+       short**                                 <B>pfGetASDPageSize</B>(pfASD* _asd);
+
+       void                                    <B>pfASDTotalTiles</B>(pfASD* _asd,
+                                                 short **_tilenum);
+
+       short**                                 <B>pfGetASDTotalTiles</B>(pfASD* _asd);
+
+       void                                    <B>pfASDMaxTileMemSize</B>(pfASD* _asd,
+                                                 int _tile-
+                                                 faces,
+                                                 int _tileverts);
+
+       void                                    <B>pfGetASDMaxTileMemSize</B>(pfASD* _asd,
+                                                 int *_tile-
+                                                 faces,
+                                                 int *_tileverts);
+
+       void                                    <B>pfASDOrigin</B>(pfASD* _asd,
+                                                 pfVec3 *_min);
+
+       pfVec3*                                 <B>pfGetASDOrigin</B>(pfASD* _asd);
+
+       void                                    <B>pfASDPageFname</B>(pfASD* _asd,
+                                                 char *_fname);
+
+       char*                                   <B>pfGetASDPageFname</B>(pfASD* _asd);
+
+       int                                     <B>pfASDAddQueryArray</B>(pfASD* _asd,
+                                                 float *_ver-
+                                                 tices,
+                                                 float *_down,
+                                                 int nofVer-
+                                                 tices,
+                                                 uint _mask,
+                                                 pfFlux *_results);
+
+       void                                    <B>pfASDDeleteQueryArray</B>(pfASD* _asd,
+                                                 int _index);
+
+       void                                    <B>pfASDQueryArrayElement</B>(pfASD* _asd,
+                                                 int _arrayIn-
+                                                 dex, int _ele-
+                                                 mentIndex,
+                                                 float *_ver-
+                                                 tex,
+                                                 float *_down);
+
+       unsigned
+                                               long                           <B>pfASDContainsQueryArray</B>(pfASD* _asd,
+                                                 float *_ver-
+                                                 tices,
+                                                 float *_down,
+                                                 int _nofVer-
+                                                 tices);
+
+                                                 float *_down,
+                                                 float *_pro-
+                                                 jection,
+                                                 float *_azimuth,
+                                                 unsigned long _opcode,
+                                                 uint _mask,
+                                                 pfFlux *_results);
+
+       void                                    <B>pfASDDeleteQueryGeoSet</B>(pfASD* _asd,
+                                                 int _index);
+
+       int                                     <B>pfASDAddQueryGeoSet</B>(pfASD* _asd,
+                                                 pfGeoSet *gset,
+                                                 float *_down,
+                                                 uint _mask,
+                                                 pfFlux *_results);
+
+       void                                    <B>pfASDReplaceQueryGeoSet</B>(pfASD* _asd,
+                                                 int index,
+                                                 pfGeoSet *gset,
+                                                 float *_down);
+
+       void                                    <B>pfASDProjectPointFinestPositionNormal</B>(pfASD* _asd,
+                                                 float *_base,
+                                                 float *_down,
+                                                 unsigned long _flags,
+                                                 float *_base_pos,
+                                                 float *_base_nor-
+                                                 mal);
+
+       void                                    <B>pfASDProjectPointFinestPosition</B>(pfASD* _asd,
+                                                 float *_base,
+                                                 float *_down,
+                                                 unsigned long _flags,
+                                                 float *_base_pos);
+
+       void                                    <B>pfASDGetQueryArrayPositionSpan</B>(pfASD* _asd,
+                                                 int _index,
+                                                 pfBox *_box);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfASD</B> is derived from the  par-
+       ent  class  <B>pfNode</B>,  so  each of these member functions of
+       class <B>pfNode</B> are also  directly  usable  with  objects  of
+       class  <B>pfASD</B>.   Casting  an  object  of  class <B>pfASD</B> to an
+       object of class <B>pfNode</B> is  taken  care  of  automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since  the  class <B>pfNode</B> is itself derived from the parent
+       class <B>pfObject</B>, objects of class <B>pfASD</B> can  also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfASD</B> can  also  be  used
+       with   these  functions  designed  for  objects  of  class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  pfASD  is a pfNode which can handle the dynamic genera-
+       tion and morphing geometry based on multiple LODs.   pfASD
+       contains a small scene graph that is generated dynamically
+       to reflect the changing geometry being rendered.
+
+       Active Surface Definition approach, models  terrain  as  a
+       single connected surface rather than using the traditional
+       multiple-patch configuration. The surface is modeled  with
+       several hierarchical level of detail meshes in the special
+       ASD data structures. In the real-time simulation,  an  ASD
+       evaluation  process  selects polygons from the appropriate
+       LODs and constructs a valid meshing  to  best  approximate
+       the  visible  terrain on the screen based on criteria such
+       as view point, viewing  frustum,  desired  polygon  count,
+       desired terrain fidelity, and similar factors. The result-
+       ing mesh is the "active mesh" for the current  evaluation.
+       The  positions of vertices in the active mesh are smoothly
+       morphed between positions stored in  the  different  LODs.
+       The  goal  for ASD is to present a visually realistic ter-
+       rain with minimum geometry while  simultaneously  allowing
+       freedom of motion through the terrain with the maintenance
+       of visual fidelity.  This  eliminates  artifacts  such  as
+       instant  LOD  transition  popping, rigid patch boundaries,
+       and limited size of textures. In summary, the  ASD  system
+       takes  as  input  a hierarchical description of LODs and a
+       collection of predefined evaluation functions and produces
+       active meshes.
+
+       These  routines  implement  the  Active Surface Definition
+       (ASD) feature.  ASD defines a hierarchical structure  that
+       organizes all the LODs of a terrain. At run-time, ASD tra-
+       verses the structure, selecting triangles  from  different
+       LODs to render the portion of the terrain that is within a
+       volume of interest. Triangles are rendered either at their
+       pre-stored  locations,  when  they are in a particular LOD
+       range, or at computed morphed  locations,  when  they  are
+       between  the morphing ranges.  There will be other ways to
+       evaluate  the  terrain  other  than  purely  range   based
+       approach. These are also supported by ASD.
+
+       pfASD  evaluation  can  be carried out in a separate asyn-
+       chronize thread when user  claimed  multiprocessing  mode,
+       e.g.  PFMP_FORK_COMPUTE.  Asychronizely, the evaluation is
+       done in the thread and the created geometry (geosets)  are
+       merged into the scenegraph at synchronization time.  pfASD
+       enlarges the viewing frustum to accommodate the  delay  of
+       evaluation.
+
+       The cull of pfASD is handled together with the evaluation.
+       In another word, the gsets that are generated  by  evalua-
+       tion  is the set of triangles that should be or soon to be
+       visible.  Therefore, the cull process of pfASD is a  triv-
+       ial ALL_IN.
+
+       Since the evaluation is done asynchronizely, it is hard to
+       predict how many frames the  evaluation  takes.  User  can
+       monitor  the length of the process by not forking the COM-
+       PUTE process.
+       the <B>pfType</B>* returned by invoking <B>pfGetType</B> on any instance
+       of class <B>pfASD</B>.  Because OpenGL Performer allows subclass-
+       ing of built-in types, when decisions are  made  based  on
+       the  type  of  an  object,  it  is  usually  better to use
+       <B>pfIsOfType</B> to test if an object is of a type derived  from
+       a  Performer  type rather than to test for strict equality
+       of the <B>pfType</B>*'s.
+
+       <B>pfASDAttr</B> sets up the database for  terrain.  <I>which</I>  takes
+       one   of   the   6   values:   PFASD_LODS,   PFASD_COORDS,
+       PFASD_FACES, PFASD_PER_VERTEX_ATTR, or PFASD_OVERALL_ATTR.
+       <I>type</I>  is a bit combination of PFASD_NORMALS, PFASD_COLORS,
+       and  PFASD_TCOORDS  that  defined   which   attribute   is
+       described  in  the  <I>attr</I>  list.   <I>size</I>  is  the  number of
+       attributes and <I>attr</I> is the pointer to the attribte list.
+
+       1. ASD face pfASDFace description:
+
+       The terrain database consists of several layers of  trian-
+       gle  meshes  that  are  organized as a tree.  For detailed
+       explaination of the  structure  of  the  database,  please
+       refer  to  Performer  Programmer's Guide.  The vertices in
+       each triangle must be arranged ccw. Let the three  vetices
+       be  vertex[0],  vertex[1],  and  vertex[2].  The reference
+       point i locates between vertex[(i-1)%3] and vertex[i].  If
+       the  triangle  is  part of a triangle strip, then the ver-
+       tices should also be arranged such that vertex[2]  is  the
+       vertex used in the tstrip.
+
+       2. pfASDFace structure
+
+
+       struct pfASDFace
+       {
+           int level;
+           int tsid;
+           int vert[3];
+           int attr[3];
+           int refvert[3];
+           int sattr[3];
+           int child[4];
+           ushort gstateid;
+           ushort mask;
+       } ;
+
+
+       Each face has an unique entry in this array, and the index
+       is the faceID.  The LOD level in which this face is pre-
+       sent is defined by level.  The entry tsid is the triangle
+       strip ID of this face.  The vertices and reference points,
+       vert[3] and refvert[3], are indices into the coordinate
+       array.  The attr is the attribute index of the vertex, and
+       sattr is the attribute index of the reference point.  The
+       field child[4] is the 4 indices of the child nodes in the
+       tree.  If any of the entries is missing, enter
+       PFASD_NIL_ID in the field.  ASD takes on an array of
+       geostates. Each face can point to 1 geostate. This is use-
+       ful when the terrain has multiple appearances, for exam-
+       ple, multiple textures.  The gstateid is the index of the
+       regularly.
+
+
+       1. When <I>which</I> is PFASD_COORDS, <I>attr</I> is the pointer to the
+       pfASDVert array.
+
+
+       struct pfASDVert
+       {
+           pfVec3 v0, vd;
+           int neighborid[2];
+           int vertid;
+       };
+
+
+       Each vertex i in the database has 2 values associated with
+       it: v0 is the final position of the vertex, and vd is the
+       vector which is the difference between the reference and
+       final position.  The index i is the vertex id.  Each ver-
+       tex is a reference point on a unique edge.  The edge has
+       two neighboring faces.  The field neighborid[2] holds the
+       indices of the two neighboring faces.
+
+       2. When <I>which</I> is PFASD_PER_VERTEX_ATTR, <I>attr</I> is the
+       pointer to an array of attributes.  Normal, color, and
+       texture coordinates are defined in this attribute array of
+       interleaved floats.  Each attribute has two values, the
+       final attribute and attribute change.  The format of each
+       unit in this array is : n0(pfVec3, 3 floats), nd(pfVec3, 3
+       floats), c0(pfVec4, 4 floats), cd(pfVec4, 4 floats),
+       t0(pfVec2, 2 floats), td(pfVec2, 2 floats).  Any of the
+       attributes can be missing from this array.  The <I>type</I> field
+       defines which attributes are in the array.  For example,
+       if the array is a list of normal and texture coordinates,
+       but no color, then unit in the array looks like
+
+       n0 (3 floats)
+       nd (3 floats)
+       t0 (2 floats)
+       td (2 floats)
+
+       and <I>type</I> is PFASD_NORMALS | PFASD_TCOORDS
+
+       If there is only Normals in the attr list, then the unit
+       will look like:
+
+       n0 (3 floats)
+       nd (3 floats)
+
+       and <I>type</I> is PFASD_NORMALS.
+
+       PFASD_PER_VERTEX_ATTR defines attributes for individual
+       vertices. Each vertex in ASD can have one attribute per
+       face. For example, to describe a very sharp edge, a vertex
+       can have more than 1 normals.  The attribute is defined in
+       each pfASDFace structure.  The attr and sattr field are
+       indices into the units in the attribute array. They are
+       morphed based on the morph weight of the vertex.
+
+       the same time.  Whichever is defined last will be the
+       effective appearance of the terrain.  The attributes
+       defined in <I>attr</I> do not have to be morphing at the same
+       time. User can require ASD to morph only the color of each
+       vertex but let vertex take on the final normal value.  See
+       pfASDMorphAttrs for details.
+
+       4. <I>size</I> is the size of the input arrays.
+
+       5. ASD face pfASDFace description:
+
+       The terrain database consists of several layers of trian-
+       gle meshes that are organized as a tree.  For detailed
+       explaination of the structure of the database, please
+       refer to Performer Programmer's Guide.  The vertices in
+       each triangle must be arranged ccw. Let the three vetices
+       be vertex[0], vertex[1], and vertex[2]. The reference
+       point i locates between vertex[(i-1)%3] and vertex[i].  If
+       the triangle is part of a triangle strip, then the ver-
+       tices should also be arranged such that vertex[2] is the
+       vertex used in the tstrip.
+
+       6. pfASDFace structure
+
+
+       struct pfASDFace
+       {
+           int level;
+           int tsid;
+           int vert[3];
+           int attr[3];
+           int refvert[3];
+           int sattr[3];
+           int child[4];
+           ushort gstateid;
+           ushort mask;
+       } ;
+
+
+       Each face has an unique entry in this array, and the index
+       is the faceID.  The LOD level in which this face is pre-
+       sent is defined by level.  The coarsest LOD is level 0.
+       The entry tsid is the triangle strip ID of this face.  The
+       vertices and reference points, vert[3] and refvert[3], are
+       indices into the coordinate array.  The attr is the
+       attribute index of the vertex, and sattr is the attribute
+       index of the reference point.  The field child[4] is the 4
+       indices of the child nodes in the tree.  If any of the
+       entries is missing, enter PFASD_NIL_ID in the field.  ASD
+       takes on an array of geostates. Each face can point to 1
+       geostate. This is useful when the terrain has multiple
+       appearances, for example, multiple textures.  The gstateid
+       is the index of the geostate.  A face can be rendered as a
+       "hole", i.e. not drawn. This can be described by setting
+       mask to PFASD_FACE_NODRAW.  Although a face is rendered as
+       a "hole", its virtual position can still be queried. If
+       the position of the face should not be used is alignment
+       query, OR the mask with bit value PFASD_FACE_NOQUERY.  If
+       mask is 0, then the face is drawn regularly and queried
+       if they all refer to the same vertex.  It is very impor-
+       tant that each vertex and face must have an unique vertex
+       ID and face ID.
+
+       OpenGL Performer provides a default evaluation function to
+       calculate the morph weight of each edge in the database.
+       When user chooses to use this function, a set of LOD
+       switch ranges needs to be entered.  When <I>which</I> is
+       PFASD_LODS, <I>attr</I> is a pointer to the pfASDLODRange lod
+       array. <I>size</I> is the number of lod levels in the database.
+       The pfASDLODRange structure is
+
+
+       struct pfASDLODRange
+       {
+           float switchin;
+           float morph;
+       } ;
+
+
+       Inside a pfASDLODRange structure, <I>switchin</I> is the "far"
+       range.  If the distance from the eyepoint to the final
+       position of a vertex of a face at level i is less than
+       switchin[i], than the LODi edge associated with this ver-
+       tex will be replaced by edges from the next LOD. (See
+       pfTerrainEvalMethod for more details).
+
+       The morphing distance <I>morph</I> decides how close a vertex
+       will morph to its final position. When the distance is
+       less than switchin[i] - morph[i], the vertex is completely
+       morphed to its final position.
+
+       The LOD range can be adjusted at run time. It could be
+       adjusted based on channel information, scene information,
+       or stress, to name a few.
+
+       Among all the attributes, only LODRange can be changed at
+       run time.  The rest of Attrs are "read-only" data, i.e.,
+       there is no internal copies of the data. LODRange is
+       copied internally, and user can make changes on the copy
+       of LODRange returned by pfASDGetAttr.
+
+       TRIANGLE STRIPS
+
+       Mesh triangles in each individual LOD separately. Assign
+       an unique tstrip ID to each triangle. Make sure triangles
+       in the same tstrip have contiguous IDs. Tstrip ID ranges
+       between tstrips are not continuous.  For example: tstrip
+       (f1, f2, f3, f4) and tstrip (f6, f7, f8) might have IDs
+       like f1 = 10, f2 = 11, f3 = 12, f4 = 13; and f6 = 20, f7 =
+       21, f8 = 22.  but they can't have f1 = 10, f2 = 11, f3 =
+       12, f4 = 13; and f6 = 14, f7 = 15, f8 = 16;
+
+       It is very important to start a tstrip on an even tstrip
+       ID.  For example, triangles in the first tstrip can have
+       IDs 0,1,2...; but they can't have 1,2,3,...
+
+       Triangles will be sorted at run time by their tstrip ID to
+       determine the meshing.  The field <I>tsid</I> in face structure
+
+       <B>pfASDMorphAttrs</B> sets the attributes to be morphed. <B>_</B><I>mc</I> is
+       a bit combination of <B>PFASD_NORMALS</B>, <B>PFASD_COLORS</B>, or
+       <B>PFASD_TCOORDS</B>.  The attributes set by the pattern will be
+       morphed on a per vertex per face level based on morphing
+       weights.  If there is no attributes to be morphed, set <B>_</B><I>mc</I>
+       to <B>PFASD_NO_ATTR</B>. If <B>pfASDMorphAttrs</B> is not called, ASD
+       morphes the PFASD_PER_VERTEX_ATTR attributes.
+
+       <B>pfGetASDMorphAttrs</B> returns the bit mask that describes the
+       morphing attributes.
+
+       <B>pfASDEvalMethod</B>
+
+       <B>pfGetASDEvalMethod</B> method identifies the morphing weight
+       calculation at each point.  <B>PFASD_DIST</B> makes morphing
+       weight linear to the real distance.
+
+       morphing weight = 1 - (switchin - dist)/morph;
+
+       <B>PFASD_DIST2</B> uses square of distance instead of real dis-
+       tance.
+
+       morphing weight = 1 - (switchin - dist_square)/ (morph*morph);
+
+       <B>PFASD_DIST</B> is chosen by default. When <B>PFASD_DIST2</B> is
+       picked, the switchin and morph on each LOD is sqaured
+       internally.  The input array of LODRange is left
+       untouched.
+
+       <B>pfGetASDActiveGeom</B> fills a pointer <B>_</B><I>geom</I> to a List of
+       pfGroup pointers which contain the active geometry (active
+       mesh) that is the result of current ASD evaluation. Since
+       ASD evaluation is done on a per channel bases, the geome-
+       try corresponds to that being displayed in that channel
+       <I>chan</I>.  <I>geom</I> is a user allocated pfList * whose element is
+       a pfGroup pointer.
+
+       <B>pfASDGStates</B> defines the pfGeoState list that is associ-
+       ated with pfASD.  Each triangle face in pfASD can take on
+       a separate pfGeoState.  <I>gstateid</I> in the pfASDFace is an
+       index into the pfGeoState list <I>gs</I>. <I>num</I> is the size of the
+       geostate list.  The active geometry generated by ASD eval-
+       uation are sorted into GeoSets based on the GeoStates.
+       The GeoState list is not copied into pfASD internally.
+
+       <B>pfGetGStates</B> returns the pointer to pfGeoState list and
+       the size of the list.
+
+       <B>pfGetASDGState</B> returns a particular pfGeoState in the
+       pfGeoState list indexed by <I>num</I>.
+
+       <B>pfGetASDNumGStates</B> returns the size of the pfGeoState
+       list.
+
+       <B>pfASDLODState</B> associates the given pfASD and pfLODState.
+       This enables the control of how a particular pfASD
+       LODRange responds to stress and range.  <B>pfGetASDLODState</B>
+       returns the pfLODState associated with pfASD if there is
+       influence on LODRange, set parameter[rangeFOVA] to 0 and
+       parameter[rangeFOVB] to 1.0. Currently, channel stress
+       does not affect LODRanges.
+
+       <B>pfASDLODStateIndex</B> allows pfLODStates to be indexed on a
+       per channel basis.  <I>index</I> is an index into an pfList of
+       pfLODStates specified via <B>pfChanLODStateList</B>.
+       <B>pfGetASDLODStateIndex</B> returns the index currently speci-
+       fied for <I>asd</I> or -1 if no index has been specified.
+
+       <B>pfASDSyncGroup</B> defines a group of fluxed objects that are
+       associated with pfASD geometry. These objects might be
+       vehicles on the terrain, or trees or houses on the ter-
+       rain. By registering them to the terrain, their properties
+       will be update in sync with the terrain position. The new
+       properties will only be available when new terrain geome-
+       try is generated.  The <B>_</B><I>syncGroup</I> identifies the final
+       objects, e.g. z coordinates of trees, not any intermediate
+       pfFluxes.
+
+       <B>pfGetASDSyncGroup</B> returns the object group whose property
+       is synchronized with ASD evaluations.
+
+       <B>pfASDEnableClipRings</B> turns on the clipring mode in pfASD
+       for virtual cliptxture.  pfASD will sort the active mesh
+       into several groups of geometry each of which is inside
+       one of the set of concentric bounded rings around eye
+       point.  Currently the concentric rings are bounded by
+       switchin fields in pfLODRange arrays. As eyepoint moves in
+       application, the coordinates of the rings change too in
+       real-time. If the smallest ring is not fine enough for the
+       high resolution cliptexture, more rings can be specified
+       by enlarge the pfLODRange size.  Refer to pfdASDClipring.c
+       for example. User needs to allocate some additional
+       LODRanges in order for pfASD to sort things into
+       cliprings.  Currently, this API is all that is needed to
+       make pfASD and virtual cliptexture work together.
+
+       <B>pfASDNumClipRings</B> specifies the number of cliprings. This
+       API is not active.
+
+       <B>pfGetASDNumClipRings</B> return the number of cliprings. This
+       API is not active.
+
+       <B>pfASDClipRings</B> This API is not active.
+
+       <B>pfGetASDClipRings</B> This API is not active.
+
+       <B>pfASDCalcVirtualClipTexParamsFunc</B> User callback function
+       to define the virtual cliptexture parameters. The format
+       is the same as the function in pfutil.
+
+       <B>pfGetASDCalcVirtualClipTexParamsFunc</B> returns the user
+       callback function that defines the virtual cliptexture
+       parameters.
+
+       <B>pfASDFaceBBoxes</B> ASD keeps a bounding box tree that core-
+       sponds to the pfASDFace tree. The bounding box of a face
+       bounds all of its possible positions and all the bounding
+       array.
+
+       Each bounding box of a particular face can be set or
+       queried by calling <B>pfASDFaceBBox</B> or <B>pfGetASDFaceBBox</B>.
+
+       <B>pfASDConfig</B> should be called after user has set all the
+       attributes of a pfASD node, i.e. face, vertices,
+       attributes, and basefaces. The routine computes the bound-
+       ing box array for the pfASD node and does other time con-
+       suming data structure changes before the real-time evalua-
+       tion starts.  The rountine should be called before align-
+       ment objects are registered to this node.
+
+       <B>pfASDMaxMorphDepth</B> restricts the ASD evaluation to be car-
+       ried out to certain LOD level with morphweight no less
+       than <B>_</B><I>morphweightconstraint</I>. <B>_</B><I>m</I> is the level, with base
+       level at LOD0. Notice that in ASD, morphweight 0 means a
+       vertex is in its fully morphed final position, and 1 means
+       the vertex is in NO_MORPH, reference position.  Therefore
+       a morph weight less than certain number implies that the
+       vertex is not morphed further than that constraint.  For
+       example: <B>_</B><I>m</I> is 4, <B>_</B><I>morphweightconstraint</I> is 0.3 means the
+       finest triangle possible in current active mesh is from
+       LOD 4, with its vertices at 0.3 away from their final
+       positions. Refer to asdfly/terrain.c for examples.  This
+       API is useful for stress load control.
+
+       The maximum evaluation LOD depth and morphweightconstraint
+       can be queried using <B>pfGetASDMaxMorphDepth</B>.
+
+
+       <B>pfASDEvalFunc</B> <B>pfGetASDEvalFunc</B>
+
+       typedef float (*pfTerrainEvalFuncType)(pfTerrain *mesh, int faceid, int refvertid).Ee
+
+       The vertex in the database is evaluated by <I>eval</I>. <I>eval</I> is a
+       user defined callback function that returns a float
+       between 0 and 1. 1 means the edge in the current LOD asso-
+       ciated with this vertex is not replaced.  Any number less
+       than 1 means the edge is replaced by 2 edges from the next
+       LOD.  0 means the vertex is at its final position.  A num-
+       ber in (0, 1) is used as the morph weight to determine the
+       position of the vertex by linearly interpolate using its
+       final position and its delta vector.
+
+       OpenGL Performer provides a default evaluation function
+       which is purely based on distance from the eyepoint to the
+       final position of the new vertex associated with the edge.
+       The distance is compared with the range in pfASDLODRange
+       that is entered in <B>pfASDAttr</B>. The edge of a face on lod
+       level i is evaluated using range[i+1] in pfsLODRange.  To
+       use the default evaluation function, do not call
+       <B>pfASDEvalFunc</B>.
+
+       <I>pfASDEvalFuncType</I> takes as arguments <I>faceid</I> which identi-
+       fies the face of which the edge is evaluated. <I>refvertid</I> is
+       the index of the vertex whose reference position is on
+       this edge.
+
+       override vertex mode or face mode. This call should be
+       made once before any override masks are set. <I>which</I> can be
+       PFASD_TRAV_VERTEX or PFASD_TRAV_FACE.  When <I>which</I> is
+       PFASD_TRAV_VERTEX, a vertex can be marked completely mor-
+       phed or not allowed to morph by setting <I>mask</I> to either
+       PFASD_C_MORPH or PFASD_NO_MORPH respectively.<I>id</I> is the
+       index of the vertex. If a vertex is marked PFASD_C_MORPH,
+       then all of vertices in its parent triangles are marked
+       PFASD_C_MORPH recursively. The result is the vertex will
+       definitely be rendered at its final position if it is
+       within the culling polytope.  When <I>which</I> is
+       PFASD_TRAV_FACE, a face can be rendered as a hole by set-
+       ting <I>mask</I> to PFASD_FACE_NODRAW. <I>id</I> is the index of the
+       face in the faces array.  <B>pfASDClearAllMasks</B> reset all the
+       masks to 0.
+
+       <B>pfASDMorphWeight</B>
+
+       <B>pfASDUnsetMorphWeight</B> can set the morph weight for any
+       vertex. Notice that pfASD does not take care of marking
+       the associated vertices. Users are responsible for setting
+       the correct morphing weights for all the vertices involved
+       to make sure the vertex will be rendered. <I>vertid</I> is the
+       index of the vertex, and <I>morphweight</I> is the morphing
+       weight that is between 0 and 1.
+
+       <B>pfASDCullEnlarge</B> sets the culling frustum of ASD evalua-
+       tion.  The FOV of this frutum is <I>fov</I> * FOV of viewing
+       frustum.  The near clipping plane is moved closer the view
+       point by <I>near</I> ratio.  Similarly, the far clipping plane is
+       <I>far</I> * far clipping plane of viewing frustum.  This routine
+       can be called at run time to adjust the culling in
+       response to load stress.
+
+       pfASD supports multi-resolution paging.  The format of a
+       paging file is
+
+       int numfaces
+       int numverts
+       /* numfaces of the following */
+       int faceid1
+       pfASDFace face &lt;--- structure of the face faceid1
+       int faceid2
+       pfASDFace face &lt;--- structure of the face faceid2
+       /* numfaces of the following */
+       pfBox box &lt;-- face bounding box of faceid1
+       pfBox box &lt;-- face bounding box of faceid2
+       /* numverts of the following */
+       int vertid1
+       pfASDVert vert &lt;-- structure of vertex vertid1
+       int vertid2
+       pfASDVert vert &lt;-- structure of vertex vertid2
+
+
+
+
+
+       <B>pfASDIsPaging</B> returns TRUE is the pfASD node is paging
+       database; returns FALSE is all of the data is in memory.
+
+       <B>pfASDInitPaging</B> is called at data loading time to indicate
+       this node is going to be paging data.
+
+       <B>pfASDTileSize</B> Every LOD of the database is subdivided into
+       grided tiles.  Each tile is a rectangle in terrain. Tile
+       in different LOD has different size. This size is measured
+       in object space. <B>_</B><I>tsize</I> is an array of 2 floats. The
+       <B>_</B><I>tsize[i]</I> is the dimension of tiles in LODi. <B>_</B><I>tsize[i][0]</I>
+       is the length is x dimension and <B>_</B><I>tsize[i][1]</I> is that in
+       y.  The size of the array should be number of LODs in
+       pfASD.
+
+       <B>pfGetASDTileSize</B> returns the pointer to the tilesize
+       array.
+
+       <B>pfASDPageSize</B> A page is a paging unit that contains pfASD-
+       Faces and pfASDVerts that are located inside a tile.  The
+       paging is scheduled according to the paging center, which
+       currently is eyepoint projected onto x-y plane, and offset
+       defined by <B>_</B><I>page</I>.  In any LODi, let paging center falls
+       inside tile[x][y], then the tiles to be resident in memory
+       are
+
+       tile[x-_page[i][0]][y-_page[i][1]], tile[x-_page[i][0]+1],[y-_page[i][1]],
+       tile[x+_page[i][0]][y+_page[i][1]]
+
+       This paging is done for every LOD.
+
+       In the other words, we page in all tiles centered around
+       the paging center, with index offset within <B>_</B><I>page</I>.
+
+       <B>pfGetASDPageSize</B> returns the paging offset array.
+
+       <B>pfASDTotalTiles</B> This function sets the total number of
+       tiles in the database. <B>_</B><I>tilenum</I> is an array of 2 shorts.
+       The length of the array is number of LODs in pfASD.  The 2
+       shorts describe the number of tiles in x and y dimension
+       in that particular LOD.
+
+       <B>pfGetASDTotalTiles</B> returns a pointer to the total tile
+       size.
+
+       <B>pfASDMaxTileMemSize</B> This function sets the maximum memory
+       for a tile among all the tiles in all the LODs.  <B>_</B><I>tile-</I>
+       <I>faces</I> is the maximum faces a tile can possibly contain in
+       the database. <B>_</B><I>tileverts</I> is the maximum vertices.
+
+       <B>pfGetASDMaxTileMemSize</B> requires the maximum faces and ver-
+       tices a tile could contain in the database.
+
+       <B>pfASDOrigin</B> This function sets the lower left corner of
+       each LOD in the database. <B>_</B><I>min</I> is an array of pfVec3 that
+       describes the the corner of tile[0][0] in each LOD.  This
+       set of numbers is given in object space.
+
+       <B>pfGetASDOrigin</B> queries the corners of each LOD.
+
+       <B>cpfASDPageFname</B> enters the basename of all paging files on
+
+       <B>pfGetASDPageFname</B> returns the basename of paging files on
+       disk.
+
+       <B>pfASD</B> supports queries for point location on the morphing
+       surface. Given a query point and a vector pointing down-
+       wards from that point, pfASD can calculate the projection
+       of this point in the specified down direction onto the
+       surface.  Note that the projection of the query point may
+       vary between frames according to the morphing behavior of
+       the pfASD surface. For each query point, <B>pfASD</B> can calcu-
+       late the position and plane normal at the projection
+       point. Point queries are relevant only in visible parts of
+       the surface. pfASD does not perform surface morphing eval-
+       uation outside of the culling frustum. pfASD faces with a
+       mask bit <B>PFTERRAIN_FACE_NOQUERY</B> set do not participate in
+       the query calculation. This way, the application can
+       switch faces into or out of the query mechanism. Note that
+       <B>pfASD</B> does not exclude faces with the
+       <B>PFTERRAIN_FACE_NODRAW</B> bit set from the query calculation,
+       therefore one can turn a face off for drawing, replace it
+       with some coplanar geometry, and continue to query the
+       original <B>pfASD</B> face.
+
+       <B>pfASDAddQueryArray</B> adds an array of query points to pfASD.
+       It expects two arrays of 3D vectors: <I>vertices</I> and <I>down</I>
+       containing <I>nofVertices</I> (x,y,z) triplets each.  pfASD cal-
+       culates the results for each query point after it pfASD
+       finished its surface evaluation. Query results are
+       reported by packing them into the supplied pfFlux
+       <B>_</B><I>results</I>. <I>mask</I> specifies the type of query results
+       desired. It is a bitwise OR of the following constants:
+
+
+              <B>PR_QUERY_FRAME</B>
+                   make the first 8 bytes in the returned array
+                   contain the time of the view parameters for
+                   this query array result.
+
+              <B>PR_QUERY_RECORD_FRAME</B>
+                   For each query point, store a <B>double</B> <B>word</B>
+                   <B>aligned</B> double precision float containing the
+                   time of the view parameters when the query
+                   results for this point were calculated. Note
+                   that the same query result array may contain
+                   query results of different ages because when
+                   pfASD can not reply to a query, we return the
+                   most recent query results for this point.
+                   pfASD can not reply to queries about points
+                   outside the viewing frustum.
+
+              <B>PR_QUERY_POSITION</B>
+                   - For each query point, store three floats
+                   containing x,y,z coordinates of the projected
+                   point.
+
+              <B>PR_QUERY_NORMAL</B>
+                   - For each query point, store three floats
+                   containing the surface normal at the projec-
+
+       query points, the returned query result pfFlux shall be
+       packed as follows:
+
+       center tab($) ; c | c .  Word$Contents _ 0$Frame Time (0)$
+       1$Frame Time (1)$ 2$Record#0 <B>Time(0)</B>$ 3$Record#0 <B>Time(1)</B>$
+       4$Normal#0 X$ 5$Normal#0 Y$ 6$Normal#0 Z$ 7$Nothing (dou-
+       bleword alignment)$ 8$Record#1 <B>Time(0)</B>$ 9$Record#1
+       <B>Time(1)</B>$ 10$Normal#1 X$ 11$Normal#1 Y$ 12$Normal#1 Z$
+       13$Nothing (doubleword alignment)$ 14$Record#2 <B>Time(0)</B>$
+       15$Record#2 <B>Time(1)</B>$ 16$Normal#2 X$ 17$Normal#2 Y$ 18$Nor-
+       mal#2 Z$
+
+       <B>pfASDAddQueryArray</B> returns a unique number identifying the
+       query array. This number identifies this array for other
+       pfASD routines such as <B>pfASDDeleteQueryArray</B>.
+
+       <B>pfASDDeleteQueryArray</B> deletes a previously added query
+       point array. <I>index</I> is the number returned by
+       <B>pfASDAddQueryArray</B>.
+
+       <B>pfASDGetQueryArrayPositionSpan</B> returns the maximum bound-
+       ing box of all the query points in a query array with the
+       given index. This bounding box contains all the possible
+       positions of the query points for all possible surface
+       morphing states.
+
+       <B>pfASDContainsQueryArray</B> takes an array of 3D points, and a
+       corresponding array of down vectors. It checks each point
+       individually and composes a result. Each point can be one
+       of the following:
+
+
+              1.   Projects on some level-zero face. For each
+                   face it projects onto, if this face has higher
+                   level children, it projects on at least one of
+                   them (denote: always contained).
+
+              2.   Projects on some level-zero face. There exists
+                   a face with children in the pfASD structure,
+                   such that the point projects on the face but
+                   not on any of its children or on the children
+                   of its direct neighbors (denote: maybe con-
+                   tained).
+
+              3.   Does not project on any level-zero face
+                   (denote: never contained).
+
+       The following table shows the returned values of
+       <B>pfASDContainsQueryArray</B>. The three leftmost columns
+       describe the results of the single point queries. If at
+       least one point returned a given value, its corresponding
+       column is set to 1.
+
+       center tab($) ; c | c | c | c .
+       Always$Maybe$Never$Returned _ 0$0$0$PFIS_FALSE
+       0$0$1$PFIS_FALSE 0$1$0$PFIS_MAYBE 0$1$1$PFIS_MAYBE
+       1$0$0$PFIS_MAYBE | PFIS_TRUE | PFIS_ALL_IN
+       1$0$1$PFIS_MAYBE | PFIS_TRUE 1$1$0$PFIS_MAYBE | PFIS_TRUE
+       1$1$1$PFIS_MAYBE | PFIS_TRUE
+       <B>PFTERRAIN_FACE_NOQUERY</B> set.
+
+       <B>pfASDAddQueryGeoSet</B> adds the triangles in a pfGeoSet to
+       pfASD. <B>_</B><I>gset</I> is a pfGeoSet containing triangle primitives.
+       The query result for each triangle is the projection (in
+       direction <B>_</B><I>down</I>) of the triangle onto the current pfASD
+       geometry, tessellated to match the ASD surface tessella-
+       tion. pfASD generates query results after evaluating its
+       own geometry. it stores the results in the pfFlux
+       <B>_</B><I>results</I>.
+
+       If <B>_</B><I>results</I> is a fluxed pfGeoset, <B>pfASDAddQueryGeoSet</B>
+       stores results as pfGeoSet attributes according to <B>_</B><I>mask</I>
+       (see below). It takes care of allocating memory for NULL
+       attributes, and reallocating it if it has too many result
+       triangles. It also sets the number of primitives in the
+       pfGeoSet to the number of triangle fragments in the query
+       result.  The query mechanism generates pfGeoSet attributes
+       ready for hooking onto a pfGeode for drawing.  However,
+       the query mechanism does not set any other pfGeoSet
+       attributes (e.g. Primitive type, Bounding box, pfGeoState,
+       any overall attributes).
+
+       The contents of the query results is determined by the
+       type of information requested. <B>_</B><I>mask</I> specifies the type of
+       query results desired. It is a bitwise OR of the following
+       constants:
+
+
+              <B>PR_QUERY_FRAME</B>
+                   - Store the query frame as a double-word at
+                   the head of the result pfFlux buffer.
+
+              <B>PR_QUERY_TRI_COORD</B>
+                   - For each query triangle, store three floats
+                   containing x,y,z coordinates of the projected
+                   point.
+
+              <B>PR_QUERY_TRI_TEXTURE</B>
+                   - For each vertex in the tessellated projected
+                   triangle, store two floats containing the
+                   interpolated texture coordinates at the pro-
+                   jection point.
+
+              <B>PR_QUERY_TRI_COLOR</B>
+                   - For each vertex in the tessellated projected
+                   triangle, store four floats containing the
+                   interpolated RGBA color at the projection
+                   point.
+
+              <B>PR_QUERY_TRI_NORMAL</B>
+                   - For each vertex in the tessellated projected
+                   triangle, store three floats containing the
+                   interpolated normal at the projection point.
+
+       If <B>_</B><I>results</I> is a fluxed pfGeoset, the bit <B>PR_QUERY_FRAME</B>
+       is ignored.
+
+       The input pfGeoSet must contain the requested attributes.
+       result buffer (not a fluxed pfGeoSet):  If <B>_</B><I>mask</I> is
+       <B>(PR_QUERY_FRAME</B> <B>|</B> <B>PR_QUERY_TRI_COORD</B> <B>|</B> <B>PR_QUERY_TRI_TEX-</B>
+       <B>TURE)</B>, the format of the output pfFlux is (assume the
+       query result contains two triangles):
+
+
+       center tab($) ; c | c .  Word$Contents _ 0$Frame Time (0)$
+       1$Frame Time (1)$ 2$Number of result triangles (= 2)$
+       3$Vertex (Tri 0, v0, X)$ 4$Vertex (Tri 0, v0, Y)$ 5$Vertex
+       (Tri 0, v0, Z)$ 60$Texture (Tri 0, v0, s)$ 7$Texture (Tri
+       0, v0, t)$ 8$Vertex (Tri 0, v1, X)$ 9$Vertex (Tri 0, v1,
+       Y)$ 10$Vertex (Tri 0, v1, Z)$ 11$Texture (Tri 0, v1, s)$
+       12$Texture (Tri 0, v1, t)$ 13$Vertex (Tri 0, v2, X)$
+       14$Vertex (Tri 0, v2, Y)$ 15$Vertex (Tri 0, v2, Z)$
+       16$Texture (Tri 0, v2, s)$ 17$Texture (Tri 0, v2, t)$
+       18$Vertex (Tri 1, v0, X)$ 19$Vertex (Tri 1, v0, Y)$
+       20$Vertex (Tri 1, v0, Z)$ 21$Texture (Tri 1, v0, s)$
+       22$Texture (Tri 1, v0, t)$ 23$Vertex (Tri 1, v1, X)$
+       24$Vertex (Tri 1, v1, Y)$ 25$Vertex (Tri 1, v1, Z)$
+       26$Texture (Tri 1, v1, s)$ 27$Texture (Tri 1, v1, t)$
+       28$Vertex (Tri 1, v2, X)$ 29$Vertex (Tri 1, v2, Y)$
+       30$Vertex (Tri 1, v2, Z)$ 31$Texture (Tri 1, v2, s)$
+       32$Texture (Tri 1, v2, t)$
+
+
+       The current implementation supports queries of tessellated
+       triangle vertex and texture only. queries of tessellated
+       color and normal will be added in the future.
+
+       <B>pfASDDeleteQueryGeoSet</B> removes the query pfGeoSet with
+       index <B>_</B><I>index</I>.
+
+       <B>pfASDReplaceQueryGeoSet</B> replaces the query pfGeoSet with
+       index <B>_</B><I>index</I> by the input pfGeoset <I>gset</I>. It also sets the
+       down direction to <I>down</I>.
+
+       Notice, pfASD works in multipipe and multichannel environ-
+       ment. Please refer to pfChannel for details.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfNode, pfGeode, pfFlux, pfGeoState, pfChannel, pfdAlign-
+       VerticesToASD, pfdProjectVerticesOnASD.
+
+
+
+                                                       pfASD(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

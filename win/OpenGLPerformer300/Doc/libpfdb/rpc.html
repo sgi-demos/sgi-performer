@@ -1,0 +1,183 @@
+<HTML>
+<HEAD>
+<TITLE>rpc</TITLE>
+</HEAD>
+<BODY>
+<H1>rpc</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+rpc(3pf)                                                 rpc(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfdLoadFile_rpc,</B>   <B>pfdConverterMode_rpc,</B>  <B>pfdGetConverter-</B>
+       <B>Mode_rpc,</B>   <B>pfdConverterVal_rpc,</B>   <B>pfdGetConverterVal_rpc,</B>
+       <B>pfdConverterAttr_rpc,</B>  <B>pfdGetConverterAttr_rpc</B> - Utilities
+       for loading ArchVision's <B>rpc</B> files in  Performer  applica-
+       tions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfdb/pfrpc.h&gt;
+
+       pfNode*   <B>pfdLoadFile_rpc</B>(const char *fileName);
+
+       void      <B>pfdConverterMode_rpc</B>(int mode, int value);
+
+       int       <B>pfdGetConverterMode_rpc</B>(int mode);
+
+       void      <B>pfdConverterVal_rpc</B>(int which, float value);
+
+       float     <B>pfdGetConverterVal_rpc</B>(int which);
+
+       void      <B>pfdConverterAttr_rpc</B>(int which, void *attr);
+
+       void*     <B>pfdGetConverterAttr_rpc</B>(int which);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfdLoadFile_rpc</B>  loads  in images from an ArchVision's rpc
+       file.  If no path to the file is given, the directories in
+       the active Performer file search path (see <B>pfFilePath</B>) are
+       scanned for the  given  filename.   The  images  represent
+       views  of  an  object  from a set of directions around the
+       object. If user provides an existing pfIBRnode the  images
+       are  loaded into a pfIBRtextue of the node. Otherwise, the
+       function creates a new pfIBRnode with  a  single  pfGeoSet
+       and  a  pfIBRtexture containing the images. In the case of
+       the new content with meshes,  the  pfGeoSet  contains  the
+       mesh,   which   becomes   the   proxy  in  the  pfIBRnode.
+       <B>pfdLoadFile_rpc</B> may only be called after <B>pfConfig</B>.
+
+
+       <B>pfdConverterMode_rpc</B>,             <B>pfdGetConverterMode_rpc</B>,
+       <B>pfdConverterVal_rpc</B>,                <B>pfdGetConverterVal_rpc</B>
+       <B>pfdConverterAttr_rpc</B>,  and  <B>pfdGetConverterAttr_rpc</B>  allow
+       the  user  to  access  and  alter  the  modes, values, and
+       attributes of the <B>rpc</B> loader.
+
+       The <B>rpc</B> converter modes are:
+
+              <B>PFRPC_USE_USER_IBRNODE</B>
+                   By default the loader creates a pfIBRnode with
+                   a single pfGeoSet and a pfIBRtexture that con-
+                   tains the loaded images. If this mode  is  set
+                   to  <B>PF_ON</B>  and  the  user supplies a pfIBRnode
+                   using  <B>pfdConverterAttr_rpc</B>  the  images   are
+                   loaded into the pfIBRtexture of that node.
+
+                   default  is  set  to 2. If you want to use all
+                   images in the file set it to 0.
+
+              <B>PFRPC_CROP_LEFT</B>
+                   Crops the loaded images by the specified  num-
+                   ber of pixels on the left.
+
+              <B>PFRPC_CROP_RIGHT</B>
+                   Crops  the loaded images by the specified num-
+                   ber of pixels on the right.  Please note  that
+                   the resulting image width should be a power of
+                   2.
+
+              <B>PFRPC_CROP_TOP</B>
+                   Crops the loaded images by the specified  num-
+                   ber of pixels on the top.
+
+              <B>PFRPC_CROP_BOTTOM</B>
+                   Crops  the loaded images by the specified num-
+                   ber of pixels on the bottom.  Please note that
+                   the  resulting  image height should be a power
+                   of 2.
+
+              <B>PFRPC_SCALE_WIDTH</B>
+                   Scales the billboard width in case of  pfIBRn-
+                   ode without proxy.
+
+              <B>PFRPC_SCALE_HEIGHT</B>
+                   Scales the billboard height in case of pfIBRn-
+                   ode without proxy.
+
+              <B>PFRPC_NEAREST</B>
+                   Sets flag PFIBR_NEAREST on the pfIBRnode  cre-
+                   ated by the loader.
+
+              <B>PFRPC_USE_NEAREST_RING</B>
+                   In  case of content with proxy and having more
+                   than one ring of views this  flag  will  force
+                   mode,  in  which  views  are selected from the
+                   nearest ring, not blended between two  nearest
+                   rings.
+
+              <B>PFRPC_COMBINED_TEXTURE_SIZE</B>
+                   If  this  value  is  set textures are combined
+                   into  a  square  texture  of  the  given  size
+                   (should  be  a power of 2). By default, if the
+                   texture size is not a power  of  two  textures
+                   are combined into a texture of size 2048x2048.
+                   If the texture size is power of  two  textures
+                   are  not combined into a bigger texture unless
+                   the   value   PFRPC_COMBINED_TEXTURE_SIZE   is
+                   explicitly  specified.  You can also set it to
+                   0 to disable combining.
+
+
+       The <B>rpc</B> converter attributes are:
+
+              <B>PFRPC_USER_IBRNODE</B>
+                   Allows the user to specify  a  pfIBRnode.  The
+                   component  of  the  input rpc file, indexed by
+                   extension .0, .1, .2, etc. Each  line  of  the
+                   ring  file contains the angle of the ring from
+                   the horizon and the number of  views  in  that
+                   ring. If no ring file is specified, by default
+                   each component has only one ring of  16  views
+                   at horizontal angle 0.
+
+       The   value   of  <B>PFRPC_SKIP_TEXTURES</B>,  <B>PFRPC_SCALE_WIDTH</B>,
+       <B>PFRPC_FLIP_TEXTURES</B>,                        <B>PFRPC_NEAREST</B>,
+       <B>PFRPC_USE_NEAREST_RING</B>,  <B>PFRPC_COMBINED_TEXTURE_SIZE</B>,  and
+       <B>PFRPC_RING_FILE</B> can be also set using an environment vari-
+       able  of the same name (<B>PFRPC_SKIP_TEXTURES</B> etc.). Thus it
+       is possible to affect the loading  of  the  files  without
+       necessity of changing your application.
+
+       Two   sample   <B>rpc</B>   files   can  be  found  in  directory
+       /usr/share/Performer/data/rpc.  You  can  download   other
+       files from Archvision's web page at www.archvision.com.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The  loader is using a relatively slow third-party routine
+       for decompressing images. For fast load time you may  want
+       to convert your <B>rpc</B> files into <B>pfb</B> files using <B>pfconv</B>.
+
+       The libpfdb source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfdLoadFile(3pf),    pfIBRnode(3pf),    pfIBRtexture(3pf),
+       rpc(5pf)
+
+
+
+                                                         rpc(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

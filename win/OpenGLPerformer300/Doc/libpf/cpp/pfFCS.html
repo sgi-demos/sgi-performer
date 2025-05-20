@@ -1,0 +1,247 @@
+<HTML>
+<HEAD>
+<TITLE>pfFCS</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFCS</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFCS(3pf)                                             pfFCS(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFCS</B>  -  Create, modify, and query flux coordinate system
+       nodes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf/pfFCS.h&gt;
+
+                         <B>pfFCS::pfFCS</B>(pfFlux *flux);
+
+       static pfType *   <B>pfFCS::getClassType</B>(void);
+
+       void              <B>pfFCS::setFlux</B>(pfFlux *flux);
+
+       pfFlux*           <B>pfFCS::getFlux</B>(void);
+
+       void              <B>pfFCS::getMat</B>(pfMatrix &amp;m);
+
+       const pfMatrix*   <B>pfFCS::getMatPtr</B>(void);
+
+       void              <B>pfFCS::setMatType</B>(uint val);
+
+       uint              <B>pfFCS::getMatType</B>();
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFCS</B> is derived from the  par-
+       ent  class  <B>pfSCS</B>,  so  each  of these member functions of
+       class <B>pfSCS</B> are also directly usable with objects of class
+       <B>pfFCS</B>.   This  is  also true for ancestor classes of class
+       <B>pfSCS</B>.
+
+       void              <B>pfSCS::getMat</B>(pfMatrix &amp;mat);
+       const pfMatrix*   <B>pfSCS::getMatPtr</B>(void);
+
+
+       Since the class <B>pfSCS</B> is itself derived  from  the  parent
+       class  <B>pfGroup</B>,  objects  of  class <B>pfFCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfGroup</B>.
+
+       int        <B>pfGroup::addChild</B>(pfNode *child);
+       int        <B>pfGroup::insertChild</B>(int index, pfNode *child);
+       int        <B>pfGroup::replaceChild</B>(pfNode *old,         pfN-
+                    ode *new);
+       int        <B>pfGroup::removeChild</B>(pfNode* child);
+       int        <B>pfGroup::searchChild</B>(pfNode* child);
+       pfNode *   <B>pfGroup::getChild</B>(int index);
+       int        <B>pfGroup::getNumChildren</B>(void);
+       int        <B>pfGroup::bufferAddChild</B>(pfNode *child);
+       int        <B>pfGroup::bufferRemoveChild</B>(pfNode *child);
+
+
+       Since  the class <B>pfGroup</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class <B>pfFCS</B> can also be used with
+       these functions designed for objects of class <B>pfNode</B>.
+
+       int            <B>pfNode::flatten</B>(int mode);
+       int            <B>pfNode::setName</B>(const char *name);
+       const char *   <B>pfNode::getName</B>(void);
+       pfNode*        <B>pfNode::find</B>(const char *pathName,
+                        pfType *type);
+       pfNode*        <B>pfNode::lookup</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNode::isect</B>(pfSegSet *segSet,
+                        pfHit **hits[]);
+       void           <B>pfNode::setTravMask</B>(int which,   uint mask,
+                        int setMode, int bitOp);
+       uint           <B>pfNode::getTravMask</B>(int which);
+       void           <B>pfNode::setTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType pre, pfNodeTravFuncType post);
+       void           <B>pfNode::getTravFuncs</B>(int which, pfNodeTrav-
+                        FuncType *pre,          pfNodeTravFunc-
+                        Type *post);
+       void           <B>pfNode::setTravData</B>(int which, void *data);
+       void *         <B>pfNode::getTravData</B>(int which);
+       void           <B>pfNode::setTravMode</B>(int which,    int mode,
+                        int val);
+       int            <B>pfNode::getTravMode</B>(int which,
+                        int mode) const;
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>,  objects  of class <B>pfFCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfFCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfFCS (Flux Coordinate System) is a pfSCS  whose  matrix
+       is  contained in a pfFlux.  A pfFCS is similar to a pfDCS,
+       in that its matrix can change, but  since  its  matrix  is
+       contained in a pfFlux, it can be animated using pfEngines.
+
+       <B>new</B> <B>pfFCS</B> creates and returns a handle to  a  pfFCS.   The
+       matrix  of a the new pfFCS will be contained in <I>flux</I>. Like
+       other pfNodes, pfFCSes are always  allocated  from  shared
+       memory  and  cannot be created statically, on the stack or
+       in arrays.   pfFCSes  should  be  deleted  using  <B>pfDelete</B>
+       rather than the delete operator.
+
+       <B>pfFCS::getClassType</B>  returns  the  <B>pfType</B>*  for  the class
+       <B>pfFCS</B>.  The <B>pfType</B>* returned by <B>pfFCS::getClassType</B> is the
+       same as the <B>pfType</B>* returned by invoking the virtual func-
+       tion <B>getType</B> on any  instance  of  class  <B>pfFCS</B>.   Because
+       OpenGL  Performer  allows  subclassing  of built-in types,
+       when decisions are made based on the type of an object, it
+       is  usually better to use  the member function <B>isOfType</B> to
+       test if an object is of a type derived  from  a  Performer
+       type  rather  than  to  test  for  strict  equality of the
+       <B>pfType</B>*'s.
+
+       <B>pfFCS::setFlux</B> attaches a pfFlux to a pFCS.
+
+       <B>pfFCS::getFlux</B> returns the pfFlux currently attached to  a
+       pfFCS.
+
+       <B>pfFCS::setMatType</B>  allows the specification of information
+       about the type of transformation  the  matrix  represents.
+       This  information allows Performer to speed up some opera-
+       tions.  The matrix type is specified as the OR of
+
+              PFMAT_TRANS: matrix  may  include  a  translational
+              component in the 4th row.
+
+              PFMAT_ROT
+                     matrix may include a rotational component in
+                     the left upper 3X3 submatrix.
+
+              PFMAT_SCALE
+                     matrix may include a uniform  scale  in  the
+                     left upper 3X3 submatrix.
+
+              PFMAT_NONORTHO
+                     matrix  may  include  a non-uniform scale in
+                     the left upper 3X3 submatrix.
+
+              PFMAT_PROJ
+                     matrix may include projections.
+
+              PFMAT_HOM_SCALE
+                     matrix may have mat[4][4] != 1.
+
+              PFMAT_MIRROR
+                     matrix may include mirroring  transformation
+                     that  switches between right handed and left
+
+              The transformation of a pfFCS affects all its chil-
+              dren.  As the hierarchy is traversed  from  top  to
+              bottom, each new matrix is pre-multiplied to create
+              the new transformation.  For example,  if  FCSb  is
+              below FCSa in the scene graph, any geometry G below
+              FCSa is transformed as G*FCSb*FCSa.
+
+              <B>pfNode::flatten</B> cannot flatten pfFCSes  since  they
+              may    change    at   run-time.    In   this   case
+              <B>pfNode::flatten</B> will compute a  pfSCS  representing
+              the  accumulated  static  transformation  that  the
+              pfFCS inherits  and  insert  it  above  the  pfFCS.
+              Static  transformations below a pfFCS are flattened
+              as usual.  See <B>pfNode::flatten</B> for more details.
+
+              The presence of transformations in the scene  graph
+              impacts  the  performance  of intersection, culling
+              and drawing.  pfGeoSet culling (see <B>PFCULL_GSET</B>  in
+              <B>pfChannel::setTravMode</B>)  is disabled in portions of
+              the scene graph below pfFCSes.
+
+              Both pre and post CULL and DRAW callbacks  attached
+              to  a pfFCS (<B>pfNode::setTravFuncs</B>) will be affected
+              by the transformation  represented  by  the  pfFCS,
+              i.e.  -  the  pfFCS  matrix  will already have been
+              applied to the matrix stack before the pre callback
+              is  called  and  will be popped only after the post
+              callback is called.
+
+              <B>pfFCS::getMat</B>  copies  the  transformation   matrix
+              value from the pfFCS into the matrix <I>m</I>.  For faster
+              matrix access, <B>pfFCS::getMatPtr</B> can be used to  get
+              a const pointer to the pfFCS's matrix.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFlux,   pfEngine,   pfGroup,   pfChannel,  pfLookupNode,
+       pfFlatten, pfMatrix, pfNode, pfSCS, pfScene,  pfTraverser,
+       pfDelete
+
+
+
+                                                       pfFCS(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

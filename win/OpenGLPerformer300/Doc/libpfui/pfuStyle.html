@@ -1,0 +1,157 @@
+<HTML>
+<HEAD>
+<TITLE>pfuStyle</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuStyle</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuStyle(3pf)                                       pfuStyle(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuPreDrawStyle,</B>  <B>pfuPostDrawStyle</B>  - Functions to produce
+       fancy drawing styles.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuPreDrawStyle</B>(int style, pfVec4 scribeColor);
+
+       void   <B>pfuPostDrawStyle</B>(int style);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>style</I>  identifies a drawing style.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       Both <B>pfuPreDrawStyle</B> and <B>pfuPostDrawStyle</B>  use  multi-pass
+       rendering  to  implement  special draw styles that are not
+       directly provided by the  hardware  or  graphics  library.
+       These  effects,  such  as hidden line rendering and haloed
+       polygons, can however be achieved with high-performance Z-
+       buffered  graphics  rendering  hardware as these functions
+       demonstrate.
+
+       <B>pfuPreDrawStyle</B> should be called  in  the  Performer  draw
+       callback just before <B>pfDraw</B>. <B>pfuPostDrawStyle</B> must then be
+       called after <B>pfDraw</B>. These two functions are  a  pair  and
+       both must be called as described.
+
+       The <I>style</I> argument can take the following values.
+
+              <B>PFUSTYLE_POINTS</B>
+                   This  causes  polygon  vertices to be drawn as
+                   small points.  In many cases, internal  struc-
+                   tural aspects can be observed from the result-
+                   ing "cloud of points" image,  especially  when
+                   that image is in motion on the screen.
+
+              <B>PFUSTYLE_LINES</B>
+                   This  causes polygons to be drawn in wireframe
+                   mode using the Performer  <B>PFGS_WIREFRAME</B>  draw
+                   style.  The  lines are drawn in the same color
+                   as the base geometry.
+
+              <B>PFUSTYLE_DASHED</B>
+                   This is a wireframe drawing  style  that  does
+                   something slightly tricky: it draws the front-
+                   facing polygons of an  object  in  the  normal
+                   wireframe mode and the back-facing polygons in
+                   a dashed line mode, creating a typical drafts-
+                   man's  dashed-occlusion  hint  style of hidden
+                   line drawing.
+
+              <B>PFUSTYLE_HALOED</B>
+                   Appel.
+
+              <B>PFUSTYLE_HIDDEN</B>
+                   Hidden  polygons  are  not drawn while visible
+                   polygons are drawn in wireframe mode. This  is
+                   the  traditional  hidden-line  removal display
+                   mode.
+
+              <B>PFUSTYLE_FILLED</B>
+                   Draws polygons as filled solids. This  hidden-
+                   surface  removal  display mode is the standard
+                   display style.
+
+              <B>PFUSTYLE_SCRIBED</B>
+                   Polygons are drawn filled with hidden surfaces
+                   removed.  The boundary of each visible polygon
+                   is highlighted in a wire frame highlight. This
+                   mode  can  be very useful in understanding the
+                   geometric complexity of textured scenes.
+
+       When   <I>style</I>   takes   the   values   <B>PFUSTYLE_POINTS</B>   or
+       <B>PFUSTYLE_DASHED</B>, <B>pfuPostDrawStyle</B> restores polygon drawing
+       to the normal filled mode.  Finally, for  every  value  of
+       <I>style</I>,  it  restores  the state before <B>pfuPreDrawStyle</B> was
+       called.
+
+       The <I>scribeColor</I> argument is the desired color for  scribed
+       lines. The first three elements of the array represent the
+       red, green, and blue values in the range 0 to 1,  and  the
+       final  element  is  the alpha value for the scribed lines.
+       This argument is not used in the other style modes.
+
+       The following code fragment displays  how  <B>pfuPreDrawStyle</B>
+       and  <B>pfuPostDrawStyle</B> would typically be used in an appli-
+       cation. See the files:
+
+       /usr/share/Performer/src/sample/C/perfly.c
+       /usr/share/Performer/src/sample/C++/perfly.C
+
+       for details.
+
+       Example 1:
+
+       /* convey draw style from localPreDraw to localPostDraw */
+       static int selectedDrawStyle = 0;
+
+       void
+       localPreDraw(pfChannel *chan, void *data)
+       {
+         :
+         :
+           /*
+            * remember draw style in case it changes between now
+            * and the time localPostDraw() gets called.
+            */
+           selectedDrawStyle = ViewState-&gt;drawStyle;
+
+           /* handle draw style */
+           pfuPreDrawStyle(selectedDrawStyle, ViewState-&gt;drawColor);
+
+         :
+         :
+       }
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfDraw
+
+
+
+                                                    pfuStyle(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

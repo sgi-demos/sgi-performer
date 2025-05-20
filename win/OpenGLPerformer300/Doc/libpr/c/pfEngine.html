@@ -1,0 +1,618 @@
+<HTML>
+<HEAD>
+<TITLE>pfEngine</TITLE>
+</HEAD>
+<BODY>
+<H1>pfEngine</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfEngine(3pf)                                       pfEngine(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewEngine,</B> <B>pfGetEngineClassType,</B> <B>pfEngineSrc,</B> <B>pfGetEngi-</B>
+       <B>neSrc,</B>  <B>pfGetEngineNumSrcs,</B>  <B>pfEngineDst,</B>  <B>pfGetEngineDst,</B>
+       <B>pfEngineIterations,</B>   <B>pfGetEngineIterations,</B>  <B>pfGetEngine-</B>
+       <B>Function,</B>  <B>pfEngineUserFunction,</B>  <B>pfGetEngineUserFunction,</B>
+       <B>pfEngineMode,</B>  <B>pfGetEngineMode,</B> <B>pfEngineMask,</B> <B>pfGetEngine-</B>
+       <B>Mask,</B> <B>pfEngineEvaluationRange,</B> <B>pfGetEngineEvaluationRange,</B>
+       <B>pfEngineSrcChanged,</B> <B>pfEngineEvaluate,</B> <B>pfEngineEvaluateEye,</B>
+       <B>-</B> Create, initialize, and manage a pfEngine
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfEngine*          <B>pfNewEngine</B>(int function, void *arena);
+
+       pfType*            <B>pfGetEngineClassType</B>(void);
+
+       void               <B>pfEngineSrc</B>(pfEngine* engine,
+                            int index,              void *data,
+                            ushort *ilist, int icount, int off-
+                            set, int stride);
+
+       void               <B>pfGetEngineSrc</B>(const pfEngine* engine,
+                            int index,             void **data,
+                            ushort **ilist,        int *icount,
+                            int *offset, int *stride);
+
+       int                <B>pfGetEngineNumSrcs</B>(const pfEngine* engine);
+
+       void               <B>pfEngineDst</B>(pfEngine* engine,
+                            void *data, ushort *ilist, int off-
+                            set, int stride);
+
+       void               <B>pfGetEngineDst</B>(const pfEngine* engine,
+                            void **data,        ushort **ilist,
+                            int *offset, int *stride);
+
+       void               <B>pfEngineIterations</B>(pfEngine* engine,
+                            int iterations, int items);
+
+       void               <B>pfGetEngineIterations</B>(const pfEngine* engine,
+                            int *iterations, int *items);
+
+       int                <B>pfGetEngineFunction</B>(const pfEngine* engine);
+
+       void               <B>pfEngineUserFunction</B>(pfEngine* engine,
+                            pfEngineFuncType func);
+
+       pfEngineFuncType   <B>pfGetEngineUserFunction</B>(const pfEngine* engine);
+
+       void               <B>pfEngineMode</B>(pfEngine* engine,
+                            int mode, int val);
+
+       int                <B>pfGetEngineMode</B>(const pfEngine* engine,
+                            int mode);
+                            pfVec3 center,           float min,
+                            float max);
+
+       void               <B>pfGetEngineEvaluationRange</B>(pfEngine* engine,
+                            pfVec3 center,          float *min,
+                            float *max);
+
+       void               <B>pfEngineSrcChanged</B>(pfEngine* engine);
+
+       void               <B>pfEngineEvaluate</B>(pfEngine* engine,
+                            int mask);
+
+       void               <B>pfEngineEvaluateEye</B>(pfEngine* engine,
+                            int mask, pfVec3 eye_pos);
+
+       typedef void       <B>(*pfEngineFuncType)</B>(pfEngine *engine);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The  OpenGL  Performer  class <B>pfEngine</B> is derived from the
+       parent class <B>pfObject</B>, so each of these  member  functions
+       of class <B>pfObject</B> are also directly usable with objects of
+       class <B>pfEngine</B>.  Casting an object of class <B>pfEngine</B> to an
+       object  of  class <B>pfObject</B> is taken care of automatically.
+       This is also true for casts to objects of ancestor classes
+       of class <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+       int           <B>pfGetNumUserData</B>(pfObject *obj);
+       int           <B>pfGetNamedUserDataSlot</B>(const char *name);
+       const char*   <B>pfGetUserDataSlotName</B>(int slot);
+       int           <B>pfGetNumNamedUserDataSlots</B>(void);
+       int           <B>pfGetGLHandle</B>(pfObject *obj);
+       int           <B>pfDeleteGLHandle</B>(pfObject *obj);
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfEngine</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A <B>pfEngine</B> is an object for controlling the  dynamic  data
+       in a <B>pfFlux</B>.
+
+       <B>pfNewEngine</B>  creates  and  returns a handle to a <B>pfEngine</B>.
+       <I>arena</I> specifies a malloc arena out of which  the  <B>pfEngine</B>
+       is  allocated or <B>NULL</B> for allocation off the process heap.
+       A NULL pointer is returned to indicate failure.   <B>pfEngine</B>
+       can  be  deleted  with  <B>pfDelete</B>.   <I>function</I> is a symbolic
+       token that specifies the function the pfEngine  will  exe-
+       cute.  The <I>function</I> may be one of:
+
+              <B>PFENG_SUM</B>
+              <B>PFENG_MORPH</B>
+              <B>PFENG_BLEND</B>
+              <B>PFENG_TRANSFORM</B>
+              <B>PFENG_ALIGN</B>
+              <B>PFENG_MATRIX</B>
+              <B>PFENG_ANIMATE</B>
+              <B>PFENG_BBOX</B>
+              <B>PFENG_TIME</B>
+              <B>PFENG_STROBE</B>
+              <B>PFENG_USER_FUNCTION</B>
+
+       <B>pfGetEngineClassType</B>  returns  the  <B>pfType</B>*  for the class
+       <B>pfEngine</B>.  The <B>pfType</B>* returned by <B>pfGetEngineClassType</B> is
+       the  same as the <B>pfType</B>* returned by invoking <B>pfGetType</B> on
+       any instance of class <B>pfEngine</B>.  Because OpenGL  Performer
+       allows  subclassing  of built-in types, when decisions are
+       made based on the type of an object, it is usually  better
+       to  use  <B>pfIsOfType</B>  to  test  if  an  object is of a type
+       derived from a Performer type  rather  than  to  test  for
+       strict equality of the <B>pfType</B>*'s.
+
+       <B>pfGetEngineFunction</B> returns the function of a pfEngine.
+
+       <B>pfEngineIterations</B>  and  <B>pfGetEngineIterations</B> set and get
+       the number of iterations and items a pfEngine should oper-
+       ate  on.   <I>iterations</I>  is  the  number of times the engine
+       should iterate.  <I>items</I> is the number  of  items  that  are
+       operated on each iteration.  For example, if you wanted to
+       add two arrays of 100 pfVec3s each, you would  set  <I>itera-</I>
+       <I>tions</I> to 100 and <I>items</I> to 3.
+
+       For  some  functions <I>iterations</I> and <I>items</I> are meaningless,
+       and they have special meanings in some functions.  This is
+       noted in the descriptions of the functions.
+
+       <B>pfEngineSrc</B>  and <B>pfGetEngineSrc</B> set and get the sources of
+       a pfEngine.
+
+       <I>index</I> specifies which source of a function is  being  set.
+       There are symbolic tokens that define the sources for each
+       of the functions.
+
+       <I>data</I> should be either a pfFlux* or a pointer to a block of
+       memory allocated with <B>pfMalloc</B>.
+
+       <I>ilist</I>  is  an  array  of  indexes into the destination and
+       <I>icount</I> is the number of indexes the <I>ilist</I> contains.
+
+       <I>offset</I> is the starting offset of the first element of this
+       source.  This will often be 0.
+
+       <I>stride</I> is how much the pointer should  be  advanced  after
+       each  iteration  of  the function.  This is often equal to
+       <I>items</I> from <B>pfEngineIterations</B>.
+
+       Both <I>offset</I> and <I>stride</I> are measured  in  items,  where  an
+       item  is  the basic data type of the source.  This is usu-
+       ally floats.
+
+       <B>pfGetEngineNumSrcs</B> returns the highest  source  index  set
+       plus one.
+
+       <B>pfEngineDst</B> and <B>pfGetEngineDst</B> set and get the destination
+       of a pfEngine.
+
+       <I>data</I> should be either a pfFlux* or a pointer to a block of
+       memory allocated with <B>pfMalloc</B>.  However, if this pfEngine
+       is going to be part of a Performer scene graph,  <I>data</I>  can
+       only be a pfFlux*.
+
+       <I>ilist</I>  is  an  array  of  indexes into the destination and
+       specifies which destination elements are effected by  this
+       engine.   It  can, and often will be, set to NULL in which
+       case this engine effects all elements of the  destination.
+       For engines to work properly it is important that the des-
+       tination <I>ilist</I> be a superset of all source <I>ilists</I>.
+
+       Note: <B>pfEngineDst</B> does not  have  an  <I>icount</I>  because  the
+       <I>iterations</I>  set with <B>pfEngineIterations</B> specifies the num-
+       ber of indexes that the <I>ilist</I> contains.
+
+       <I>offset</I> is the starting offset of the first element of  the
+       destination.  This will often be 0.
+
+       <I>stride</I>  is  how  much the pointer should be advanced after
+       each iteration of the function.  This is  often  equal  to
+       <I>items</I> from <B>pfEngineIterations</B>.
+
+       Both  <I>offset</I>  and  <I>stride</I>  are measured in items, where an
+       item is the basic data type of the source.  This  is  usu-
+       ally floats.
+
+       <B>pfEngineSrcChanged</B>  will  mark the destination pfFlux of a
+       pfEngine as dirty for the current flux frame.
+
+       <B>pfEngineMode</B> and <B>pfGetEngineMode</B> set and get the modes  of
+       a  pfEngine.   <I>mode</I> is the mode you are setting and <I>val</I> is
+       the value you are setting the mode to.  The modes are:
+
+       center  tab($);  C  |  C  LB  |  LB  .    <I>mode</I>$default   _
+       PFENG_RANGE_CHECK$PF_OFF          PFENG_MATRIX_MODE$PF_OFF
+       PFENG_TIME_MODE$PFENG_TIME_CYCLE PFENG_TIME_TRUNC$PF_OFF
+
+       <B>PFENG_RANGE_CHECK</B> controls whether a range check  is  done
+       when  <B>pfEngineEvaluateEye</B>  is called.  Setting it to <B>PF_ON</B>
+       to  the  <B>PFENG_TIME</B>  function  and are described with that
+       functions.
+
+       <B>pfEngineMask</B> and <B>pfGetEngineMask</B> set and get  the  evalua-
+       tion   mask   of   a   pfEngine.    The  default  mask  is
+       <B>PFFLUX_BASIC_MASK</B>.
+
+       <B>pfEngineEvaluationRange</B> and <B>pfGetEngineEvaluationRange</B> set
+       and get the evaluation range of a pfEngine.
+
+       <B>pfEngineEvaluate</B> and <B>pfEngineEvaluateEye</B> trigger an evalu-
+       ation of a pfEngine if any of the bits in <I>mask</I>  match  any
+       of  the  bits in the evaluation mask of the pfEngine.  The
+       evaluation will also be conditional on <I>eyePos</I> being within
+       the   evaluation   range,   if   the   pfEngine   has  its
+       <B>PFENG_RANGE_CHECK</B>    mode     set     to     <B>PF_ON</B>     and
+       <B>pfEngineEvaluateEye</B> is used.
+
+       <B>pfEngineUserFunction</B>  and  <B>pfGetEngineUserFunction</B> set and
+       get the user function of a pfEngine.  This only has effect
+       if  the  function  of the pfEngine is <B>PFENG_USER_FUNCTION</B>.
+       The user function <I>func</I>, must be of type  <B>pfEngineFuncType</B>.
+       The  user  function of a pfEngine will be called when ever
+       the pfEngine is evaluated.  The user function will only be
+       called if the pfEngine has passed its evaluation criteria.
+       The user function should not call  <B>pfFluxWriteComplete</B>  on
+       its   destination   pfFlux,   as  that  will  be  done  by
+       <B>pfEngineEvaluate</B>.
+
+
+
+</PRE>
+<H2>FUNCTIONS</H2><PRE>
+       <B>PFENG_SUM</B>
+
+       This function will add arrays of floats together to form a
+       destination  array  of floats.  This function is very gen-
+       eral and can be used in many situations.  One use  for  it
+       is  in  aligning  objects  such  as  buildings to a pfASD.
+       Since <B>PFENG_SUM</B> can have as few as one source  it  can  be
+       used to simply copy data from one location to another.
+
+       center  tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .   Source  <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I>  or
+       Destination$Type$Applicable$Applicable$Applicable        _
+       <B>PFENG_SUM_SRC(n)</B>$float[]$yes$yes$yes              Destina-
+       tion$float[]$yes$yes$yes
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ yes$yes
+
+       <B>PFENG_MORPH</B>
+
+       This  function  sets  the destination to a weighted sum of
+       its sources.  You can use either the <B>PFENG_MORPH_FRAME</B>  or
+       the <B>PFENG_MORPH_WEIGHTS</B> source to drive this function.
+
+       <B>PFENG_MORPH_WEIGHTS</B>  contains  a  float  for  each  of the
+       <B>PFENG_MORPH_SRC(n)</B>    sources.     Element     zero     of
+       <B>PFENG_MORPH_WEIGHTS</B>      gets      multiplied      against
+       <B>PFENG_MORPH_SRC(0)</B>, element one  gets  multiplied  against
+       <B>PFENG_MORPH_SRC(1)</B>, and so on.
+       <B>PFENG_MORPH_SRC(4)</B> * 0.8.
+
+       center  tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .   Source  <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I>  or
+       Destination$Type$Applicable$Applicable$Applicable        _
+       <B>PFENG_MORPH_FRAME</B>$float[1]$no$no$no
+       <B>PFENG_MORPH_WEIGHTS</B>$float[n]$no$no$no
+       <B>PFENG_MORPH_SRC(n)</B>$float[]$yes$yes$yes            Destina-
+       tion$float[]$yes$yes$yes
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ yes$yes
+
+       <B>PFENG_BLEND</B>
+
+       This   function   is  sort  of  a  light  version  of  the
+       <B>PFENG_MORPH</B>  function.   It  sets  the  destination  to  a
+       weighted  sum  of  elements in the <B>PFENG_BLEND_SRC</B> source.
+       You  can  use  either   the   <B>PFENG_BLEND_FRAME</B>   or   the
+       <B>PFENG_BLEND_WEIGHTS</B> source to drive this function.
+
+       <B>PFENG_BLEND_SRC</B>  should  contain  <I>iterations</I> elements.  An
+       element is a set of  <I>items</I>  floats.   The  <I>stride</I>  of  the
+       <B>PFENG_BLEND_SRC</B> source should generally be equal to <I>items</I>.
+
+       <B>PFENG_BLEND_WEIGHTS</B> contains a float for each of the  ele-
+       ments       in       the      <B>PFENG_BLEND_SRC</B>      source.
+       <B>PFENG_BLEND_WEIGHTS</B>[0] gets multiplied against  the  <I>items</I>
+       stating            at           <B>PFENG_BLEND_SRC</B>[0*<I>stride</I>],
+       <B>PFENG_BLEND_WEIGHTS</B>[1] gets multiplied against  the  <I>items</I>
+       stating at <B>PFENG_BLEND_SRC</B>[1*<I>stride</I>], and so on.
+
+       <B>PFENG_BLEND_FRAME</B>  contains  a  single  float.  This float
+       specifies the weighting between two of the elements in the
+       <B>PFENG_BLEND_SRC</B> source.  The integer portion specifies the
+       elements and the fractional portion the weighting  between
+       those  elements.   For example, a <B>PFENG_BLEND_FRAME</B> of 3.8
+       would mean the <I>items</I> stating at  <B>PFENG_BLEND_SRC</B>[3*<I>stride</I>]
+       *  0.2  + the <I>items</I> stating at <B>PFENG_BLEND_SRC</B>[4*<I>stride</I>] *
+       0.8.
+
+       center tab($) ; c | c | c | c | c c | c | c | c | c l |  c
+       |  c  |  c | c .  Source <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I> or
+       Destination$Type$Applicable$Applicable$Applicable        _
+       <B>PFENG_BLEND_FRAME</B>$float[1]$no$no$no
+       <B>PFENG_BLEND_WEIGHTS</B>$float[n]$no$no$no
+       <B>PFENG_BLEND_SRC</B>$float[]$no$yes$yes                Destina-
+       tion$float[]$no$yes$yes
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ special$yes
+
+       <B>PFENG_TRANSFORM</B>
+
+       This function transforms the <B>PFENG_TRANSFORM_SRC</B> array  of
+       floats     by     the     matrix    contained    in    the
+       <B>PFENG_TRANSFORM_MATRIX</B> source.
+
+       center tab($) ; c | c | c | c | c c | c | c | c | c l |  c
+       |  c  |  c | c .  Source <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I> or
+       Destination$Type$Applicable$Applicable$Applicable        _
+
+       This  function  generates an alignment matrix based on the
+       sources.  <B>PFENG_ALIGN_POSITION</B> is used  to  determine  the
+       translational     portion     of     the    matrix.     If
+       <B>PFENG_ALIGN_POSITION</B> is NULL then the  translational  por-
+       tion   of   the   matrix   will   be  set  to  all  zeros.
+       <B>PFENG_ALIGN_NORMAL</B> and  <B>PFENG_ALIGN_AZIMUTH</B>  are  used  to
+       determine  the  rotation portion of the matrix.  If either
+       are NULL then the rotation portion of the matrix  will  be
+       set to all zeros.  One use for the <B>PFENG_ALIGN</B> function is
+       in aligning moving objects, such as vehicles, to a  pfASD.
+
+       center  tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .   Source  <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I>  or
+       Destination$Type$Applicable$Applicable$Applicable        _
+       <B>PFENG_ALIGN_POSITION</B>$float[3]$no$yes$no
+       <B>PFENG_ALIGN_NORMAL</B>$float[3]$no$yes$no
+       <B>PFENG_ALIGN_AZIMUTH</B>$float[3]$no$yes$no   Destination$pfMa-
+       trix$no$no$no
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ no$no
+
+       <B>PFENG_MATRIX</B>
+
+       This function generates a matrix based on its sources.
+
+       <B>PFENG_MATRIX_ROT</B>  contains  a heading pitch and roll rota-
+       tions, and does the equivalent of <B>pfDCSRot</B>.
+
+       <B>PFENG_MATRIX_TRANS</B> contains a xyz translation and does the
+       equivalent of <B>pfDCSTrans</B>.
+
+       <B>PFENG_MATRIX_SCALE_UNIFORM</B>  contains  a scale and does the
+       equivalent of <B>pfDCSScale</B>
+
+       <B>PFENG_MATRIX_SCALE_XYZ</B> contains a zyz scale and  does  the
+       equivalent of <B>pfDCSScaleXYZ</B>.
+
+       <B>PFENG_MATRIX_BASE_MATRIX</B>   contains  a  pfMatrix  that  is
+       either pre or post multiplied against the matrix generated
+       by  the  other  sources depending on the <B>PFENG_MATRIX_MODE</B>
+       mode.
+
+       Any or all of the sources can be NULL, in which case  they
+       have no effect on the resulting matrix.
+
+       center  tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .   Source  <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I>  or
+       Destination$Type$Applicable$Applicable$Applicable        _
+       <B>PFENG_MATRIX_ROT</B>$float[3]$no$yes$no
+       <B>PFENG_MATRIX_TRANS</B>$float[3]$no$yes$no
+       <B>PFENG_MATRIX_SCALE_UNIFORM</B>$float[1]$no$yes$no
+       <B>PFENG_MATRIX_SCALE_XYZ</B>$float[3]$no$yes$no
+       <B>PFENG_MATRIX_BASE_MATRIX</B>$pfMatrix$no$no$no        Destina-
+       tion$pfMatrix$no$no$no
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ no$no
+
+       <B>PFENG_ANIMATE</B>
+
+       <I>iterations</I> specifies the number of values  in  the   rota-
+       tion,  translation,  scale  sources,  and  the size of the
+       <B>PFENG_ANIMATE_WEIGHTS</B> source.
+
+       <B>PFENG_ANIMATE_WEIGHTS</B> contains a float  for  each  of  the
+       values  in  the  rotation, translation, and scale sources.
+       Element  zero  of  <B>PFENG_ANIMATE_WEIGHTS</B>  gets  multiplied
+       against 0th value, element one gets multiplied against 1st
+       value, and so on.
+
+       <B>PFENG_ANIMATE_FRAME</B> contains a single float.   This  float
+       specifies  the  weighting between two of the values in the
+       rotation, translation, and  scale  sources.   The  integer
+       portion  specifies  the  values and the fractional portion
+       the  weighting  between  those  values.   For  example,  a
+       <B>PFENG_ANIMATE_FRAME</B>  of  3.8  would  mean value[3] * 0.2 +
+       value[4] * 0.8.
+
+       <B>PFENG_ANIMATE_ROT</B> contains an array of heading  pitch  and
+       roll rotations, and does the equivalent of <B>pfDCSRot</B>.
+
+       <B>PFENG_ANIMATE_TRANS</B>  contains an array of xyz translations
+       and does the equivalent of <B>pfDCSTrans</B>.
+
+       <B>PFENG_ANIMATE_SCALE_UNIFORM</B> contains an  array  of  scales
+       and does the equivalent of <B>pfDCSScale</B>
+
+       <B>PFENG_ANIMATE_SCALE_XYZ</B>  contains  an  array of zyz scales
+       and does the equivalent of <B>pfDCSScaleXYZ</B>.
+
+       <B>PFENG_ANIMATE_BASE_MATRIX</B>  contains  a  pfMatrix  that  is
+       either pre or post multiplied against the matrix generated
+       by the other sources depending  on  the  <B>PFENG_MATRIX_MODE</B>
+       mode.
+
+       Any  or all of the sources can be NULL, in which case they
+       have no effect on the resulting matrix.
+
+       center tab($) ; c | c | c | c | c c | c | c | c | c l |  c
+       |  c  |  c | c .  Source <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I> or
+       Destination$Type$Applicable$Applicable$Applicable        _
+       <B>PFENG_ANIMATE_FRAME</B>$float[1]$no$no$no
+       <B>PFENG_ANIMATE_WEIGHTS</B>$float[n]$no$no$no
+       <B>PFENG_ANIMATE_ROT</B>$pfVec3[n]$no$yes$no
+       <B>PFENG_ANIMATE_TRANS</B>$pfVec3[n]$no$yes$no
+       <B>PFENG_ANIMATE_SCALE_UNIFORM</B>$float[n]$no$yes$no
+       <B>PFENG_ANIMATE_SCALE_XYZ</B>$pfVec3[n]$no$yes$no
+       <B>PFENG_ANIMATE_BASE_MATRIX</B>$pfMatrix$no$no$no       Destina-
+       tion$pfMatrix$no$no$no
+
+       n = <I>iterations</I>
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ special$no
+
+       <B>PFENG_BBOX</B>
+
+       This function generates a bounding box that  contains  the
+       coordinates in the <B>PFENG_BBOX_SRC</B> source.
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ yes$3
+
+       <B>PFENG_TIME</B>
+
+       This  function takes a time in seconds and makes it into a
+       frame number that is useful in driving the frame source of
+       the  <B>PFENG_MORPH</B>, <B>PFENG_BLEND</B> and <B>PFENG_ANIMATE</B> functions.
+
+       <B>PFENG_TIME_TIME</B> is the source time in  seconds.   This  is
+       usually    connected   to   the   pfFlux   returned   from
+       <B>pfGetFrameTimeFlux</B>.
+
+       <B>PFENG_TIME_SCALE</B> contains 4 floats that are used to modify
+       the incoming time.  <B>PFENG_TIME_SCALE</B>[0] is an initial off-
+       set.    <B>PFENG_TIME_SCALE</B>[1]    is    a    scale    factor.
+       <B>PFENG_TIME_SCALE</B>[2]  is a range.  <B>PFENG_TIME_SCALE</B>[3] is a
+       final offset.
+
+       The <B>PFENG_TIME_MODE</B> mode determines  how  the  destination
+       number   moves   between   its   start   and   end  point.
+       <B>PFENG_TIME_CYCLE</B> will cause it to go  from  start  to  end
+       then  restart at begin.  <B>PFENG_TIME_SWING</B> will cause it to
+       go back and forth between start  to  end.   This  mode  is
+       related to the interval mode of a pfSequence.
+
+       If the <B>PFENG_TIME_TRUNC</B> mode is set to <B>PF_ON</B> the result is
+       truncated.
+
+       The following pseudo code defines how the  destination  is
+       calculated.
+
+
+       dst is the destination
+       t is <B>PFENG_TIME_TIME</B>
+       s is <B>PFENG_TIME_SCALE</B>
+
+       if (<B>PFENG_TIME_MODE</B> == <B>PFENG_TIME_CYCLE</B>)
+           dst = fmodf((t + s[0]) * s[1], s[2]) + s[3];
+       else /* <B>PFENG_TIME_MODE</B> == <B>PFENG_TIME_SWING</B> */
+       {
+           tmp = fmodf((t + s[0]) * s[1], s[2] * 2.0f);
+           if (tmp &gt;= s[2])
+            dst = ((s[2] * 2.0f) - tmp) + s[3];
+           else
+            dst = tmp + s[3];
+       }
+
+       if (<B>PFENG_TIME_TRUNC</B> == <B>PF_ON</B>)
+           dst = (int)dst;
+
+
+       center tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .  Source <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I> or
+       Destination$Type$Applicable$Applicable$Applicable _
+       <B>PFENG_TIME_TIME</B>$float[1]$no$no$no
+       <B>PFENG_TIME_SCALE</B>$float[4]$no$no$no Destina-
+       tion$float[1]$no$no$no
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ no$no
+       <B>PFENG_STROBE_TIME</B> is the source time in seconds.  This is
+       usually connected to the pfFlux returned from
+       <B>pfGetFrameTimeFlux</B>.
+
+       <B>PFENG_STROBE_TIMING</B> contains <I>iterations</I> sets of 3 floats
+       that are used to determine whether the destination for an
+       iteration should be set to the on or off time whether
+       incoming time.  <B>PFENG_STROBE_TIMING</B>[n*<I>stride</I> + 0] is the
+       on duration.  <B>PFENG_STROBE_TIMING</B>[n*<I>stride</I> + 1] is the off
+       duration.  <B>PFENG_STROBE_TIMING</B>[n*<I>stride</I> + 2] is an offset.
+
+       <B>PFENG_STROBE_ON</B> contains <I>iterations</I> sets of <I>items</I> floats.
+
+       <B>PFENG_STROBE_OFF</B> contains <I>iterations</I> sets of <I>items</I> floats.
+       If <B>PFENG_STROBE_OFF</B> is <B>NULL</B>, all off states are 0.0.
+
+       The following pseudo code defines how the destination is
+       calculated for a set of <I>items</I> floats.
+
+
+       dst is the destination
+       t is <B>PFENG_STROBE_TIME</B>
+       timing is <B>PFENG_STROBE_TIMING</B>
+       on is <B>PFENG_STROBE_ON</B>
+       off is <B>PFENG_STROBE_OFF</B>
+
+       if (timing[0] &gt; fmodf(t + timing[2], timing[0] + timing[1]))
+           for (i = 0; i &lt; <I>items</I>; i++)
+            dst[i] = on[i];
+           else
+            dst[i] = off[i];
+
+
+       center tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .  Source <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I> or
+       Destination$Type$Applicable$Applicable$Applicable _
+       <B>PFENG_STROBE_TIME</B>$float[1]$no$no$no
+       <B>PFENG_STROBE_TIMING</B>$float[n*3]$no$yes$yes
+       <B>PFENG_STROBE_ON</B>$float[]$no$yes$yes
+       <B>PFENG_STROBE_OFF</B>$float[]$no$yes$yes Destina-
+       tion$float[]$no$yes$yes
+
+       n = <I>iterations</I>
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ no$no
+
+       <B>PFENG_USER_FUNCTION</B>
+
+       The function executes the function set using
+       <B>pfEngineUserFunction</B>.
+
+       center tab($) ; c | c | c | c | c c | c | c | c | c l | c
+       | c | c | c .  Source <I>index</I>$Data$<I>ilist</I>$<I>offset</I>$<I>stride</I> or
+       Destination$Type$Applicable$Applicable$Applicable _
+       <B>PFENG_USER_FUNCTION_SRC(n)</B>$*$*$*$* Destination$*$*$*$*
+
+       center tab($) ; c | c .  <I>iterations</I>$<I>items</I> _ *$*
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

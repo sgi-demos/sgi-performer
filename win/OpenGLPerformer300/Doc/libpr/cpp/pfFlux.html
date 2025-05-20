@@ -1,0 +1,444 @@
+<HTML>
+<HEAD>
+<TITLE>pfFlux</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFlux</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFlux(3pf)                                           pfFlux(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfFlux</B> - Create, initialize, and manage a pfFlux
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfFlux.h&gt;
+
+                            <B>pfFlux::pfFlux</B>(size_t nbytes,
+                              int numBuffers)
+
+                            <B>pfFlux::pfFlux</B>(pfFluxInitFuncType initFunc,
+                              int numBuffers)
+
+       pfFluxInitFuncType   <B>pfFlux::getInitFunc</B>(void);
+
+       static pfType *      <B>pfFlux::getClassType</B>(void);
+
+       size_t               <B>pfFlux::getDataSize</B>(void);
+
+       int                  <B>pfFlux::getNumBuffers</B>(int type);
+
+       void                 <B>pfFlux::initData</B>(void *data);
+
+       void                 <B>pfFlux::callDataFunc</B>(pfFluxDataFuncType func,
+                              void *funcData);
+
+       void*                <B>pfFlux::getCurData</B>(void);
+
+       static void*         <B>pfFlux::getCurData</B>(void *data);
+
+       void*                <B>pfFlux::getWritableData</B>(void);
+
+       static void*         <B>pfFlux::getWritableData</B>(void *data);
+
+       void*                <B>pfFlux::getBufferData</B>(int bufferId);
+
+       void                 <B>pfFlux::writeComplete</B>(void);
+
+       static void          <B>pfFlux::writeComplete</B>(void *data);
+
+       void                 <B>pfFlux::setMode</B>(int mode, int val);
+
+       int                  <B>pfFlux::getMode</B>(int mode);
+
+       void                 <B>pfFlux::srcChanged</B>(void);
+
+       pfEngine*            <B>pfFlux::getSrcEngine</B>(int index);
+
+       int                  <B>pfFlux::getNumSrcEngines</B>(void);
+
+       pfEngine*            <B>pfFlux::getClientEngine</B>(int index);
+
+       int                  <B>pfFlux::getNumClientEngines</B>(void);
+
+       void                 <B>pfFlux::setMask</B>(uint mask);
+
+       void                 <B>pfFlux::setSyncGroup</B>(uint syncGroup);
+
+       uint                 <B>pfFlux::getSyncGroup</B>(void);
+
+       static
+                            uint          <B>pfFlux::getNamedSyncGroup</B>(const char *name);
+
+       static const
+                            char*   <B>pfFlux::getSyncGroupName</B>(uint syncGroup);
+
+       static int           <B>pfFlux::getNumNamedSyncGroups</B>(void);
+
+       static
+                            void          <B>pfFlux::syncGroupReady</B>(uint syncGroup);
+
+       static
+                            void          <B>pfFlux::enableSyncGroup</B>(uint syncGroup);
+
+       static
+                            void          <B>pfFlux::disableSyncGroup</B>(uint syncGroup);
+
+       static
+                            int           <B>pfFlux::getEnableSyncGroup</B>(uint syncGroup);
+
+       static void          <B>pfFlux::syncComplete</B>(void);
+
+       static
+                            int           <B>pfFlux::setDefaultNumBuffers</B>(int numBuffers);
+
+       static int           <B>pfFlux::getDefaultNumBuffers</B>(void);
+
+       static pfFlux*       <B>pfFlux::getFlux</B>(void *data);
+
+       static void          <B>pfFlux::setFrame</B>(int frame);
+
+       static int           <B>pfFlux::getFrame</B>(void);
+
+       typedef
+                            int          <B>(*pfFluxInitFuncType)</B>(pfFluxMemory *_fmem);
+
+       typedef void         <B>(*pfFluxDataFuncType)</B>(void *_data,
+                              void *_funcData);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFlux</B> is derived from the par-
+       ent class <B>pfObject</B>, so each of these member  functions  of
+       class  <B>pfObject</B>  are  also directly usable with objects of
+       class <B>pfFlux</B>.  This is also true for ancestor  classes  of
+       class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A <B>pfFlux</B> is a container for holding dynamic data.  It con-
+       tains  multiple  buffers  of  data  each associated with a
+       frame number.  This allows multiple processes to each have
+       a copy of the data appropriate to the frame they are work-
+       ing on.
+
+       <B>new</B>(arena) <B>pfFlux</B>(nbytes,numBuffers)  allocates  a  <B>pfFlux</B>
+       from  the specified memory arena, or from the process heap
+       if <I>arena</I> is NULL.  <B>new</B> allocates a <B>pfFlux</B> from the default
+       memory  arena  (see  <B>pfGetSharedArena</B>).   Like other pfOb-
+       jects, <B>pfFluxes</B> cannot be  created  statically,  automati-
+       cally  on  the  stack  or  in arrays.  The argument <I>nbytes</I>
+       specifies the length of each associated pfFluxMemory.  The
+       argument  <I>numBuffers</I>  specifies the number of pfFluxMemory
+       data buffers that the pfFlux will be created  with.   <I>num-</I>
+       <I>Buffers</I>  can be set to <B>PFFLUX_DEFAULT_NUM_BUFFERS</B> in which
+       case the number of buffers will be a number determined  to
+       be  appropriate  to  the  current  multi  processing mode.
+       <B>PFFLUX_DEFAULT_NUM_BUFFERS</B> can also also be used in  addi-
+       tive expressions such as (<B>PFFLUX_DEFAULT_NUM_BUFFERS</B> + 1),
+       to creat a number of buffers that is one greater then  the
+       default number of buffers.
+
+       <B>new</B>(arena)  <B>pfFlux</B>(initFunc,numBuffers)  also  allocates a
+       <B>pfFlux</B> from the specified memory arena.  However the  size
+       of  the  associated pfFluxMemorys and their initialization
+       is determined by the call back function <I>initFunc</I>  of  type
+       <B>pfFluxInitFuncType</B>.   The  <I>initFunc</I>  takes  a pfFluxMemory
+       <I>fmem</I>, and returns an int.   It  will  be  called  once  to
+       determine  the size of pfFluxMemorys to create and it will
+       be called once for each pfFluxMemory created.  If <I>fmem</I>  is
+       NULL it should return the size of pfFluxMemorys to create.
+       If <I>fmem</I> is not NULL it should do any  desired  initializa-
+       tion of the data portion of the pfFluxMemory.  For example
+       it might call <B>pfFluxedGSetInit</B> to turn  the  data  portion
+       into a pfGeoSet and then add coordinate attributes etc. to
+       that pfGeoSet.  This is how a fluxed pfGeoSet is  created.
+       function <B>getType</B> on any instance of class <B>pfFlux</B>.  Because
+       OpenGL Performer allows  subclassing  of  built-in  types,
+       when decisions are made based on the type of an object, it
+       is usually better to use  the member function <B>isOfType</B>  to
+       test  if  an  object is of a type derived from a Performer
+       type rather than  to  test  for  strict  equality  of  the
+       <B>pfType</B>*'s.
+
+       <B>pfFlux::getDataSize</B>  returns  the size of the data buffers
+       in a pfFlux.
+
+       <B>pfFlux::getNumBuffers</B> the number of data buffers a  pfFlux
+       contains,  if <I>type</I> is set to <B>PFFLUX_BUFFERS_GENERATED</B>.  If
+       <I>type</I> is set to <B>PFFLUX_BUFFERS_SPECIFIED</B>,  it  will  return
+       what  the  <I>numBuffers</I>  argument was set to when the pfFlux
+       was created.
+
+       <B>pfFlux::initData</B> initializes all data buffers of a  pfFlux
+       to  the  data referenced by <I>data</I>.  <I>data</I> should be at least
+       as large as the data buffers of the pfFlux.
+
+       <B>pfFlux::callDataFunc</B> calls <I>func</I> for each data buffers of a
+       pfFlux.   <I>func</I> will be called with the pointer to the data
+       buffer and with <I>funcData</I>.   This  function  is  useful  in
+       manipulating  the  buffers of a pfFlux when they contained
+       fluxed Performer objects such as fluxed pfGeoSets.
+
+       <B>pfFlux::getCurData</B> returns a pointer to the  current  data
+       buffer  of  a  pfFlux.  The current buffer is the readable
+       data buffer whose frame number is the closest to the  cur-
+       rent  flux  frame number, but not greater then the current
+       flux frame number.
+
+       Example of reading data:
+
+
+       pfVec3 *cur_verts;
+
+       cur_verts = (pfVec3*)flux-&gt;getCurData();
+
+
+
+       <B>pfFlux::getWritableData</B> returns a pointer to the data
+       buffer whose frame number matches the current flux frame
+       number.  NULL will be returned if the <B>PFLUX_WRITE_ONCE</B>
+       mode is set to <B>PF_ON</B> and there is already a readable
+       buffer with a frame number that matches the current flux
+       frame number.
+
+       <B>pfFlux::writeComplete</B> will mark the data buffer whose
+       frame number matches the current flux frame number, as
+       readable.  It has no effect if there is no buffer for the
+       current flux frame number.
+
+       Example of writing data:
+
+
+       pfVec3 *verts;
+       int i, num_verts;
+
+       flux-&gt;writeComplete();
+
+
+
+       <B>pfFlux::getBufferData</B> returns the untyped data pointer
+       associated with buffer <I>bufferId</I> of the pfFlux.
+
+       <B>pfFlux::setMode</B> and <B>pfFlux::getMode</B> set and get the modes
+       of a pfFlux.  <I>mode</I> is the mode you are setting and <I>val</I> is
+       the value you are setting the mode to.  The modes are:
+
+       center tab($) ; c | c lB | lB .  <I>mode</I>$default _
+       PFFLUX_PUSH$PF_OFF PFFLUX_ON_DEMAND$PF_OFF
+       PFFLUX_COPY_LAST_DATA$PF_OFF PFFLUX_WRITE_ONCE$PF_OFF
+
+       <B>PFFLUX_PUSH</B> controls what is done to a pfFlux's client
+       pfEngines when <B>pfFlux::writeComplete</B> is done.  Setting it
+       to <B>PF_ON</B> will cause <B>pfEngine::evaluate</B> to be done to its
+       clients.  Setting it to <B>PF_OFF</B> will cause
+       <B>pfEngine::srcChanged</B> to be done to its clients.
+
+       <B>PFFLUX_ON_DEMAND</B> controls on demand evaluation triggering.
+       Setting it to <B>PF_ON</B> will cause an evaluation of the pfFlux
+       to occur, if <B>pfFlux::getCurData</B> is called and the data
+       buffer for the current flux frame is dirty.
+
+       <B>PFFLUX_COPY_LAST_DATA</B> controls what happens when a buffer
+       is assigned a new frame number.  Setting it to <B>PF_ON</B> will
+       cause the data, from the data buffer with the frame number
+       that is closest to but not greater then the new frame num-
+       ber, to be copied to the data buffer that is getting the
+       new frame number.  This is useful when a random portion of
+       a pfFluxes data will be updated with each write.
+
+       <B>PFFLUX_WRITE_ONCE</B> is used to avoid multiple writes on a
+       pfFlux within the same frame. It controls what happens
+       when <B>pfFlux::getWritableData</B> is called and there is
+       already a readable data buffer with the current frame num-
+       ber (Having a readable data buffer means that someone
+       called <B>pfFlux::getWritableData</B> and <B>pfFlux::writeComplete</B>
+       this frame).  Setting the flag to <B>PF_ON</B> will cause NULL to
+       be returned from <B>pfFlux::getWritableData</B>.  Setting it to
+       <B>PF_OFF</B> will cause the pointer to the readable data buffer
+       to be returned.  Using the <B>PFFLUX_WRITE_ONCE</B> flag is a
+       good idea when you have multiple writing processes to a
+       Flux, and you wish to make sure that only one of them
+       writes at any given frame.
+
+       <B>pfFlux::srcChanged</B> will mark the data buffer, with a frame
+       number matching the current flux frame number, as dirty.
+
+       <B>pfFlux::getSrcEngine</B> returns the <I>i</I>th source pfEngine of a
+       pfFlux.  A pfFlux gains source pfEngines by being the des-
+       tination of a pfEngine.
+
+       <B>pfFlux::getNumSrcEngines</B> returns the number of source
+       pfEngines of a pfFlux.
+
+       <B>pfFlux::setMask</B> and <B>pfFlux::getMask</B> set and get the evalu-
+       ation mask of a pfFlux.  The default mask is
+       <B>PFFLUX_BASIC_MASK</B>.
+
+       <B>pfFlux::evaluate(mask)</B> and <B>pfFlux::evaluate(mask,</B> <B>eyePos)</B>
+       trigger an evaluation of a pfFlux if any of the bits in
+       <I>mask</I> match any of the bits in the evaluation mask of the
+       pfFlux.  The evaluation of a pfFlux is equivalent to call-
+       ing <B>pfEngine::evaluate</B> on the source engines of the pfFlux
+       followed by calling <B>pfFlux::writeComplete</B> on the pfFlux.
+
+       <B>pfFlux::setSyncGroup</B> and <B>pfFlux::getSyncGroup</B> set and get
+       the sync group of a pfFlux.
+
+       pfFlux sync groups are used to synchronize the completion
+       of multiple pfFluxes.  When <B>pfFlux::writeComplete</B> id
+       called on a pfFlux that is part of an enabled sync group
+       the data buffer for the current flux frame will not be
+       made readable and instead the pfFlux will be scheduled for
+       later completion.  All pfFluxes are created as part of
+       sync group 0, which can never be enabled.  One example
+       where sync groups are useful is, when pfFluxes are being
+       evaluated in an asynchronys process.
+
+       <B>pfFlux::getNamedSyncGroup</B> will returns a sync group number
+       associated with <I>name</I>.  If name is not yet associated with
+       a sync group, the next unused sync group number will be
+       named <I>name</I>.  Once a sync group has been named its name can
+       never be changed.
+
+       <B>pfFlux::getSyncGroupName</B> returns the name of <I>syncGroup</I>.
+
+       <B>pfFlux::getNumNamedSyncGroups</B> returns the number of named
+       sync groups.
+
+       <B>pfFlux::syncGroupReady</B> specifies that the <I>syncGroup</I> is
+       ready for completion if it has been enabled.  This will
+       have no effect if <I>syncGroup</I> has not been enabled.
+
+       <B>pfFlux::enableSyncGroup</B> and <B>pfFlux::disableSyncGroup</B>
+       enable and disable a sync group.
+       <B>pfFlux::getEnableSyncGroup</B> returns whether a sync group is
+       enabled.
+
+       <B>pfFlux::syncComplete</B> will cause the completion of all
+       pfFluxes that have been scheduled for completion and are
+       part of a ready sync group.  In addition to making the
+       buffer readable it will also mark it with the current flux
+       frame number.  Normally there is no reason to call this
+       function, as it is called by <B>pfFrame</B>.
+
+       <B>pfFlux::getFlux</B> will return the pfFlux that the data
+       buffer pointer <I>data</I> is a part of.  It will return NULL if
+       <I>data</I> is not part of a pfFlux.  This is useful to find out
+       if an attribute of a pfGeoSet is a pfFlux.
+
+       <B>pfFlux::setDefaultNumBuffers</B> sets the default number of
+       buffers that are allocated when a pfFlux is created using
+       <B>PFFLUX_DEFAULT_NUM_BUFFERS</B>.  Normally there is no reason
+       <B>pfFlux::setFrame</B> will set the current flux frame number
+       for the process that is invoking it.  This is the frame
+       number that <B>pfFlux::getCurData</B> <B>pfFlux::getWritableData</B> and
+       <B>pfFlux::writeComplete</B> will use in determining which
+       buffers to operate on.  Normally there is no reason to
+       call this function, as it is called by <B>pfFrame</B> for all
+       Performer processes.  <B>pfFlux::getFrame</B> returns the current
+       flux frame number.
+
+       pfFluxes can be connected to other Performer objects using
+       the following functions:
+
+              <B>pfEngine::setSrc</B>
+              <B>pfEngine::setDst</B>
+              <B>new</B> <B>pfFCS</B>
+              <B>pfFCS::setFlux</B>
+              <B>pfGeoSet::setAttr</B>
+              <B>pfGeoSet::setBoundFlux</B>
+              <B>pfASD::addQueryArray</B>
+              <B>pfBillboard::setPosFlux</B>
+              <B>pfLOD::setRangeFlux</B>
+              <B>pfSwitch::setValFlux</B>
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       pfFlux replaces the obsoleted pfCycleBuffers.  The follow-
+       ing shows how to convert code using pfCycleBuffers to use
+       pfFlux:
+
+           pfFlux *flux = new pfFluxBuffer(size, <B>PFFLUX_DEFAULT_NUM_BUFFERS</B>);
+
+           /* replace getting of read-only data
+            * pfCBufGetCurData() for read becomes:
+            */
+           flux-&gt;getCurData();
+
+           /* replace getting of data to edit */
+
+           /* get writable buffer BEFORE editing data
+            *
+            */
+           flux-&gt;getWritableData();
+
+           /* ... edit data */
+
+           /* declare data edited after editing for the frame is done.
+            * Replace pfCBufferChanged(pfCycleBuffer *cbuf) becomes:
+            */
+           flux-&gt;writeComplete();
+
+
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFluxMemory, pfEngine, pfFCS, pfFrame, pfGetFrameTime-
+       Flux, pfASD, pfBillboard, pfGeoSet, pfLOD, pfSwitch
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,159 @@
+<HTML>
+<HEAD>
+<TITLE>pfFluxMemory</TITLE>
+</HEAD>
+<BODY>
+<H1>pfFluxMemory</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfFluxMemory(3pf)                               pfFluxMemory(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfGetFluxMemoryClassType,</B>    <B>pfGetFluxMemoryFlux,</B>   <B>pfGet-</B>
+       <B>FluxMemory</B> - Manage a pfFluxMemory
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr.h&gt;
+
+       pfType*         <B>pfGetFluxMemoryClassType</B>(void);
+
+       pfFlux*         <B>pfGetFluxMemoryFlux</B>(pfFluxMemory* fmem);
+
+       pfFluxMemory*   <B>pfGetFluxMemory</B>(void* data);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfFluxMemory</B>  is  derived  from
+       the  parent  class <B>pfMemory</B>, so each of these member func-
+       tions of class <B>pfMemory</B>  are  also  directly  usable  with
+       objects of class <B>pfFluxMemory</B>.  Casting an object of class
+       <B>pfFluxMemory</B> to an object of class <B>pfMemory</B> is taken  care
+       of  automatically.  This is also true for casts to objects
+       of ancestor classes of class <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>fmem</I>  identifies a pfFlux.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A  <B>pfFluxMemory</B>  is  a  data buffer of a pfFlux.  It has a
+       header and them a data  portion.   A  pfFluxMemory  should
+       never  be  created  or  destroyed separate from its parent
+       pfFlux.
+
+       <B>pfGetFluxMemoryClassType</B> returns the <B>pfType</B>* for the class
+       <B>pfFluxMemory</B>.       The      <B>pfType</B>*      returned      by
+       <B>pfGetFluxMemoryClassType</B>  is  the  same  as  the   <B>pfType</B>*
+       returned  by  invoking  <B>pfGetType</B> on any instance of class
+       <B>pfFluxMemory</B>.
+       The data portion of a pfFluxMemory can be converted into a
+       fluxed  form  of any Performer object that is derived from
+       pfMemory.  This should only be done in the initFunc  of  a
+       pfFlux.  Although any Performer object can be fluxed, only
+       certain Performer objects have  been  modified  to  accept
+       fluxed  forms of the objects they connect to.  The follow-
+       ing table lists what can take what.
+
+       center tab($) ; c | c lB  |  lB  .   parent  object$fluxed
+       child _ pfGeode$pfGeoSet
+
+
+       Example of turning the data portion of a pfFluxMemory into
+       a fluxed pfGeoSet.   This  is  how  pfFluxedGSetInit()  is
+       implemented.  Note:  This can only be done in C++.
+
+
+
+       int pfFluxedGSetInit(pfFluxMemory *fmem)
+       {
+           if (fmem == NULL)
+               return sizeof(pfGeoSet);
+
+           new(fmem) pfGeoSet;
+
+           return 0;
+       }
+
+
+
+       Example of creating a pfFlux containing fluxed pfGeoSets:
+
+
+
+       int make_fluxed_gset(pfFluxMemory *fmem)
+       {
+           pfGeoSet *gset;
+           pfVec3 *coords;
+
+           if (fmem == NULL)
+               return pfFluxedGSetInit(fmem);
+
+           pfFluxedGSetInit(fmem);
+
+           gset = (pfGeoSet*)fmem-&gt;getData();
+
+           pfGSetPrimType(gset, PFGS_TRIS);
+
+           ... finish initializing pfGeoSet
+
+           return 0;
+       }
+
+       main()
+       {
+           pfFlux *fluxed_gset;
+           pfGeoSet *gset;
+
+           pfInit();
+           ...
+       }
+
+
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfFlux, pfMemory, pfFluxedGSetInit
+
+
+
+                                                pfFluxMemory(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

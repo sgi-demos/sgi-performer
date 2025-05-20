@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>pfiCollide</TITLE>
+</HEAD>
+<BODY>
+<H1>pfiCollide</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfiCollide(3pf)                                   pfiCollide(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfiGetCollideClassType,</B>  <B>pfiNewCollide,</B>  <B>pfiEnableCollide,</B>
+       <B>pfiDisableCollide,</B>  <B>pfiGetCollideEnable,</B>   <B>pfiCollideMode,</B>
+       <B>pfiGetCollideMode,</B>  <B>pfiCollideStatus,</B> <B>pfiGetCollideStatus,</B>
+       <B>pfiCollideDist,</B> <B>pfiGetCollideDist,</B> <B>pfiCollideHeightAboveG-</B>
+       <B>rnd,</B>  <B>pfiGetCollideHeightAboveGrnd,</B>  <B>pfiCollideGroundNode,</B>
+       <B>pfiGetCollideGroundNode,</B>   <B>pfiCollideObjNode,</B>   <B>pfiGetCol-</B>
+       <B>lideObjNode,</B>  <B>pfiCollideCurMotionParams,</B> <B>pfiGetCollideCur-</B>
+       <B>MotionParams,</B>  <B>pfiGetCollideMotionCoord,</B>   <B>pfiCollideFunc,</B>
+       <B>pfiGetCollisionFunc,</B>  <B>pfiUpdateCollide</B>  - pfiCollide func-
+       tions.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfui.h&gt;
+
+       pfType *       <B>pfiGetCollideClassType</B>(void);
+
+       pfiCollide *   <B>pfiNewCollide</B>(void *arena);
+
+       void           <B>pfiEnableCollide</B>(pfiCollide *collide);
+
+       void           <B>pfiDisableCollide</B>(pfiCollide *collide);
+
+       int            <B>pfiGetCollideEnable</B>(pfiCollide *collide);
+
+       void           <B>pfiCollideMode</B>(pfiCollide *collide,
+                        int mode, int val);
+
+       int            <B>pfiGetCollideMode</B>(pfiCollide *collide,
+                        int mode);
+
+       void           <B>pfiCollideStatus</B>(pfiCollide *collide,
+                        int status);
+
+       int            <B>pfiGetCollideStatus</B>(pfiCollide *collide);
+
+       void           <B>pfiCollideDist</B>(pfiCollide *collide,
+                        float dist);
+
+       float          <B>pfiGetCollideDist</B>(pfiCollide *collide);
+
+       void           <B>pfiCollideHeightAboveGrnd</B>(pfiCollide *collide,
+                        float dist);
+
+       float          <B>pfiGetCollideHeightAboveGrnd</B>(pfiCollide *collide);
+
+       void           <B>pfiCollideGroundNode</B>(pfiCollide *collide,
+                        pfNode* ground);
+
+       pfNode
+                      *       <B>pfiGetCollideGroundNode</B>(pfiCollide *collide);
+
+       void           <B>pfiCollideObjNode</B>(pfiCollide *collide, pfN-
+                        ode* db);
+
+                        pfCoord* pos,         pfCoord* prevPos,
+                        float *speed);
+
+       void           <B>pfiGetCollideMotionCoord</B>(pfiCollide *collide,
+                        pfiMotionCoord* xcoord);
+
+       void           <B>pfiCollideFunc</B>(pfiCollide *collide, pfiCol-
+                        lideFuncType func, void *data);
+
+       void           <B>pfiGetCollisionFunc</B>(pfiCollide *collide,
+                        pfiCollideFuncType *func, void **data);
+
+       int            <B>pfiUpdateCollide</B>(pfiCollide *collide);
+
+
+                      typedef int (*pfiCollideFuncType)(pfiCollide *, void *);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfiCollide</B> functions.
+
+       The pfiCollide has a complete C++ API following the con-
+       ventions of general OpenGL Performer C++ API; C++ methods
+       are declared in /usr/include/Performer/pfui/pfiCollide.h.
+
+       <B>pfiInit</B> should be called once before any pfiCollide rou-
+       tines and before the forked creation of any additional
+       processes that will be calling pfiCollide routines.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfui source code, object code and documentation are
+       provided as unsupported software.  Routines are subject to
+       change in future releases.
+
+
+
+                                                  pfiCollide(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

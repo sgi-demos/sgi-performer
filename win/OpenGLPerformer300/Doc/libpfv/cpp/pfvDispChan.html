@@ -1,0 +1,302 @@
+<HTML>
+<HEAD>
+<TITLE>pfvDispChan</TITLE>
+</HEAD>
+<BODY>
+<H1>pfvDispChan</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfvDispChan(3pf)                                 pfvDispChan(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfvDispChan,</B> <B>getHPROffset</B> - Configure one or more channels
+       through an XML file or API calls.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfv/pfvDisplay.h&gt;
+
+       virtual int    <B>pfvDispChan::config</B>();
+
+       pfChannel*     <B>pfvDispChan::getHandle</B>();
+
+       pfvDispPWin*   <B>pfvDispChan::getPWin</B>();
+
+       pfvDispView*   <B>pfvDispChan::getView</B>();
+
+       virtual void   <B>pfvDispChan::setFullWindow</B>(int flag);
+
+       int            <B>pfvDispChan::getFullWindow</B>();
+
+       virtual void   <B>pfvDispChan::setViewport</B>(float l,  float r,
+                        float b, float t);
+
+       void           <B>pfvDispChan::getViewport</B>(float* l,
+                        float* r, float* b, float* t);
+
+       virtual void   <B>pfvDispChan::setFOV</B>(float x, float y);
+
+       virtual void   <B>pfvDispChan::setFOV</B>(float l,       float r,
+                        float b, float t);
+
+       virtual void   <B>pfvDispChan::setOrtho</B>(float l,     float r,
+                        float b, float t);
+
+       virtual int    <B>pfvDispChan::getFOV</B>(float* x, float* y);
+
+       virtual int    <B>pfvDispChan::getFOV</B>(float* l,     float* r,
+                        float* b, float* t);
+
+       virtual int    <B>pfvDispChan::getOrtho</B>(float* l,   float* r,
+                        float* b, float* t);
+
+       void           <B>pfvDispChan::setAutoAspect</B>(int which );
+
+       int            <B>pfvDispChan::getAutoAspect</B>();
+
+       int            <B>pfvDispChan::getFrustType</B>();
+
+       virtual void   <B>pfvDispChan::setXYZOffset</B>(float x, float y,
+                        float z);
+
+       void           <B>pfvDispChan::getXYZOffset</B>(float*x, float*y,
+                        float*z);
+
+       virtual void   <B>pfvDispChan::setHPROffset</B>(float h, float p,
+                        float r);
+                        float* r, float* b, float* t);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfvDispChan</B> is derived from the
+       parent class <B>pfvObject</B>, so each of these member  functions
+       of  class  <B>pfvObject</B> are also directly usable with objects
+       of class <B>pfvDispChan</B>.  This  is  also  true  for  ancestor
+       classes of class <B>pfvObject</B>.
+
+       virtual int   <B>pfvObject::parseXml</B>(pfvXmlNode*xml);
+       virtual int   <B>pfvObject::setXmlField</B>(pfvXmlNode*xml);
+       char*         <B>pfvObject::getName</B>();
+       void          <B>pfvObject::setName</B>(char*_name);
+
+
+       Since  the class <B>pfvObject</B> is itself derived from the par-
+       ent class <B>pfObject</B>, objects of class <B>pfvDispChan</B> can  also
+       be used with these functions designed for objects of class
+       <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>     <B>new</B>(size_t,      pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfvDispChan</B> can  also  be
+       used  with  these  functions designed for objects of class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The  pfvDispChan  class  is a libpfv wrapper for the libpf
+       <B>pfvDispChan::config</B>  is  where  the libpf <B>pfChannel</B> object
+       associated with the <B>pfvDispChan</B> is created and configured.
+       After creating the <B>pfChannel</B>, <B>pfvDispChan::config</B> will add
+       it  to  the  <B>pfPipeWindow</B>  associated  with   the   parent
+       <B>pfvDispPWin</B>,  will add the token <B>PFCHAN_FOV</B> to <B>pfChannel</B>'s
+       share-mask (see man  page  for  <B>pfChannel::setShare</B>),  set
+       <B>pfChannel</B>'s  viewport,  frustum,  initial  view  position,
+       default Near and Far values, xyz and hpr view offsets.
+
+       <B>pfvDispChan::getHandle</B> returns a handle to  the  <B>pfChannel</B>
+       object  associated  with  <B>pfvDispChan</B>. This must be called
+       after <B>pfvDispChan::config</B> or  the  return  value  will  be
+       NULL.
+
+       <B>pfvDispChan::getPWin</B>   returns  a  handle  to  the  parent
+       <B>pfvDispPWin</B> for this <B>pfvDispChan.</B>
+
+       <B>pfvDispChan::getView</B> returns a handle to  the  <B>pfvDispView</B>
+       to which this <B>pfvDispChan</B> belongs. If this <B>pfvDispChan</B> has
+       not yet been assigned to any view, this method will return
+       NULL.  Note  that  if a <B>pfvDispChan</B> is not assigned to any
+       view, the <B>pfvDisplayMngr::preConfig</B> method will  automati-
+       cally  assign  it to view0 (the first view in Display Man-
+       ager's global view-list).
+
+       <B>pfvDispChan::setFullWindow</B> specifies whether this  channel
+       should  fill  its  entire  window.  Set <I>flag</I> to a non-zero
+       value to indicate full screen, or zero otherwise.
+
+       <B>pfvDispChan::getFullWindow</B> returns one if this <B>pfvDispChan</B>
+       fills its whole window or zero othewise.
+
+       <B>pfvDispChan::setViewport</B>  specifies  the portion of parent
+       <B>pfvDispPWin</B> over which channel will be rendered (refer  to
+       the <B>pfChannel::setViewport</B> man page).
+
+       <B>pfvDispChan::getViewport</B> returns viewport values as set by
+       <B>pfvDispChan::setViewport</B>.
+
+       The arguments to  <B>pfvDispChan::setFOV(float</B>  <B>x,</B>  <B>float</B>  <B>y)</B>
+       specify total horizontal and vertical fields of view (FOV)
+       in degrees. See  the  <B>pfChannel::setFOV</B>  man  page  for  a
+       description.
+
+       <B>pfvDispChan::setFOV(float</B>  <B>l,</B>  <B>float</B>  <B>r,</B> <B>float</B> <B>b,</B> <B>float</B> <B>t)</B>
+       may be used to set  up  an  asymmetric  frustum.  See  the
+       <B>pfChannel::makePersp</B> man page.
+
+       <B>pfvDispChan::setOrtho</B>  sets  up an orthogonal frustum. See
+       the <B>pfChannel::makeOrtho</B> man page.
+
+       <B>pfvDispChan::getFOV(float*</B> <B>x,</B> <B>float*</B> <B>y)</B> returns  the  cur-
+       rent horizontal and vertical FOV values on channel. If the
+       frustum  is  asymmetric,  the  resulting  values  will  be
+       approximations.
+
+       <B>pfvDispChan::getFOV(float*</B>  <B>l,</B>  <B>float*</B> <B>r,</B> <B>float*</B> <B>b,</B> <B>float*</B>
+       <B>t)</B> returns the current FOV values on channel.  This  func-
+       tion can be used for both symmetric and asymmetric frusta.
+       <B>pfChannel::setAutoAspect</B> man page.
+
+       <B>pfvDispChan::getAutoAspect</B> returns the current  value  for
+       channel's auto aspect setting.
+
+       <B>pfvDispChan::getFrustType</B>     will    return    one    of:
+       PFFRUST_ORTHOGONAL, PFFRUST_SIMPLE or  PFFRUST_PERSPECTIVE
+       depending  on  channel's current frustum type. See the man
+       page for <B>pfChannel::getFrustType</B> for a description.
+
+       <B>pfvDispChan::setXYZOffset</B> sets a translational offset  for
+       this  channel. Offset values are relative to the eye posi-
+       tion set on the <B>pfvDispView</B> to which this channel belongs.
+       See  the  man  page  for  <B>pfChannel::setViewOffsets</B>  for a
+       description.
+
+       <B>pfvDispChan::getXYZOffset</B> returns the translational offset
+       for   this   channel   as  was  specified  by  a  call  to
+       <B>pfvDispChan::setXYZOffset</B>.
+
+       <B>pfvDispChan::setHPROffset</B> sets  a  rotational  offset  for
+       this  channel.  Offset values are relative to eye position
+       set on the <B>pfvDispView</B> to which the channel belongs.   See
+       man  page for <B>pfChannel::setViewOffsets</B> for a description.
+
+       <B>pfvDispChan::getHPROffset</B> returns  the  rotational  offset
+       for   this   channel,   as   specified   by   a   call  to
+       <B>pfvDispChan::setHPROffset</B>.
+
+       <B>pfvDispChan::setViewRange</B> is used to map channel 2d  view-
+       port  to  a  rectangular region in view-space. By default,
+       each channel's view range is initialized to the unit space
+       x:0-1,y:0-1. However, when multiple channels are joined in
+       a view object, it may be useful to set up  each  channel's
+       view range to cover a different region in view-space. Some
+       examples of uses of this feature are: the  <B>pfvInputManager</B>
+       computing  view-normalized  mouse  coordinates which allow
+       mouse motion to transparently  be  tracked  over  multiple
+       channels and <B>pfvDispPWin</B>s and the orthogonal frustum setup
+       by the  <B>pfvViewer</B>,  when  dispatching  Overlay  callbacks,
+       allowing  overlay  imagery  to  be  rendered over multiple
+       channels, pipes and pwins as if they were  a  single  sur-
+       face.
+
+       <B>pfvDispChan::getViewRange</B>  returns  the four values deter-
+       mining the rectangular region in view-space covered by the
+       channel.
+
+
+       <B>XML</B> <B>FILE</B> <B>CONFIGURATION</B>
+
+       A  pfDispChan  object can be fully configured using an xml
+       tag by passing an XmlNode to <B>pfvDispPipe::createChan</B>.   If
+       a  &lt;chan&gt;  tag  is found inside a pipe tag &lt;pipe&gt; the pipe
+       will automatically create a new  pwin  by  parsing  &lt;chan&gt;
+       tag.
+
+       The list of valid tags inside &lt;chan&gt; is:
+
+              <B>&lt;viewport&gt;</B>   four  comma-separated floats, specify-
+                           ing channel's viewport
+
+              <B>&lt;viewrange&gt;</B>  four comma-separated floats,  specify-
+                           ing  the  mapping  of  the  channel 2d
+                           viewport to a  rectangular  region  in
+                           view-space
+
+              <B>&lt;fov&gt;</B>        two  or  four  comma-separated  floats
+                           specifying channel's field of view.  4
+                           values  may  be specified to set up an
+                           asymetric frustum.
+
+              <B>&lt;ortho&gt;</B>      four comma-separated  floats,.specify-
+                           ing an orthogonal frustum
+
+              <B>&lt;xyzOffset&gt;</B>  three comma-separated floats, specify-
+                           ing  translational  offset  for   this
+                           channel
+
+              <B>&lt;hprOffset&gt;</B>  three comma-separated floats, specify-
+                           ing rotational offset for this channel
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Near  and  Far  values cannot yet be set on a pfvDispChan,
+       but may be be set directly on the <B>pfChannel</B> handle anytime
+       after <B>pfvDispChan::config</B>.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfvXml,  pfvDisplayMngr,  pfvViewer,  pfvDispPWin, pfvDis-
+       pView, pfChannel
+
+
+
+                                                 pfvDispChan(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

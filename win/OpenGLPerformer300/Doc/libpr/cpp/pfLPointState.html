@@ -1,0 +1,848 @@
+<HTML>
+<HEAD>
+<TITLE>pfLPointState</TITLE>
+</HEAD>
+<BODY>
+<H1>pfLPointState</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfLPointState(3pf)                             pfLPointState(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfLPointState,</B> <B>pfGetCurLPState</B> - Set and get pfLPointState
+       size,  transparency,  directionality,   shape,   and   fog
+       attributes.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pr/pfLPointState.h&gt;
+
+                         <B>pfLPointState::pfLPointState</B>()
+
+       static pfType *   <B>pfLPointState::getClassType</B>(void);
+
+       void              <B>pfLPointState::setMode</B>(int mode,
+                           int val);
+
+       int               <B>pfLPointState::getMode</B>(int mode);
+
+       void              <B>pfLPointState::setVal</B>(int attr,
+                           float val);
+
+       float             <B>pfLPointState::getVal</B>(int attr);
+
+       void              <B>pfLPointState::setShape</B>(float horiz,
+                           float vert,              float roll,
+                           float falloff, float ambient);
+
+       void              <B>pfLPointState::getShape</B>(float *horiz,
+                           float *vert,            float *roll,
+                           float *falloff, float *ambient);
+
+       void              <B>pfLPointState::setBackColor</B>(float r,
+                           float g, float b, float a);
+
+       void              <B>pfLPointState::getBackColor</B>(float *r,
+                           float *g, float *b, float *a);
+
+       void              <B>pfLPointState::apply</B>(void);
+
+       void              <B>pfLPointState::makeRangeTex</B>(pfTexture *tex,
+                           int size, pfFog* fog);
+
+       void              <B>pfLPointState::makeShapeTex</B>(pfTexture *tex,
+                           int size);
+
+       void              <B>pfLPointState::setRasterFunc</B>(pfRasterFuncType rasterCallback,
+                           void *rasterData);
+
+       void              <B>pfLPointState::getRasterFunc</B>(pfRasterFuncType *rasterCallback,
+                           void **rasterData);
+
+       void              <B>pfLPointState::setCalligFunc</B>(pfCalligFuncType calligCallback,
+                           void *calligData);
+
+       void              <B>pfLPointState::getCalligFunc</B>(pfCalligFuncType *calligCallback,
+                           void **calligData);
+
+       objects of class <B>pfLPointState</B>.  This  is  also  true  for
+       ancestor classes of class <B>pfObject</B>.
+
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t);
+       void*   <B>pfObject::operator</B> <B>new</B>(size_t, void *arena);
+       void*   <B>pfObject::operator</B>      <B>new</B>(size_t,     pfFluxMem-
+                 ory *fmem);
+       void    <B>pfObject::setUserData</B>(void *data);
+       void    <B>pfObject::setUserData</B>(int slot, void *data);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj);
+       void*   <B>pfObject::getUserData</B>(pfObject *obj, int slot);
+       int     <B>pfObject::getNumUserData</B>();
+
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class <B>pfMemory</B>, objects of class <B>pfLPointState</B> can also be
+       used with these functions designed for  objects  of  class
+       <B>pfMemory</B>.
+
+       void*          <B>pfMemory::getData</B>(const void *ptr);
+       pfType *       <B>pfMemory::getType</B>();
+       int            <B>pfMemory::isOfType</B>(pfType *type);
+       int            <B>pfMemory::isExactType</B>(pfType *type);
+       const char *   <B>pfMemory::getTypeName</B>();
+       int            <B>pfMemory::copy</B>(pfMemory *src);
+       int            <B>pfMemory::compare</B>(const pfMemory *mem);
+       void           <B>pfMemory::print</B>(uint which,   uint verbose,
+                        char *prefix, FILE *file);
+       int            <B>pfMemory::getArena</B>(void *ptr);
+       void*          <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::ref</B>();
+       int            <B>pfMemory::unref</B>();
+       int            <B>pfMemory::unrefDelete</B>();
+       int            <B>pfMemory::unrefGetRef</B>();
+       int            <B>pfMemory::getRef</B>();
+       int            <B>pfMemory::checkDelete</B>();
+       int            <B>pfMemory::isFluxed</B>();
+       void *         <B>pfMemory::getArena</B>();
+       int            <B>pfMemory::getSize</B>();
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfLPointState is a <B>libpr</B> data structure which,  in  con-
+       junction  with  a pfGeoSet of type <B>PFGS_POINTS</B>, supports a
+       sophisticated <B>light</B>  <B>point</B>  primitive  type.  Examples  of
+       light  points are stars, beacons, strobes, runway edge and
+       end illumination, taxiway lights,  visual  approach  slope
+       indicators  (VASI),  precision  approach  path  indicators
+       (PAPI), and street lights when viewed from  a  great  dis-
+       tance.
+
+       Light  points  should  not be confused with light sources,
+       such as a pfLight. A light point is visible as one or more
+       self-illuminated  small points that do not illuminate sur-
+       rounding objects. By comparison, a pfLight does illuminate
+       scene contents but is itself not a visible object.
+
+       When  a pfLPointState is applied with <B>pfLPointState::apply</B>
+       or through its parent pfGeoState (See  <B>pfGeoSet::draw</B>  and
+       <B>pfGeoState::apply</B>),  any pfGeoSet of type <B>PFGS_POINTS</B> will
+
+              2. Perspective fading. Once a light point reaches a
+                 minimum size, it may be made more transparent in
+                 order to enhance the perspective illusion.  Fad-
+                 ing  is often more realistic than simply shrink-
+                 ing the point size to 0.
+
+              3. Fog punch-through. Since light points are  emis-
+                 sive  objects,  they must shine through fog more
+                 than non-emissive objects.
+
+              4. Directionality. Light points can be  assigned  a
+                 direction  as  well  as  vertical and horizontal
+                 envelopes (or lobes) about this  direction  vec-
+                 tor.  Directional  light point intensity is then
+                 view position-dependent. Light  point  direction
+                 is  defined  by  the normals (<B>PFGS_NORMAL3</B>) sup-
+                 plied by <B>PFGS_POINTS</B> pfGeoSets.
+
+              5. Intensity.  Normally,  light  point  color   and
+                 transparency   are  defined  by  the  colors  (-
+                 <B>PFGS_COLOR4</B>) supplied by <B>PFGS_POINTS</B>  pfGeoSets.
+                 pfLPointStates provide the additional capability
+                 of modifying the intensity of all  points  in  a
+                 light point pfGeoSet by scaling the alpha of all
+                 point colors.
+
+       At a minimum, light point usage requires  a  configuration
+       based  on  three  linked  libpr  objects:  a  pfGeoSet,  a
+       pfGeoState attached to that pfGeoSet, and a  pfLPointState
+       attached to the pfGeoState. Here are the details:
+
+              1. A  pfGeoSet  of  type <B>PFGS_POINTS</B>. This pfGeoSet
+                 must have a  <B>PFGS_COLOR4</B>  attribute  binding  of
+                 <B>PFGS_PER_VERTEX</B>  in  some  situations and should
+                 have  supplied  normals  (<B>PFGS_NORMAL3</B>)  if  the
+                 light points are directional.
+
+              2.  A  pfGeoState  which is usually attached to the
+              pfGeoSet and
+                 which references a pfLPointState. The pfGeoState
+                 should almost always enable  transparency  since
+                 all  light point effects except perspective size
+                 require transparency.
+
+              3. A  pfLPointState  configured  appropriately  and
+              attached to the
+                 pfGeoState listed in step two.
+
+       The following example illustrates how to build  a  compre-
+       hensive light point structure that uses texture mapping to
+       accelerate directionality computations:
+
+
+       /*
+        * Create pfLPointState and pfGeoState.
+        */
+       pfGeoState     *gst = new pfGeoState;
+       pfLPointState  *lps = new pfLPointState;
+        */
+       lps-&gt;setMode(PFLPS_SIZE_MODE, PFLPS_SIZE_MODE_ON);
+       lps-&gt;setVal(PFLPS_SIZE_MIN_PIXEL, 0.25f);
+       lps-&gt;setVal(PFLPS_SIZE_ACTUAL, 0.07f);
+       lps-&gt;setVal(PFLPS_SIZE_MAX_PIXEL, 4.0f);
+
+       /*
+        * Light points become transparent when their projected diameter is
+        * &lt; 2 pixels. The transparency falloff rate is linear with
+        * projected size with a scale factor of 0.6. The transparency
+        * multiplier, NOT the light point transparency, is clamped to 0.1.
+        */
+       lps-&gt;setVal(PFLPS_TRANSP_PIXEL_SIZE, 2.0f);
+       lps-&gt;setVal(PFLPS_TRANSP_EXPONENT, 1.0f);
+       lps-&gt;setVal(PFLPS_TRANSP_SCALE, 0.6f);
+       lps-&gt;setVal(PFLPS_TRANSP_CLAMP, 0.1f);
+
+       /*
+        * Light points will be fogged as if they were 4 times
+        * nearer to the eye than actual to achieve punch-through.
+        */
+       lps-&gt;setVal(PFLPS_FOG_SCALE, 0.25f);
+
+       /* Range to light points computed on CPU is true range */
+       lps-&gt;setMode(PFLPS_RANGE_MODE, PFLPS_RANGE_MODE_TRUE);
+
+       /*
+        * Light points are bidirectional but have different (magenta)
+        * back color. Front color is provided by pfGeoSet colors.
+        */
+       lps-&gt;setMode(PFLPS_SHAPE_MODE, PFLPS_SHAPE_MODE_BI_COLOR);
+       lps-&gt;setBackColor(1.0f, 0.0f, 1.0f, 1.0f);
+
+       /*
+        * 60 degrees horizontal and 30 degrees vertical envelope.
+        * Envelope is rotated -25 degrees about the light point
+        * direction. Falloff rate is linear and ambient intensity is 0.1.
+        */
+       lps-&gt;setShape(60.0f, 30.0f, -25.0f, 1.0f, 0.1f);
+
+       /*
+        * Specify that light points should use texturing hardware to simulate
+        * directionality and use CPU to compute light point transparency and
+        * fog punch-through. Note that if light points are omnidirectional,
+        * you should use PFLPS_TRANSP_MODE_TEX and PFLPS_FOG_MODE_TEX instead.
+        */
+       lps-&gt;setMode(PFLPS_DIR_MODE, PFLPS_DIR_MODE_TEX);
+       lps-&gt;setMode(PFLPS_TRANSP_MODE, PFLPS_TRANSP_MODE_ALPHA);
+       lps-&gt;setMode(PFLPS_FOG_MODE, PFLPS_FOG_MODE_ALPHA);
+
+       /*
+        * Make directionality environment map of size 64 x 64 and attach
+        * it to the light point pfGeoState. We assume that a pfTexEnv of
+        * type PFTE_MODULATE has been globally applied with pfApplyTEnv.
+        */
+       tex = new pfTexture;
+       lps-&gt;makeShapeTex(tex, 64);
+       gst-&gt;setAttr(PFSTATE_TEXTURE, tex);
+       gst-&gt;setMode(PFSTATE_ENTEXTURE, 1);
+       tgen-&gt;setMode(PF_T, PFTG_SPHERE_MAP);
+       gst-&gt;setAttr(PFSTATE_TEXGEN, tgen);
+       gst-&gt;setMode(PFSTATE_ENTEXGEN, 1);
+
+       /*
+        * Configure light point transparency. Use PFTR_BLEND_ALPHA for high
+        * quality transparency. Set pfAlphaFunc so that light points are not
+        * drawn unless their alphas exceed 1 when using 8-bit color resolution.
+        */
+       gst-&gt;setMode(PFSTATE_TRANSPARENCY, PFTR_BLEND_ALPHA);
+       gst-&gt;setVal(PFSTATE_ALPHAREF, 1.0/255.0);
+       gst-&gt;setMode(PFSTATE_ALPHAFUNC, PFAF_GREATER);
+
+       /*
+        * Disable pfFog effects since light points are fogged by
+        * the pfLPointState.
+        */
+       gst-&gt;setMode(PFSTATE_ENFOG, 0);
+       /*
+        * Disable lighting effects since light points are completely
+        * emissive.
+        */
+       gst-&gt;setMode(PFSTATE_ENLIGHTING, 0);
+
+       /*
+        * Attach the pfGeoState to a pfGeoSet of type PFGS_POINTS and
+        * you've got light points!
+        */
+       gset-&gt;setPrimType(PFGS_POINTS);
+       gset-&gt;setGState(gst);
+
+
+       <B>pfLPointState</B> <B>Modes</B>
+
+       Each of the five light point characteristics listed ear-
+       lier may be achieved through the Graphics Library in dif-
+       ferent ways depending on the available graphics hardware.
+       <B>pfLPointState::setMode</B>/<B>pfLPointState::setVal</B> provide con-
+       trol over feature implementation. Modes and their corre-
+       sponding values accepted by <B>pfLPointState::setMode</B> are:
+
+              <B>PFLPS_SIZE_MODE</B>  /* Perspective size */
+                 <B>PFLPS_SIZE_MODE_ON</B> - Enable perspective light
+                 point size. Perspective size is computed on the
+                 CPU.
+
+                 <B>PFLPS_SIZE_MODE_OFF</B> - Disable perspective light
+                 point size.
+
+              <B>PFLPS_TRANSP_MODE</B>  /* Perspective fading */
+                 <B>PFLPS_TRANSP_MODE_ON</B> - Enable default (CPU-
+                 based) light point fading.
+
+                 <B>PFLPS_TRANSP_MODE_OFF</B> - Disable light point fad-
+                 ing.
+
+                 <B>PFLPS_TRANSP_MODE_ALPHA</B> - Enable light point
+                 fading. Compute fade value on CPU and modify
+                 light point alpha. This mode requires that
+
+              <B>PFLPS_FOG_MODE</B>  /* Fog punch-through */
+                 <B>PFLPS_FOG_MODE_ON</B> - Enable default (CPU-based)
+                 fog punch-through.
+
+                 <B>PFLPS_FOG_MODE_OFF</B> - Disable fog punch-through.
+
+                 <B>PFLPS_FOG_MODE_ALPHA</B> - Enable fog punch-through.
+                 Compute fog value on CPU and modify light point
+                 alpha. This mode requires that pfGeoSets have a
+                 <B>PFGS_COLOR4</B> binding of <B>PFGS_PER_VERTEX</B> and that
+                 there be a unique color for each point.
+
+                 <B>PFLPS_FOG_MODE_TEX</B> - Enable fog punch-through.
+                 Use texture mapping to simulate fog.
+
+                 (Normal fogging should be disabled (-
+                 <B>pfDisable(PFEN_FOG)</B> or
+                 <B>pfGeoState::setMode(PFSTATE_ENFOG,</B> <B>0)</B>) when
+                 <B>PFLPS_FOG_MODE</B> is not <B>PFLPS_FOG_MODE_OFF</B> since
+                 the pfLPointState will fog the points)
+
+
+              <B>PFLPS_DIR_MODE</B>  /* Directionality enable */
+                 <B>PFLPS_DIR_MODE_ON</B> - Enable default (CPU-based)
+                 directional light points.
+
+                 <B>PFLPS_DIR_MODE_OFF</B> - Disable directional light
+                 points.
+
+                 <B>PFLPS_DIR_MODE_ALPHA</B> - Enable directional light
+                 points. Compute directionality on CPU and modify
+                 light point alpha. This mode requires that
+                 pfGeoSets have a <B>PFGS_COLOR4</B> binding of
+                 <B>PFGS_PER_VERTEX</B> and that there be a unique color
+                 for each point.
+
+                 <B>PFLPS_DIR_MODE_TEX</B> - Enable directional light
+                 points. Use texture mapping to simulate direc-
+                 tionality.
+
+              <B>PFLPS_SHAPE_MODE</B>  /* Directionality shape */
+                 <B>PFLPS_SHAPE_MODE_UNI</B> - Directional light points
+                 are unidirectional.  Light distribution is an
+                 elliptical cone specified by
+                 <B>pfLPointState::setShape</B>, centered about the
+                 light direction vector.
+
+                 <B>PFLPS_SHAPE_MODE_BI</B> - Directional light points
+                 are bidirectional with identical front and back
+                 colors. Light distribution is two elliptical
+                 cones, specified by <B>pfLPointState::setShape</B>,
+                 centered about the positive and negative light
+                 direction vectors.
+
+                 <B>PFLPS_SHAPE_MODE_BI_COLOR</B> - Directional light
+                 points are bidirectional with back color speci-
+                 fied by <B>pfLPointState::setBackColor</B>. Light dis-
+                 tribution is two elliptical cones, specified by
+                 <B>pfLPointState::setShape</B>, centered about the pos-
+
+                 <B>PFLPS_RANGE_MODE_TRUE</B> - Range to light point is
+                 true, slanted range to eye. This may be slower,
+                 but more accurate than <B>PFLPS_RANGE_MODE_DEPTH</B>.
+
+       <B>pfLPointState</B> <B>Values</B>
+
+       <B>pfLPointState::setVal</B> sets the attribute of the pfL-
+       PointState identified by <I>which</I> to <I>val</I>.
+       <B>pfLPointState::getVal</B> returns the attribute of the pfL-
+       PointState identified by <I>which</I>.
+
+       Values associated with <B>PFLPS_SIZE_MODE</B> and which have
+       effect only when <B>PFLPS_SIZE_MODE</B> is <B>PFLPS_SIZE_MODE_ON</B> are
+       the following:
+
+              <B>PFLPS_SIZE_MIN_PIXEL</B>
+                     <I>val</I> specifies the minimum diameter, in pix-
+                     els, of light points. Default value is 0.25.
+                     Note that actual minimum point size is
+                     clamped to the minimum supported by the
+                     graphics hardware.
+
+              <B>PFLPS_SIZE_MAX_PIXEL</B>
+                     <I>val</I> specifies the maximum diameter, in pix-
+                     els, of light points. Default value is 4.0.
+                     Note that actual maximum point size is
+                     clamped to the maximum supported by the
+                     graphics hardware.
+
+              <B>PFLPS_SIZE_ACTUAL</B>
+                     <I>val</I> specifies light point diameter in eye
+                     coordinates. Scales do not affect the actual
+                     light point size.  Default value is 0.25.
+
+       In pseudo-code, the size of a light point is determined as
+       follows:
+
+       /* NearPixelDistance is described below */
+       computedSize = <B>PFLPS_SIZE_ACTUAL</B> * NearPixelDistance / rangeToEye;
+
+       if (<B>PFLPS_SIZE_MODE</B> == <B>PFLPS</B> <B>_SIZE_MODE_ON</B>)
+       {
+           /* Clamp pixel size of point */
+           if (computedSize &lt; <B>PFLPS_SIZE_MIN_PIXEL</B>)
+            computedSize = <B>PFLPS_SIZE_MIN_PIXEL</B>;
+           else
+           if (computedSize &gt; <B>PFLPS_SIZE_MAX_PIXEL</B>)
+            computedSize = <B>PFLPS_SIZE_MAX_PIXEL</B>;
+
+           lightPointSize = computedSize;
+       }
+
+
+       Values associated with <B>PFLPS_TRANSP_MODE</B> and which have
+       effect only when <B>PFLPS_TRANSP_MODE</B> is not
+       <B>PFLPS_TRANSP_MODE_OFF</B>.
+
+              <B>PFLPS_TRANSP_PIXEL_SIZE</B>
+                     <I>val</I> specifies an exponential falloff for
+                     light point fading and should be &gt;= 0.0.
+                     Values &gt; 0 and &lt; 1 make the falloff curve
+                     flatter while values &gt; 1 make it sharper.
+                     Default value is 1.0 for a linear falloff
+                     based on projected pixel size.
+
+              <B>PFLPS_TRANSP_SCALE</B>
+                     <I>val</I> specifies a scale factor for the light
+                     point fade multiplier. Values &gt; 0 and &lt; 1
+                     decrease the falloff rate while values &gt; 1
+                     increase it.  Default value is 1.0.
+
+              <B>PFLPS_TRANSP_CLAMP</B> - <I>val</I> specifies the minimum fade
+              multiplier.
+
+       In pseudo-code, the transparency of a light point is
+       determined as follows:
+
+       if (<B>PFLPS_TRANSP_MODE</B> == <B>PFLPS_TRANSP_MODE_ALPHA</B> &amp;&amp;
+           <B>PFLPS_TRANSP_PIXEL_SIZE</B> &gt; computedSize)
+       {
+           float       a;
+
+           a = 1.0f - <B>PFLPS_TRANSP_SCALE</B> *
+            powf(<B>PFLPS_TRANSP_PIXEL_SIZE</B> - computedSize,
+                 <B>PFLPS_TRANSP_EXPONENT</B>);
+
+           /* Clamp alpha multiplier, not alpha */
+           if (a &lt; <B>PFLPS_TRANSP_CLAMP</B>)
+            a = <B>PFLPS_TRANSP_CLAMP</B>;
+
+           lightPointAlpha *= a;
+       }
+
+
+
+       <B>PFLPS_FOG_SCALE</B>
+              <I>val</I> specifies a scale factor that multiplies the
+              range from eye to light point before fogging. Val-
+              ues &gt; 0.0 and &lt; 1.0 cause light points to punch
+              through fog more than non-emissive surfaces.
+              Default value is 0.25.
+
+              In pseudo-code, the fog of a light point is deter-
+              mined as follows:
+
+              /* fogFunction ranges from 0 (no fog) to 1 (completely fogged) */
+              lightPointAlpha *= 1.0f - fogFunction(rangeToEye * <B>PFLPS_FOG_SCALE</B>);
+
+
+       <B>PFLPS_INTENSITY</B>
+              <I>val</I> multiplies all light point alphas.  Default
+              value is 1.0.
+
+       <B>PFLPS_SIZE_DIFF_THRESH</B>
+              <I>val</I> specifies the threshold, in pixels, at which a
+              new point size should be specified to the Graphics
+              Library.  It is strictly a tuning parameter which
+
+       <B>ALPHA</B> mechanism is the default and uses the CPU to compute
+       the effect which is then realized by modifying the alpha
+       of light point colors.  pfGeoSets of type <B>PFGS_POINTS</B>
+       which use an <B>ALPHA</B> mechanism should have a <B>PFGS_COLOR4</B>
+       binding of <B>PFGS_PER_VERTEX</B> even if all point colors are
+       the same, since the light point alphas will be different
+       based on <B>ALPHA</B> computation by the pfLPointState.
+
+       While <B>ALPHA</B> mechanisms are graphics hardware-independent,
+       they may be slower than <B>TEX</B> mechanisms on machines which
+       provide hardware texture mapping. By supplying an appro-
+       priate pfTexture, pfTexGen, and pfTexEnv (usually attached
+       to the pfGeoState to which the pfLPointState is attached),
+       you can use the texture mapping hardware to efficiently
+       simulate directionality or fog punch-through and perspec-
+       tive fading. At this time it is not possible to support
+       all <B>TEX</B> mechanisms at once:
+
+              1.     Only <B>PFLPS_DIR_MODE_TEX</B> or,
+
+              2.     <B>PFLPS_TRANSP_MODE_TEX</B> and/or
+                     <B>PFLPS_FOG_MODE_TEX</B>
+       It is recommended that directional light points use
+       <B>PFLPS_DIR_MODE_TEX</B> since directionality is the most expen-
+       sive effect to compute on the CPU.
+
+       Two convenience routines, <B>pfLPointState::makeRangeTex</B> and
+       <B>pfLPointState::makeShapeTex</B> are provided to compute a tex-
+       ture image which accurately mimics certain characteristics
+       of the pfLPointState.
+
+       <B>pfLPointState::makeRangeTex</B> should be used in conjunction
+       with <B>PFLPS_TRANSP_MODE_TEX</B> and/or <B>PFLPS_FOG_MODE_TEX</B> and
+       will set a computed image on the supplied pfTexture, <I>tex</I>.
+       The image will be a 2D array of <I>size</I> by <I>size</I> if both
+       <B>PFLPS_TRANSP_MODE_TEX</B> and <B>PFLPS_FOG_MODE_TEX</B> are set on
+       <I>lpstate</I> or the image will be a 1D array of length <I>size</I> if
+       only 1 of <B>PFLPS_TRANSP_MODE_TEX</B> and <B>PFLPS_FOG_MODE_TEX</B> is
+       set.
+
+       When using <B>PFLPS_TRANSP_MODE_TEX</B> and/or
+       <B>PFLPS_FOG_MODE_TEX</B>, you must supply a pfTexGen structure
+       which computes the S (and T if both <B>PFLPS_TRANSP_MODE_TEX</B>
+       and <B>PFLPS_FOG_MODE_TEX</B> are set) texture coordinates as
+       distance from the Z = 0 plane in eye coordinates.  For
+       example:
+
+       tgen = new pfTexGen;
+       tgen-&gt;setPlane(PF_S, 0.0f, 0.0f, 1.0f, 0.0f);
+       tgen-&gt;setPlane(PF_T, 0.0f, 0.0f, 1.0f, 0.0f);
+       tgen-&gt;setMode(PF_S, PFTG_EYE_PLANE);
+       tgen-&gt;setMode(PF_T, PFTG_EYE_PLANE);
+
+       <B>pfLPointState::makeRangeTex</B> takes into account only the
+       following values of the pfLPointState when building the
+       texture image and should be called again whenever they
+       change:
+
+              <B>PFLPS_TRANSP_PIXEL_SIZE</B>
+
+       its dimensions are <I>size</I> by <I>size</I>. When using
+       <B>PFLPS_DIR_MODE_TEX</B>, you must supply a pfTexGen structure
+       which uses <B>PFTG_SPHERE_MAP</B> to compute both S and T. For
+       example:
+
+       tgen = new pfTexGen;
+       tgen-&gt;setMode(PF_S, PFTG_SPHERE_MAP);
+       tgen-&gt;setMode(PF_T, PFTG_SPHERE_MAP);
+
+
+       <B>pfLPointState::makeShapeTex</B> takes into account only the
+       <B>PFLPS_SHAPE_MODE</B> modes and those values specified by
+       <B>pfLPointState::setShape</B>. Consequently,
+       <B>pfLPointState::makeShapeTex</B> should be called whenever
+       these modes/values change.
+
+       <I>fog</I> should represent the desired fog ramp, e.g.
+       <B>PFFOG_LINEAR</B>, <B>PFFOG_SPLINE</B>, if <B>PFLPS_FOG_MODE_TEX</B> is set
+       or NULL if not set. The fog ranges are ignored and <I>fog</I> is
+       not modified.
+
+       Each of the four main light point features (size, trans-
+       parency, fog, and directionality) are view-dependent
+       effects.  Consequently, knowledge about the viewing and
+       modeling transformations is required in certain situa-
+       tions:
+
+              1. When not using <B>libpf</B>. Otherwise, <B>libpf</B> automati-
+                 cally informs <B>libpr</B> of the viewing and modeling
+                 transformations.
+
+              2. When using an <B>ALPHA</B> mechanism, e.g.,
+                 <B>PFLPS_DIR_MODE_ALPHA</B>.
+
+              3. When <B>PFLPS_SIZE_MODE</B> is <B>PFLPS_SIZE_MODE_ON</B>.
+
+       Use <B>pfViewMat</B> and <B>pfModelMat</B> to specify the viewing and
+       modeling matrices respectively. For best performance,
+       these routines should be called only when the correspond-
+       ing matrix changes.  Additionally you may call
+       <B>pfInvModelMat</B> to specify the inverse of the modeling
+       matrix if you've already computed it for some other rea-
+       son. When using <B>PFLPS_SIZE_MODE_ON</B>, use <B>pfNearPixDist</B> to
+       specify the distance, in pixels, from the eye to the near
+       clip plane.  pfLPointState needs this parameter to map
+       world size to pixel size (but only if not using <B>libpf</B>).
+       <B>pfViewMat</B>, <B>pfModelMat</B>, <B>pfInvModelMat</B>, and <B>pfNearPixDist</B>
+       are all display-listable commands which may be captured by
+       an open pfDispList.
+
+       <B>new</B>(arena) allocates a pfLPointState from the specified
+       memory arena, or from the process heap if <I>arena</I> is NULL.
+       <B>new</B> allocates a pfLPointState from the default memory
+       arena (see <B>pfGetSharedArena</B>).  Like other pfObjects, pfL-
+       PointStates cannot be created statically, automatically on
+       the stack or in arrays.  pfLPointStates should be deleted
+       with <B>pfDelete</B> rather than the delete operator.
+
+       <B>pfLPointState::getClassType</B> returns the <B>pfType</B>* for the
+       test for strict equality of the <B>pfType</B>*'s.
+
+
+       <B>pfLightPoint::setShape</B> specifies the light distribution
+       characteristics of directional light points. Light point
+       directions are specified by pfGeoSet normals after they
+       have been transformed by the current modeling matrix. Note
+       that a <B>PFGS_NORMAL3</B> binding of <B>PFGS_OVERALL</B> is permitted
+       as well as a binding of <B>PFGS_PER_VERTEX</B>.  Directional
+       light points require that <B>PFLPS_DIR_MODE</B> be
+       <B>PFLPS_DIR_MODE_ON</B>, <B>PFLPS_DIR_MODE_ALPHA</B>, or
+       <B>PFLPS_DIR_MODE_TEX</B>.
+
+       <I>horiz</I> and <I>vert</I> are total-angles angles (not half-angles)
+       in degrees which specify the horizontal and vertical
+       envelopes about the direction vector. As such, the maximum
+       value for these angles is 180 degrees, for a 180 degree
+       lobe shape. An envelope is a symmetric angular spread in a
+       specific plane about the light direction vector.  The
+       default direction is along the positive Y axis so the hor-
+       izontal envelope is in the X plane and the vertical in the
+       Z plane. The envelopes are twisted about the +Y axis by
+       <I>roll</I> degrees, then rotated by the rotation which takes the
+       +Y axis onto the light point direction vector. Default
+       values are:
+
+              <I>horiz</I> = 90 degrees
+              <I>vert</I> = 90 degrees
+              <I>roll</I> = 0 degrees
+              <I>falloff</I> = 1
+              <I>ambient</I> = 0
+
+       When the vector from the eyepoint to the light position is
+       outside its envelope, the light point's intensity is <I>ambi-</I>
+       <I>ent</I>.  If within, the intensity of the light point is com-
+       puted based on the location of the eye within the ellipti-
+       cal cone.  Intensity ranges from 1.0 when the eye lies on
+       the light direction vector to <I>ambient</I> on the edge of the
+       cone.  <I>falloff</I> is an exponent which modifies the inten-
+       sity.  A value of 0 indicates that there is no falloff and
+       values &gt; 0 increase the falloff rate.  The default <I>falloff</I>
+       is 1.  As intensity decreases, the light point's trans-
+       parency increases.
+
+       <B>pfLightPoint::getShape</B> copies the pfLPointState's shape
+       parameters into <I>horiz</I>, <I>vert</I>, <I>roll</I>, <I>falloff</I>, and <I>ambient</I>.
+
+       <B>pfLPointState::setBackColor</B> specifies the back color of
+       the pfLPointState.  If the pfLPointState's shape mode is
+       not <B>PFLPS_SHAPE_MODE_BI_COLOR</B>, then the back color has no
+       effect. <B>pfLPointState::setBackColor</B> copies the pfL-
+       PointState's back color components into <I>r</I>, <I>g</I>, <I>b</I>, <I>a</I>.
+
+       <B>pfLPointState::apply</B> makes the pfLPointState the current
+       pfLPointState which affects all subsequently drawn
+       pfGeoSets of type <B>PFGS_POINTS</B>.  <B>pfLPointState::apply</B> is a
+       display-listable command which may be captured by an open
+       pfDispList. A pfLPointState may also be attached to a
+       pfGeoState.  <B>pfGetCurLPState</B> returns the current pfL-
+       many case, but is not tolerable for high quality light
+       points.
+
+       An other way is to have a separate task to do the process-
+       ing in parallel with the drawing of the scene, and then to
+       draw the light points that have already been preprocessed.
+       (see <B>pfDispList::preprocess</B>)
+
+       In that case, do not use textures simplification. This
+       prevent preprocessing and also annul the following pfL-
+       PointState callbacks. If you do not have a process dedi-
+       cated to preprocess light points, and do not use texture
+       simplification in a pfLPointState, you may use the follow-
+       ing callbacks being conscious of the time taken out of the
+       draw by the callback.
+
+       <B>pfLPointState::setRasterFunc</B> sets the <I>rasterCallback</I> func-
+       tion and the user data (<I>data</I>) to the <I>pfLPointState</I>.
+
+       <B>pfLPointState::getRasterFunc</B> gives back the current func-
+       tion and data.
+
+       <B>pfLPointState::setCalligFunc</B> and
+       <B>pfLPointState::getCalligFunc</B> do the same for the Calli-
+       graphic Light Points callback as explained in the
+       <B>pfCalligraphic</B> man pages.
+
+       The object of those callbacks is to give access directly
+       to the computation of each light in the pfGoeSet. The
+       callback will be call when processing the pfLPointState
+       only if the <B>PFLPS_CALLBACK_MODE</B> is not set to
+       <B>PFLPS_CALLBACK_MODE_OFF</B>.
+
+       Two modes are available:
+
+       <B>PFLPS_CALLBACK_MODE_PRE</B> makes the callback to be invoked
+       before IRIX Performer standard light points behaviour. Use
+       this to implement your own attenuation algorithm.
+
+       <B>PFLPS_CALLBACK_MODE_POST</B> makes the callback to be invoked
+       after IRIX Performer do the standard computation. Use this
+       to implement some nice animations, or final touch attenua-
+       tion computation.
+
+
+       When the callback returns, no further computation is done
+       before the light points are drawn.
+
+       The callback function receive many arguments (as defined
+       in pr.h):
+
+       typedef struct {
+            pfLPointState   *lpstate;  /* Read Only LPState */
+            pfGeoSet        *geoset;   /* Read Only GeoSet */
+            void            *userData; /* Provided when setting the callback */
+            float           *sizes;    /* Write Only - resulting sizes */
+            float           *alphas;   /* Write Only - resulting alphas */
+            } pfRasterData;
+
+
+       <I>sizes</I>, <I>alphas</I> are the result of the light points computa-
+       tion. They are allready allocated, even if it is a PRE
+       callback.
+
+       The <I>sizes</I> contains the size of each point in pixel unit,
+       and <I>alpha</I> the transparency. The size is always a positive
+       value, but an alpha value can be negative. A negative
+       value tells to draw this point with the backColor, with an
+       alpha value of -<I>alpha</I>.
+
+       Here is an skeleton of a post callback:
+
+
+       void myCallback(pfRasterData *rasterData)
+       {
+       pfVec3* vertices;
+       unsigned short *vindex;
+       pfVec3* norms;
+       unsigned short *nindex;
+       int nbind;
+       pfVec4* colors;
+       unsigned short *cindex;
+       int cbind;
+       unsigned short *cindex;
+       pfFog *fog;
+       int fogEnabled = 0;
+       int i,n;
+
+       int sizeMode;
+
+       pfMatrix ViewMat, InvModelView;
+
+            /* get pointers to the geoset */
+            pfGetGSetAttrLists(rasterData-&gt;gset,PFGS_COORD3, &amp;vertices, &amp;vindex);
+            pfGetGSetAttrLists(rasterData-&gt;gset,PFGS_NORMAL3, &amp;norms, &amp;nindex);
+            nbind = pfGetGSetAttrBind(rasterData-&gt;gset,PFGS_NORMAL3);
+            /* colors are usualy not used here */
+            cbind = pfGetGSetAttrBind(rasterData-&gt;gset,PFGS_COLOR4);
+            pfGetGSetAttrLists(rasterData-&gt;gset,PFGS_COLOR4, &amp;colors, &amp;cindex);
+            /* use color table if enabled */
+            if (pfGetEnable(PFEN_COLORTABLE))
+                 colors = pfGetCurCtab();
+            /* get the number of lights */
+            n = pfGetGSetNumPrims(rasterData-&gt;gset);
+
+            /* get matrices */
+            pfGetViewMat(ViewMat);
+            pfGetInvModelMat(InvModelMat);
+
+            /* see if there's fog */
+            fog = pfGetCurFog();
+            if (pfGetEnable(PFEN_FOG) &amp;&amp; fog)
+               fogEnabled = 1;
+
+            /* get information on the lpstate */
+            sizeMode = pfGetLPStateMode(rasterData-&gt;lpstate,PFLPS_SIZE_MODE);
+            ........
+            ........
+                   nj=nindex[0];
+                  else if (nbind)
+                      nj=nindex[i];
+                  else
+                   nj=-1; /* this geoset has no normals */
+
+                  nv=vindex[i];
+               } else
+               {
+                  if (nbind &amp; PFGS_OVERALL)
+                      nj=0;
+                     else if (nbind)
+                   nj=i;
+                  else
+                   nj=-1; /* this geoset has no normals */
+
+                  nv=i;
+               }
+               /* now we have vertices[nv] and normals[nv] to do the computation */
+
+               ........
+               ........
+               rasterData-&gt;alphas[i] = ....
+               rasterData-&gt;sizes[i] = ....
+               }
+       }
+
+
+       <B>Calligraphic</B> Light Points are supported using the prepro-
+       cessing capability, and the pfCalligraphic object. The
+       calligraphic extensions to pfLPointState are described in
+       the pfCalligraphic man pages.
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       Falloff distribution is cosine(incidence angle) ^ falloff.
+
+       The angle calculation for textured lightpoints may be
+       inaccurate in extreme wide-angle visibility configura-
+       tions, and work only for symmetric aperture.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       pfCalligraphic, pfDelete, pfDispList, pfFog, pfGeoSet,
+       pfGeoState, pfState, pfTexture, pfTexGen, pfuMakeLPStat-
+       eRangeTex, pfuMakeLPStateShapeTex
+
+
+
+                                               pfLPointState(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

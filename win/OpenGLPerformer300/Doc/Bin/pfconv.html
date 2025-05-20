@@ -1,0 +1,202 @@
+<HTML>
+<HEAD>
+<TITLE>pfconv</TITLE>
+</HEAD>
+<BODY>
+<H1>pfconv</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfconv(1pf)                                           pfconv(1pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfconv</B> - OpenGL Performer file translator
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>pfconv</B> [ options ] infile1 [ infile2 ... ] outfile
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>pfconv</B>  is one of the sample programs distributed with the
+       OpenGL  Performer   high-performance   graphics   library.
+       <B>pfconv</B>  loads  one  or more files into an OpenGL Performer
+       scene graph, and then writes the resulting scene graph out
+       to  a named output file.  It is installed in the <I>/usr/sbin</I>
+       directory on IRIX, and <I>/usr/bin/X11</I> on Linux.
+
+       The following formats support file writing:
+
+
+              dwb       Coryphaeus Software Designer's  Workbench
+                        format
+
+              medit     Medit productions modeler format
+
+              pfa       OpenGL Performer ASCII file format
+
+              pfb       OpenGL  Performer  high-speed binary file
+                        format  (recommended format)
+
+       Here's an example that  generates  a  fast-loading  OpenGL
+       Performer   PFB  format  file  representing  a  Sierpinski
+       sponge:
+
+
+       pfconv 2.sponge example.pfb
+       perfly example.pfb
+
+
+       Preconverting files to the <I>pfb</I> format can provide a great
+       speed advantage for demos and other applications where
+       fast database loading is important.
+
+
+
+   <B>pfconv</B> <B>command</B> <B>line</B> <B>options</B>
+       -b &lt;mode&gt;,&lt;value&gt;             -Set builder mode (default value is OFF)
+       -B &lt;mode&gt;,&lt;value&gt;             -Set builder mode (default value is ON)
+                           See the <B>pfdBldrMode</B> reference page
+                           for more information.
+           0 -&gt; PFDBLDR_MESH_ENABLE
+           1 -&gt; PFDBLDR_MESH_SHOW_TSTRIPS
+           2 -&gt; PFDBLDR_MESH_INDEXED
+           3 -&gt; PFDBLDR_MESH_MAX_TRIS
+           4 -&gt; PFDBLDR_MESH_RETESSELLATE
+           5 -&gt; PFDBLDR_MESH_LOCAL_LIGHTING
+          10 -&gt; PFDBLDR_AUTO_COLORS
+                0 -&gt; PFDBLDR_COLORS_PRESERVE  + leave colors alone
+                3 -&gt; PFDBLDR_NORMALS_DISCARD  - toss existing normals
+          12 -&gt; PFDBLDR_AUTO_TEXTURE
+                0 -&gt; PFDBLDR_TEXTURE_PRESERVE + leave texture coord alone
+                1 -&gt; PFDBLDR_TEXTURE_MISSING  - make missing texture coord
+                2 -&gt; PFDBLDR_TEXTURE_GENERATE - make all texture coord
+                3 -&gt; PFDBLDR_TEXTURE_DISCARD  - toss existing texture coord
+          13 -&gt; PFDBLDR_AUTO_ORIENT
+                0 -&gt; PFDBLDR_ORIENT_PRESERVE  - leave normal and order alone
+                1 -&gt; PFDBLDR_ORIENT_NORMALS   - make normal match vertex order
+                2 -&gt; PFDBLDR_ORIENT_VERTICES  + make vertex order match normal
+          15 -&gt; PFDBLDR_AUTO_DISABLE_TCOORDS_BY_STATE
+                0 - dont remove tcoords if no texture specified
+                1 - remove tcoords if no texture specified
+          16 -&gt; PFDBLDR_AUTO_DISABLE_NCOORDS_BY_STATE
+                0 - dont remove ncoords if no material specified
+                1 - remove ncoords if no material specified
+          17 -&gt; PFDBLDR_AUTO_LIGHTING_STATE_BY_NCOORDS
+                0 - dont automatically set lighting enable based on presence of ncoords
+                1 - automatically set lighting enable based on presence of ncoords
+          18 -&gt; PFDBLDR_AUTO_LIGHTING_STATE_BY_MATERIALS
+                0 - dont automatically set lighting enable based on presence of material
+                1 - automatically set lighting enable based on presence of material
+          19 -&gt; PFDBLDR_AUTO_TEXTURE_STATE_BY_TEXTURES
+                0 - dont automatically set texture enable based on presence of tcoords
+                1 - automatically set texture enable based on presence of tcoords
+          20 -&gt; PFDBLDR_AUTO_TEXTURE_STATE_BY_TCOORDS
+                0 - dont automatically set texture enable based on presence of texture
+                1 - automatically set texture enable based on presence of texture
+          30 -&gt; PFDBLDR_BREAKUP
+          31 -&gt; PFDBLDR_BREAKUP_SIZE
+          32 -&gt; PFDBLDR_BREAKUP_BRANCH
+          33 -&gt; PFDBLDR_BREAKUP_STRIP_LENGTH
+          34 -&gt; PFDBLDR_SHARE_MASK
+          35 -&gt; PFDBLDR_ATTACH_NODE_NAMES
+          36 -&gt; PFDBLDR_DESTROY_DATA_UPON_BUILD
+          37 -&gt; PFDBLDR_PF12_STATE_COMPATIBLE
+          38 -&gt; PFDBLDR_BUILD_LIMIT  -maximum number of tris/strip
+       -F &lt;path&gt;                     -Set file path
+       -n &lt;notify&gt;                   -Debug level
+       -o &lt;mode&gt;,&lt;value&gt;             -Set optimizer mode (default value is OFF)
+       -O &lt;mode&gt;,&lt;value&gt;             -Set optimizer mode (default value is ON)
+           0 -&gt; pfdMakeShare                      defaults to ON
+           1 -&gt; pfdCombineLayers                  defaults to ON
+           2 -&gt; pfFlatten                         defaults to ON
+           3 -&gt; pfdCleanTree                      defaults to ON
+           4 -&gt; pfdCombineBillboards,&lt;size_limit&gt; defaults to OFF
+           5 -&gt; pfdFreezeTransforms               defaults to OFF
+           6 -&gt; pfPartition                       defaults to OFF
+
+
+       Examine the source code to <B>pfconv</B> to understand the opti-
+       mization transformations that can be applied to files as
+       they are loaded.  By default, only safe optimizations are
+       performed, but there are several other optimizations, some
+       quite aggressive, that can be enabled
+
+
+
+   <B>Supported</B> <B>Database</B> <B>Formats</B>
+              bin       Minor SGI format used by <I>powerflip</I>
+              bpoly     Side Effects Software <I>PRISMS</I> binary
+              byu       Brigham Young University CAD/FEA data
+              dwb       Coryphaeus Software <I>Designer's</I> <I>Workbench</I>
+              dxf       AutoDesk <I>AutoCAD</I> ASCII format
+              flt11     MultiGen public domain Flight v11 format
+              flt14     MultiGen <I>OpenFlight</I> v14 format
+              gds       McDonnell-Douglas GDS <I>things</I> data
+              gfo       Minor SGI format (radiosity output)
+              im        Minor SGI format (OpenGL Performer exam-
+                        ple)
+              irtp      AAI/Graphicon <I>Interactive</I> <I>Real-Time</I> <I>PHIGS</I>
+              iv        SGI OpenInventor / Silicon Studio Key-
+                        stone
+              lsa       Lightscape Technologies radiosity (ASCII)
+              lsb       Lightscape Technologies radiosity
+                        (binary)
+              m         University of Washington mesh data
+              medit     Medit Productions <I>medit</I> modeling tool
+              nff       Eric Haines' ray tracing test data format
+              obj       Wavefront Technologies data format
+              phd       Minor SGI format (polyhedra)
+              pfa       OpenGL Performer ASCII database format
+              pfb       OpenGL Performer BINARY database format
+              poly      Side Effects Software <I>PRISMS</I> ASCII data
+              pts       University of Washington point data
+              ptu       Minor SGI format (OpenGL Performer exam-
+                        ple)
+              sgf       US NAVY standard graphics format
+              sgo       Minor SGI format
+              spf       US NAVY simple polygon format
+              sponge    Sierpinski sponge 3D fractal generator
+              star      Yale University compact star chart data
+              stla      3D Structures Stereolithography (ASCII)
+              stlb      3D Structures Stereolithography (binary)
+              sv        Format of John Kichury's <I>i3dm</I> modeler
+              tri       University of Minnesota Geometry Center
+                        data
+              unc       University of North Carolina data
+
+
+
+   <B>Learning</B> <B>More</B>
+       Once you've seen OpenGL Performer in action, you will want
+       to learn more about it.  The OpenGL Performer Programming
+       Guide and the OpenGL Performer Release Notes are the pri-
+       mary sources of information, but the a number of informa-
+       tion sources are available to give you a good start in
+       your learning process. The origin of this quest is the
+       Performer man page. Just type "man performer" and just
+       about everything you might want to know will be there or
+       in one of the on-line resources listed there.
+
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+       <B>performer</B>, <B>pfconv</B>
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

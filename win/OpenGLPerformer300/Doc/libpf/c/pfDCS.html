@@ -1,0 +1,324 @@
+<HTML>
+<HEAD>
+<TITLE>pfDCS</TITLE>
+</HEAD>
+<BODY>
+<H1>pfDCS</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfDCS(3pf)                                             pfDCS(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfNewDCS,</B>  <B>pfGetDCSClassType,</B>  <B>pfDCSTrans,</B> <B>pfDCSRot,</B> <B>pfDC-</B>
+       <B>SCoord,</B> <B>pfDCSScale,</B> <B>pfDCSScaleXYZ,</B> <B>pfDCSMat,</B>  <B>pfGetDCSMat,</B>
+       <B>pfGetDCSMatPtr,</B>  <B>pfDCSMatType,</B>  <B>pfGetDCSMatType</B>  - Create,
+       modify and get the matrix of a dynamic coordinate  system.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       pfDCS *           <B>pfNewDCS</B>(void);
+
+       pfType *          <B>pfGetDCSClassType</B>(void);
+
+       void              <B>pfDCSTrans</B>(pfDCS *dcs, float x, float y,
+                           float z);
+
+       void              <B>pfDCSRot</B>(pfDCS *dcs,  float h,  float p,
+                           float r);
+
+       void              <B>pfDCSCoord</B>(pfDCS *dcs, pfCoord *coord);
+
+       void              <B>pfDCSScale</B>(pfDCS *dcs, float s);
+
+       void              <B>pfDCSScaleXYZ</B>(pfDCS *dcs,       float x,
+                           float y, float z);
+
+       void              <B>pfDCSMat</B>(pfDCS *dcs, pfMatrix m);
+
+       void              <B>pfGetDCSMat</B>(pfDCS *dcs, pfMatrix m);
+
+       const pfMatrix*   <B>pfGetDCSMatPtr</B>(pfDCS *dcs);
+
+       void              <B>pfDCSMatType</B>(pfDCS *dcs, uint val);
+
+       uint              <B>pfGetDCSMatType</B>(pfDCS *dcs);
+
+
+</PRE>
+<H2>PARENT CLASS FUNCTIONS</H2><PRE>
+       The OpenGL Performer class <B>pfDCS</B> is derived from the  par-
+       ent  class  <B>pfSCS</B>,  so  each  of these member functions of
+       class <B>pfSCS</B> are also directly usable with objects of class
+       <B>pfDCS</B>.   Casting  an object of class <B>pfDCS</B> to an object of
+       class <B>pfSCS</B> is taken care of automatically.  This is  also
+       true  for  casts  to  objects of ancestor classes of class
+       <B>pfSCS</B>.
+
+       void              <B>pfGetSCSMat</B>(pfSCS *scs, pfMatrix mat);
+       const pfMatrix*   <B>pfGetSCSMatPtr</B>(pfSCS *scs);
+
+
+       Since the class <B>pfSCS</B> is itself derived  from  the  parent
+       class  <B>pfGroup</B>,  objects  of  class <B>pfDCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfGroup</B>.
+
+       int        <B>pfAddChild</B>(pfGroup *group, pfNode *child);
+       int        <B>pfGetNumChildren</B>(const pfGroup *group);
+       int        <B>pfBufferAddChild</B>(pfGroup *group,           pfN-
+                    ode *child);
+       int        <B>pfBufferRemoveChild</B>(pfGroup *group,        pfN-
+                    ode *child);
+
+
+       Since  the class <B>pfGroup</B> is itself derived from the parent
+       class <B>pfNode</B>, objects of class <B>pfDCS</B> can also be used with
+       these functions designed for objects of class <B>pfNode</B>.
+
+       pfGroup *      <B>pfGetParent</B>(const pfNode *node, int i);
+       int            <B>pfGetNumParents</B>(const pfNode *node);
+       void           <B>pfNodeBSphere</B>(pfNode *node, pfSphere *bsph,
+                        int mode);
+       int            <B>pfGetNodeBSphere</B>(pfNode *node,
+                        pfSphere *bsph);
+       pfNode*        <B>pfClone</B>(pfNode *node, int mode);
+       pfNode*        <B>pfBufferClone</B>(pfNode *node,       int mode,
+                        pfBuffer *buf);
+       int            <B>pfFlatten</B>(pfNode *node, int mode);
+       int            <B>pfNodeName</B>(pfNode *node, const char *name);
+       const char *   <B>pfGetNodeName</B>(const pfNode *node);
+       pfNode*        <B>pfFindNode</B>(pfNode *node,  const char *path-
+                        Name, pfType *type);
+       pfNode*        <B>pfLookupNode</B>(const char *name,
+                        pfType* type);
+       int            <B>pfNodeIsectSegs</B>(pfNode *node,
+                        pfSegSet *segSet, pfHit **hits[]);
+       void           <B>pfNodeTravMask</B>(pfNode *node,     int which,
+                        uint mask, int setMode, int bitOp);
+       uint           <B>pfGetNodeTravMask</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravFuncs</B>(pfNode* node,    int which,
+                        pfNodeTravFuncType pre, pfNodeTravFunc-
+                        Type post);
+       void           <B>pfGetNodeTravFuncs</B>(const pfNode* node,
+                        int which,     pfNodeTravFuncType *pre,
+                        pfNodeTravFuncType *post);
+       void           <B>pfNodeTravData</B>(pfNode *node,     int which,
+                        void *data);
+       void *         <B>pfGetNodeTravData</B>(const pfNode *node,
+                        int which);
+       void           <B>pfNodeTravMode</B>(pfNode* node,     int which,
+                        int mode, int val);
+       int            <B>pfGetNodeTravMode</B>(const pfNode* node,
+                        int which, int mode);
+
+
+       Since the class <B>pfNode</B> is itself derived from  the  parent
+       class  <B>pfObject</B>,  objects  of class <B>pfDCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfObject</B>.
+
+       void          <B>pfUserDataSlot</B>(pfObject *obj,      int slot,
+                       void *data);
+       void          <B>pfUserData</B>(pfObject *obj, void *data);
+       void*         <B>pfGetUserDataSlot</B>(pfObject *obj, int slot);
+       void*         <B>pfGetUserData</B>(pfObject *obj);
+
+       Since the class <B>pfObject</B> is itself derived from the parent
+       class  <B>pfMemory</B>,  objects  of class <B>pfDCS</B> can also be used
+       with  these  functions  designed  for  objects  of   class
+       <B>pfMemory</B>.
+
+       pfType *       <B>pfGetType</B>(const void *ptr);
+       int            <B>pfIsOfType</B>(const void *ptr, pfType *type);
+       int            <B>pfIsExactType</B>(const void *ptr,
+                        pfType *type);
+       const char *   <B>pfGetTypeName</B>(const void *ptr);
+       int            <B>pfRef</B>(void *ptr);
+       int            <B>pfUnref</B>(void *ptr);
+       int            <B>pfUnrefDelete</B>(void *ptr);
+       int            <B>pfUnrefGetRef</B>(void *ptr);
+       int            <B>pfGetRef</B>(const void *ptr);
+       int            <B>pfCopy</B>(void *dst, void *src);
+       int            <B>pfDelete</B>(void *ptr);
+       int            <B>pfIsFluxed</B>(void *ptr);
+       int            <B>pfCompare</B>(const void *ptr1,
+                        const void *ptr2);
+       void           <B>pfPrint</B>(const void *ptr,        uint which,
+                        uint verbose, FILE *file);
+       void *         <B>pfGetArena</B>(void *ptr);
+
+
+</PRE>
+<H2>PARAMETERS</H2><PRE>
+       <I>dcs</I>  identifies a pfDCS
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       A pfDCS (Dynamic  Coordinate  System)  is  a  pfSCS  whose
+       matrix can be modified.
+
+       <B>pfNewDCS</B>  creates  and  returns a handle to a pfDCS.  Like
+       other pfNodes, pfDCSes are always  allocated  from  shared
+       memory and can be deleted using <B>pfDelete</B>.
+
+       <B>pfGetDCSClassType</B> returns the <B>pfType</B>* for the class <B>pfDCS</B>.
+       The <B>pfType</B>* returned by <B>pfGetDCSClassType</B> is the  same  as
+       the <B>pfType</B>* returned by invoking <B>pfGetType</B> on any instance
+       of class <B>pfDCS</B>.  Because OpenGL Performer allows subclass-
+       ing  of  built-in  types, when decisions are made based on
+       the type of  an  object,  it  is  usually  better  to  use
+       <B>pfIsOfType</B>  to test if an object is of a type derived from
+       a Performer type rather than to test for  strict  equality
+       of the <B>pfType</B>*'s.
+
+       The  initial  transformation  is the identity matrix.  The
+       transformation of a pfDCS  can  be  set  by  specifying  a
+       matrix  or translation, scale and rotation.  When indepen-
+       dently setting translation, rotation, and scale, the pfDCS
+       matrix  is  computed  as S*R*T, where S is the scale, R is
+       the rotation, and T  is  the  translation.  The  order  of
+       effect  is  then  scale  followed  by rotation followed by
+       translation.
+
+       pfDCS operations are absolute rather than cumulative.  For
+       example:
+
+       pfDCSTrans(dcs, 2.0f, 0.0f, 0.0f);
+       transformation is changed or when children are added,
+       deleted or changed.  This behavior may be changed using
+       <B>pfNodeBSphere</B>.  The bound for a pfDCS encompasses all
+       B(i)*S*R*T, where B(i) is the bound for the child 'i' and
+       S*R*T represents the scale, rotation, and translation
+       transformation of the pfDCS.
+
+       <B>pfDCSTrans</B> sets the translation part of the pfDCS to (<I>x</I>,
+       <I>y</I>, <I>z</I>).  The rotational portion of the matrix is unchanged.
+
+       <B>pfDCSScale</B> sets the scale portion of the pfDCS to scale
+       uniformly by a scale factor <I>s</I>.  This supersedes the previ-
+       ous scale leaving the rotation and translation unchanged.
+       <B>pfDCSScaleXYZ</B> specifies a non-uniform scale of <I>x</I>, <I>y</I>, <I>z</I>.
+
+       <B>pfDCSRot</B> sets the rotation portion of the matrix:
+
+              <I>h</I>    Specifies heading, the rotation about the Z
+                   axis.
+
+              <I>p</I>    Specifies pitch, the rotation about the X
+                   axis.
+
+              <I>r</I>    Specifies roll, rotation about the Y axis.
+
+       The matrix created is R*P*H, where R is the roll trans-
+       form, P is the pitch transform and H is the heading trans-
+       form.  The new (h,p,r) combination replaces the previous
+       specification, leaving the scale and translation
+       unchanged.  The convention is natural for a model in which
+       +Y is "forward," +Z is "up" and +X is "right".  To main-
+       tain 1/1000 degree resolution in the single precision
+       arithmetic used internally for sine and cosine calcula-
+       tions, the angles <I>h</I>, <I>p</I>, <I>r</I> should be in the range of -7500
+       to +7500 degrees.
+
+       <B>pfDCSCoord</B> sets the rotation and translation portion of
+       the pfDCS according to <I>coord</I>.  This is equivalent to:
+
+       pfDCSRot(<I>dcs</I>, coord-&gt;hpr[0], coord-&gt;hpr[1], coord-&gt;hpr[2]);
+       pfDCSTrans(<I>dcs</I>, coord-&gt;xyz[0], coord-&gt;xyz[1], coord-&gt;xyz[2]);
+
+
+       <B>pfDCSMat</B> sets the transformation matrix for <I>dcs</I> to <I>m</I>.
+
+       Normally <B>pfDCSMat</B> is used as a replacement for the above
+       routines which individually set the scale, rotation and
+       translational components.  The mechanisms can be combined
+       but only if the supplied matrix can be represented as
+       scale followed by a rotation followed by a translation
+       (e.g. a point pt is transformed by the matrix as: pt' =
+       pt*S*R*T), which implies that no shearing or non-uniform
+       scaling is present.
+
+       <B>pfDCSMatType</B> allows the specification of information about
+       the type of transformation the matrix represents.  This
+       information allows Performer to speed up some operations.
+       The matrix type is specified as the OR of
+
+              PFMAT_SCALE
+                     matrix may include a uniform scale in the
+                     left upper 3X3 submatrix.
+
+              PFMAT_NONORTHO
+                     matrix may include a non-uniform scale in
+                     the left upper 3X3 submatrix.
+
+              PFMAT_PROJ
+                     matrix may include projections.
+
+              PFMAT_HOM_SCALE
+                     matrix may have mat[4][4] != 1.
+
+              PFMAT_MIRROR
+                     matrix may include mirroring transformation
+                     that switches between right handed and left
+                     handed coordinate systems.
+
+
+              <B>pfGetDCSMatType</B> returns the matrix type as
+              set by <B>pfDCSMatType</B>.  If no matrix type is set the
+              default is ~0, corresponding to a general matrix.
+
+              The transformation of a pfDCS affects all its chil-
+              dren.  As the hierarchy is traversed from top to
+              bottom, each new matrix is pre-multiplied to create
+              the new transformation.  For example, if DCSb is
+              below DCSa in the scene graph, any geometry G below
+              DCSa is transformed as G*DCSb*DCSa.
+
+              <B>pfFlatten</B> cannot flatten pfDCSes since they may
+              change at run-time.  In this case <B>pfFlatten</B> will
+              compute a pfSCS representing the accumulated static
+              transformation that the pfDCS inherits and insert
+              it above the pfDCS.  Static transformations below a
+              pfDCS are flattened as usual.  See <B>pfFlatten</B> for
+              more details.
+
+              The presence of transformations in the scene graph
+              impacts the performance of intersection, culling
+              and drawing.  pfGeoSet culling (see <B>PFCULL_GSET</B> in
+              <B>pfChanTravMode</B>) is disabled in portions of the
+              scene graph below pfDCSes.
+
+              Both pre and post CULL and DRAW callbacks attached
+              to a pfDCS (<B>pfNodeTravFuncs</B>) will be affected by
+              the transformation represented by the pfDCS, i.e. -
+              the pfDCS matrix will already have been applied to
+              the matrix stack before the pre callback is called
+              and will be popped only after the post callback is
+              called.
+
+              <B>pfGetDCSMat</B> copies the transformation matrix value
+              from <I>dcs</I> into the matrix <I>m</I>.  For faster matrix
+              access, <B>pfGetDCSMatPtr</B> can be used to get a const
+              pointer to <I>dcs</I>'s matrix.
+
+
+</PRE>
+<H2>SEE ALSO</H2><PRE>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

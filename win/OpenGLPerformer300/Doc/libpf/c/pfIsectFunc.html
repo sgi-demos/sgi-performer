@@ -1,0 +1,144 @@
+<HTML>
+<HEAD>
+<TITLE>pfIsectFunc</TITLE>
+</HEAD>
+<BODY>
+<H1>pfIsectFunc</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfIsectFunc(3pf)                                 pfIsectFunc(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfIsectFunc,</B> <B>pfGetIsectFunc,</B> <B>pfAllocIsectData,</B> <B>pfGetIsect-</B>
+       <B>Data,</B> <B>pfPassIsectData</B> - Set intersection  callback,  allo-
+       cate and pass intersection data.
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pf.h&gt;
+
+       void              <B>pfIsectFunc</B>(pfIsectFuncType func);
+
+       pfIsectFuncType   <B>pfGetIsectFunc</B>(void);
+
+       void *            <B>pfAllocIsectData</B>(int bytes);
+
+       void *            <B>pfGetIsectData</B>(void);
+
+       void              <B>pfPassIsectData</B>(void);
+
+
+                         typedef void (*pfIsectFuncType)(void *userData);
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       The <I>func</I> argument to <B>pfIsectFunc</B> specifies the intersec-
+       tion callback function.  This function will be invoked by
+       <B>pfFrame</B> and will be passed a pointer to a data buffer
+       allocated by <B>pfAllocIsectData</B>.  If a separate process is
+       allocated for intersections by the <B>PFMP_FORK_ISECT</B> mode to
+       <B>pfMultiprocess</B>, then <B>pfFrame</B> will cause <I>func</I> to be called
+       in the separate process.  <B>pfGetIsectFunc</B> returns the
+       intersection callback or <B>NULL</B> if none is set.
+
+       Within the intersection callback, the user may further
+       multiprocess intersection queries through any IRIX multi-
+       processing mechanism such as <B>fork</B>, <B>sproc</B>, or <B>m_fork</B>.  All
+       of these processes may call <B>pfNodeIsectSegs</B> in parallel.
+
+       When the intersection function is in a separate process,
+       it will run asynchronously with the rest of the rendering
+       pipeline.  Specifically, if the intersection function
+       takes more than a frame time, the rendering pipeline will
+       not be affected and the next invocation of the intersec-
+       tion function will be delayed until triggered by the next
+       <B>pfFrame</B>.  Changes to the scene graph made by the applica-
+       tion process are only propagated to the intersection pro-
+       cess after the intersection function returns.
+
+       Any modifications made to the scene graph by a forked
+       intersection function will not be reflected in the scene
+       graph that is seen by any other OpenGL Performer func-
+       tions.  To be safe, only <B>pfNodeIsectSegs</B> (which does not
+       modify the scene graph) should be called from within the
+       intersection function.
+
+       <B>pfAllocIsectData</B> returns a pointer to a chunk of shared
+       should be used to copy the intersection data into internal
+       OpenGL Performer memory when the next <B>pfFrame</B> is called.
+       Once <B>pfFrame</B> is called, the application may modify data in
+       the intersection data buffer without fear of colliding
+       with the forked intersection function.
+
+       Example 1: Multiprocessed intersections.
+
+       typedef struct
+       {
+           int         frameCount;   /* For frame stamping collisions */
+           pfNode      *collidee;    /* pfNode to collide with */
+           int         numCollisions;     /* Number of collision vectors */
+           pfSeg       *collisionVecs[MAXCOLLISIONS];
+       } IsectStuff;
+
+       void
+       isectFunc(void *data)
+       {
+           IsectStuff      istuff = (IsectStuff*) data;
+
+           pfNodeIsectSegs(istuff-&gt;collidee, etc...);
+       }
+            :
+           pfMultiprocess(PFMP_FORK_ISECT | PFMP_APP_CULL_DRAW);
+           pfConfig();
+            :
+           pfIsectFunc(isectFunc);
+           isectData = (IsectStuff*) pfAllocIsectData(sizeof(IsectStuff));
+
+           isectData-&gt;collidee = (pfNode*) scene;
+
+           while (!done)
+           {
+               pfSync();           /* Sleep until next frame boundary */
+
+               update_view();      /* Set view for frame N */
+
+               isectData-&gt;frameCount = pfGetFrameCount();
+
+               pfPassIsectData();  /* Pass intersection data to */
+                                   /* intersection process */
+
+               pfFrame();          /* Trigger cull, intersection for frame N */
+
+               app_funcs();        /* Perform application-specific functions */
+               update_positions(); /* Update moving models for frame N + 1 */
+
+               /*
+                * Act on result of previous collisions and set up isectData
+                * for more collisions.
+                */
+               update_collisions(isectData);
+           }
+
+
+       If <B>pfIsectFunc</B> is called before <B>pfConfig</B> and the multipro-
+       cessing mode is <B>PFMP_DEFAULT</B>, then <B>pfConfig</B> will fork the
+       intersection process if there are enough processors.  Oth-
+
+
+                                                 pfIsectFunc(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

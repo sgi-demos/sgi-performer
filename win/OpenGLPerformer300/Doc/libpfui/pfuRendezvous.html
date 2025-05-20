@@ -1,0 +1,84 @@
+<HTML>
+<HEAD>
+<TITLE>pfuRendezvous</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuRendezvous</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuRendezvous(3pf)                             pfuRendezvous(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuInitRendezvous,</B> <B>pfuMasterRendezvous,</B> <B>pfuSlaveRendezvous</B>
+       - Multiprocessing master and slave rendezvous routines
+
+
+</PRE>
+<H2>FUNCTION SPECIFICATION</H2><PRE>
+       #include &lt;Performer/pfutil.h&gt;
+
+       void   <B>pfuInitRendezvous</B>(pfuRendezvous *rvous,    int num-
+                Slaves);
+
+       void   <B>pfuMasterRendezvous</B>(pfuRendezvous *rvous);
+
+       void   <B>pfuSlaveRendezvous</B>(pfuRendezvous *rvous, int id);
+
+
+
+
+              typedef struct _pfuRendezvous
+              {
+                  int master;
+                  int numSlaves;
+                  int slaves[PFURV_MAXSLAVES];
+              } pfuRendezvous;
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       These rendezvous functions are useful for synchronizing
+       master and slave processes in a multiprocessing environ-
+       ment.
+
+       In the case of multiple processes, a rendezvous is a
+       method for synchronizing each independent process.  A pro-
+       cess chosen as the "master" waits for the remaining pro-
+       cesses, designated "slaves", to indicate through the ren-
+       dezvous that they are ready to synchronize.  As each slave
+       indicates its readiness, it then waits on the master pro-
+       cess.  The master process releases the slaves after all
+       slaves have made the rendezvous.  The rendezvous token
+       should be allocated in a shared arena; all processes
+       require access to it.
+
+       <B>pfuInitRendezvous</B> initializes the rendezvous token <I>rvous</I>
+       for one master process and <I>numSlaves</I> slave processes.
+
+       In order to synchronize multiple processes, the master
+       should call <B>pfuMasterRendezvous</B> and each of the slaves
+       should call <B>pfuSlaveRendezvous</B> with its slave ID in <I>id</I>.
+       Slave IDs can range from 0 to (<B>PFURV_MAXSLAVES</B> - 1).
+
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       The libpfutil source code, object code and documentation
+       are provided as unsupported software.  Routines are sub-
+       ject to change in future releases.
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<TITLE>pfuXformer</TITLE>
+</HEAD>
+<BODY>
+<H1>pfuXformer</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+pfuXformer(3pf)                                   pfuXformer(3pf)
+
+
+
+
+</PRE>
+<H2>NAME</H2><PRE>
+       <B>pfuNewXformer,</B>      <B>pfuXformerMode,</B>     <B>pfuGetXformerMode,</B>
+       <B>pfuStopXformer,</B>    <B>pfuXformerAutoInput,</B>     <B>pfuXformerMat,</B>
+       <B>pfuGetXformerMat,</B>   <B>pfuXformerCoord,</B>   <B>pfuGetXformerCoord,</B>
+       <B>pfuXformerLimits,</B>  <B>pfuGetXformerLimits,</B>   <B>pfuXformerColli-</B>
+       <B>sion,</B> <B>pfuGetXformerCollisionStatus,</B> <B>pfuUpdateXformer,</B> <B>pfu-</B>
+       <B>CollideXformer</B> - Backward compatibility module  for  basic
+       flight models and transformers.
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       In  releases of OpenGL Performer since 2.0, the pfuXformer
+       has been moved to libpfui --  the  OpenGL  Performer  User
+       Interface  library, and is now the pfiXformer.  The origi-
+       nal pfuXformer API has been preserved, but now has a  pfi-
+       prefix.   For  compatibility  with  previous  releases  of
+       OpenGL Performer, there are compatibility defines from the
+       old  <I>pfu</I>  routine  names  to  the new <I>pfi</I> routine names in
+       &lt;Performer/pfui.h&gt; that are enabled if  the  PF_COMPAT_1_2
+       variable is defined.
+
+       See  the  <B>pfiNewXformer</B>  man  page  for information on the
+       pfiXformer.
+
+
+</PRE>
+<H2>NOTES</H2><PRE>
+       These functions are provided to  ease  the  transition  of
+       programs  from the older IRIS Performer 1.2 release to the
+       current release. These functions should not be used in new
+       application  development  since  they will be removed in a
+       future release of OpenGL Performer.
+
+
+
+                                                  pfuXformer(3pf)
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
