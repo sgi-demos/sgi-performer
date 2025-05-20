@@ -1,3 +1,5 @@
+![SGI Performer Logo](oglperformer.jpg)
+
 ## SGI Performer Archives
 
 This is an archive of SGI Performer binaries and source.  As far as I can tell, the only source released for Performer was for the demos and utility libraries.
