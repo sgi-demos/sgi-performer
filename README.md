@@ -1,6 +1,9 @@
+
+![Performer Town](performer-town.jpg)
+
 ![SGI Performer Logo](oglperformer.jpg)
 
-## SGI Performer Archives
+## SGI Performer
 
 This is an archive of SGI Performer binaries and source.  As far as I can tell, the only source released for Performer was for the demos and utility libraries.  SGI ported Performer to Windows and Linux and called it "open source". But it wasn't really, and they admitted as much at [oss.sgi.com/projects/performer](https://web.archive.org/web/20010515070700/http://oss.sgi.com/projects/performer/):
 
