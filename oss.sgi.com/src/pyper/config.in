@@ -1,0 +1,62 @@
+/* config.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
+
+/* Define if you have the <GL/gl.h> header file.  */
+#undef HAVE_GL_GL_H
+
+/* Define if you have the GL library (-lGL).  */
+#undef HAVE_LIBGL
+
+/* Define if you have the GLU library (-lGLU).  */
+#undef HAVE_LIBGLU
+
+/* Define if you have the GLcore library (-lGLcore).  */
+#undef HAVE_LIBGLCORE
+
+/* Define if you have the MesaGL library (-lMesaGL).  */
+#undef HAVE_LIBMESAGL
+
+/* Define if you have the MesaGLU library (-lMesaGLU).  */
+#undef HAVE_LIBMESAGLU
+
+/* Define if you have the Xi library (-lXi).  */
+#undef HAVE_LIBXI
+
+/* Define if you have the db library (-ldb).  */
+#undef HAVE_LIBDB
+
+/* Define if you have the m library (-lm).  */
+#undef HAVE_LIBM
+
+/* Define if you have the pf library (-lpf).  */
+#undef HAVE_LIBPF
+
+/* Define if you have the pfdu library (-lpfdu).  */
+#undef HAVE_LIBPFDU
+
+/* Define if you have the pfutil library (-lpfutil).  */
+#undef HAVE_LIBPFUTIL
+
+/* Define if you have the pr library (-lpr).  */
+#undef HAVE_LIBPR
+
+/* Define if you have the stdc++ library (-lstdc++).  */
+#undef HAVE_LIBSTDC__
+
+/* Define if you have the swigpy library (-lswigpy).  */
+#undef HAVE_LIBSWIGPY
+
+/* Define if you have the util library (-lutil).  */
+#undef HAVE_LIBUTIL
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+

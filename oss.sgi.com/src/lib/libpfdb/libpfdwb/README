@@ -1,0 +1,21 @@
+
+Source code for the Designers Workbench loader/writer for Performer.
+
+The loader will take a designers workbench file and load that into a Performer
+application. The writer will take a performer application and write that out
+in Designers Workbench format (Dwb).
+
+The same loader can be compiled with the CC flags:
+
+    -D__ESCENE__ -DLINKLOADER
+
+This will give you pfdwb.o that can be used to re-link EasyScene thus 
+integrating your changes and bugfixes into EasyScene. EasyScene uses a
+special DWB loader to support EasyScene specific features. Make sure
+this new .o is before the EasyScene library on you link line.
+
+This is also supplied with every release of Performer under the following
+directory:
+
+	/usr/share/Performer/src/lib/libpfdb/libpfdwb
+

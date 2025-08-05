@@ -1,0 +1,5 @@
+#!/bin/sh
+PFCLIPDATA=/usr/share/Performer/data/clipdata/hunter/
+export PFCLIPDATA
+./icache hl.4096.ic
+

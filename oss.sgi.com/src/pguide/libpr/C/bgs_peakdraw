@@ -1,0 +1,98 @@
+#!/bin/sh
+
+ex=benchgs
+dft_opts="-W0,0,20,10 -N400 -B2  -L 0 -d -l 10 -R 1 -o"
+
+
+
+prim_point=0
+prim_line=1
+prim_linestrip=2
+prim_tri=3
+prim_quad=4
+prim_mesh=5
+
+bind_off=0
+bind_overall=1
+bind_perprim=2
+bind_pervert=3
+
+echo "***"
+echo "*** Geoset Drawing Rates"
+echo "***"
+
+date
+echo "machine info for `hostname`:"
+echo ------------
+hinv
+echo ------------
+/usr/gfx/gfxinfo
+echo ------------
+echo
+echo $ex default options: $dft_opts
+
+echo
+
+for prim in $prim_mesh $prim_tri $prim_quad $prim_point $prim_linestrip $prim_line
+do
+
+case $prim in
+$prim_point) prim_str="point";;
+$prim_line) prim_str="line";;
+$prim_linestrip) prim_str="linestrip";;
+$prim_tri) prim_str="tri";;
+$prim_quad) prim_str="quad";;
+$prim_mesh) prim_str="mesh";;
+esac
+
+    echo 
+    echo "======================= prim = $prim_str =============================="
+    echo 
+
+    echo "*** just vertices"
+    command="$ex $dft_opts -p $prim"
+    echo "-> $command"
+    $command
+    echo ------------
+ 
+    echo
+    echo "*** color per vertex" 
+    command="$ex $dft_opts -p $prim  -c $bind_pervert"
+    echo "-> $command"
+    $command
+    echo ------------
+    
+    echo
+    echo "*** normal per vertex"
+    command="$ex $dft_opts -p $prim -n $bind_pervert"
+    echo "-> $command"
+    $command
+    echo ------------
+
+    echo
+    echo "*** color and normal per vertex"
+    command="$ex $dft_opts -p $prim  -c $bind_pervert -n $bind_pervert"
+    echo ------------
+    
+    echo
+    echo "*** texture per vertex"
+    command="$ex $dft_opts -p $prim -t $bind_pervert"
+    echo "-> $command"
+    $command
+    echo ------------
+
+    echo
+    echo "*** color and texture per vertex"
+    command="$ex $dft_opts -p $prim -c $bind_pervert -t $bind_pervert"
+    echo "-> $command"
+    $command
+    echo ------------
+
+    echo
+    echo "** normal and texture per vertex"
+    command="$ex $dft_opts -p $prim -n $bind_pervert -t $bind_pervert"
+    echo "-> $command"
+    $command
+    echo ------------
+
+done    

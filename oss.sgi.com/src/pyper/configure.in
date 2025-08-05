@@ -1,0 +1,285 @@
+dnl 
+dnl $Source: /oss/CVS/cvs/performer/src/pyper/configure.in,v $
+dnl $Author: flynnt $
+dnl $Date: 2001/05/21 21:40:00 $
+dnl
+
+dnl Process this file with autoconf to produce a configure script.
+
+ 
+dnl init
+AC_INIT(geode.i)
+AM_INIT_AUTOMAKE(pyper, 0.0.1)
+AM_CONFIG_HEADER(config.h:config.in)
+AC_DISABLE_STATIC
+
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AC_PROG_INSTALL
+AM_PROG_LIBTOOL
+
+
+
+dnl Check for python headers
+
+ac_python_inc=
+ac_python_lib=
+
+
+AC_ARG_WITH(python-inc,
+    [  --with-python-inc         where python headers are installed.],
+    [  ac_python_inc="$withval" ])
+
+if test -z "$ac_python_inc" ; then
+
+   AC_MSG_CHECKING("for python include paths")
+   AC_LANG_SAVE
+   AC_LANG_C
+ 
+   AC_TRY_CPP([#include <Python.h>],
+   [
+        AC_MSG_RESULT(["Good, included in your path"])
+   ],
+   [
+   AC_MSG_RESULT(["Not in your path, searching..."])
+   for ac_dir in                   \
+      /usr/include/python2.0       \
+      /usr/local/include/python2.0 \
+      /usr/include/python1.6       \
+      /usr/local/include/python1.6 \
+      ; \
+   do
+      AC_MSG_CHECKING(["in $ac_dir"])
+      if test -r "$ac_dir/Python.h"; then
+         ac_python_inc=$ac_dir
+         break
+      fi
+      AC_MSG_RESULT(["no"])
+   done
+
+   if test -n "$ac_python_inc" ; then
+      AC_MSG_RESULT(["yes"])
+      PYTHON_INC="$ac_python_inc"
+   else
+      AC_MSG_ERROR(["Can\'t find Python library header."])
+   fi
+   ])
+   AC_LANG_RESTORE
+else
+   PYTHON_INC="$ac_python_inc"
+fi
+
+
+
+AC_ARG_WITH(python-lib,
+  [ --with-python-lib         where python libs are installed.],
+  [ ac_python_lib="$withval" ])
+
+if test -z "$ac_python_lib" ; then
+  AC_MSG_CHECKING("for python libs")
+  for ac_dir in \
+    /usr/lib/python2.0 \
+    /usr/local/lib/python2.0 \
+    /usr/lib/python1.6 \
+    /usr/local/lib/python1.6 \
+    /usr/lib/python1.5 \
+    /usr/local/lib/python1.5 \
+    ; \
+  do
+    AC_MSG_CHECKING(["in $ac_dir"])
+    if test -r "$ac_dir/config/libpython2.0.a"; then
+         ac_python_lib=$ac_dir
+         break
+      fi
+      AC_MSG_RESULT(["no"])
+   done
+
+   if test -n "$ac_python_lib" ; then
+      AC_MSG_RESULT(["yes"])
+      PYTHON_LIB="$ac_python_lib"
+   else
+      AC_MSG_ERROR(["Can\'t find Python library."])
+   fi
+
+else
+  PYTHON_LIB="$ac_python_lib"
+fi
+
+
+
+
+dnl Check math library
+
+AC_CHECK_LIB(m, sin)
+
+
+
+
+dnl Check for X11
+
+AC_PATH_XTRA
+
+LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS $LIBS"
+
+dnl Checks for additional X11 stuff
+
+AC_CHECK_LIB(Xi, XOpenDevice)
+
+
+
+
+
+
+dnl OpenGL stuff
+
+AC_CHECK_LIB(GLcore, glScalef,,,)
+
+AC_CHECK_LIB(GL, glNewList,,,)
+if test "x$ac_cv_lib_GL_glNewList" = "xno" ; then
+  dnl if no GL, check for MesaGL
+  AC_CHECK_LIB(MesaGL, glNewList,,,)
+fi
+
+dnl if using mesa, check for xmesa.h
+if test "x$ac_cv_lib_MesaGL_glNewList" = "xyes" ; then
+  AC_CHECK_HEADER(GL/xmesa.h)
+  AM_CONDITIONAL(ENABLE_XMESA_FX, \
+              test "x$ac_cv_header_GL_xmesa_h" = "xyes")
+else
+  dnl force a failed check
+  AM_CONDITIONAL(ENABLE_XMESA_FX, test "no" = "yes")
+fi
+
+AC_CHECK_LIB(GLU, gluLookAt,,,)
+if test "x$ac_cv_lib_GLU_gluLookAt" = "xno" ; then
+  dnl if no GLU, check for MesaGLU
+  AC_CHECK_LIB(MesaGLU, gluLookAt,,,)
+fi
+
+
+
+
+
+dnl Check for SGI's image lib
+
+AC_CHECK_LIB(image, iopen, LIBS="-exports -limage $LIBS",,)
+
+dnl AC_CHECK_LIB(vl, vlCreateBuffer,,,)
+
+
+
+
+
+
+dnl Check for SGI's OpenGL|Performer
+
+AC_CHECK_LIB(pr, pfScale,,,-lpf)
+
+AC_CHECK_LIB(pf, pfNewDCS,,,)
+
+AC_CHECK_LIB(pfutil, pfuNewSmoke,,,-lpfdu)
+
+AC_CHECK_LIB(pfdu, pfdNewCube,,,)
+
+
+
+
+dnl Sigh!
+
+AC_CHECK_LIB("stdc++", errno_max,,,)
+
+
+
+
+
+dnl Checks for header files.
+
+AC_HEADER_STDC
+
+AC_CHECK_HEADERS(GL/gl.h)
+
+
+
+
+
+dnl SWIG libs
+
+AC_CHECK_LIB(db, dbopen,,,)
+
+AC_CHECK_LIB(util, forkpty,,,)
+
+AC_CHECK_LIB(swigpy, SWIG_MakePtr,,,-L$PYTHON_LIB/config -lpython2.0 -lpthread -ldl)
+
+
+
+
+
+
+AC_SUBST(PYTHON_INC)
+AC_SUBST(PYTHON_LIB)
+AC_SUBST(IMAGE_LIBS)
+
+
+AC_OUTPUT(Makefile tests/Makefile)
+
+
+dnl $Log: configure.in,v $
+dnl Revision 1.1  2001/05/21 21:40:00  flynnt
+dnl Doing some cleanup and adding the pfgtk example and the python wrapper for
+dnl Performer (pyper).
+dnl
+dnl Revision 1.15  2001/04/10 13:50:42  bram
+dnl Avoided return by value of ::Evaluate()
+dnl We now have an alternative method ::Evaluation() that passes
+dnl the result as a function parameter instead.
+dnl This avoids problems with swig.
+dnl
+dnl Revision 1.14  2001/04/09 13:50:20  bram
+dnl Renamed pypersupport to pyperbonus
+dnl
+dnl Revision 1.13  2001/04/05 15:09:12  bram
+dnl removed -limage and -lvl
+dnl
+dnl Revision 1.12  2000/11/27 11:48:46  bram
+dnl cleaned up start script
+dnl
+dnl Revision 1.11  2000/11/14 14:59:27  bram
+dnl added non working bugpatch
+dnl
+dnl Revision 1.10  2000/11/14 10:22:43  bram
+dnl misc changes
+dnl
+dnl Revision 1.9  2000/11/13 12:02:50  bram
+dnl Improved configure interface.
+dnl Now, pyper builds, and runs with a off-the-shelf pyper interpreter.
+dnl We link against libstdc++ and libutil on linux.
+dnl
+dnl Revision 1.8  2000/11/07 14:23:37  bram
+dnl upgraded to python2.0
+dnl
+dnl Revision 1.7  2000/09/07 16:29:11  bram
+dnl improved configure.in
+dnl
+dnl Revision 1.6  2000/09/07 15:47:17  bram
+dnl misc fixes
+dnl
+dnl Revision 1.5  2000/08/29 16:29:21  bram
+dnl fixed automake interface
+dnl
+dnl Revision 1.4  2000/08/23 14:17:09  bram
+dnl fixed warning
+dnl
+dnl Revision 1.3  2000/08/23 13:01:50  bram
+dnl fixed installation process
+dnl
+dnl Revision 1.2  2000/08/23 09:05:06  bram
+dnl fixed build
+dnl
+dnl Revision 1.1.1.1  2000/08/23 08:02:41  bram
+dnl Added a PyPer version to the repository
+dnl
+

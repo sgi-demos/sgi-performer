@@ -1,0 +1,72 @@
+	                 OpenGL|Performer (TM) README.FIRST
+
+INTRODUCTION
+
+    These notes briefly describe the structure of the OpenGL|Performer (TM)
+    source tree and how it can be built.
+
+    For the latest news concerning OpenGL|Performer (TM) please consult the
+    following URL:
+
+        http://oss.sgi.com/projects/performer/
+    or
+        http://www.sgi.com/software/performer/
+
+
+TREE STRUCTURE
+
+    The source tree containing the OpenGL|Performer (TM) source is 
+    structured as follows:
+       src/
+           conv/    - Convertion utilities
+           lib/     - Inventor database, interaction, and nodekit source
+           pguide/  - Sample programs from the Performer Programming Guide
+           sample/  - sample programs and examples
+           tools/   - various porting and conversion scripts
+
+    On IRIX:
+    This source tree is identical to what is shipped under
+    /usr/share/Performer/src in the Performer development distribution.
+
+    On Linux:
+    This source code in this tree is identical to what is shipped
+    under /usr/share/Performer/src in the Performer development
+    distribution.  The Makefiles, however, have been renamed so as
+    to not conflict with the IRIX makefiles.  In the future, both
+    IRIX and Linux will use the same makefiles.
+
+DEPENDENCIES
+
+    The source in its current form will compile on IRIX and Linux i386.
+
+    Currently the only dependencies include OpenGL(R) and X11R6, 
+    Motif(R) 1.2x, and an existing installation of the OpenGL Performer 
+    development package.
+
+
+BUILDING THE TREE
+
+	1) Set the environment variable PFROOT to point to the root
+	   directory of where this source is located.
+
+		setenv PFROOT `pwd`
+
+	2) The makefiles will look for pfcommondefs and pfcommonrules in
+	   $(PFROOT)/usr/share/Performer/src/.  Create a usr/share/Performer
+	   directory:
+
+		mkdir -p usr/share/Performer
+
+	3) Make a symlink to this directory so that there exists a valid
+	   $(PFROOT)/usr/share/Performer/src/.
+
+		ln -s -f ../../../src  usr/share/Performer/src
+
+	4) Change to the src/ directory:
+
+		cd src
+
+	5) Make the examples:
+
+		make dso
+

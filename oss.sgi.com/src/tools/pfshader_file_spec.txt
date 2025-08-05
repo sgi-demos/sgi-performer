@@ -1,0 +1,976 @@
+I. Introduction
+
+II. Data Types
+
+The following basic data types are recognized in the shader 
+description file:
+
+ - Integer numbers:  These can be specified in decimal, octal or
+   hexadecimal notation.  Octal notation is indicated by a leading
+   0 followed by one more digits which may take on any value between
+   0 and 7 inclusive.  Hexadecimal notation is indicated by a leading
+   0x or 0X followed by one or more digits which may take on values
+   between 0 and 9 plus 'a' through 'f' or 'A' through 'F'.
+
+ - Real numbers: Any number including a decimal point or exponent.
+   The following are all examples of real numbers from the point of
+   view of pfdLoadShader:
+
+	1.5   1.   .5   0.5   2e2   2e-3   4.5e+4   .4e5
+
+ - Vectors: A vector is a group of four real or integer numbers 
+   surrounded by an opening and closing parentheses pair.  Integers
+   and reals can be mixed in a vector since all numbers will be 
+   promoted to reals.  The following are legal vectors:
+
+	(1 0 0 1)  (1.0 1 0.0 1.0)
+
+ - Matrices: A matrix is a group of four vectors which combine to
+   represent a 4x4 row major matrix.  That is, the first vector is the
+   first row of the matrix, the second vector is the second row of the
+   matrix, etc.
+
+ - Variable identifiers: A variable identifier always begins with
+   the character '$' followed by a letter ('a' through 'z' or 'A'
+   through 'Z') followed by zero or more letters, the digits 0 through
+   9 or the character '_'. The following are all valid identifiers:
+
+	$foo  $Foo  $FOO  $Bar1  $FoO_bAr
+
+   The following are not identifiers:
+
+	foo  $1foo  $foo-bar
+
+ - Strings: Strings are any number of characters between an opening
+   and closing quote pair.
+
+ - Enumerated constants: An enumerated constant always begins with
+   an uppercase letter ('A' through 'Z') which may be followed by
+   zero or more uppercase letters, the digits 0 through 9 or the
+   character '_'.  The following are all valid enumerated constants:
+
+	ONE  ZERO  DST_COLOR  LIGHT_1
+
+   The following are not enumerated constants:
+
+	1_ZERO  _ONE
+
+
+
+III. Variables
+
+The shader description file format provides limited support for the 
+declaration and use of variables.  As in programming languages such 
+as C, variables must be declared before they may be used.  Variable
+declaration takes place in the shader header while variable use takes
+place in the definition of the shader passes.  At the present time,
+only textures may be represented with variables and once declared
+in the header, a texture variable may not be changed or assigned to
+another.
+
+Texture declarations take may take on three different forms depending
+on the source of the texture.  Textures may come from image files,
+the may be defined as a 1D texture within the shader description file
+or they may be used as temporary storage for the pfShader.  In the
+case of temporary storage textures, the data within them comes from,
+and is restored to, the framebuffer.
+
+Textures loaded from files are declared like this:
+
+	texture_def {
+	  texture_id	<identifier_type>
+	  texture_src	<enumerated_constant_type>
+	  texture_file	<string_type> 
+	}
+
+The enumerated constant data following the texture_src token must be
+equal to FILE.  
+
+When one of these texture declarations is found in a shader description
+file, a pfTexture object is created and the image file named by the string
+data is loaded.  If the image file is successfully read from disk, an
+entry is added to the symbol table which maps the texture identifier to
+the corresponding pfTexture.
+
+Textures specified as 1D textures within the shader description file
+are declared like this:
+
+	texture_def {
+	  texture_id	<identifier_type>
+	  texture_src	<enumerated_constant_type>
+	  texture_table {
+	    texture_table_size <integer_type>
+	    texture_table_data <vector_type>
+			.
+			.
+			.
+	    texture_table_data <vector_type>
+	  }
+	}
+
+The enumerated constant data following the texture_src token must be
+equal to TABLE.  
+
+When one of these texture declarations is found in a shader description
+file, the entries of the table are loaded into an array and a new pfTexture
+object is created.  The array of table entries is specified as the pfTexture
+image and the dimensions of the pfTexture are set to indicate a 1D texture.
+An is then added to the symbol table which maps the texture identifier to
+the corresponding pfTexture.
+
+Textures used as temporary storage during execution of the shader passes
+are declared like this:
+
+	texture_def {
+	  texture_id	<identifier_type>
+	  texture_src	<enumerated_constant_type>
+	}
+
+The enumerated constant data following the texture_src token must be
+equal to TMP.
+
+When one of these texture declarations is found in a shader description
+file, pfShader::allocateTempTexture is called and the returned integer
+value is entered in the symbol table with the texture identifier for the
+texture.  To provide for some optimization of texture memory usage, temporary
+storage textures are shared between pfShaders.  For this reason, pfTexture
+objects are not created at load time for temporary textures.  Instead, integer
+IDs are used indicate which temporary texture is used by a pass.  Later, when 
+pfShaders are applied to scene graph nodes, the pfShaderManager can determine 
+the maximum number of pfTexture objects to allocate.  Once the pfShaderManager
+has created the pfTextures, it can resolve the mapping between IDs and actual
+pfTexture objects in the passes of all pfShaders it is aware of.
+
+It is an error to declare the same texture identifier more than once.
+
+
+
+III. Shader Description
+
+The shader file must contain all tokens and data within a block like 
+this:
+
+        # comments can live outside the shader{} block
+
+	shader {
+	  # interesting shader description stuff 
+	  # should be inserted here
+	}
+
+        # comments can live outside the shader{} block
+
+It is worth noting that comments are anything on a line following the
+'#' character.  The '#' character need not be the first character on
+the line.
+
+Beneath this highest level description, the shader file contains a
+shader header and a definition of the shader passes.
+
+
+
+IV. Shader Header
+
+The shader header describes everything about the shader which will
+not vary from one pass to another.  This includes the name of the
+shader, the shader file revision, variables local to the shader 
+and the default state of the shader.  Ignoring the placement of 
+whitespace and newlines, the shader header must always be formed
+in a block like this:
+
+	shader_header {
+	  shader_name		<string_type>
+	  shader_major_rev	<integer_number_type>
+	  shader_minor_rev	<integer_number_type>
+	  shader_locals { 
+	    .
+	    .
+	    .
+	  }
+
+	  shader_default_state {
+	    .
+	    .
+	    .
+	  }
+	}
+
+Any textures which will be used by the shader must be declared within
+the shader_locals block.  See Section II for a description of texture
+declarations.  It is important to note that the shader_locals block
+may be empty.
+
+The shader_default_state block contains all the state attributes which
+will not change on a per pass basis.  See Section VI for a description
+of different state attributes.  It is important to note that the 
+shader_default_state block may be empty.
+
+
+
+V. Shader Passes
+
+The shader passes definition describes the type of each pass, the order
+in which the passes are executed and which state should be enabled for
+each pass.  While there can be a variable number of passes, the shader
+passes must always be enclosed in a block like this:
+
+	shader_passes {
+	  # pass definitions must be inserted here
+	}
+
+Shader passes can be of six different types which are described as follows:
+
+ - Geometry drawing: Draws the geometry to which the shader is applied.
+   The following state applies during this pass:
+
+ - Quadritateral drawing: Draws the screen space bounding rectangle of
+   the geometry to which the shader is applied.  The following state 
+   applies during this pass:
+
+
+ - Copy pixels: Copies from the pixels of the screen space bounding rectangle
+   to the pixels of the screen space bounding rectangle. The following state 
+   applies during this pass: 
+
+ - Copy to texture: Copies from the pixels of the screen space bounding 
+   rectangle to the currently applied texture.  The following state 
+   applies during this pass:
+
+ - Copy from texture: Copies from the currently applied texture to the pixels
+   of the screen space bounding rectangle.  The following state applies 
+   during this pass:
+
+ - Accum: Applies the current accum operation to the pixels of the screen 
+   space bounding rectangle or to the accum buffer depending on the operation.
+   The following state applies during this pass:
+
+Shader passes are always specfied in the following form:
+
+	geom_pass {
+	  .
+	  .
+	  .
+	}
+
+	quad_geom_pass {
+	  .
+	  .
+	  .
+	}
+
+	copy_pass {
+	  .
+	  .
+	  .
+	}
+
+	copy_to_tex_pass {
+	  .
+	  .
+	  .
+	}
+
+	copy_from_tex_pass {
+	  .
+	  .
+	  .
+	}
+
+	accum_pass {
+	  .
+	  .
+	  .
+	}
+
+Per pass attributes are specified within the body of a pass block. 
+Depending upon the pass type, certain attributes may or may not be
+legal.  The mapping between pass types and legal attributes is 
+described below:
+
+	geom_pass:
+	  alpha test
+	  blend
+	  color
+	  color mask
+	  depth test
+	  lights
+	  material
+	  shade model
+	  stencil test
+	  texenv
+	  texgens
+	  texture
+	  texture matrix
+	   
+
+	quad_geom_pass:
+	  alpha test
+	  blend
+	  color
+	  color mask
+	  depth test
+	  lights
+	  material
+	  shade model
+	  stencil test
+	  texenv
+	  texgens
+	  texture
+	  texture matrix
+	
+	copy_pass:
+	  alpha test 
+	  blend
+	  color mask 
+	  color matrix 
+	  depth test 
+	  pixel bias 
+	  pixel scale
+	  pixmaps
+	  stencil test
+	
+
+	copy_to_tex_pass:
+	  color matrix
+	  texture
+	  pixel bias
+	  pixel scale
+	  pixmaps
+
+	copy_from_tex_pass:
+	  alpha test
+	  blend
+	  color mask
+	  stencil test
+	  texture	
+
+See Section VI for a description of individual attributes.
+
+
+VI. State Attributes
+
+State attributes enable and set parameters for various rendering
+state which applies during execution of shader passes.  Section V
+describes which attributes are legal for the various pass types
+but it is important to note that all state attributes are optional.
+That is, just because a state attribute is legal for a given pass
+type it doesn't mean that it must be specified for that pass.  That
+said, one must note that it is an error to specify an attribute more
+than once per pass even if it is a legal attribute for that pass. 
+
+Each state attribute is described in detail below.
+
+The alpha test attribute is specified as follows:
+
+	alpha_test {
+	  alpha_test_func	<enumeranted_constant_type>
+	  alpha_test_ref	<real_number_type>
+	}
+
+The enumerated constant data must be one of the following:
+
+	LESS	
+	LEQUAL
+	GREATER
+	GEQUAL
+	EQUAL
+	NOTEQUAL
+	ALWAYS
+
+The real number data is the value to which the current pixel's alpha 
+is compared using the aforementioned alpha test function.  
+
+To disable alpha test use this syntax:
+
+	alpha_test {
+	  disable
+	}
+
+For more information on the alpha test functions and meaning of the 
+reference value see:  man glAlphaFunc
+
+
+The blend attribute is specified as follows:
+
+	blend {
+	  blend_eqn	<enumerated_constant_type>
+	  blend_src	<enumerated_constant_type>
+	  blend_dst	<enumerated_constant_type>
+	}
+
+or:
+
+	blend {
+	  blend_eqn	<enumerated_constant_type>
+	  blend_src	<enumerated_constant_type>
+	  blend_dst	<enumerated_constant_type>
+	  blend_color	<vector_type>
+	}
+
+blend_eqn must be followed by an enumerated constant which is one of 
+the following:
+
+	ADD
+	SUBTRACT
+	REVERSE_SUBTRACT
+	MIN
+	MAX
+	LOGIC_OP
+
+blend_src must be followed by an enumerated constant which is one of 
+the following:
+
+	ZERO
+	ONE
+	DST_COLOR
+	ONE_MINUS_DST_COLOR
+	SRC_ALPHA
+	ONE_MINUS_SRC_ALPHA
+	DST_ALPHA
+	ONE_MINUS_DST_ALPHA
+	SRC_ALPHA_SATURATE
+	CONSTANT_COLOR
+	ONE_MINUS_CONSTANT_COLOR
+	CONSTANT_ALPHA
+	ONE_MINUS_CONSTANT_ALPHA
+
+blend_dst must be followed by an enumerated constant which is one of 
+the following:
+
+	ZERO
+	ONE
+	SRC_COLOR
+	ONE_MINUS_SRC_COLOR
+	SRC_ALPHA
+	ONE_MINUS_SRC_ALPHA
+	DST_ALPHA
+	ONE_MINUS_DST_ALPHA
+	SRC_ALPHA_SATURATE
+	CONSTANT_COLOR
+	ONE_MINUS_CONSTANT_COLOR
+	CONSTANT_ALPHA
+	ONE_MINUS_CONSTANT_ALPHA
+
+The vector data following the blend_color token is the constant color
+which corresponds to the CONSTANT_COLOR, ONE_MINUS_CONSTANT_COLOR, 
+CONSTANT_ALPHA and ONE_MINUS_CONSTANT_ALPHA source and destination
+constants.
+
+To disable blend use this syntax:
+
+	blend {
+	  disable
+	}
+
+For more information on the meanings of the blend equation, source and
+destination factors see:  man glBlendEquationext, man glBlendFunc.
+
+
+The color attribute is specified as follows:
+
+	color {
+	  color_data <vector_type>
+	}
+
+The vector data following the color_data token specifies the color
+with which all vertices of the geometry will be rendered.  This color
+overrides any per vertex color applied to the geometry.
+
+
+The color matrix attribute is specified as follows:
+
+	color_matrix {
+	  matrix_data <matrix_type>
+	}
+
+The matrix data following the matrix_data token specifies the row
+major matrix which will be pushed onto the color matrix stack.
+
+
+The color mask attribute is specified as follows:
+
+	color_mask {
+	  color_mask_data <integer_number_type>
+	}
+
+The lowest four bits of the integer data following the color_mask_data
+token specify the masking of the red, green, blue and alpha color 
+components.  Bit three corresponds to red, bit two to green, bit one
+to blue and bit zero to alpha.  All other bits are ignored.  
+
+For more information on the color mask see:  man glColorMask.
+
+
+The depth test attribute is specified as follows:
+
+	depth_test {
+	  depth_test_func <enumerated_constant_type>
+	}
+
+The enumerated constant data following the depth_test_func token
+must be one of the following:
+
+	LESS	
+	LEQUAL
+	GREATER
+	GEQUAL
+	EQUAL
+	NOTEQUAL
+	ALWAYS
+
+To disable depth test use this syntax:
+
+	depth_test {
+	  disable
+	}
+
+For more information on depth testing see: man glDepthFunc.
+
+
+A variable number of lights may be specified in the shader description
+file.  A group of individual light definitions must be enlosed within
+a lights {} block like this:
+	
+	lights {
+	  light {
+	    .
+	    .
+	    .
+	  }
+  	  .
+	  .
+	  .
+	  light {
+	    .
+	    .
+	    .
+	  }
+	}
+
+Individual lights are defined with multiple, optional parameters which
+include the position, ambient color, diffuse color, specular color, etc.
+If present in the light definition, these parameters are specified as 
+follows:
+
+	light {
+	  light_position <vector_type>
+
+	  spot_light_cone {
+	    spot_light_cone_exponent	<real_number_type>
+	    spot_light_cone_cutoff	<real_number_type>
+          }
+
+	  light_ambient  <vector_type>
+
+	  light_diffuse  <vector_type>
+
+	  light_specular <vector_type>
+
+	  light_attenuation {
+	    light_constant_attenuation	<real_number_type>
+	    light_linear_attenuation	<real_number_type>
+	    light_quadratic_attenuation	<real_number_type>
+          }
+	}
+
+Each light parameter is optional and they may be specified in any order
+within the light {} block.  However, if specifed in a light definition,
+a parameter may only be specified once.  The following light definition
+would not be legal:
+
+	light {
+	  light_position (1 0 0 1)
+	  light_position (0 10 0 1)
+	}
+
+It is also important to note that the parameters within the spot_light_cone {}
+and light_attenuation {} blocks are optional as well.  For instance, if the 
+spot_light_cone {} block is specified it is not required that both the
+spot_light_cone_exponent and spot_light_cone_cutoff parameters be specifed.
+If only one is specified, the other will take on a default value.  The same
+applies to the light_attenuation {} block.
+
+To disable lighting use this syntax:
+
+	lights {
+	  disable
+	}
+
+Individual lights may not be disabled.
+
+For more information on lighting see: man glLight, man glLightModel.
+
+
+Like the definition of individual lights, materials are defined using 
+multiple, optional parameters which specify emission color, ambient color,
+diffuse color, etc.  If present in the material definition, these parameters
+are specified as follows:
+
+	material {
+	  material_emission  <vector_type>
+	  material_ambient   <vector_type>
+	  material_diffuse   <vector_type>
+	  material_specular  <vector_type>
+	  material_shininess <real_number_type>
+	}
+
+Each material parameter is optional and they may be specified in any order
+within the material {} block.  However, if specified, a parameter may only
+be specified once.  The following material definition would not be legal:
+
+	material {
+	  material_emission	(0.25 0 0 1)
+	  material_diffuse	(1 0 0 1)
+	  material_emission	(0.75 0 0.25 1)
+	}
+
+The material alpha component is taken from the fourth element of the vector
+data following the material_diffuse token.  The fourth element of all other
+vectors is ignored for material definition.  This follows the semantics of 
+standard OpenGL lighting.
+
+For more information on materials see: man glMaterial.
+
+
+The pixel bias attribute is specified as follows:
+
+	pixel_bias {
+	  pixel_bias_data <vector_type>
+	}
+
+The vector data following the pixel_bias_data token specifies the per
+component values by which pixel color components will be biased during 
+execution of copy_pass and copy_to_tex_pass passes.  
+
+For more information on pixel bias see:  man glPixelTransfer.
+
+
+The pixel scale attribute is specified as follows:
+
+	pixel_scale {
+	  pixel_scale_data <vector_type>
+	}
+
+The vector data following the pixel_scale_data token specifies the per
+component values by which pixel color components will be scaled during 
+execution of copy_pass and copy_to_tex_pass passes.  
+
+For more information on pixel scale see:  man glPixelTransfer.
+
+
+As in the case of lights, multiple pixmaps can be defined for a pass.
+For this reason, pixmaps must grouped together in a pixmaps {} block
+like this:
+
+	pixmaps {
+	  pixmap {}
+	    .
+	    .
+	    .
+	  pixmap {}
+	}
+
+An individual pixmap attribute is specified as follows:
+
+	pixmap {
+	  pixmap_component	<enumerated_constant_type>
+	  pixmap_size		<integer_number_rule>
+	  pixmap_data		<real_number_rule>
+	    .
+	    .
+	    .
+	  pixmap_data		<real_number_rule>
+	}
+
+The enumerated constant following the pixmap_component token specifies
+which color component the pixmap will apply to and it must be one of the 
+following:
+
+	RED
+	GREEN
+	BLUE
+	ALPHA
+
+The integer number following the pixmap_size token specifies the number
+of entries in the pixmap table.  This value must be greater than zero
+and must be a power of two.  Following the size specification, the actual
+pixmap data is specified as a series of pixmap_data token, real number pairs.
+It is an error to supply a number of pixmap values which is greater than the 
+size of the table.  It is also an error to specify a pixmap for a component
+more than once per pass.
+
+To disable pixmaps use this syntax:
+
+	pixmaps {
+	  disable
+	}
+
+Pixmaps may not be disabled individually.
+
+For more information on pixmaps see:  man glPixelTransfer, man glPixelMap.
+
+
+The shade model attribute is specified as follows:
+
+	shade_model {
+	  shade_model_mode <enumerated_constant_type>
+	}
+
+The enumerated constant following the shade_model_mode token specifies which
+shade model will apply when rendering geometry and it must be one of the 
+following:
+
+	SMOOTH
+	FLAT
+
+For more information on the shade model see: man glShadeModel.
+
+
+The stencil attribute is specified as follows:
+
+	stencil_test {
+	  stencil_test_func	<enumerated_constant_type>
+	  stencil_test_ref	<integer_number_type>
+	  stencil_test_mask	<integer_number_type>
+	  stencil_test_sfail	<enumerated_constant_type>
+	  stencil_test_zfail	<enumerated_constant_type>
+	  stencil_test_zpass	<enumerated_constant_type>
+	  stencil_test_wmask	<integer_number_type>
+	}
+
+The enumerated constant following the stencil_test_func token specifies
+which stencil test will be performed and it must be one of the following:
+
+	LESS	
+	LEQUAL
+	GREATER
+	GEQUAL
+	EQUAL
+	NOTEQUAL
+	ALWAYS
+
+When performing the stencil test, the stencil value for a pixel stored in
+the stencil buffer will be compared to the integer which follows the stencil_-
+test_ref token.  The integer reference value and the stored pixel stencil
+value will be bitwise ANDed with the integer mask which follows the 
+stencil_test_mask token.  The outcome of the test between the masked 
+reference value and the masked stored value determines which operation is
+performed on the stencil buffer.  The operations are specified following
+the stencil_test_sfail, stencil_test_zfail and stencil_test_zpass tokens.
+The enumerated constant indicating the stencil operation must be one of:
+
+	KEEP
+	ZERO
+	REPLACE
+	INCR
+	DECR
+	INVERT
+
+If the outcome of the stencil test operation results in a write to the
+stencil buffer, the stencil value to be written will first be masked by
+the integer value following the stencil_test_wmask token.
+
+To disable stencil test use this syntax:
+
+	stencil_test {
+	  disable
+	}
+
+For more information on the stencil test see: man glStencilFunc, man
+glStencilOp
+
+
+The texture environment attribute is specified as follows:
+
+	texenv {
+	  texenv_mode	<enumerated_constant_type>
+	}
+
+or:
+
+	texenv {
+	  texenv_mode	<enumerated_constant_type>
+	  texenv_color	<vector_type>
+	}
+
+The enumerated constant following the texenv_mode token must be one of
+the following:
+
+	MODULATE
+	BLEND
+	DECAL
+	REPLACE
+	ADD
+	ALPHA
+
+Certain texture environment modes depend on a constant color which is
+specified following the texenv_color token.  
+
+For more information on texture environment modes and the texture 
+environment color see: man glTexenv.
+
+
+As in the case of light definition, there can be multiple texgens
+specified in a shader description file.  For this reason, the invidual
+texgens must be specified in a texgens {} block like this:
+
+	texgens {
+	  texgen {}
+	    .
+	    .
+	    .
+	  texgen {}
+	}
+
+Up to four texgens can be specified in the texgens {} block, one for
+each of the s, t, r and q texture coordinates.  It is an error to 
+specify a texgen for a coordinate more than once.  An individual 
+texgen is specified as follows:
+
+	texgen {
+	  texgen_coord	<enumerated_constant_type>
+	  texgen_mode	<enumerated_constant_type>
+	}
+
+or:
+
+	texgen {
+	  texgen_coord	<enumerated_constant_type>
+	  texgen_mode	<enumerated_constant_type>
+	  texgen_plane	<vector_type>
+	}	
+
+The enumerated constant following the texgen_coord token specifies the
+texture coordinate to which the texgen applies and it must be one of
+the following:
+
+	S
+	T
+	R
+	Q
+
+The enumerated constant following the texgen_mode token specifies which
+texgen mode will be applied to the specified token and it must be one of
+the following:
+
+	EYE_LINEAR
+	OBJECT_LINEAR
+	SPHERE_MAP
+
+If specified, the vector data following the texgen_plane token specifies
+the reference plane to be used when computing values for the specified 
+texture coordinate.  
+
+For more information on the different texgen modes and the use of the 
+reference plane see: man glTexgen.
+
+It is important to note that it is an error to specify a texgen for a 
+coordinate more than once per pass.  For instance, the following is 
+illegal:
+
+	texgens {
+  	  texgen {
+	    texgen_coord	S
+	    texgen_mode		EYE_LINEAR
+	  }
+  	  texgen {
+	    texgen_coord	S
+	    texgen_mode		OBJECT_LINEAR
+	  }
+	}
+	
+To disable texgens use this syntax:
+
+	texgens {
+	  disable
+	}
+
+The texture attribute is specified as follows:
+
+	texture {
+	  texture_id <identifier_type>
+	}
+
+The identifier following the texture_id token must match an identifier for
+a texture declared in the shader header segment of the file.  To refer to
+a texture which has not been declared is illegal.
+
+To disable texture use this syntax:
+
+	texture {
+	  disable
+	}
+
+The texture matrix is specified as follows:
+
+	texture_matrix {
+	  matrix_data	<matrix_type>
+	}
+
+The matrix data following the matrix data token specifies the matrix which
+will be applied to texture coordinates when drawing with an applied texture.
+
+
+
+VII. Examples
+
+Here is a very simple two pass shader which combines one pass
+of constant color with another pass using a table texture.
+
+shader {
+
+  # one time shader setup is done here
+  shader_header {
+    shader_name            "example shader"
+    shader_major_rev       1
+    shader_minor_rev       0
+
+    shader_locals {
+      texture_def {
+        texture_id $table
+        texture_src TABLE
+        texture_table {
+          texture_table_size 8
+          texture_table_data (0.00 0.00 0.00 1)
+          texture_table_data (0.14 0.14 0.14 1)
+          texture_table_data (0.29 0.29 0.29 1)
+          texture_table_data (0.43 0.43 0.43 1)
+          texture_table_data (0.57 0.57 0.57 1)
+          texture_table_data (0.71 0.71 0.71 1)
+          texture_table_data (0.86 0.86 0.86 1)
+          texture_table_data (1.00 1.00 1.00 1)
+        }
+      }
+    }
+        
+    shader_default_state { 
+        depth_test {
+          depth_test_func LEQUAL
+        }
+    }
+  }
+
+  # begin specification of shader passes
+  shader_passes {
+    geom_pass {
+        color {
+          color_data (1 1 0 1)
+        }
+    }
+    geom_pass {
+        blend {
+          blend_eqn ADD
+          blend_src DST_COLOR
+          blend_dst ZERO
+        }       
+        texture {
+          texture_id $table
+        }
+        texture_matrix {
+          matrix_data (8 0 0 0)
+                      (0 1 0 0)
+                      (0 0 1 0)
+                      (0 0 0 1)
+        }       
+    }
+  }
+}

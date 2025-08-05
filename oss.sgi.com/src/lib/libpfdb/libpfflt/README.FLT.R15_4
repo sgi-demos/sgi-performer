@@ -1,0 +1,409 @@
+
+************************************************************************
+************************************************************************
+
+$RCSfile: README.FLT.R15_4,v $
+
+OpenFlight (r) Scene Description Database loader for OpenGL Performer
+2.0.[234], 2.1.[012], 2.2.x, and 2.4. 
+
+The following document describes the OpenFlight Scene Description
+Database loader for OpenGL Performer. Please direct suggestions and
+report any problems to MultiGen-Paradigm Inc. Technical Support:
+
+    MultiGen-Paradigm, Inc.
+    Technical Support
+    550 South Winchester Blvd, Suite 500
+    San Jose, CA 95128
+
+    Phone: 1-408-556-2600
+    Fax:   1-408-261-4102
+    email:support@multigen.com
+    http://www.multigen-paradigm.com
+
+When reporting bugs, please make sure to let us know:
+
+	1) The Performer version you are using
+	2) The loader revision you are using
+	3) Your hardware platform 
+	4) Your operating system version
+	5) IRISGL or OpenGL
+	6) Installed software patches
+
+If you would like to receive source code for the loader or a free
+maintenance update, please contact MultiGen-Paradigm Inc. at the
+above address.  The loader binary distribution is also available from
+the MultiGen-Paradigm, web site under http://www.multigen-paradigm.com.  
+Click the Downloads link, and then click the Performer Loader link.
+
+
+----------------------------------------------------------
+| PERFORMER VERSION                                      |
+----------------------------------------------------------
+
+OpenFlight (r) Scene Description Database loader is intended for use
+with OpenGL Performer release 2.0.[234], 2.1.[012], 2.2.x, and 2.4.
+MultiGen-Paradigm Inc. fully supports the OpenFlight (r) loader, but
+does not support the Flight (TM) V11 loader distributed by Silicon
+Graphics as "libpfflt11".
+
+
+----------------------------------------------------------
+| Problems Fixed in This Version                         |
+----------------------------------------------------------
+
+1. Geometry contained under a clip node now loads correctly.  
+   In previous versions, the geometry was placed in the 
+   scene graph twice.
+2. Nested external reference nodes now load correctly.
+
+
+----------------------------------------------------------
+| Loading an OpenFlight database                         |
+----------------------------------------------------------
+
+The function pfdLoadFile_flt loads an OpenFlight Scene Description
+Database file (.flt extension) and converts the OpenFlight on-disk
+hierarchy into an OpenGL Performer in-memory hierarchy. It returns a
+pointer to the root of the resulting OpenGL Performer hierarchy or NULL
+if the file was not found or not converted properly. The C language
+declaration for pfdLoadFile_flt is as follows:
+
+#include <Performer/pf.h>
+
+pfNode*	pfdLoadFile_flt ( const char* file );
+
+The loader does NOT generate an OpenGL Performer hierarchy that is
+one-to-one with the MultiGen hierarchy. However, there is a  rough
+correlation between MultiGen and OpenGL Performer that is listed below:
+
+	MultiGen node		OpenGL Performer node
+	-------------		-------------------
+	group			pfGroup
+	animation group		pfSequence
+	level of detail		pfLOD
+	degree of freedom	pfDCS
+	transformation		pfSCS
+	external reference	pfGroup
+	light source		pfLightSource
+	switch			pfSwitch
+	CAT			pfASD (2.2 only)
+	object			pfGroup (or pfSCS if transformed)
+	road			pfGroup (or pfSCS if transformed)
+	road path		pfGroup (or pfSCS if transformed)
+	sound			pfGroup (or pfSCS if transformed)
+	face (polygon)		pfGeode + pfGeoSet + pfGeoState
+	light points		<face> + pfLPointState
+	super/sub face		pfLayer + <face>
+	template face		pfBillboard + <face>
+	adaptive geometry	pfGeode + pfGeoSet + pfFlux + pfEngine
+	texture projection	pfGeoState + pfTexGen
+
+The following is a list of issues that will help you understand how
+the loader works and how to get the best performance out of your
+database:
+
+- MultiGen nodes can have multiple attributes such as a
+  transformation and animation. These attributes must be translated
+  into distinct Performer nodes: pfSCS and pfSequence for example.
+  When translating a node, the loader creates the pfSCS node from the
+  transformation (if any) and makes it the parent node of the
+  corresponding pfNode.  So, for example, in the CB_GROUP callback
+  the pfNode* argument will always point at either a pfGroup or a
+  pfSequence  Any static transformation would be represented as a
+  parent pfSCS of that node.  Transformed LOD, light source and
+  switch nodes result in a similar creation: a pfLOD, pfLightSource
+  or pfSwitch whose parent is a pfSCS.
+
+- MultiGen node (static) transformations are always translated into a
+  pfSCS node. Where possible, this pfSCS node represents the node
+  directly, for instance a transformed object node is translated into
+  a pfSCS. Otherwise the pfSCS node is made the parent of the node's
+  pfNode representative, for instance a LOD node's corresponding
+  pfLOD.
+
+- MultiGen allows the usage of base textures as a detail, and then as
+  a base with another detail. These pathological usages are not
+  allowed in Performer and OpenGL. The loader will issue warnings in
+  these cases and skip the operation. Some warnings are at
+  PFNFY_DEBUG level.
+
+- All database units are converted to meters by default. This can
+  be changed prior to each invocation of pfdLoadFile_flt() by calling
+  pfdConverterMode_flt( PFFLT_USEUNITS, new_units ) as desired.  See
+  below for more details.
+
+- Adaptive geometry that requires alignment with a CAT node cause the
+  loader to create a pfFlux object connected to the 2.2 pfASD node
+  representing the CAT node. Such geometry must be modeled as
+  separate objects to work.
+
+
+************************************************************************
+************************************************************************
+************************************************************************
+************************************************************************
+
+
+----------------------------------------------------------
+| What is a Degree Of Freedom node?                      |
+----------------------------------------------------------
+
+A Degree Of Freedom (DOF) node represents a local dynamic coordinate
+system within the database "world" coordinate system. It encapsulates
+the information needed to translate, rotate, and scale geometry with
+respect to that coordinate system. These transformations are the
+basis for moving, articulated models.
+
+The local origin of a DOF coordinate system is the transformed origin of
+the database "world" coordinate system at the point in the hierarchy
+where the DOF node is situated. The local origin is affected by all
+applied transformations above the DOF node in the database hierarchy,
+including the current translations and rotations of parent DOF nodes.
+
+Note however that positioning a DOF node does not affect the position
+(local origin) of any child DOF nodes. The position ("put")
+transformation serves only to localize the DOF node's own coordinate
+system.
+
+In addition, a DOF node can specify per axis limits on each
+transformation within its coordinate system. The limits (min. and max.)
+for each transformational axis can be used to arbitrarily clamp or wrap
+the final values at run-time.
+
+
+----------------------------------------------------------
+| Performer DCS nodes                                    |
+----------------------------------------------------------
+
+Performer pfDCS nodes also represent a dynamic coordinate system. The
+loader creates a pfDCS node for each DOF node encountered in a
+OpenFlight database. Unlike a DOF node, however, its coordinate
+system is not inherently localized.
+
+So in addition, the loader calculates the DOF node's position ("put")
+matrix and its inverse ("inverse put"). These matrices are needed to
+localize the pfDCS node's coordinate system. Without them, DOF
+transformations applied to a pfDCS would operate about the wrong
+origin.
+
+In order to correctly apply transformations to a pfDCS node created
+from a DOF node, a Performer application must collect the DOF node
+information from the OpenFlight loader's Callback Mechanism.
+
+
+----------------------------------------------------------
+| Registering your loader callback function              |
+----------------------------------------------------------
+
+The loader's callback mechanism is now an attribute of the loader.
+The important thing to remember is that you must set the attribute
+PFFLT_REGISTER_NODE using pfdConverterAttr_flt() before calling
+pfdLoadFile_flt() (or pfdLoadFile). Otherwise your loader callback
+function won't be invoked as the file is processed.
+
+#include <Performer/pf.h>
+#include <Performer/pfdb/pfflt.h>
+
+int main ( )
+{
+    fltRegisterNodeT pFunc = myCallBack;
+    void*            hFunc = & pFunc;
+    pfScene*         scene;
+    
+    pfInit ();
+    pfConfig ();
+    : : :
+    /* NOTE: do not attempt "& myCallback" here !!!
+     *       the C language will ignore the "&".
+     */
+    pfdConverterAttr_flt ( PFFLT_REGISTER_NODE, hFunc );
+
+    scene = ( pfScene* ) pfdLoadFile_flt( "example.flt" );
+    : : :
+}
+
+
+----------------------------------------------------------
+| Collecting the DOF information                         |
+----------------------------------------------------------
+
+What follows is a basic loader callback function that only collects
+the DOF node information. The manner in which the DOF data is stored
+for later use will depend upon the application's requirements. In the
+simplest scenario, the DOF data can be attached to the pfDCS user
+data field. This is generally safe to do because the DOF data (in
+fact all loader callback data) is allocated from the shared memory
+arena.  Alternatively, you may need to save the DOF comments as well.
+A simple data structure, such as:
+
+struct remember
+{
+    DOFcb*     dof;
+    COMMENTcb* comments;
+};
+
+could hold both pieces of information that's then attached to the pfDCS
+user data. With this technique it might then be necessary to pfFindDCS
+each node and associate them with other motion objects or modules after
+the database is loaded. Perhaps it may be sufficient to save the
+information in a simple array, such as:
+
+struct remember_all
+{
+    pfDCS*     dcs;
+    DOFcb*     dof;
+    COMMENTcb* comments;
+} DOF_data [ DOF_MAX ];
+
+and traverse the array during your application's update phase. The
+example loader callback function below saves the DOF information this
+way.
+
+void myCallBack
+( pfNode* node, int mgOp, int* cbs, COMMENTcb* cbcom, void* userData )
+{
+    switch ( mgOp )
+    {
+	case CB_DOF:
+	{
+	    DOFcb* dofData = ( DOFcb* ) cbs;
+	    pfDCS* dcsNode = ( pfDCS* ) node;
+	    int    which;
+	    
+	    /* ------------------------------------------------- *\
+	       OpenFlight loader already initialized DCS matrix.
+	       Remember DCS node and DOF data for later updates.
+	    \* ------------------------------------------------- */
+
+	    for ( which = 0 ; which < DOF_MAX ; which ++ )
+	    {
+		if ( ! DOF_data [ which ] -> dcs )
+		{
+		    DOF_data [ which ] -> dcs = dcsNode;
+		    DOF_data [ which ] -> dof = dofData;
+		    DOF_data [ which ] -> comments = cbcom;
+		    break;
+		}
+	    }
+	}
+	break;
+
+	case CB_CLEANNODE: *cbs = cleanOK ? TRUE : FALSE; break;
+	
+	/* ------------------------------------------------- *\
+	   Free memory for data we're not interested in.
+	\* ------------------------------------------------- */
+
+	default:
+	{
+	    if ( cbs ) pfFree( cbs );
+	    if ( cbcom ) pfFree( cbcom );
+	}
+	break;
+    }
+}
+
+
+----------------------------------------------------------
+| Updating pfDCS nodes                                   |
+----------------------------------------------------------
+
+So far, we've arranged to collect all the DOF node information and its
+pfDCS node and save it. Now we want to dynamically update the pfDCS in
+the scene graph during each pass through our application's main loop.
+
+It's not enough to directly apply a translation or rotation to the
+pfDCS. The transformation must first be localized to the coordinate
+system of the original DOF node. This is the reason why the loader
+calculated the DOF position matrices: the "put" and "inverse put"
+matrices.
+
+
+----------------------------------------------------------
+| Order of transformations                               |
+----------------------------------------------------------
+
+The order in which the DOF transformations are applied (multiplied) by
+MultiGen is fixed, as follows:
+
+	Result = [ Put * S * H * R * P * T * Inverse Put ]
+
+Translations and scales are straightforward. The order of rotations in
+a DOF is NOT the same as Performer's heading, pitch and roll rotations
+that are encapsulated in a pfCoord (these are referred to as Euler
+angles). MultiGen DOF nodes use a different Euler convention than
+Performer. DOF rotation ordering is H*R*P, while Performer does R*P*H.
+See the pfMakeEulerMat and pfMakeCoordMat reference pages.
+
+Another difference may be the terminology. Older versions of MultiGen
+used the terms twist, azimuth and inclination to denote yaw, pitch and
+roll respectively in Performer.
+
+
+----------------------------------------------------------
+| Matrix calculations                                    |
+----------------------------------------------------------
+
+Updating a pfDCS node in real-time is usually done via matrix
+multiplication. The individual rotations and translations are
+dynamically computed and stored in the appropriate data structure.
+
+Ultimately we need to load the updated values into a pfMatrix so that
+it can be multiplied with the DOF position matrices. The resultant
+matrix is then stored in the pfDCS node in the scene graph.
+
+The following example is a streamlined implementation of the matrix
+compositions and multiplications necessary to get your pfDCS nodes
+behaving like your DOF nodes in MultiGen. This is the kind of function
+that would be called for each DOF, after an application has updated the
+appropriate current values in a DOFcb structure, i.e [ curx, cury,
+curz, curtwist, curazim, curincl, curscalex, curscaley, curscalez ].
+
+void mgUseDOF ( pfDCS* dcs, DOFcb* dof )
+{
+    pfMatrix workMat;
+
+    /* -------------------------------------------------------- *\
+	Set up the local dof matrix from the information held in
+	the DOFcb structure.  This assumes that the application
+	is updating values directly in the DOFcb and is doing
+	its own range clamping.
+    \* -------------------------------------------------------- */
+
+    /* Create the local DOF coordinate matrix */
+    pfMakeTransMat( workMat, dof -> curx, dof -> cury, dof -> curz );
+
+    pfPreRotMat( workMat, dof -> curazim,  1.0f, 0.0f, 0.0f, workMat );
+    pfPreRotMat( workMat, dof -> curincl,  0.0f, 1.0f, 0.0f, workMat );
+    pfPreRotMat( workMat, dof -> curtwist, 0.0f, 0.0f, 1.0f, workMat ); 
+
+    /* Prescale the DOF matrix by the scale vector */
+    pfPreScaleMat ( workMat,
+		    dof -> curscalex, dof -> curscaley, dof -> curscalez,
+		    workMat );
+
+    /* Premultiply the put matrix with the DOF matrix */
+    pfPreMultMat ( workMat, dof -> putmat );
+
+    /* -------------------------------------------------------- *\
+	Premultiply the DOF matrix with the inverse put matrix.
+	NOTE:	This is really:
+		pfPreMultMat ( dof -> putinvmat, workMat );
+		but we want the result in the workMat to
+		conserve another matrix, so switch the order
+		and use a post multiply.
+    \* -------------------------------------------------------- */
+
+    pfPostMultMat ( workMat, dof -> putinvmat );
+
+    /* Finally set the pfDCSs orientation */
+    pfDCSMat ( dcs, workMat );
+}
+
+
+************************************************************************
+************************************************************************
+************************************************************************
+************************************************************************
+

@@ -1,0 +1,2 @@
+#!/bin/sh
+./fogfly -9 -p 2500,2500,206 -l 2 -F .:./town:/usr/share/Performer/data/town -f /usr/share/Performer/data/town/town_ogl_pfi.pfb

@@ -1,0 +1,246 @@
+This directory contains the source to the demo program clipfly,
+which is installed in /usr/sbin/clipfly.
+
+RUNNING IT:
+
+    The simplest way to view a clip texture is
+    to run clipfly on it directly:
+	clipfly /usr/share/Performer/data/clipdata/hunter/hl.ct
+    or just:
+	clipfly hl.ct
+    (note, to use the hunter database, you need to
+    first run "make" in /usr/share/Performer/data/clipdata/hunter).
+    This makes a square and textures it with the
+    clip texture loaded from the .ct file using pfdLoadClipTexture().
+
+    If the clip texture is big, you may want to decrease the
+    sensitivity of the mouse controls; hitting ',' to incrementally
+    decrease the mouse sensitivity and '.' to increase it.
+    You can set the initial sensitivity using the environment
+    variable _PFI_FUDGE:
+	setenv _PFI_FUDGE .1
+    or:
+	setenv _PFI_FUDGE .01
+
+    By default, the .ct loader shows the texture head-on for easy
+    trackball viewing.
+    However, this messes up the Fly motion model which
+    requires the Y axis to be perpendicular to the ground.
+    You can fix this by making it start edge-on with the help of the ".rot"
+    pseudo-loader; just add ".<heading>,<pitch>,<roll>.rot"
+    to the end of the file name
+    (note that this works on any Performer scene file in perfly
+    as well as clipfly):
+	clipfly hl.ct.0,-90,0.rot
+
+    To view more than one clip texture at once,
+    you can do this (using both the ".rot" and ".trans"
+    pseudo-loaders to rotate and translate the individual scenes):
+
+	clipfly hl.ct mof.ct.1,0,0.trans
+
+    Another sample to try is:
+	clipfly sample.spherepatch
+    This loads two clip textures on opposite hemispheres of a globe.
+
+    When viewing a .spherepatch file (or any scene
+    whose spherical bounding volume is set to closely match
+    the surface of the geometry)
+    you can get nice adaptive sensitivity in Trackball mode
+    (which is the default) by setting:
+	setenv _CLIPFLY_ADAPT
+    before running the program.  This will also make
+    the near and far clip planes automatically adjust
+    based on the eye position: the values shown on the near and far
+    clip plane sliders will be multiplied by the height-above-terrain
+    and horizon-distance respectively.
+
+    You can also change from Trackball to Spheric motion model
+    which has this same kind adaptive sensitivity
+    (but to get automatic clip plane adjustment, you still
+    have to setenv _CLIPFLY_ADAPT).
+
+DIFFERENCES BETWEEN PERFLY AND CLIPFLY:
+
+  Clipfly is derived from the perfly source code, and has most of perfly's
+  functionality and command-line options (see the perfly man page,
+  and the README and source code in the sibling source directory)
+  with the following enhancements designed for viewing scenes with
+  clip textures on InfiniteReality graphics hardware.
+
+    1. Frame-accurate view position
+
+	In perfly, the view position is updated in PostFrame,
+	which is good for last-split-second update from realtime input devices;
+	however, this means the APP callbacks which typically
+	set the clip texture's clip center (or morph the scene)
+	based on the eye point
+	will always be a frame behind, which sometimes results
+	in a visible jittering of the scene.
+	To avoid this phenomenon,
+	clipfly updates the view position in PreFrame instead.
+	(Note that the asdfly program also differs from perfly
+	in this way).
+
+    2. Spheric motion model
+	In addition to perfly's Trackball, Fly, and Drive motion models,
+	clipfly has an option for the adaptive Spheric motion model,
+	which can be enabled either by the gui or on the command line.
+
+    2. Enhanced GUI control of clip textures
+       If there are one or more clip textures in the scene,
+       the following additional widgets will appear
+       near the lower left corner of the GUI:
+
+	    Clip Texture Selection Menu:
+		This allows the user to select which clip texture
+		the widgets and 'g' key refer to, if there is more than one
+		clip texture in the scene.
+
+	    Virtual LOD Offset Slider:
+		Allows the user to change of the currently selected
+		clip texture's virtualLODOffset.
+		(see the man page for pfMPClipTextureVirtualLODOffset).
+		(Note, this slider will only be enabled if the clip texture
+		is virtual.)
+
+	    Effective Levels Slider:
+		Allows the user to change the currently selected
+		clip texture's effectiveLevels
+		(see the man page for pfMPClipTextureEffectiveLevels).
+		(Note, this slider will only be enabled if the clip texture
+		is virtual.)
+
+	    Min (Finest) Mipmap LOD Slider:
+		Controls the min LOD the hardware is allowed
+		to use when rendering from the selected clip texture.
+		NOTE: this slider can override minDTRLOD (allowing
+		you to see uninitialized texture memory from
+		levels finer than are currently loaded)
+		only when using a scene graph loader
+		that sets minLOD per-tile using applyMinLOD()
+		(such as the .ct scene graph loader, or pfASD clip rings).
+		For other loaders such as .im, .flt and .spherepatch
+		that set minLOD on the MP clip texture once per frame
+		(if at all), you will never see levels finer
+		than minDTRLOD.
+	    Max (Coarsest) Mipmap LOD Slider:
+		Controls the max LOD the hardware is allowed
+		to use when rendering from the selected clip texture.
+
+	    Virtual Clip Texture Slider Limit Menus:
+		If the scene is an explicit .ct file
+		(i.e. you ran the program as "clipfly somecliptexfile.ct")
+		the .ct loader will install node callbacks that automatically
+		adjust the values described under the preceding fours sliders
+		(LODOffset,effectiveLevels,minLOD,maxLOD).
+		You can place upper and/or lower bounds on the values
+		these callbacks will produce, by selecting "=", "<=", ">=",
+		from the corresponding limit menu,
+		and then selecting the desired limit value with the slider.
+		To turn off the effect of these callbacks altogether,
+		select "=" on all four selectors; then the sliders
+		will completely control the values (instead of the callbacks).
+
+	    LOD Bias Slider:
+		Allows a bias to be selected that gets added
+		to the floating-point texture LOD selected by the hardware
+		per-pixel based on MAX(ds/dx, dt/dx, ds/dy, dt/dy).
+		You can control the bias in both S and T directions
+		with this slider, and/or control the bias
+		in S or T individually by using the following two sliders.
+	    LOD Bias S Slider:
+		Allows separate control of the LOD Bias in the S only
+		(i.e. it's added to the ds/dx and ds/dy terms
+		but not the dt/dx or dt/dy terms).
+		The total S bias used is the sum of the
+		biases shown on the "LOD Bias" and "LOD Bias S" sliders.
+	    LOD Bias T Slider:
+		Allows separate control of the LOD Bias in the T only,
+		analogous to the LOD Bias S Slider.
+
+	    Invalid Border Slider:
+		Controls the invalid border size of the clip texture.
+		(See the pfClipTexture man page for more information.)
+
+	    Mag Filter Menu:
+		Allows the user to select magnification filter.
+		Note that on InfiniteReality,
+		this filter only applies when magnifying the finest
+		clipmap level; bilinear interpolation is
+		always used when magnifying the coarser levels.
+
+	    DTR Mode Menu:
+		Allows the user to select which DTR (Dynamic Texture Resolution)
+		modes to turn on.
+		For more information about DTR,
+		see the the pfMPClipTexture man page.
+
+	    Pipe Total DTR Texload Time Slider:
+		Controls the time allotted per-pipe for clip texture
+		loading into texture memory.
+		This time will be divided among the clip textures
+		in the scene according to their texLoadTimeFracs,
+		which some scene loaders (such as .spherepatch)
+		set intelligintly to prioritize clip textures
+		based on proximity to the eye.
+		(See the pfClipTexture man page for more information.)
+		NOTE: this only has an effect on a particular
+		clip texture if that clip texture's DTR Texload Time
+		(described below) is set to -1 (it is not by default,
+		so the Pipe Total DTR Time slider has no effect by
+		default, which can be confusing).
+
+	    DTR Texload Time Slider:
+		Controls the amount of time allotted per frame
+		for clip texture loading into texture memory.
+		Note that this value only has an effect if the DTR mode
+		includes the bit PF_DTR_TEXLOAD
+		(i.e. "TEX" in the DTR mode selection widget, see above).
+		Set this slider to -1 for all clip textures if you want
+		a fraction of the Pipe Total DTR Texload Time Slider
+		(described above) to be used instead.
+
+    3. Additional keyboard control
+	'g' key toggles color-coded gridification of the current clip texture(s)
+		(see the pfuGridify man page for more information).
+		(perfly has a simpler version of this that toggles
+		gridification of all clip textures in the scene).
+	'G' key changes selection of Clip Texture Selection widget
+	'm' key toggles image cache monitor (XXX currently broken)
+	'M' key toggles magnification of image cache monitor
+	'0' through '6' keys set the notify level to be the specified value
+	',' decreases mouse sensitivity
+	'.' increases mouse sensitivity
+
+    5. Texture loading stats are turned on by default
+	 When you turn on stats, you will see additional
+	 histograms of tex loads.
+
+    6. Workaround for "DTR sticking" bug
+	If the DTR tex load time allotted by the clip textures
+	and/or the pipe is too small, DTR can get "stuck"
+	at the clip texture pyramid levels
+	(the reason the pyramid levels have this problem
+	and not the clipped levels is that each pyramid level
+	must be loaded all at once, which can require
+	a single texload bigger than the time allowed per frame).
+	By default clipfly forces the allowed texload time
+	to be unlimited during the first 120 frames.
+	You can tune this behavior by setting the environment variable
+	_CLIPFLY_UNSTICK_INITIAL_FRAMES to a different number of frames.
+
+        NOTE: If you use the Clip Texture Selection menu widget
+	before the initial 120 frames has elapsed, a very large texload
+	time will appear on the Tex Load Time sliders and it will stay
+	there until you change it manually.  (This is a clipfly bug.)
+
+
+FOR MORE INFORMATION ABOUT USING CLIP TEXTURES
+    - documents in /usr/share/Performer/doc/clipmap
+    - man pfClipTexture, pfMPClipTexture, pfuGridify, pfdLoadClipTexture,
+	  pfiInputXformSpheric
+    - source code for .ct and .spherepatch scene loaders
+    - source code for .rot, .scale, .trans pseudo-loaders
+    - pguide/libpf/C/virtcliptex.c example program
+

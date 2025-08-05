@@ -1,0 +1,336 @@
+#-------------------------------------------------------------------------#
+#-- pfmakerules - Common make rules for performer source		--#
+#--		  example source.					--#
+#-------------------------------------------------------------------------#
+#-- RCS version information						--#
+#--   $Revision: 1.1 $							--#
+#--   $Date: 2000/11/21 21:39:32 $					--#
+#-------------------------------------------------------------------------#
+
+#-------------------------------------------------------------------------#
+#-- The default make target makes the I386 OPENGL Dynamic Shared Object.--#
+#-- The targets are:							--#
+#--    build debugging versions: 		       dbg              --#
+#--    build optimized versions:		       opt              --#
+#--    build dynamic shared object versions:	       dso              --#
+#--    build debugging dynamic shared object versions: ddso             --#
+#--    remove all unneeded files after a build:	       clean            --#
+#--    remove all machine generated files:	       clobber          --#
+#--									--#
+#-------------------------------------------------------------------------#
+
+#--
+#--	generic targets
+#--
+
+#-- make optimized dso version of program by default
+default: dso
+
+#-- include Makedepend file if it exists
+#sinclude $(MKDEPFILE)
+
+#-- synonym targets
+debug: dbg
+
+optimize: opt
+
+#-- make all versions of program
+all: dbg opt dso ddso
+
+dso: $(TARGETS:=.dso) \
+	$(TARGET:=.dso) \
+	$(LIBRARY:=.dso)
+opt: $(TARGETS:=.opt) \
+	$(TARGET:=.opt) \
+	$(LIBRARY:=.opt)
+dbg: $(TARGETS:=.dbg) \
+	$(TARGET:=.dbg) \
+	$(LIBRARY:=.dbg)
+ddso: $(TARGETS:=.ddso) \
+	$(TARGET:=.ddso) \
+	$(LIBRARY:=.ddso)
+
+#-- clean up directories {remove junk}
+clean:
+	if test -d DBG.$(PFABI); then cd DBG.$(PFABI) ; \
+		rm -f ${OBJECTS} Makedepend core so_locations; cd .. ; fi
+	if test -d OPT.$(PFABI); then cd OPT.$(PFABI) ; \
+		rm -f ${OBJECTS} Makedepend core so_locations; cd .. ; fi
+
+#-- remove all machine-built files
+clobber: clean
+	if test -d OPT.$(PFABI) ; then \
+		rm -rf OPT.$(PFABI) ; fi
+	if test -d DBG.$(PFABI) ; then \
+		rm -rf DBG.$(PFABI) ; fi
+	rm -f ${TARGETS} ${TARGET}
+
+#--
+#--	TARGETS targets
+#--
+
+$(TARGETS):
+	@ ${MAKE} $(subst ogl,,$@).dso
+
+# for backwards compatability with pf2.2
+
+oglall:     all 
+ogldso:     dso
+oglddso:    ddso
+ogldbg:     dbg
+oglopt:     opt
+
+$(TARGETS:=.oglall):
+	@ echo "Target 'oglall' deprecated.  Use 'all'."
+	@ ${MAKE} $(subst ogl,,$@)
+
+$(TARGETS:=.ogldso):
+	@ echo "Target 'ogldso' deprecated.  Use 'dso'."
+	@ ${MAKE} $(subst ogl,,$@)
+
+$(TARGETS:=.oglddso):
+	@ echo "Target 'oglddso' deprecated.  Use 'ddso'."
+	@ ${MAKE} $(subst ogl,,$@)
+
+$(TARGETS:=.ogldbg):
+	@ echo "Target 'ogldbg' deprecated.  Use 'dbg'."
+	@ ${MAKE} $(subst ogl,,$@)
+
+$(TARGETS:=.oglopt):
+	@ echo "Target 'oglopt' deprecated.  Use 'opt'."
+	@ ${MAKE} $(subst ogl,,$@)
+
+# new pf targets
+
+$(TARGETS:=.dbg):
+	@echo "Making DBG version of $@"
+	@if test ! -d DBG.$(PFABI) ; then \
+		mkdir -p DBG.$(PFABI) ; fi
+	@ rm -f $(subst .dbg,,$@)
+	@cd DBG.$(PFABI) ; \
+	${MAKE} -f ../GNUmakefile OPTIMIZER="-g -O" \
+	    LIBRARIES='$(PFLIB) ${SYSTEM}' \
+	    $(@)cmd ; cd ..
+	@echo "Making symbolic links to DBG versions"
+	ln -s DBG.$(PFABI)/$(@)cmd $(subst .dbg,,$@) ;
+
+$(TARGETS:=.opt):
+	@echo "Making OPT version of $@"
+	@if test ! -d OPT.$(PFABI) ; then \
+		mkdir -p OPT.$(PFABI); fi
+	@ rm -f $(subst .opt,,$@)
+	@cd OPT.$(PFABI) ; \
+	${MAKE} -f ../GNUmakefile \
+	    LIBRARIES='$(PFLIB) ${SYSTEM}' \
+	    $(@)cmd ; cd ..
+	@echo "Making symbolic links to OPT versions"
+	ln -s OPT.$(PFABI)/$(@)cmd $(subst .opt,,$@) ; 
+
+$(TARGETS:=.dso):
+	@echo "Making DSO version of $@"
+	@if test ! -d OPT.$(PFABI) ; then \
+		mkdir -p OPT.$(PFABI); fi
+	@ rm -f $(subst .dso,,$@)
+	@cd OPT.$(PFABI); \
+	${MAKE} -f ../GNUmakefile \
+	    LIBRARIES='$(PFLIB) ${SYSTEM}' \
+	    $(@)cmd ; cd ..
+	@echo "Making symbolic links to DSO versions"
+	ln -s -f OPT.$(PFABI)/$(@)cmd $(subst .dso,,$@);
+
+$(TARGETS:=.ddso):
+	@echo "Making DDSO version of $@"
+	@if test ! -d DBG.$(PFABI); then \
+		mkdir -p DBG.$(PFABI); fi
+	@ rm -f $(subst .ddso,,$@)
+	@cd DBG.$(PFABI); \
+	${MAKE} -f ../GNUmakefile OPTIMIZER="-g -O"  \
+	    LIBRARIES='$(PFLIB) ${SYSTEM}' \
+	    $(@)cmd ; cd ..
+	@echo "Making symbolic links to DDSO versions"
+	ln -s DBG.$(PFABI)/$(@)cmd $(subst .ddso,,$@);
+
+#--
+#--	internal TARGETS targets
+#--
+
+.SUFFIXES: .dbgcmd .optcmd .dsocmd .ddsocmd
+
+.o.dbgcmd: 
+	${LINKERF} -o $@ $< $(DBGLINKS) ${LDOPTS} ${LIBRARIES}
+
+.o.optcmd: 
+	${LINKERF} -o $@ $< $(OPTLINKS) ${LDOPTS} ${LIBRARIES}
+
+.o.dsocmd: 
+	${LINKERF} -o $@ $< $(DSOLINKS) ${LDOPTS} ${LIBRARIES}
+
+.o.ddsocmd: 
+	${LINKERF} -o $@ $< $(DDSOLINKS) ${LDOPTS} ${LIBRARIES}
+
+
+#--
+#--	TARGET targets
+#--
+
+#-- make a debugging version of the program
+$(TARGET:=.dbg): 
+	@ echo "Making DBG version of ${TARGET}"
+	@ if test ! -d DBG.$(PFABI); then \
+		mkdir -p DBG.$(PFABI); fi
+	@ cd DBG.$(PFABI); \
+	${MAKE} -f ../GNUmakefile OPTIMIZER="-g -O"\
+	     LIBRARIES='$(PFLIB) -Wl ${SYSTEM}' \
+	     ${TARGET}.DBG
+	@ rm -f ${TARGET}
+	ln -s DBG.$(PFABI)/${TARGET}.DBG ${TARGET}
+
+#-- make an optimized version of the program
+$(TARGET:=.opt): 
+	@ echo "Making OPT version of ${TARGET}"
+	@ if test ! -d OPT.$(PFABI); then \
+		mkdir -p OPT.$(PFABI); fi
+	@ cd OPT.$(PFABI); ${MAKE} -f ../GNUmakefile \
+	     LIBRARIES='$(PFLIB) -Wl ${SYSTEM}' \
+	     ${TARGET}.OPT
+	@ rm -f ${TARGET}
+	ln -s OPT.$(PFABI)/${TARGET}.OPT ${TARGET}
+
+#-- make an optimized version of the program that uses DSOs
+$(TARGET:=.dso): 
+	@ echo "Making DSO version of ${TARGET}"
+	@ if test ! -d OPT.$(PFABI); then \
+		mkdir -p OPT.$(PFABI); fi
+	@ cd OPT.$(PFABI); ${MAKE} -f ../GNUmakefile \
+	    LIBRARIES='$(PFLIB) -Wl ${SYSTEM}' \
+	    ${TARGET}.DSO
+	@ rm -f ${TARGET}
+	ln -s OPT.$(PFABI)/${TARGET}.DSO ${TARGET}
+
+#-- make an optimized version of the program that uses DSOs
+$(TARGET:=.ddso): 
+	@ echo "Making DDSO version of ${TARGET}"
+	@ if test ! -d DBG.$(PFABI); then \
+		mkdir -p DBG.$(PFABI); fi
+	@  cd DBG.$(PFABI); ${MAKE} -f ../GNUmakefile OPTIMIZER="-g -O" \
+	    LIBRARIES='$(PFLIB) -Wl ${SYSTEM}' \
+	    ${TARGET}.DDSO
+	@ rm -f ${TARGET}
+	ln -s DBG.$(PFABI)/${TARGET}.DDSO ${TARGET}
+
+
+#--
+#--	internal TARGET targets
+#--
+
+${TARGET}.DBG: ${OBJECTS}
+	${LINKERF} -o $@ ${OBJECTS} $(DBGLINKS) ${LDOPTS} ${LIBRARIES}
+
+${TARGET}.OPT: ${OBJECTS}
+	${LINKERF} -o $@ ${OBJECTS} $(OPTLINKS) ${LDOPTS} ${LIBRARIES}
+
+${TARGET}.DSO: ${OBJECTS}
+	${LINKERF} -o $@ ${OBJECTS} $(DSOLINKS) ${LDOPTS} ${LIBRARIES}
+
+${TARGET}.DDSO: ${OBJECTS}
+	${LINKERF} -o $@ ${OBJECTS} $(DDSOLINKS) ${LDOPTS} ${LIBRARIES}
+
+
+#--
+#--	LIBRARY targets
+#--
+
+#-- make a debugging version of the library
+$(LIBRARY:=.dbg): 
+	@ echo "Making DBG version of ${LIBRARY}"
+	@ if test ! -d DBG.$(PFABI); then \
+		mkdir -p DBG.$(PFABI); fi
+	@ cd DBG.$(PFABI); \
+	  ${MAKE} -f ../GNUmakefile OPTIMIZER="-g -O" ${LIBRARY}.a
+	@ echo "${LIBRARY}.a done"
+
+#-- make an optimized version of the library
+$(LIBRARY:=.opt): 
+	@ echo "Making OPT version of ${LIBRARY}"
+	@ if test ! -d OPT.$(PFABI); then \
+		mkdir -p OPT.$(PFABI); fi
+	@ cd OPT.$(PFABI); \
+	  ${MAKE} -f ../GNUmakefile ${LIBRARY}.a
+	@ echo "${LIBRARY}.a done"
+
+#-- make an optimized version of the library that uses DSOs
+$(LIBRARY:=.dso): 
+	@ echo "Making DSO version of ${LIBRARY}"
+	@ if test ! -d OPT.$(PFABI); then \
+		mkdir -p OPT.$(PFABI); fi
+	@ cd OPT.$(PFABI); \
+	  ${MAKE} -f ../GNUmakefile ${LIBRARY}.so.${DSOVERSION}
+	@ echo "${LIBRARY}.so.${DSOVERSION} done"
+
+#-- make an debugging version of the library that uses DSOs
+$(LIBRARY:=.ddso): 
+	@ echo "Making DDSO version of ${LIBRARY}"
+	@ if test ! -d DBG.$(PFABI); then \
+		mkdir -p DBG.$(PFABI); fi
+	@ cd DBG.$(PFABI); \
+	  ${MAKE} -f ../GNUmakefile OPTIMIZER="-g -O" ${LIBRARY}.so.${DSOVERSION} 
+	@ echo "${LIBRARY}.so.${DSOVERSION} done"
+
+
+#--
+#--	internal LIBRARY targets
+#--
+
+${LIBRARY}.a: ${OBJECTS}
+	ar crv $@ $?
+
+${LIBRARY}.so.$(DSOVERSION): ${OBJECTS}
+	ld -shared $(DSOREGFILE) $(DSOVERSIONOPT) $(LDOPTS) $(OBJECTS) -o $@
+
+
+#-- look for sources in this directory when recursing
+VPATH=..
+
+
+#
+#-- special rules for using pixie with profile
+#
+
+# create a pixie version of profile
+profile.pixie:
+	$(TOOLROOT)/usr/bin/pixie profile
+
+#-- runs prof -pixie on the using the data file produced by
+#-- running profile.pixie
+profit:
+	prof -procedures -i -l -pixie -quit 1% \
+		profile profile.Addrs profile.Counts
+
+#-- a speciall c++ version that will de-mangle c++ names
+#-- requires /usr/lib/c++/c++filt
+profit_c++:
+	prof -procedures -i -l -pixie -quit 1% \
+		profile profile.Addrs profile.Counts | \
+		$(TOOLROOT)/usr/lib/c++/c++filt
+
+.C.o:
+	$(CXXF) -c $<
+
+%.o: %.cxx
+	$(CXXF) -c $<
+
+%.o: %.cpp
+	$(CXXF) -c $<
+
+%.o: %.c++
+	$(CXXF) -c $<
+
+_COMPILER = $(CCF)
+ifdef CXXFILES
+_COMPILER = $(CXXF)
+endif
+
+%: %.o
+	$(_COMPILER) $(LDFLAGS) $< -o $@
+
+

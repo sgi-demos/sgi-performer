@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# runmovie - shell script to run movie program
+# 	contains example commandlines
+
+# Basic form:
+# ----------
+# load multiple movies (a movie for each -m option)
+#	movie -t baseTex -m "movieName fmtstr start end" [....]
+#
+# load a single movie of listed textures
+#	movie -t baseTex tex1 tex2 ...... texn
+# ex:
+#	./movie -t wood.rgb 		     \
+#		-m "movie0 movie0/frame%02d.rgb 0 3" \
+#		-m "movie1 movie1/frame%02d.rgb 0 8"
+
+# multi-pipe version example
+# ./movie -M 1 -t wood.rgb marble.rgb license.rgb brick.rgba
+
+./movie -t wood.rgb marble.rgb license.rgb brick.rgba

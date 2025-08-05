@@ -1,0 +1,11 @@
+#!/bin/sh
+PFPATH=$PFROOT/perf/data:$PFROOT/perf/data/asddata:$PFROOT/usr/share/Performer/data/:$PFROOT/usr/share/Performer/data/asddata:$PFPATH 
+export PFPATH
+PFASDLODSIZE=7
+export PFASDLODSIZE
+echo path is $PFPATH
+
+
+./asdfly -m38 -W 500 -f -l2 -L -N -p37,1070,144 -e-142,-27,0 $* logo.config
+
+

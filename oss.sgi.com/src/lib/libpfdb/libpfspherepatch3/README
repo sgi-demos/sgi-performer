@@ -1,0 +1,283 @@
+This directory contains the source for the new improved .spherepatch loader.
+
+IMPROVEMENTS AND BUGS FIXED since Performer 2.2's .spherepatch loader:
+=====================================================================
+
+    - Adaptive morphing tessellation-- when the eye is sufficiently close
+      to the surface, only a 30x30 square grid is rendered, covering
+      only the area above the horizon.  When the eye is sufficiently
+      far away, the tesselation is static, thereby avoiding
+      annoying "texture swimming" artifacts inherent when morphing
+      large primitives under a very non-linear texture mapping.
+        (The 2.2 version used static geometry, requiring
+	the application to work around the very inexact
+	surface approximation when the eye was very close to the surface.)
+
+    - Full use of virtual clip textures (up to 31 levels, i.e. 1 billion
+      by 1 billion) without ever showing garbage on the horizon.
+      Geometry for rendering is divided into concentric
+      "clip rings" according to distance from the clip center
+      in texture space; each clip ring sets its own
+      value of virtualLODOffset and numEffectiveLevels
+      (see /usr/share/Performer/doc/clipmap/HowToDoVirtual.{html,txt}
+      for details of this technique).
+        (The 2.2 version used static geometry so this was infeasible.)
+
+    - No cracks between adjacent patches, regardless
+      of relative patch sizes or alignment.
+        (The 2.2 version's stitching algorithm required one patch's
+        segment length to be a multiple of the other adjacent ones,
+        and that the two patches be aligned perfectly).
+      This is accomplished by draping all the patches over a single
+      common geometry (recalculated each frame), so that all incident patches
+      will get the same coordinates at T-vertices.
+
+    - Input file format allows later patches to "overlap"
+      earlier ones; subdivision of the remaining visible
+      area of the occluded patch is done automatically
+      during input processing.
+        (The 2.2 version required the user to manually
+        divide the remaining visible area of a partially occluded
+	patch into rectangular pieces and express the pieces
+	explicitly in the input file).
+
+    - Uses a pfDoubleDCS to express a local origin at the eye (changes
+      every frame) so that vertices can be calculated and expressed
+      as single precision floats (as required by OpenGL) without
+      loss of precision.
+	 (NOTE:  This is only implemented when compiled with
+	  a Performer library which defines the pfDoubleDCS type.
+	  This will be in a future Performer release (later than 2.2.2)).
+
+FILE FORMAT CHANGES:
+===================
+
+    Old .spherepatch files are still understood.
+
+    The file format is the same except that
+    the old parameters "lonsegs" and "latsegs" are ignored;
+    now only a pair of global values are used for the whole sphere
+    (see the description of _PFSPHEREPATCH_MAXSEGSLON
+    and _PFSPHEREPATCH_MAXSEGSLAT below).
+
+    A special texture name "NULL" (without quotes) is allowed when
+    specifying a patch; this means the patch is not to be rendered,
+    but its extent is used to occlude (cut a hole in)
+    all previously defined patches.
+
+THE TESSELLATION ALGORITHM:
+=========================
+
+    The algorithm depends on four parameters
+    which can be set via environment variables (see below for the names)
+    or at runtime:
+	MAXSEGSLON (default 72, i.e. 5 degree increments)
+	MAXSEGSLAT (default 36, i.e. 5 degree increments)
+	MINSEGSLON (default 30)
+	MINSEGSLAT (default 30)
+    MAXSEGSLON,MAXSEGSLAT specifies the finest subdivision
+    to which the whole sphere will ever be tessellated.
+    MINSEGSLON,MINSEGSLAT determines the smallest number
+    of subdivisions that will ever be used to cover the bounding rectangle
+    (in lon,lat space) of the currently visible (above-horizon) disk.
+    Every frame, a new tessellation is calculated based on
+    the current eye point.  The tessellation is always a quad mesh
+    covering the bounding rectangle of the currently visible spherical disk;
+    the fineness of this mesh is always chosen to be the finer
+    of the two choices:
+	(1) Subdivide the whole sphere into MAXSEGSLON,MAXSEGSLAT parts
+	(2) Subdivide the visible disk's bounding rectangle
+	    into MINSEGSLON,MINSEGSLAT parts.
+    I.e. when the eye is sufficiently far away, method (1)
+    will be used and the tessellation will seem static;
+    but when the eye gets sufficiently close, method (2) will
+    be used and the mesh will appear to morph (the grid squares
+    get smaller as you zoom in).
+
+    Note that even with the above algorithm using MINSEGSLON,MINSEGSLAT,
+    the grid squares don't get small enough "fast enough"
+    to allow partitioning into usable clip rings--
+    the smallest clip ring *must* be less than 24K texels at the
+    finest texture LOD that will be used for it,
+    but it is desirable to make that size even smaller,
+    even less than 4K texels, to combat the "Jello" effect
+    (see /usr/share/Performer/doc/clipmap/IRClipmapBugs.{html,txt}).
+    Therefore a minimum grid square size in screen space is enforced;
+    this is currently hard coded to be about 2Kx2K pixels
+      (NOTE: this assumes an FOV of about 45 degrees; the minimum size
+      will be less or more than 2Kx2K pixels depending on whether
+      the FOV is set to more or less than 45 degrees respectively; this means
+      it will do wrong bad things if you set the FOV to be very small!)
+
+    So if both methods (1) and (2) would produce quads that are too big
+    by this criterion, a third method is used:
+	(3) Subdivide the visible disk's bounding rectangle
+	    by MINSEGSLON,MINSEGSLAT with nonuniform grid spacing,
+	    so that the grid spacing is uniform and of the
+	    required minimum size near the center
+	    (closest point to the eye), but smoothly becomes an
+	    exponential expansion further out near the edges
+	    of the rectangle.
+    This nonuniform grid spacing is described by a smooth increasing
+    "linear-exponential" function mapping [0..1] to [0..1]
+    (where 0 denotes the center, 1 denotes the outer edge of the visible disk)
+    i.e. a function that is linear on [0..k] and exponential on [k..1]
+    for some k, and is smooth (i.e. derivative is continuous).
+    Given any desired slope for the linear part (i.e. the desired
+    grid spacing at the center) there is a unique linear-exponential
+    function whose initial linear part has the desired slope.
+    The file spherepatchwarp.h defines a class which implements
+    such a warp (the tricky part is finding the parameters of the exponential
+    part given the slope of the linear part).
+
+    If you zoom in slowly from outer space and pay attention,
+    you can see the transition between methods (1), (2), and (3):
+    (1) looks like a static tessellation, (2) looks like
+    the grid squares are slowly shrinking with the zoom
+    (but not enough to keep pace with it), and (3) looks
+    like the shrinking near the center has
+    accelerated to exactly keep pace with the zoom (i.e.
+    the grid squares stay the constant minimum size in screen space),
+    but the grid squares out on the horizon are expanding
+    to compensate, to keep the total number of grid squares constant.
+
+    Theoretically even method (3) would be inadequate for *really*
+    big clipmaps (the exponential warp would become too extreme,
+    making the ratio between consecutive clip ring sizes
+    too big for the clip rings to be effective).
+    However it is quite adequate for the largest clipmaps currently
+    available, which have 32 levels (1 billion texels squared).
+    
+
+ENVIRONMENT VARIABLES:
+=====================
+
+  Setting a variable to the empty string is the same as setting it to "1".
+
+  Environment variables that are static for the life of the program:
+
+    int _PFSPHEREPATCH_MAXSEGSLON (default 72, i.e. 5 degree increments)
+    int _PFSPHEREPATCH_MAXSEGSLAT (default 36; i.e. 5 degree increments)
+	These are the MAXSEGSLON,MAXSEGSLAT parameters
+	of the tessellation algorithm, as described above.
+	When the eye is sufficiently far away,
+	the geometry will appear to be a static
+	tessellation by these amounts.
+
+    int _PFSPHEREPATCH_MINSEGSLON (default 30)
+    int _PFSPHEREPATCH_MINSEGSLAT (default 30)
+	These are the MINSEGSLON,MINSEGSLAT parameters
+	of the tessellation algorithm, as described above.
+	The lon,lat bounding box of the visible disk
+	is always covered by a rectangular grid
+	with at least this many quads.
+
+    double _PFSPHEREPATCH_RADIUS (default 1.)
+	The radius of the entire sphere.
+
+    float _PFSPHEREPATCH_RINGRATIO (default 2.)
+	This is the ratio between the sizes of adjacent
+	concentric square clip rings in texture space.
+	A smaller value may increase the effectiveness
+	of the clip rings, at the expense of more memory.
+	I think about 4 or 8 is about as high as you can go before
+	you will definitely see artifacts (excessive blurriness
+	in the foreground or garbage on the horizon, depending
+	on the value of _PFSPHEREPATCH_TRADEOFF, see below).
+
+    int _PFSPHEREPATCH_NRINGS (default -1, i.e. automatically calculate it)
+	If set, this many square clip rings are used, starting
+	with a radius of 1 (in texture space), and decreasing
+	in size geometrically by increments of _PFSPHEREPATCH_RINGRATIO.
+	When left at the default value -1,
+	the number of rings is calculated
+	(based on _PFSPHEREPATCH_RINGRATIO) so that
+	the smallest ring is approximately twice the size of
+	as the centermost grid square
+	(so that it will cover that grid square regardless of how
+	the grid is currently offset with respect to the clip rings, which
+	are centered exactly at the eye).
+
+    int _PFSPHEREPATCH_TTYINPUT (default 0)
+	If this variable is set, then the remaining variables
+	listed below can be changed at runtime
+	by issuing commands to the program's stdin,
+	which is polled and read by an APP callback function every frame.
+	Type "help" or "?" for a list of abbreviated
+	names for these variables.
+	Note that this variable is *NOT* set by default,
+	since it will behave badly if the calling application does any
+	input processing of its own (perfly and clipfly don't,
+	so you can set this variable when you use them).
+
+  Environment variables that can be changed via stdin
+  at runtime if env _PFSPHEREPATCH_TTYINPUT is set:
+
+    int _PFSPHEREPATCH_DEBUG (default 0)
+	If set, debugging messages
+	will be issued via pfNotify() at the PFNFY_NOTICE level
+	every frame, describing each clip ring,
+	the virtual clip texture parameters used for that ring,
+	and how those parameters were chosen.
+
+    double _PFSPHEREPATCH_PATCHSHRINK (default 1.)
+	If set to a positive value < 1, each rectangular patch
+	(after dividing the input patches as necessary due to occlusion)
+	will be shrunk around its center in lon,lat space by this amount.
+	A value of about .99 is useful to show the separation between the
+	patches.
+
+    double _PFSPHEREPATCH_GLOBALSHRINK (default 1.)
+	If set to a positive value < 1, the lon,lat coordinates
+	of all the patches are shrunk by this amount.
+	This is useful for viewing all the patches at once
+	in a more planar-like space
+	(i.e. without having to rotate the model to see patches that are
+	on the far side).
+	(XXX BUG: Values of .2 or less have been known to
+	result in assertion failures.  I usually use .3)
+
+    int _PFSPHEREPATCH_NO_TRANSLATE (default 0)
+	If set, the pfDoubleDCS is not used (its
+	translation is always set to 0).
+	You can turn this variable on and off at runtime
+	to demonstrate the instability caused by using
+	single precision vertex coords in a single global coordinate space.
+
+    int _PFSPHEREPATCH_NO_PRECISION_HACK (default 0)
+	By default, all texture coordinates for virtual clipmaps
+	are translated as far as possible towards 0,0
+	by a multiple of the "good area" size
+	determined by the current choice of the
+	virtualLODOffet,numEffectiveLevels parameters.
+	These parameters and the translated tex coords
+	are calculated in a node CULL callback.
+	You can turn this variable on and off at runtime
+	to demonstrate the instability caused by using
+	single precision texture coords in a single global texture space.
+
+     float _PFSPHEREPATCH_TRADEOFF (default 1, i.e. blurry rather than garbage)
+	This is the "tradeoff" parameter passed to
+	the pfuCalcVirtualClipTexParams() function for each clip ring.
+	This parameter specifies what should be done when
+	the required range of texture LODs for the clip ring is bigger
+	than the maximum numEffectiveLevels (16 on InfiniteReality graphics);
+	i.e. when there is no possible value of virtualLODOffset
+	that gives the necessary high resolution in the foreground
+	while covering the entire area of the clip ring.
+	A tradeoff value of 0. means "go fine", i.e.  always choose
+	a virtualLODOffset which gives the desired high resolution,
+	at the expense of area (possibly showing garbage on the horizon).
+	A tradeoff value of 1. means "go coarse" i.e.
+	always show the full area at the expense of resolution
+	(i.e. the foreground may appear excessively blurry).
+	A tradeoff value between 0 and 1 means choose
+	virtualLODOffset somewhere between these two extremes,
+	roughly proportional to the value given.
+	NOTE:  This variable should not make any difference
+	   unless you have explicitly changed the values of the variables
+	   _PFSPHEREPATCH_MINSEGS{LAT,LON},
+	   _PFSPHEREPATCH_RINGRATIO or _PFSPHEREPATCH_NRINGS.
+	   With the default values of those variables,
+	   the clip rings will be evenly spaced and numerous
+	   enough to keep any tradeoff from being necessary.

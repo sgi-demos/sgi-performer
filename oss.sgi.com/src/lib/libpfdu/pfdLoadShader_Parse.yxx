@@ -1,0 +1,2994 @@
+%{
+/*****************************************************************************
+#   Copyright 1997 Silicon Graphics, Inc.  ALL RIGHTS RESERVED.
+#
+#   UNPUBLISHED -- Rights reserved under the copyright laws of the United
+#   States.   Use of a copyright notice is precautionary only and does not
+#   imply publication or disclosure.
+#
+#   THIS SOFTWARE CONTAINS CONFIDENTIAL AND PROPRIETARY INFORMATION OF
+#   SILICON GRAPHICS, INC. ANY DUPLICATION, MODIFICATION, DISTRIBUTION, OR
+#   DISCLOSURE IS STRICTLY PROHIBITED WITHOUT THE PRIOR EXPRESS WRITTEN
+#   PERMISSION OF SILICON GRAPHICS, INC.
+#*****************************************************************************/
+
+#include <stdlib.h>
+#include <stdarg.h>
+#include <strings.h>
+
+#include <Performer/pf.h>
+#include <Performer/pr.h>
+
+#include <GL/gl.h>
+
+#undef yyparse
+#define yyparse __pfdLoadShader_parse
+
+#undef yyerror
+#define yyerror __pfdLoadShader_error
+
+#define PFDLOADSHADER_ERROR_MSG_LEN       256
+
+#define PFDLOADSHADER_TEXTURE_SRC_FILE    0
+#define PFDLOADSHADER_TEXTURE_SRC_TABLE   1
+#define PFDLOADSHADER_TEXTURE_SRC_TMP     2
+
+#define PFDLOADSHADER_MATRIX_MODE_TEXTURE 0
+#define PFDLOADSHADER_MATRIX_MODE_COLOR   1
+
+#define ATTRIB_ACCUM            0
+#define ATTRIB_ALPHA_TEST       1
+#define ATTRIB_BLEND            2
+#define ATTRIB_COLOR            3
+#define ATTRIB_COLOR_MASK       4
+#define ATTRIB_COLOR_MATRIX     5
+#define ATTRIB_DEPTH_TEST       6
+#define ATTRIB_LIGHTS           7
+#define ATTRIB_MATERIAL         8
+#define ATTRIB_PIXEL_BIAS       9
+#define ATTRIB_PIXEL_SCALE      10
+#define ATTRIB_PIXMAPS          11
+#define ATTRIB_SHADE_MODEL      12
+#define ATTRIB_STENCIL_TEST     13
+#define ATTRIB_TEXENV           14
+#define ATTRIB_TEXGENS          15
+#define ATTRIB_TEXTURE          16
+#define ATTRIB_TEXTURE_MATRIX   17
+
+#define ATTRIB_BIT_ACCUM            (1 << ATTRIB_ACCUM)
+#define ATTRIB_BIT_ALPHA_TEST       (1 << ATTRIB_ALPHA_TEST)
+#define ATTRIB_BIT_BLEND            (1 << ATTRIB_BLEND)
+#define ATTRIB_BIT_COLOR            (1 << ATTRIB_COLOR)
+#define ATTRIB_BIT_COLOR_MASK       (1 << ATTRIB_COLOR_MASK)
+#define ATTRIB_BIT_COLOR_MATRIX     (1 << ATTRIB_COLOR_MATRIX)
+#define ATTRIB_BIT_DEPTH_TEST       (1 << ATTRIB_DEPTH_TEST)
+#define ATTRIB_BIT_LIGHTS           (1 << ATTRIB_LIGHTS)
+#define ATTRIB_BIT_MATERIAL         (1 << ATTRIB_MATERIAL)
+#define ATTRIB_BIT_PIXEL_BIAS       (1 << ATTRIB_PIXEL_BIAS)
+#define ATTRIB_BIT_PIXEL_SCALE      (1 << ATTRIB_PIXEL_SCALE)
+#define ATTRIB_BIT_PIXMAPS          (1 << ATTRIB_PIXMAPS)
+#define ATTRIB_BIT_SHADE_MODEL      (1 << ATTRIB_SHADE_MODEL)
+#define ATTRIB_BIT_STENCIL_TEST     (1 << ATTRIB_STENCIL_TEST)
+#define ATTRIB_BIT_TEXENV           (1 << ATTRIB_TEXENV)
+#define ATTRIB_BIT_TEXGENS          (1 << ATTRIB_TEXGENS)
+#define ATTRIB_BIT_TEXTURE          (1 << ATTRIB_TEXTURE)
+#define ATTRIB_BIT_TEXTURE_MATRIX   (1 << ATTRIB_TEXTURE_MATRIX)
+
+#define LIGHT_ATTRIB_POSITION        0
+#define LIGHT_ATTRIB_MATRIX          1
+#define LIGHT_ATTRIB_SPOT            2
+#define LIGHT_ATTRIB_SPOT_EXPONENT   3
+#define LIGHT_ATTRIB_SPOT_CUTOFF     4
+#define LIGHT_ATTRIB_AMBIENT         5
+#define LIGHT_ATTRIB_DIFFUSE         6
+#define LIGHT_ATTRIB_SPECULAR        7
+#define LIGHT_ATTRIB_ATTEN           8
+#define LIGHT_ATTRIB_CONSTANT_ATTEN     9
+#define LIGHT_ATTRIB_LINEAR_ATTEN    10
+#define LIGHT_ATTRIB_QUADRATIC_ATTEN 11
+
+#define LIGHT_ATTRIB_BIT_POSITION        (1 << LIGHT_ATTRIB_POSITION)
+#define LIGHT_ATTRIB_BIT_MATRIX          (1 << LIGHT_ATTRIB_MATRIX)
+#define LIGHT_ATTRIB_BIT_SPOT            (1 << LIGHT_ATTRIB_SPOT)
+#define LIGHT_ATTRIB_BIT_SPOT_EXPONENT   (1 << LIGHT_ATTRIB_SPOT_EXPONENT)
+#define LIGHT_ATTRIB_BIT_SPOT_CUTOFF     (1 << LIGHT_ATTRIB_SPOT_CUTOFF)
+#define LIGHT_ATTRIB_BIT_AMBIENT         (1 << LIGHT_ATTRIB_AMBIENT)
+#define LIGHT_ATTRIB_BIT_DIFFUSE         (1 << LIGHT_ATTRIB_DIFFUSE)
+#define LIGHT_ATTRIB_BIT_SPECULAR        (1 << LIGHT_ATTRIB_SPECULAR)
+#define LIGHT_ATTRIB_BIT_ATTEN           (1 << LIGHT_ATTRIB_ATTEN)
+#define LIGHT_ATTRIB_BIT_CONSTANT_ATTEN  (1 << LIGHT_ATTRIB_CONSTANT_ATTEN)
+#define LIGHT_ATTRIB_BIT_LINEAR_ATTEN    (1 << LIGHT_ATTRIB_LINEAR_ATTEN)
+#define LIGHT_ATTRIB_BIT_QUADRATIC_ATTEN (1 << LIGHT_ATTRIB_QUADRATIC_ATTEN)
+
+#define MATERIAL_ATTRIB_EMISSION      0
+#define MATERIAL_ATTRIB_AMBIENT       1
+#define MATERIAL_ATTRIB_DIFFUSE       2
+#define MATERIAL_ATTRIB_SPECULAR      3
+#define MATERIAL_ATTRIB_SHININESS     4
+
+#define MATERIAL_ATTRIB_BIT_EMISSION  (1 << MATERIAL_ATTRIB_EMISSION)
+#define MATERIAL_ATTRIB_BIT_AMBIENT   (1 << MATERIAL_ATTRIB_AMBIENT)
+#define MATERIAL_ATTRIB_BIT_DIFFUSE   (1 << MATERIAL_ATTRIB_DIFFUSE)
+#define MATERIAL_ATTRIB_BIT_SPECULAR  (1 << MATERIAL_ATTRIB_SPECULAR)
+#define MATERIAL_ATTRIB_BIT_SHININESS (1 << MATERIAL_ATTRIB_SHININESS)
+
+#define TEXGEN_ATTRIB_S 0
+#define TEXGEN_ATTRIB_T 1
+#define TEXGEN_ATTRIB_R 2
+#define TEXGEN_ATTRIB_Q 3
+
+#define TEXGEN_ATTRIB_BIT_S (1 << TEXGEN_ATTRIB_S)
+#define TEXGEN_ATTRIB_BIT_T (1 << TEXGEN_ATTRIB_T)
+#define TEXGEN_ATTRIB_BIT_R (1 << TEXGEN_ATTRIB_R)
+#define TEXGEN_ATTRIB_BIT_Q (1 << TEXGEN_ATTRIB_Q)
+
+#define PIXMAP_ATTRIB_R 0
+#define PIXMAP_ATTRIB_G 1
+#define PIXMAP_ATTRIB_B 2
+#define PIXMAP_ATTRIB_A 3
+
+#define PIXMAP_ATTRIB_BIT_R (1 << PIXMAP_ATTRIB_R)
+#define PIXMAP_ATTRIB_BIT_G (1 << PIXMAP_ATTRIB_G)
+#define PIXMAP_ATTRIB_BIT_B (1 << PIXMAP_ATTRIB_B)
+#define PIXMAP_ATTRIB_BIT_A (1 << PIXMAP_ATTRIB_A)
+
+/* function prototypes */
+int __pfdLoadShader_lex(void);
+
+/* typedefs
+ *
+ * XXX This definition should be in a header file which is
+ *     included in pfdLoadShader.c and in pfdLoadShader_Parse.yxx.
+ *     Due a build complication, I can't get such an include to
+ *     work properly in pfdLoadShader_Parse.yxx.  Since this is
+ *     the only negative side effect, I'm leaving it like this.
+ */
+typedef struct __texIDMapEntry {
+    struct __texIDMapEntry *next;
+    int src;                     /* tmp, file, table */
+    int inUse;                   /* once declared is this texture used? */
+    int texID;                   /* integer texture id (if tmp texture)    */
+    char *identifierString;      /* identifier string from shader file     */
+    pfTexture *texture;          /* pointer to pfTexture (if file texture) */
+} texIDMapEntry;
+
+/* extern globals */
+extern pfShader *__pfdLoadShader_shader;
+extern char *__pfdLoadShader_fileName;
+extern int __pfdLoadShader_lineNum;
+extern GLboolean __pfdLoadShader_parseFailed;
+
+/* static globals */
+static GLuint curr_pass_number = 0;
+
+static pfGeoState *currGeoState;
+static pfFBState *currFBState;
+static pfLight **lights;
+static pfMaterial *material;
+static pfTexGen *texgen;
+
+static GLuint curr_texture_table_entry = 0;
+static GLuint texture_table_size = 0;
+static GLfloat *texture_table_data;
+
+static GLuint curr_pixmap_entry = 0;
+static GLuint pixmap_size;
+static GLfloat *pixmap_values;
+
+static GLfloat light_constant_attenuation = 1.0;
+static GLfloat light_linear_attenuation = 0.0;
+static GLfloat light_quadratic_attenuation = 0.0;
+static GLfloat spot_light_exponent = 1.0;
+static GLfloat spot_light_cutoff = 90.0;
+
+static GLenum curr_light = 0;
+static unsigned int specified_lights = 0;
+
+static GLuint specified_attribs = 0;
+static GLuint specified_light_attribs = 0;
+static GLuint specified_material_attribs = 0;
+static GLuint specified_pixmap_attribs = 0;
+static GLuint specified_texgen_attribs = 0;
+
+static GLuint disabled_attribs = 0;
+
+/* non-static globals */
+texIDMapEntry *__pfdLoadShader_texIDMap = NULL;
+
+/* IRIX 6.2 doesn't have vsnprintf; replace with less-safe vsprintf */
+#ifdef IRIX6_2
+#define vsnprintf(a,b,c,d)   vsprintf(a,c,d)
+#endif
+
+void initLoader(void);
+
+int __pfdLoadShader_error(const char *msg, ...)
+{
+    char err_string[PFDLOADSHADER_ERROR_MSG_LEN];
+    va_list printargs;
+
+    va_start (printargs, msg);
+    vsnprintf (err_string, PFDLOADSHADER_ERROR_MSG_LEN, 
+		msg, printargs);
+    va_end (printargs);
+
+
+    pfNotify (PFNFY_NOTICE, PFNFY_PRINT,
+	      "%s, line %d: ERROR: %s",
+	      __pfdLoadShader_fileName, 
+	      __pfdLoadShader_lineNum,
+	      err_string);
+
+    __pfdLoadShader_parseFailed = 1;
+    
+    return 0;
+}
+
+int __pfdLoadShader_warning(const char *msg, ...)
+{
+    char err_string[PFDLOADSHADER_ERROR_MSG_LEN];
+    va_list printargs;
+
+    va_start (printargs, msg);
+    vsnprintf (err_string, PFDLOADSHADER_ERROR_MSG_LEN, 
+		msg, printargs);
+    va_end (printargs);
+
+
+    pfNotify (PFNFY_NOTICE, PFNFY_PRINT,
+	      "%s, line %d: WARNING: %s",
+	      __pfdLoadShader_fileName, 
+	      __pfdLoadShader_lineNum,
+	      err_string);
+
+    return 0;
+}
+
+%}
+
+%union {
+    float real_number;
+    long long integer_number;
+
+    float vector[4];
+    float matrix[16];
+
+    char *constant;
+    char *identifier;
+    char *string;
+
+    GLenum gl_enumerant;
+}
+
+
+
+/* Shader header tokens */
+%token TOK_SHADER
+%token TOK_SHADER_HEADER
+%token TOK_SHADER_NAME
+%token TOK_SHADER_MAJOR_REV
+%token TOK_SHADER_MINOR_REV
+%token TOK_SHADER_LOCALS
+%token TOK_SHADER_DEFAULT_STATE
+%token TOK_SHADER_PASSES
+
+/* Texture definition tokens */
+%token TOK_TEXTURE_DEF
+%token TOK_TEXTURE_ID
+%token TOK_TEXTURE_SRC
+%token TOK_TEXTURE_FILE
+%token TOK_TEXTURE_TABLE
+%token TOK_TEXTURE_TABLE_SIZE
+%token TOK_TEXTURE_TABLE_DATA
+
+
+
+/* Pass identifying tokens */
+%token TOK_GEOM_PASS
+%token TOK_QUAD_GEOM_PASS
+%token TOK_COPY_PASS
+%token TOK_COPY_TO_TEX_PASS
+%token TOK_COPY_FROM_TEX_PASS
+%token TOK_ACCUM_PASS
+
+
+/* Accum tokens */
+%token TOK_ACCUM
+%token TOK_ACCUM_OP
+%token TOK_ACCUM_VAL
+
+/* Alpha test tokens */
+%token TOK_ALPHA_TEST
+%token TOK_ALPHA_TEST_FUNC
+%token TOK_ALPHA_TEST_REF
+
+/* Blend tokens */
+%token TOK_BLEND
+%token TOK_BLEND_EQN
+%token TOK_BLEND_SRC
+%token TOK_BLEND_DST
+%token TOK_BLEND_COLOR
+
+/* Color tokens */
+%token TOK_COLOR
+%token TOK_COLOR_DATA
+
+/* Colormask tokens */
+%token TOK_COLOR_MASK
+%token TOK_COLOR_MASK_DATA
+
+/* Depth tokens */
+%token TOK_DEPTH_TEST
+%token TOK_DEPTH_TEST_FUNC
+
+/* Light tokens */
+%token TOK_LIGHT
+%token TOK_LIGHTS
+%token TOK_LIGHT_NUMBER
+%token TOK_LIGHT_MATRIX
+%token TOK_LIGHT_POSITION
+%token TOK_SPOT_LIGHT_CONE
+%token TOK_SPOT_LIGHT_CUTOFF
+%token TOK_SPOT_LIGHT_EXPONENT
+%token TOK_LIGHT_AMBIENT
+%token TOK_LIGHT_DIFFUSE
+%token TOK_LIGHT_SPECULAR
+%token TOK_LIGHT_ATTENUATION
+%token TOK_LIGHT_ATTENUATION_CONSTANT
+%token TOK_LIGHT_ATTENUATION_LINEAR
+%token TOK_LIGHT_ATTENUATION_QUADRATIC
+
+/* Material tokens */
+%token TOK_MATERIAL
+%token TOK_MATERIAL_EMISSION
+%token TOK_MATERIAL_AMBIENT
+%token TOK_MATERIAL_DIFFUSE
+%token TOK_MATERIAL_SPECULAR
+%token TOK_MATERIAL_SHININESS
+
+/* Matrix tokens */
+%token TOK_COLOR_MATRIX
+%token TOK_TEXTURE_MATRIX
+%token TOK_MATRIX_DATA
+
+/* Pixel bias tokens */
+%token TOK_PIXEL_BIAS
+%token TOK_PIXEL_BIAS_DATA
+
+/* Pixel scale tokens */
+%token TOK_PIXEL_SCALE
+%token TOK_PIXEL_SCALE_DATA
+
+/* Pixmap tokens */
+%token TOK_PIXMAPS
+%token TOK_PIXMAP
+%token TOK_PIXMAP_COMPONENT
+%token TOK_PIXMAP_SIZE
+%token TOK_PIXMAP_DATA
+
+/* Shade model tokens */
+%token TOK_SHADE_MODEL
+%token TOK_SHADE_MODEL_MODE
+
+/* Stencil tokens */
+%token TOK_STENCIL_TEST
+%token TOK_STENCIL_TEST_FUNC
+%token TOK_STENCIL_TEST_REF
+%token TOK_STENCIL_TEST_MSK
+%token TOK_STENCIL_TEST_SFAIL
+%token TOK_STENCIL_TEST_ZFAIL
+%token TOK_STENCIL_TEST_ZPASS
+%token TOK_STENCIL_TEST_WMASK
+
+/* Texenv tokens */
+%token TOK_TEXENV
+%token TOK_TEXENV_MODE
+%token TOK_TEXENV_COLOR
+
+/* Texgen tokens */
+%token TOK_TEXGEN
+%token TOK_TEXGENS
+%token TOK_TEXGEN_COORD
+%token TOK_TEXGEN_MODE
+%token TOK_TEXGEN_PLANE
+
+/* Texture tokens */
+%token TOK_TEXTURE
+
+
+/* Base data type tokens.  Reals are stored as floats
+ * and integers are stored as long longs */
+%token TOK_DISABLE
+%token <real_number>     TOK_REAL_NUMBER
+%token <integer_number>  TOK_INTEGER_NUMBER
+%token <constant>        TOK_CONSTANT
+%token <identifier>      TOK_IDENTIFIER
+%token <string>          TOK_STRING
+
+
+/* Return types for rules */
+%type <gl_enumerant>   accum_op_rule
+%type <gl_enumerant>   alpha_test_func_rule
+%type <gl_enumerant>   blend_eqn_rule
+%type <gl_enumerant>   blend_src_rule
+%type <gl_enumerant>   blend_dst_rule
+%type <vector>         color_args_rule
+%type <identifier>     identifier_type_rule
+%type <integer_number> integer_number_type_rule
+%type <matrix>         matrix_type_rule
+%type <gl_enumerant>   pixmap_component_rule
+%type <real_number>    pixmap_entry_rule
+%type <real_number>    real_number_type_rule
+%type <gl_enumerant>   shade_model_mode_rule
+%type <gl_enumerant>   stencil_op_rule
+%type <string>         string_type_rule
+%type <gl_enumerant>   test_func_rule
+%type <gl_enumerant>   texenv_mode_rule
+%type <gl_enumerant>   texgen_coord_rule
+%type <gl_enumerant>   texgen_mode_rule
+%type <string>         texture_file_rule
+%type <identifier>     texture_identifier_rule
+%type <integer_number> texture_src_rule
+%type <integer_number> texture_table_size_rule
+%type <vector>         texture_table_entry_rule
+%type <vector>         vector_type_rule
+
+%%
+
+/*************************************************************************
+ * Shader header rules
+ ************************************************************************/
+
+shader_rule:
+TOK_SHADER { initLoader(); } '{' shader_header_rule shader_passes_rule '}'
+;
+
+shader_header_rule:
+TOK_SHADER_HEADER '{'
+shader_name_rule
+shader_revision_rule
+shader_locals_rule
+shader_default_state_rule
+'}'
+;
+
+shader_name_rule:
+TOK_SHADER_NAME string_type_rule 
+{
+    /* XXX NYI in pfShader
+     * pfShaderName (__pfdLoadShader_shader, $2);
+     * __pfdLoadShader_shader->setName ($2); */
+
+    free ($2);
+}
+;
+
+shader_revision_rule:
+TOK_SHADER_MAJOR_REV integer_number_type_rule 
+TOK_SHADER_MINOR_REV integer_number_type_rule 
+{
+    if (($2 == 1) &&
+	($4 == 0))
+    {
+	/* XXX NYI in pfShader
+	 * pfShaderRevision (__pfdLoadShader_shader, $2, $4);
+	 * __pfdLoadShader_shader->setRevision ($2, $4); */
+    } else {
+	__pfdLoadShader_error ("Invalid shader file revision %d.%d\n", 
+			      $2, $4);
+    }
+}
+;
+
+shader_locals_rule:
+TOK_SHADER_LOCALS '{' local_variable_list_rule '}'
+;
+
+local_variable_list_rule:
+/* empty */
+| local_variable_rule
+| local_variable_list_rule local_variable_rule
+;
+
+local_variable_rule:
+texture_def_rule
+;
+
+texture_def_rule:
+TOK_TEXTURE_DEF '{' texture_def_args_rule '}'
+;
+
+texture_def_args_rule:
+TOK_TEXTURE_ID texture_identifier_rule TOK_TEXTURE_SRC texture_src_rule
+{
+    /* even though the grammar of the definition of each texture is
+     * enough to identify the source, it must be explicitly stated 
+     * (and stated correctly). */
+    if ($4 == PFDLOADSHADER_TEXTURE_SRC_TMP) {
+	texIDMapEntry *newEntry, *prevEntry, *currEntry;
+	int texID = pfShaderAllocateTempTexture (__pfdLoadShader_shader);
+	
+	/* map texture identifier string in the file with a texture
+	 * ID as allocated by the pfShader under construction.  a
+	 * simple linked list is used for the identifier to ID 
+	 * dictionary */
+	
+	if (__pfdLoadShader_texIDMap == NULL) {
+
+	    /* map is empty and insertion of first element is
+	     * a special case */
+	    __pfdLoadShader_texIDMap = 
+		(texIDMapEntry*) malloc (sizeof (texIDMapEntry));
+	    __pfdLoadShader_texIDMap->next = NULL;
+	    __pfdLoadShader_texIDMap->src = PFDLOADSHADER_TEXTURE_SRC_TMP;
+	    __pfdLoadShader_texIDMap->inUse = 0;
+	    __pfdLoadShader_texIDMap->texID = texID;
+	    __pfdLoadShader_texIDMap->identifierString = $2;
+	    __pfdLoadShader_texIDMap->texture = NULL;
+	} else {
+	    
+	    /* the map is not empty so first we must search for an
+	     * entry which has the same identifierString as that 
+	     * we're trying to insert.  if so, this is an error. */
+	    currEntry = __pfdLoadShader_texIDMap;
+	    while (currEntry != NULL) {
+		if (!strcmp ($2, currEntry->identifierString)) {
+		    __pfdLoadShader_error ("Redeclaration of texture "
+					   "%s\n", 
+					   $2);
+		    YYERROR;
+		}
+		prevEntry = currEntry;
+		currEntry = currEntry->next;
+	    }
+	    
+	    /* if we've gotten here then we didn't find the
+	     * identifier string in the map already. */
+	    newEntry = 
+		(texIDMapEntry*) malloc (sizeof (texIDMapEntry));
+	    newEntry->next = NULL;
+	    newEntry->src = PFDLOADSHADER_TEXTURE_SRC_TMP;
+	    newEntry->inUse = 0;
+	    newEntry->texID = texID;
+	    newEntry->identifierString = $2;
+	    newEntry->texture = NULL;
+	    prevEntry->next = newEntry;
+	}
+    } else {
+	__pfdLoadShader_error ("parse error\n");
+    }
+}
+| TOK_TEXTURE_ID texture_identifier_rule TOK_TEXTURE_SRC texture_src_rule
+TOK_TEXTURE_FILE texture_file_rule
+{
+    /* even though the grammar of the definition of each texture is
+     * enough to identify the source, it must be explicitly stated 
+     * (and stated correctly). */
+    if ($4 == PFDLOADSHADER_TEXTURE_SRC_FILE) {
+	pfTexture *texture;
+	texIDMapEntry *newEntry, *prevEntry, *currEntry;
+    
+	/* map texture identifier string in the file with a texture
+	 * ID as allocated by the pfShader under construction.  a
+	 * simple linked list is used for the identifier to ID 
+	 * dictionary */
+
+	if (__pfdLoadShader_texIDMap == NULL) {
+	    texture = pfNewTex (pfGetSharedArena ());
+	    if (!pfLoadTexFile (texture, $6)) {
+		__pfdLoadShader_error ("Loading texture file %s failed.\n",
+				       $6);
+		pfDelete (texture);
+		YYERROR;
+	    }
+	    
+	    /* the lexer returns a copy of the original string which
+	     * must be freed here now that it's no longer needed. */
+	    free ($6);
+
+	    /* map is empty and insertion of first element is
+	     * a special case */
+	    __pfdLoadShader_texIDMap = 
+		(texIDMapEntry*) malloc (sizeof (texIDMapEntry));
+	    __pfdLoadShader_texIDMap->next = NULL;
+	    __pfdLoadShader_texIDMap->src = PFDLOADSHADER_TEXTURE_SRC_FILE;
+	    __pfdLoadShader_texIDMap->inUse = 0;
+	    __pfdLoadShader_texIDMap->texID = -1;
+	    __pfdLoadShader_texIDMap->identifierString = $2;
+	    __pfdLoadShader_texIDMap->texture = texture;
+	    pfRef (texture);
+	} else {
+	
+	    /* the map is not empty so first we must search for an
+	     * entry which has the same identifierString as that 
+	     * we're trying to insert.  if so, this is an error. */
+
+	    currEntry = __pfdLoadShader_texIDMap;
+	    while (currEntry != NULL) {
+		if (!strcmp ($2, currEntry->identifierString)) {
+		    __pfdLoadShader_error ("Redeclaration of texture %s\n", 
+					   $2);
+		    YYERROR;
+		}
+		prevEntry = currEntry;
+		currEntry = currEntry->next;
+	    }
+
+	    /* if we've gotten here then we didn't find the
+	     * identifier string in the map already so we can
+	     * create a texture, load it and add it to the texture
+	     * list. */
+	    texture = pfNewTex (pfGetSharedArena ());
+	    if (!pfLoadTexFile (texture, $6)) {
+		__pfdLoadShader_error ("Loading texture file %s failed.\n",
+				       $6);
+		pfDelete (texture);
+		YYERROR;
+	    }
+	    
+	    /* the lexer returns a copy of the original string which
+	     * must be freed here now that it's no longer needed. */
+	    free ($6);
+
+	    newEntry = 
+		(texIDMapEntry*) malloc (sizeof (texIDMapEntry));
+	    newEntry->next = NULL;
+	    newEntry->src = PFDLOADSHADER_TEXTURE_SRC_FILE;
+	    newEntry->inUse = 0;
+	    newEntry->texID = -1;
+	    newEntry->identifierString = $2;
+	    newEntry->texture = texture;
+	    pfRef (texture);
+	    prevEntry->next = newEntry;
+	}
+    } else {
+	__pfdLoadShader_error ("parse error\n");
+    }
+}
+| TOK_TEXTURE_ID texture_identifier_rule TOK_TEXTURE_SRC texture_src_rule
+TOK_TEXTURE_TABLE '{' texture_table_size_rule texture_table_data_rule '}'
+{
+    /* even though the grammar of the definition of each texture is
+     * enough to identify the source, it must be explicitly stated 
+     * (and stated correctly). */
+    if ($4 == PFDLOADSHADER_TEXTURE_SRC_TABLE) {
+	pfTexture *texture;
+	texIDMapEntry *newEntry, *prevEntry, *currEntry;
+    
+	/* map texture identifier string in the file with a texture
+	 * ID as allocated by the pfShader under construction.  a
+	 * simple linked list is used for the identifier to ID 
+	 * dictionary */
+
+	if (__pfdLoadShader_texIDMap == NULL) {
+	    /* map is empty and insertion of first element is
+	     * a special case */
+
+	    /* first create a texture and specify its parameters */
+	    texture = pfNewTex (pfGetSharedArena ());
+	    
+	    pfTexRepeat (texture, PFTEX_WRAP, PFTEX_REPEAT);
+	    pfTexFilter (texture, PFTEX_MINFILTER, PFTEX_LINEAR);
+	    pfTexFilter (texture, PFTEX_MAGFILTER, PFTEX_LINEAR);
+	    pfTexFormat (texture, PFTEX_IMAGE_FORMAT, PFTEX_RGBA);
+	    pfTexFormat (texture, PFTEX_INTERNAL_FORMAT, PFTEX_RGBA_8);
+	    pfTexFormat (texture, PFTEX_EXTERNAL_FORMAT, GL_FLOAT);
+	    pfTexImage (texture, texture_table_data, 4, $7, 1, 1);
+	
+	    __pfdLoadShader_texIDMap = 
+		(texIDMapEntry*) malloc (sizeof (texIDMapEntry));
+	    __pfdLoadShader_texIDMap->next = NULL;
+	    __pfdLoadShader_texIDMap->src = PFDLOADSHADER_TEXTURE_SRC_TABLE;
+	    __pfdLoadShader_texIDMap->inUse = 0;
+	    __pfdLoadShader_texIDMap->texID = -1;
+	    __pfdLoadShader_texIDMap->identifierString = $2;
+	    __pfdLoadShader_texIDMap->texture = texture;
+	    pfRef (texture);
+	} else {
+	
+	    /* the map is not empty so first we must search for an
+	     * entry which has the same identifierString as that 
+	     * we're trying to insert.  if so, this is an error. */
+
+	    currEntry = __pfdLoadShader_texIDMap;
+	    while (currEntry != NULL) {
+		if (!strcmp ($2, currEntry->identifierString)) {
+		    __pfdLoadShader_error ("Redeclaration of texture %s\n", 
+					   $2);
+		    YYERROR;
+		}
+		prevEntry = currEntry;
+		currEntry = currEntry->next;
+	    }
+
+	    /* if we've gotten here then we didn't find the
+	     * identifier string in the map already so we 
+	     * create a new texture, specify its parameters
+	     * and add it to the texture list. */
+	    texture = pfNewTex (pfGetSharedArena ());
+	    
+	    pfTexRepeat (texture, PFTEX_WRAP, PFTEX_REPEAT);
+	    pfTexFilter (texture, PFTEX_MINFILTER, PFTEX_LINEAR);
+	    pfTexFilter (texture, PFTEX_MAGFILTER, PFTEX_LINEAR);
+	    pfTexFormat (texture, PFTEX_IMAGE_FORMAT, PFTEX_RGBA);
+	    pfTexFormat (texture, PFTEX_INTERNAL_FORMAT, PFTEX_RGBA_8);
+	    pfTexFormat (texture, PFTEX_EXTERNAL_FORMAT, GL_FLOAT);
+	    pfTexImage (texture, texture_table_data, 4, $7, 1, 1);
+	
+	    newEntry = 
+		(texIDMapEntry*) malloc (sizeof (texIDMapEntry));
+	    newEntry->next = NULL;
+	    newEntry->src = PFDLOADSHADER_TEXTURE_SRC_TABLE;
+	    newEntry->inUse = 0;
+	    newEntry->texID = -1;
+	    newEntry->identifierString = $2;
+	    newEntry->texture = texture;
+	    pfRef (texture);
+	    prevEntry->next = newEntry;
+	}
+    } else {
+	__pfdLoadShader_error ("parse error\n");
+	pfDelete (texture_table_data);
+    }	
+}
+| TOK_TEXTURE_ID texture_identifier_rule TOK_TEXTURE_SRC texture_src_rule
+TOK_TEXTURE_TABLE '{' texture_table_size_rule error '}'
+{
+    pfDelete (texture_table_data);
+}
+;
+
+texture_identifier_rule:
+identifier_type_rule
+{
+    $$ = $1;
+}
+;
+
+texture_src_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "FILE")) {
+	$$ = PFDLOADSHADER_TEXTURE_SRC_FILE;
+    } else if (!strcmp ($1, "TABLE")) {
+	$$ = PFDLOADSHADER_TEXTURE_SRC_TABLE;
+    } else if (!strcmp ($1, "TMP")) {
+	$$ = PFDLOADSHADER_TEXTURE_SRC_TMP;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid texture source.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+texture_file_rule:
+string_type_rule
+{
+    $$ = $1;
+}
+;
+
+texture_table_size_rule:
+TOK_TEXTURE_TABLE_SIZE integer_number_type_rule
+{
+    texture_table_size = $2;
+
+    if ((texture_table_size <= 0) ||
+	(texture_table_size & (texture_table_size - 1))) {
+	__pfdLoadShader_error ("Invalid value for texture table size");
+	YYERROR;
+    } else {
+	texture_table_data = 
+	    (GLfloat*) pfMalloc (sizeof (GLfloat) * 4 * texture_table_size,
+				 pfGetSharedArena ());
+	$$ = texture_table_size;
+    }
+}
+;
+
+texture_table_data_rule:
+texture_table_entry_rule
+{
+    curr_texture_table_entry = 0;
+    texture_table_data [4 * curr_texture_table_entry + 0] = $1[0];
+    texture_table_data [4 * curr_texture_table_entry + 1] = $1[1];
+    texture_table_data [4 * curr_texture_table_entry + 2] = $1[2];
+    texture_table_data [4 * curr_texture_table_entry + 3] = $1[3];
+    curr_texture_table_entry++;
+}
+| texture_table_data_rule texture_table_entry_rule
+{
+    if (curr_texture_table_entry >= texture_table_size) {
+	__pfdLoadShader_error ("Texture table entries "
+			       "exceed texture table size.");
+	YYERROR;	
+    }
+    texture_table_data [4 * curr_texture_table_entry + 0] = $2[0];
+    texture_table_data [4 * curr_texture_table_entry + 1] = $2[1];
+    texture_table_data [4 * curr_texture_table_entry + 2] = $2[2];
+    texture_table_data [4 * curr_texture_table_entry + 3] = $2[3];
+    curr_texture_table_entry++;
+}
+;
+
+texture_table_entry_rule:
+TOK_TEXTURE_TABLE_DATA vector_type_rule
+{
+    $$[0] = $2[0];
+    $$[1] = $2[1];
+    $$[2] = $2[2];
+    $$[3] = $2[3];
+}
+;
+
+
+
+/*************************************************************************
+ * Default state
+ ************************************************************************/
+
+shader_default_state_rule:
+shader_default_state_token_rule 
+'{' shader_default_state_attributes_list_rule '}'
+{
+    /* assign default state to shader */
+    pfShaderDefaultGeoState (__pfdLoadShader_shader, currGeoState);
+    pfShaderDefaultFBState (__pfdLoadShader_shader, currFBState);
+}
+| shader_default_state_token_rule error
+{
+    /* assign default state to shader */
+    pfShaderDefaultGeoState (__pfdLoadShader_shader, currGeoState);
+    pfShaderDefaultFBState (__pfdLoadShader_shader, currFBState);
+}
+;
+
+shader_default_state_token_rule:
+TOK_SHADER_DEFAULT_STATE
+{
+    /* create new a new pfGeoState and pfFBState to hold default state */
+    currGeoState = pfNewGState (pfGetSharedArena());
+    currFBState = pfNewFBState (pfGetSharedArena());
+}
+;
+
+shader_default_state_attributes_list_rule:
+/* empty */
+| shader_default_state_attributes_rule
+| shader_default_state_attributes_list_rule 
+shader_default_state_attributes_rule
+;
+
+shader_default_state_attributes_rule:
+error
+| accum_rule
+| alpha_test_rule
+| blend_rule
+| color_rule
+| color_mask_rule
+| color_matrix_rule
+| depth_test_rule
+| lights_rule
+| material_rule
+| pixel_bias_rule
+| pixel_scale_rule
+| pixmaps_rule
+| shade_model_rule
+| stencil_test_rule
+| texenv_rule
+| texgens_rule
+| texture_rule
+| texture_matrix_rule
+;
+
+
+shader_passes_rule:
+TOK_SHADER_PASSES '{' pass_list_rule '}'
+;
+
+
+/*************************************************************************
+ * Pass rules
+ ************************************************************************/
+
+pass_list_rule: /* can't be empty */
+error
+| pass_rule
+{
+    curr_pass_number++;
+    pfShaderClosePass (__pfdLoadShader_shader);
+}
+| pass_list_rule pass_rule
+{
+    curr_pass_number++;
+    pfShaderClosePass (__pfdLoadShader_shader);
+}
+;
+
+pass_rule:
+geom_pass_rule
+| quad_pass_rule
+| copy_to_tex_pass_rule
+| copy_from_tex_pass_rule
+| copy_pixels_pass_rule
+| accum_pass_rule
+;
+
+
+/*************************************************************************
+ * Geom pass
+ ************************************************************************/
+
+geom_pass_rule:
+geom_pass_identifier_rule '{' geom_attributes_list_rule '}'
+{
+    /* Assign geostate and fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_GSTATE, currGeoState);
+}
+| geom_pass_identifier_rule error
+{
+    /* Assign geostate and fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_GSTATE, currGeoState);
+}
+;
+
+geom_pass_identifier_rule:
+TOK_GEOM_PASS
+{
+    /* Open new pass and set operation. */
+    pfShaderOpenPass (__pfdLoadShader_shader, PF_SHADERPASS_GEOMETRY);
+
+    /* Allocate new geostate and fbstate */
+    currGeoState = pfNewGState (pfGetSharedArena());
+    currFBState = pfNewFBState (pfGetSharedArena());
+
+    disabled_attribs = 0;
+    specified_attribs = 0;
+    specified_light_attribs = 0;
+    specified_material_attribs = 0;
+    specified_texgen_attribs = 0;
+    specified_pixmap_attribs = 0;
+}
+;
+
+geom_attributes_list_rule:
+/* empty */
+| geom_attributes_rule
+| geom_attributes_list_rule geom_attributes_rule
+;
+
+geom_attributes_rule:
+error
+| alpha_test_rule
+| blend_rule
+| color_rule
+| color_mask_rule
+| depth_test_rule
+| lights_rule
+| material_rule
+| shade_model_rule
+| stencil_test_rule
+| texenv_rule
+| texgens_rule
+| texture_rule
+| texture_matrix_rule
+;
+
+
+
+/*************************************************************************
+ * Quad pass
+ ************************************************************************/
+
+quad_pass_rule:
+quad_pass_identifier_rule '{' quad_attributes_list_rule '}'
+{
+    /* Assign geostate and fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_GSTATE, currGeoState);
+}
+|
+quad_pass_identifier_rule error
+{
+    /* Assign geostate and fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_GSTATE, currGeoState);
+}
+;
+
+quad_pass_identifier_rule:
+TOK_QUAD_GEOM_PASS
+{
+    /* Open new pass and set operation. */
+    pfShaderOpenPass (__pfdLoadShader_shader, PF_SHADERPASS_QUAD);
+
+    /* Allocate new geostate and fbstate */
+    currGeoState = pfNewGState (pfGetSharedArena());
+    currFBState = pfNewFBState (pfGetSharedArena());
+
+    disabled_attribs = 0;
+    specified_attribs = 0;
+    specified_light_attribs = 0;
+    specified_material_attribs = 0;
+    specified_texgen_attribs = 0;
+    specified_pixmap_attribs = 0;
+}
+;
+
+quad_attributes_list_rule:
+/* empty */
+| quad_attributes_rule
+| quad_attributes_list_rule quad_attributes_rule
+;
+
+quad_attributes_rule:
+error
+| alpha_test_rule
+| blend_rule
+| color_rule
+| color_mask_rule
+| depth_test_rule
+| lights_rule
+| material_rule
+| shade_model_rule
+| stencil_test_rule
+| texenv_rule
+| texgens_rule
+| texture_rule
+| texture_matrix_rule
+;
+
+
+
+/*************************************************************************
+ * Copy pixels pass
+ ************************************************************************/
+
+copy_pixels_pass_rule:
+copy_pixels_pass_identifier_rule '{' copy_pixels_attributes_list_rule '}'
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+    
+}
+| copy_pixels_pass_identifier_rule error
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+;
+
+copy_pixels_pass_identifier_rule:
+TOK_COPY_PASS
+{
+    /* Open new pass and set operation. */
+    pfShaderOpenPass (__pfdLoadShader_shader, PF_SHADERPASS_COPYPIXELS);
+    pfShaderPassMode (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_COPYPIXELS_DIRECTION,
+		      PF_COPYPIXELSPASS_IN_PLACE);
+
+    /* Allocate new fbstate */
+    currFBState = pfNewFBState (pfGetSharedArena());
+
+    disabled_attribs = 0;
+    specified_attribs = 0;
+    specified_light_attribs = 0;
+    specified_material_attribs = 0;
+    specified_texgen_attribs = 0;
+    specified_pixmap_attribs = 0;
+}
+;
+
+copy_pixels_attributes_list_rule:
+/* empty */
+| copy_pixels_attributes_rule
+| copy_pixels_attributes_list_rule copy_pixels_attributes_rule
+;
+
+copy_pixels_attributes_rule:
+error
+| alpha_test_rule
+| blend_rule
+| color_mask_rule
+| color_matrix_rule
+| depth_test_rule
+| pixel_bias_rule
+| pixel_scale_rule
+| pixmaps_rule
+| stencil_test_rule
+;
+
+
+
+/*************************************************************************
+ * Copy to texture pass
+ ************************************************************************/
+
+copy_to_tex_pass_rule:
+copy_to_tex_pass_identifier_rule '{' copy_to_tex_attributes_list_rule '}'
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+| copy_to_tex_pass_identifier_rule error
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+;
+
+copy_to_tex_pass_identifier_rule:
+TOK_COPY_TO_TEX_PASS
+{
+    /* Open new pass and set operation. */
+    pfShaderOpenPass (__pfdLoadShader_shader, PF_SHADERPASS_COPYPIXELS);
+    pfShaderPassMode (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_COPYPIXELS_DIRECTION,
+		      PF_COPYPIXELSPASS_TO_TEXTURE);
+
+    /* Allocate new fbstate */
+    currFBState = pfNewFBState (pfGetSharedArena());
+
+    disabled_attribs = 0;
+    specified_attribs = 0;
+    specified_light_attribs = 0;
+    specified_material_attribs = 0;
+    specified_texgen_attribs = 0;
+    specified_pixmap_attribs = 0;
+}
+;
+
+copy_to_tex_attributes_list_rule:
+/* empty */
+| copy_to_tex_attributes_rule
+| copy_to_tex_attributes_list_rule copy_to_tex_attributes_rule
+;
+
+copy_to_tex_attributes_rule:
+error
+| color_matrix_rule
+| texture_rule
+| pixel_bias_rule
+| pixel_scale_rule
+| pixmaps_rule
+;
+
+
+
+/*************************************************************************
+ * Copy from texture pass
+ ************************************************************************/
+
+copy_from_tex_pass_rule:
+copy_from_tex_pass_identifier_rule '{' copy_from_tex_attributes_list_rule '}'
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+| copy_from_tex_pass_identifier_rule error
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+;
+
+copy_from_tex_pass_identifier_rule:
+TOK_COPY_FROM_TEX_PASS
+{
+    /* Open new pass and set operation. */
+    pfShaderOpenPass (__pfdLoadShader_shader, PF_SHADERPASS_COPYPIXELS);
+    pfShaderPassMode (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_COPYPIXELS_DIRECTION,
+		      PF_COPYPIXELSPASS_FROM_TEXTURE);
+
+    /* Allocate new fbstate */
+    currFBState = pfNewFBState (pfGetSharedArena());
+
+    disabled_attribs = 0;
+    specified_attribs = 0;
+    specified_light_attribs = 0;
+    specified_material_attribs = 0;
+    specified_texgen_attribs = 0;
+    specified_pixmap_attribs = 0;
+}
+;
+
+copy_from_tex_attributes_list_rule:
+/* empty */
+| copy_from_tex_attributes_rule
+| copy_from_tex_attributes_list_rule copy_from_tex_attributes_rule
+;
+
+copy_from_tex_attributes_rule:
+error
+| alpha_test_rule
+| blend_rule
+| color_mask_rule
+| stencil_test_rule
+| texture_rule
+;
+
+
+
+/*************************************************************************
+ * Accum pass
+ ************************************************************************/
+
+accum_pass_rule:
+accum_pass_identifier_rule '{' accum_attributes_list_rule '}'
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+| accum_pass_identifier_rule error
+{
+    /* Assign fbstate to shader */
+    pfShaderPassAttr (__pfdLoadShader_shader, 
+		      PF_SHADERPASS_FBSTATE, currFBState);
+}
+;
+
+accum_pass_identifier_rule:
+TOK_ACCUM_PASS
+{
+    /* Open new pass and set operation. */
+    pfShaderOpenPass (__pfdLoadShader_shader, PF_SHADERPASS_ACCUM);
+
+    /* Allocate new fbstate */
+    currFBState = pfNewFBState (pfGetSharedArena());
+
+    disabled_attribs = 0;
+    specified_attribs = 0;
+    specified_light_attribs = 0;
+    specified_material_attribs = 0;
+    specified_texgen_attribs = 0;
+    specified_pixmap_attribs = 0;
+}
+;
+
+accum_attributes_list_rule:
+/* empty */
+| accum_attributes_rule
+| accum_attributes_list_rule accum_attributes_rule
+;
+
+accum_attributes_rule:
+error
+| accum_rule
+;
+
+
+
+
+/*************************************************************************
+ * Attribute rules
+ ************************************************************************/
+
+/*************************************************************************
+ * Accum
+ ************************************************************************/
+
+accum_rule:
+accum_token_rule '{' accum_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_ACCUM;
+}
+;
+
+accum_token_rule:
+TOK_ACCUM
+{
+    if (specified_attribs & ATTRIB_BIT_ACCUM) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+accum_args_rule:
+TOK_ACCUM_OP accum_op_rule TOK_ACCUM_VAL real_number_type_rule
+{
+    pfShaderPassMode (__pfdLoadShader_shader, PF_SHADERPASS_ACCUM_OP, $2);
+    pfShaderPassVal (__pfdLoadShader_shader, PF_SHADERPASS_ACCUM_VAL, $4);
+}
+;
+
+accum_op_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "ACCUM")) {
+	$$ = GL_ACCUM;
+    } else if (!strcmp ($1, "LOAD")) {
+	$$ = GL_LOAD;
+    } else if (!strcmp ($1, "ADD")) {
+	$$ = GL_ADD;
+    } else if (!strcmp ($1, "MULT")) {
+	$$ = GL_MULT;
+    } else if (!strcmp ($1, "RETURN")) {
+	$$ = GL_RETURN;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid accum op.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);    
+}
+
+/*************************************************************************
+ * Alpha test
+ ************************************************************************/
+
+alpha_test_rule:
+alpha_test_token_rule '{' alpha_test_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_ALPHA_TEST;
+}
+| alpha_test_token_rule '{' TOK_DISABLE '}'
+{
+    pfGStateMode (currGeoState, PFSTATE_ALPHAFUNC, PFAF_OFF);
+    disabled_attribs |= ATTRIB_BIT_ALPHA_TEST;
+}
+;
+
+alpha_test_token_rule:
+TOK_ALPHA_TEST
+{
+    if ((specified_attribs & ATTRIB_BIT_ALPHA_TEST) ||
+	(disabled_attribs & ATTRIB_BIT_ALPHA_TEST)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+alpha_test_args_rule:
+TOK_ALPHA_TEST_FUNC alpha_test_func_rule 
+TOK_ALPHA_TEST_REF real_number_type_rule
+{
+    pfGStateMode (currGeoState, PFSTATE_ALPHAFUNC, $2);
+    pfGStateVal (currGeoState, PFSTATE_ALPHAREF, $4);
+}
+;
+
+alpha_test_func_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "NEVER")) {
+	$$ = PFAF_NEVER;
+    } else if (!strcmp ($1, "LESS")) {
+	$$ = PFAF_LESS;
+    } else if (!strcmp ($1, "LEQUAL")) {
+	$$ = PFAF_LEQUAL;
+    } else if (!strcmp ($1, "GREATER")) {
+	$$ = PFAF_GREATER;
+    } else if (!strcmp ($1, "GEQUAL")) {
+	$$ = PFAF_GEQUAL;
+    } else if (!strcmp ($1, "EQUAL")) {
+	$$ = PFAF_EQUAL;
+    } else if (!strcmp ($1, "NOTEQUAL")) {
+	$$ = PFAF_NOTEQUAL;
+    } else if (!strcmp ($1, "ALWAYS")) {
+	$$ = PFAF_ALWAYS;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid test function.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+
+
+/*************************************************************************
+ * Blend
+ ************************************************************************/
+
+blend_rule:
+blend_token_rule '{' blend_args_rule '}'
+{
+    pfFBStateEnable (currFBState, GL_BLEND, GL_ONE);
+    specified_attribs |= ATTRIB_BIT_BLEND;
+}
+| blend_token_rule '{' TOK_DISABLE '}'
+{
+    pfFBStateEnable (currFBState, GL_BLEND, GL_ZERO);
+    disabled_attribs |= ATTRIB_BIT_BLEND;
+}
+;
+
+blend_token_rule:
+TOK_BLEND
+{
+    if ((specified_attribs & ATTRIB_BIT_BLEND) ||
+	(disabled_attribs & ATTRIB_BIT_BLEND)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }    
+}
+;
+
+blend_args_rule:
+TOK_BLEND_EQN blend_eqn_rule 
+TOK_BLEND_SRC blend_src_rule 
+TOK_BLEND_DST blend_dst_rule
+{
+    pfFBStateBlendEquation (currFBState, $2);
+    pfFBStateBlendFunc (currFBState, $4, $6);
+}
+| TOK_BLEND_EQN blend_eqn_rule 
+TOK_BLEND_SRC blend_src_rule 
+TOK_BLEND_DST blend_dst_rule 
+TOK_BLEND_COLOR vector_type_rule
+{
+    pfFBStateBlendEquation (currFBState, $2);
+    pfFBStateBlendFunc (currFBState, $4, $6);
+    pfFBStateBlendColor (currFBState, $8[0], $8[1], $8[2], $8[3]);
+}
+;
+
+blend_eqn_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "ADD")) {
+	$$ = GL_FUNC_ADD_EXT;
+    } else if (!strcmp ($1, "SUBTRACT")) {
+	$$ = GL_FUNC_SUBTRACT_EXT;
+    } else if (!strcmp ($1, "REVERSE_SUBTRACT")) {
+	$$ = GL_FUNC_REVERSE_SUBTRACT_EXT;
+    } else if (!strcmp ($1, "MIN")) {
+	$$ = GL_MIN_EXT;
+    } else if (!strcmp ($1, "MAX")) {
+	$$ = GL_MAX_EXT;
+    } else if (!strcmp ($1, "LOGIC_OP")) {
+	$$ = GL_LOGIC_OP;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid blend equation.\n",
+			       $1);
+    }
+    
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+blend_src_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "ZERO")) {
+	$$ = GL_ZERO;
+    } else if (!strcmp ($1, "ONE")) {
+	$$ = GL_ONE;
+    } else if (!strcmp ($1, "DST_COLOR")) {
+	$$ = GL_DST_COLOR;
+    } else if (!strcmp ($1, "ONE_MINUS_DST_COLOR")) {
+	$$ = GL_ONE_MINUS_DST_COLOR;
+    } else if (!strcmp ($1, "SRC_ALPHA")) {
+	$$ = GL_SRC_ALPHA;
+    } else if (!strcmp ($1, "ONE_MINUS_SRC_ALPHA")) {
+	$$ = GL_ONE_MINUS_SRC_ALPHA;
+    } else if (!strcmp ($1, "DST_ALPHA")) {
+	$$ = GL_DST_ALPHA;
+    } else if (!strcmp ($1, "ONE_MINUS_DST_ALPHA")) {
+	$$ = GL_ONE_MINUS_DST_ALPHA;
+    } else if (!strcmp ($1, "SRC_ALPHA_SATURATE")) {
+	$$ = GL_SRC_ALPHA_SATURATE;
+    } else if (!strcmp ($1, "CONSTANT_COLOR")) {
+	$$ = GL_CONSTANT_COLOR_EXT;
+    } else if (!strcmp ($1, "ONE_MINUS_CONSTANT_COLOR")) {
+	$$ = GL_ONE_MINUS_CONSTANT_COLOR_EXT;
+    } else if (!strcmp ($1, "CONSTANT_ALPHA")) {
+	$$ = GL_CONSTANT_ALPHA_EXT;
+    } else if (!strcmp ($1, "ONE_MINUS_CONSTANT_ALPHA")) {
+	$$ = GL_ONE_MINUS_CONSTANT_ALPHA_EXT;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid blend source "
+			       "factor.\n",
+			       $1);
+    }
+    
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+blend_dst_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "ZERO")) {
+	$$ = GL_ZERO;
+    } else if (!strcmp ($1, "ONE")) {
+	$$ = GL_ONE;
+    } else if (!strcmp ($1, "SRC_COLOR")) {
+	$$ = GL_SRC_COLOR;
+    } else if (!strcmp ($1, "ONE_MINUS_SRC_COLOR")) {
+	$$ = GL_ONE_MINUS_SRC_COLOR;
+    } else if (!strcmp ($1, "SRC_ALPHA")) {
+	$$ = GL_SRC_ALPHA;
+    } else if (!strcmp ($1, "ONE_MINUS_SRC_ALPHA")) {
+	$$ = GL_ONE_MINUS_SRC_ALPHA;
+    } else if (!strcmp ($1, "DST_ALPHA")) {
+	$$ = GL_DST_ALPHA;
+    } else if (!strcmp ($1, "ONE_MINUS_DST_ALPHA")) {
+	$$ = GL_ONE_MINUS_DST_ALPHA;
+    } else if (!strcmp ($1, "CONSTANT_COLOR")) {
+	$$ = GL_CONSTANT_COLOR_EXT;
+    } else if (!strcmp ($1, "ONE_MINUS_CONSTANT_COLOR")) {
+	$$ = GL_ONE_MINUS_CONSTANT_COLOR_EXT;
+    } else if (!strcmp ($1, "CONSTANT_ALPHA")) {
+	$$ = GL_CONSTANT_ALPHA_EXT;
+    } else if (!strcmp ($1, "ONE_MINUS_CONSTANT_ALPHA")) {
+	$$ = GL_ONE_MINUS_CONSTANT_ALPHA_EXT;
+    } else {
+ 	__pfdLoadShader_error ("%s is not a valid blend destination "
+			       "factor.\n",
+			       $1);
+    }
+    
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+
+
+/*************************************************************************
+ * Color
+ ************************************************************************/
+
+color_rule:
+color_token_rule '{' color_args_rule '}'
+{
+    pfVec4 *color;
+
+    switch (pfGetShaderCurPassType (__pfdLoadShader_shader)) {
+    case PF_SHADERPASS_GEOMETRY:
+	lights = (pfLight**) pfMalloc (sizeof (pfLight*) * PF_MAX_LIGHTS,
+				       pfGetSharedArena ());
+	bzero (lights, sizeof (pfLight*) * PF_MAX_LIGHTS);
+
+	lights[0] = pfNewLight (pfGetSharedArena ());
+	pfLightColor (lights[0], PFLT_AMBIENT, 0, 0, 0);	
+	pfLightColor (lights[0], PFLT_DIFFUSE, 0, 0, 0);	
+	pfLightColor (lights[0], PFLT_SPECULAR, 0, 0, 0);	
+
+	pfGStateAttr (currGeoState, PFSTATE_LIGHTS, lights);
+	pfGStateMode (currGeoState, PFSTATE_ENLIGHTING, PF_ON);
+
+	material = pfNewMtl (pfGetSharedArena ());
+	pfMtlColor (material, PFMTL_EMISSION, $3[0], $3[1], $3[2]);
+	pfMtlAlpha (material, $3[3]);
+	pfMtlColorMode (material, PFMTL_BOTH, PFMTL_CMODE_OFF);
+	pfGStateAttr (currGeoState, PFSTATE_FRONTMTL, material);
+	pfGStateAttr (currGeoState, PFSTATE_BACKMTL, material);
+	break;
+    case PF_SHADERPASS_QUAD:
+	color = (pfVec4*) pfMalloc (sizeof (pfVec4), 
+				    pfGetSharedArena ());
+	(*color)[0] = $3[0];
+	(*color)[1] = $3[1];
+	(*color)[2] = $3[2];
+	(*color)[3] = $3[3];
+	
+	pfShaderPassAttr (__pfdLoadShader_shader,
+			  PF_SHADERPASS_COLOR, color);
+	break;
+    default:
+	pfDelete (color);
+	break;
+    }
+
+    specified_attribs |= ATTRIB_BIT_COLOR;
+}
+;
+
+color_token_rule:
+TOK_COLOR
+{
+    if (specified_attribs & ATTRIB_BIT_COLOR) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    } else if (specified_attribs & ATTRIB_BIT_LIGHTS) {
+	__pfdLoadShader_error ("Constant color and lights are mutually "
+			       "exclusive.\n");
+	YYERROR;
+    }
+}
+;
+
+color_args_rule:
+TOK_COLOR_DATA vector_type_rule
+{
+    $$[0] = $2[0];
+    $$[1] = $2[1];
+    $$[2] = $2[2];
+    $$[3] = $2[3];
+}
+;
+
+
+
+/*************************************************************************
+ * Color mask
+ ************************************************************************/
+
+color_mask_rule:
+color_mask_token_rule '{' color_mask_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_COLOR_MASK;
+}
+;
+
+color_mask_token_rule:
+TOK_COLOR_MASK
+{
+    if (specified_attribs & ATTRIB_BIT_COLOR_MASK) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+color_mask_args_rule:
+TOK_COLOR_MASK_DATA integer_number_type_rule
+{
+    pfFBStateColorMask (currFBState, 
+			($2 & 0x8), ($2 & 0x4), 
+			($2 & 0x2), ($2 & 0x1));
+}
+;
+
+
+
+/*************************************************************************
+ * Color matrix
+ ************************************************************************/
+
+color_matrix_rule:
+color_matrix_token_rule '{' color_matrix_args_rule '}' 
+{
+    specified_attribs |= ATTRIB_BIT_COLOR_MATRIX;
+}
+;
+
+color_matrix_token_rule:
+TOK_COLOR_MATRIX
+{
+    if (specified_attribs & ATTRIB_BIT_COLOR_MATRIX) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+color_matrix_args_rule:
+TOK_MATRIX_DATA matrix_type_rule
+{
+    pfFBStateColorMatrix (currFBState, $2);
+}
+;
+
+
+
+/*************************************************************************
+ * Depth test
+ ************************************************************************/
+
+depth_test_rule:
+depth_test_token_rule '{' depth_args_rule '}'
+{
+    pfFBStateEnable (currFBState, GL_DEPTH_TEST, GL_ONE);
+    specified_attribs |= ATTRIB_BIT_DEPTH_TEST;
+}
+| depth_test_token_rule '{' TOK_DISABLE '}'
+{
+    pfFBStateEnable (currFBState, GL_DEPTH_TEST, GL_ZERO);
+    disabled_attribs |= ATTRIB_BIT_DEPTH_TEST;
+}
+;
+
+depth_test_token_rule:
+TOK_DEPTH_TEST
+{
+    if ((specified_attribs & ATTRIB_BIT_DEPTH_TEST) ||
+	(disabled_attribs & ATTRIB_BIT_DEPTH_TEST)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+depth_args_rule:
+TOK_DEPTH_TEST_FUNC test_func_rule
+{
+    pfFBStateDepthFunc (currFBState, $2);
+}
+;
+
+
+
+/*************************************************************************
+ * Lights
+ ************************************************************************/
+
+lights_rule:
+light_list_token_rule '{' light_list_rule '}'
+{
+    pfGStateMode (currGeoState, PFSTATE_ENLIGHTING, PF_ON);
+    pfGStateAttr (currGeoState, PFSTATE_LIGHTS, lights);
+    specified_attribs |= ATTRIB_BIT_LIGHTS;
+}
+| light_list_token_rule error
+{
+    pfGStateMode (currGeoState, PFSTATE_ENLIGHTING, PF_ON);
+    pfGStateAttr (currGeoState, PFSTATE_LIGHTS, lights);
+    specified_attribs |= ATTRIB_BIT_LIGHTS;
+}
+| light_list_token_rule '{' TOK_DISABLE '}'
+{
+    pfGStateMode (currGeoState, PFSTATE_ENLIGHTING, PF_OFF);
+    disabled_attribs |= ATTRIB_BIT_LIGHTS;
+}
+;
+
+light_list_token_rule:
+TOK_LIGHTS
+{
+    if ((specified_attribs & ATTRIB_BIT_LIGHTS) ||
+	(disabled_attribs & ATTRIB_BIT_LIGHTS)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    } else if (specified_attribs & ATTRIB_BIT_COLOR) {
+	__pfdLoadShader_error ("Lights and constant color are mutually "
+			       "exclusive.\n");
+	YYERROR;
+    } else {
+	/* we haven't already scene the lights {} block and constant
+	 * color isn't specified so we can safely proceed.  allocate
+	 * an array of pfLight* elements and clear the specified_lights
+	 * bits indicating that no lights have been specified */
+	lights = (pfLight**) pfMalloc (sizeof (pfLight*) * PF_MAX_LIGHTS,
+				       pfGetSharedArena ());
+	bzero (lights, sizeof (pfLight*) * PF_MAX_LIGHTS);
+
+	specified_lights = 0;
+    }
+}
+;
+
+light_list_rule:    /* can't be empty */
+light_rule
+| light_list_rule light_rule
+;
+
+light_rule:
+light_token_rule '{' light_number_rule light_args_rule '}'
+;
+
+light_token_rule:
+TOK_LIGHT
+;
+
+light_number_rule:
+TOK_LIGHT_NUMBER integer_number_type_rule
+{
+    curr_light = $2;
+
+    if (curr_light >= PF_MAX_LIGHTS) {
+	__pfdLoadShader_error ("Light number %d is out of range.  Must "
+			       "be 0 - %d.\n", 
+			       curr_light,
+			       PF_MAX_LIGHTS);
+    } else if (specified_lights & (1 << curr_light)) {
+	__pfdLoadShader_error ("Redefinition of light %d.\n",
+			       curr_light);
+    } else {
+	/* the light index, curr_light, is of legal value and this
+	 * light hasn't been specified yet so allocate a new light. */
+	lights [curr_light] = pfNewLight (pfGetSharedArena ());
+	specified_lights |= (1 << curr_light);
+	specified_light_attribs = 0;
+    }
+}
+;
+
+light_args_rule: /* can't be empty */
+light_arg_rule
+| light_args_rule light_arg_rule
+;
+
+light_arg_rule:
+light_matrix_rule
+| light_position_rule
+| spot_light_rule
+| light_ambient_rule
+| light_diffuse_rule
+| light_specular_rule
+| light_attenuation_rule
+;
+
+
+light_matrix_rule:
+light_matrix_token_rule matrix_type_rule
+{
+    __pfdLoadShader_error ("No support for light matrix");
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_MATRIX;
+}
+;
+
+light_matrix_token_rule:
+TOK_LIGHT_MATRIX
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_MATRIX) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }
+}
+;
+
+light_position_rule:
+light_position_token_rule vector_type_rule
+{
+    pfLightPos (lights[curr_light], $2[0], $2[1], $2[2], $2[3]);
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_POSITION;
+}
+;
+
+light_position_token_rule:
+TOK_LIGHT_POSITION
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_POSITION) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }    
+}
+;
+
+spot_light_rule:
+spot_light_token_rule '{' spot_light_args_rule '}'
+{
+    pfSpotLightCone (lights[curr_light], 
+		     spot_light_exponent,
+		     spot_light_cutoff);
+
+    spot_light_exponent = 1.0;
+    spot_light_cutoff = 90.0;
+
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_SPOT;
+}
+;
+
+spot_light_token_rule:
+TOK_SPOT_LIGHT_CONE
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_SPOT) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }    
+}
+;
+
+spot_light_args_rule:
+spot_light_arg_rule
+| spot_light_args_rule spot_light_arg_rule
+;
+
+spot_light_arg_rule:
+spot_light_exponent_rule
+| spot_light_cutoff_rule
+;
+
+spot_light_exponent_rule:
+spot_light_exponent_token_rule real_number_type_rule
+{
+    spot_light_exponent = $2;
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_SPOT_EXPONENT;
+}
+;
+
+spot_light_exponent_token_rule:
+TOK_SPOT_LIGHT_EXPONENT
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_SPOT_EXPONENT) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }        
+}
+;
+
+spot_light_cutoff_rule:
+spot_light_cutoff_token_rule real_number_type_rule
+{
+    spot_light_cutoff = $2;
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_SPOT_CUTOFF;
+}
+;
+
+spot_light_cutoff_token_rule:
+TOK_SPOT_LIGHT_CUTOFF
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_SPOT_CUTOFF) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }        
+}
+;
+
+light_ambient_rule:
+light_ambient_token_rule vector_type_rule
+{
+    pfLightColor (lights[curr_light], PFLT_AMBIENT, $2[0], $2[1], $2[2]);
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_AMBIENT;
+}
+;
+
+light_ambient_token_rule:
+TOK_LIGHT_AMBIENT
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_AMBIENT) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }
+}
+;
+
+light_diffuse_rule:
+light_diffuse_token_rule vector_type_rule
+{
+    pfLightColor (lights[curr_light], PFLT_DIFFUSE, $2[0], $2[1], $2[2]);
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_DIFFUSE;
+}
+;
+
+light_diffuse_token_rule:
+TOK_LIGHT_DIFFUSE
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_DIFFUSE) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }
+}
+;
+
+light_specular_rule:
+light_specular_token_rule vector_type_rule
+{
+    pfLightColor (lights[curr_light], PFLT_SPECULAR, $2[0], $2[1], $2[2]);
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_SPECULAR;
+}
+;
+
+light_specular_token_rule:
+TOK_LIGHT_SPECULAR
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_SPECULAR) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }
+}
+;
+
+light_attenuation_rule:
+light_attenuation_token_rule '{' light_attenuation_args_rule '}'
+{
+    pfLightAtten (lights[curr_light],
+		  light_constant_attenuation,
+		  light_linear_attenuation,
+		  light_quadratic_attenuation);
+
+    light_constant_attenuation = 1.0;
+    light_linear_attenuation = 0.0;
+    light_quadratic_attenuation = 0.0;
+
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_ATTEN;
+}
+;
+
+light_attenuation_token_rule:
+TOK_LIGHT_ATTENUATION 
+{    
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_ATTEN) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }
+}
+;
+
+light_attenuation_args_rule:
+light_attenuation_arg_rule
+| light_attenuation_args_rule light_attenuation_arg_rule
+;
+
+light_attenuation_arg_rule:
+light_constant_attenuation_rule
+| light_linear_attenuation_rule
+| light_quadratic_attenuation_rule
+;
+
+light_constant_attenuation_rule:
+light_constant_attenuation_token_rule real_number_type_rule
+{
+    light_constant_attenuation = $2;
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_CONSTANT_ATTEN;
+}
+;
+
+light_constant_attenuation_token_rule:
+TOK_LIGHT_ATTENUATION_CONSTANT
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_CONSTANT_ATTEN) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }    
+}
+;
+
+light_linear_attenuation_rule:
+light_linear_attenuation_token_rule real_number_type_rule
+{
+    light_linear_attenuation = $2;
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_LINEAR_ATTEN;
+}
+;
+
+light_linear_attenuation_token_rule:
+TOK_LIGHT_ATTENUATION_LINEAR
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_LINEAR_ATTEN) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }    
+}
+;
+
+light_quadratic_attenuation_rule:
+light_quadratic_attenuation_token_rule real_number_type_rule
+{
+    light_quadratic_attenuation = $2;
+    specified_light_attribs |= LIGHT_ATTRIB_BIT_QUADRATIC_ATTEN;
+}
+;
+
+light_quadratic_attenuation_token_rule:
+TOK_LIGHT_ATTENUATION_QUADRATIC
+{
+    if (specified_light_attribs & LIGHT_ATTRIB_BIT_QUADRATIC_ATTEN) {
+	__pfdLoadShader_error ("Redefinition of light attribute.\n");
+    }    
+}
+;
+
+
+
+/*************************************************************************
+ * Material
+ ************************************************************************/
+
+material_rule:
+material_token_rule '{' material_args_rule '}'
+{
+    pfGStateAttr (currGeoState, PFSTATE_FRONTMTL, material);
+    pfGStateAttr (currGeoState, PFSTATE_BACKMTL, material);
+    pfMtlColorMode (material, PFMTL_BOTH, PFMTL_CMODE_OFF);
+
+    specified_attribs |= ATTRIB_BIT_MATERIAL;
+}
+| material_token_rule error
+{
+    pfGStateAttr (currGeoState, PFSTATE_FRONTMTL, material);
+    pfGStateAttr (currGeoState, PFSTATE_BACKMTL, material);
+    pfMtlColorMode (material, PFMTL_BOTH, PFMTL_CMODE_OFF);
+
+    specified_attribs |= ATTRIB_BIT_MATERIAL;
+}
+;
+
+material_token_rule:
+TOK_MATERIAL
+{
+    if (specified_attribs & ATTRIB_BIT_MATERIAL) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    } else {
+	material = pfNewMtl (pfGetSharedArena ());
+    }
+}
+;
+
+material_args_rule:
+material_arg_rule
+| material_args_rule material_arg_rule
+;
+
+material_arg_rule:
+material_emission_rule
+| material_ambient_rule
+| material_diffuse_rule
+| material_specular_rule
+| material_shininess_rule
+;
+
+material_emission_rule:
+material_emission_token_rule vector_type_rule
+{
+    pfMtlColor (material, PFMTL_EMISSION, $2[0], $2[1], $2[2]);
+    specified_material_attribs |= MATERIAL_ATTRIB_BIT_EMISSION;
+}
+;
+
+material_emission_token_rule:
+TOK_MATERIAL_EMISSION
+{
+    if (specified_material_attribs & MATERIAL_ATTRIB_BIT_EMISSION) {
+	__pfdLoadShader_error ("Redefinition of material attribute.\n");
+    }
+}
+;
+
+material_diffuse_rule:
+material_diffuse_token_rule vector_type_rule
+{
+    pfMtlColor (material, PFMTL_DIFFUSE, $2[0], $2[1], $2[2]);
+    specified_material_attribs |= MATERIAL_ATTRIB_BIT_DIFFUSE;
+}
+;
+
+material_diffuse_token_rule:
+TOK_MATERIAL_DIFFUSE
+{
+    if (specified_material_attribs & MATERIAL_ATTRIB_BIT_DIFFUSE) {
+	__pfdLoadShader_error ("Redefinition of material attribute.\n");
+    }
+}
+;
+
+material_ambient_rule:
+material_ambient_token_rule vector_type_rule
+{
+    pfMtlColor (material, PFMTL_AMBIENT, $2[0], $2[1], $2[2]);
+    specified_material_attribs |= MATERIAL_ATTRIB_BIT_AMBIENT;
+}
+;
+
+material_ambient_token_rule:
+TOK_MATERIAL_AMBIENT
+{
+    if (specified_material_attribs & MATERIAL_ATTRIB_BIT_AMBIENT) {
+	__pfdLoadShader_error ("Redefinition of material attribute.\n");
+    }
+}
+;
+
+material_specular_rule:
+material_specular_token_rule vector_type_rule
+{
+    pfMtlColor (material, PFMTL_SPECULAR, $2[0], $2[1], $2[2]);
+    specified_material_attribs |= MATERIAL_ATTRIB_BIT_SPECULAR;
+}
+;
+
+material_specular_token_rule:
+TOK_MATERIAL_SPECULAR
+{
+    if (specified_material_attribs & MATERIAL_ATTRIB_BIT_SPECULAR) {
+	__pfdLoadShader_error ("Redefinition of material attribute.\n");
+    }
+}
+;
+
+material_shininess_rule:
+material_shininess_token_rule real_number_type_rule
+{
+    pfMtlShininess (material, $2);
+    specified_material_attribs |= MATERIAL_ATTRIB_BIT_SHININESS;
+}
+;
+
+material_shininess_token_rule:
+TOK_MATERIAL_SHININESS
+{
+    if (specified_material_attribs & MATERIAL_ATTRIB_BIT_SHININESS) {
+	__pfdLoadShader_error ("Redefinition of material attribute.\n");
+    }
+}
+;
+
+
+
+/*************************************************************************
+ * Pixel bias
+ ************************************************************************/
+
+pixel_bias_rule:
+pixel_bias_token_rule '{' pixel_bias_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_PIXEL_BIAS;
+}
+;
+
+pixel_bias_token_rule:
+TOK_PIXEL_BIAS
+{
+    if (specified_attribs & ATTRIB_BIT_PIXEL_BIAS) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+pixel_bias_args_rule:
+TOK_PIXEL_BIAS_DATA vector_type_rule
+{
+    pfFBStatePixelBias (currFBState, $2[0], $2[1], $2[2], $2[3]);
+}
+;
+
+
+
+/*************************************************************************
+ * Pixel scale
+ ************************************************************************/
+
+pixel_scale_rule:
+pixel_scale_token_rule '{' pixel_scale_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_PIXEL_SCALE;
+}
+;
+
+pixel_scale_token_rule:
+TOK_PIXEL_SCALE
+{
+    if (specified_attribs & ATTRIB_BIT_PIXEL_SCALE) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+pixel_scale_args_rule:
+TOK_PIXEL_SCALE_DATA vector_type_rule
+{
+    pfFBStatePixelScale (currFBState, $2[0], $2[1], $2[2], $2[3]);
+}
+;
+
+
+
+/*************************************************************************
+ * Pixmaps
+ ************************************************************************/
+
+pixmaps_rule:
+pixmaps_token_rule '{' pixmap_list_rule '}'
+{
+    pfFBStateEnable (currFBState, GL_MAP_COLOR, GL_ONE);
+    specified_attribs |= ATTRIB_BIT_PIXMAPS;
+}
+| pixmaps_token_rule '{' TOK_DISABLE '}'
+{
+    pfFBStateEnable (currFBState, GL_MAP_COLOR, GL_ZERO);
+    disabled_attribs |= ATTRIB_BIT_PIXMAPS;
+}
+;
+
+pixmaps_token_rule:
+TOK_PIXMAPS
+{
+    if ((specified_attribs & ATTRIB_BIT_PIXMAPS) ||
+	(disabled_attribs & ATTRIB_BIT_PIXMAPS)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+pixmap_list_rule: /* can't be empty */
+error
+| pixmap_rule
+| pixmap_list_rule pixmap_rule;
+
+pixmap_rule:
+pixmap_token_rule '{' pixmap_args_rule '}'
+;
+
+pixmap_token_rule:
+TOK_PIXMAP
+;
+
+pixmap_args_rule:
+TOK_PIXMAP_COMPONENT pixmap_component_rule
+pixmap_size_rule
+pixmap_entries_rule
+{
+    pfFBStatePixelMap (currFBState, $2, pixmap_size, pixmap_values);
+}
+| TOK_PIXMAP_COMPONENT pixmap_component_rule
+pixmap_size_rule
+error
+{
+    pfFBStatePixelMap (currFBState, $2, pixmap_size, pixmap_values);
+}
+;
+
+pixmap_component_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "RED")) {
+	if (specified_pixmap_attribs & PIXMAP_ATTRIB_BIT_R) {
+	    __pfdLoadShader_error ("Redefinition of pixmap "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_pixmap_attribs |= PIXMAP_ATTRIB_BIT_R;
+	    $$ = GL_PIXEL_MAP_R_TO_R;
+	}
+    } else if (!strcmp ($1, "GREEN")) {
+	if (specified_pixmap_attribs & PIXMAP_ATTRIB_BIT_G) {
+	    __pfdLoadShader_error ("Redefinition of pixmap "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_pixmap_attribs |= PIXMAP_ATTRIB_BIT_G;
+	    $$ = GL_PIXEL_MAP_G_TO_G;
+	}
+    } else if (!strcmp ($1, "BLUE")) {
+	if (specified_pixmap_attribs & PIXMAP_ATTRIB_BIT_B) {
+	    __pfdLoadShader_error ("Redefinition of pixmap "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_pixmap_attribs |= PIXMAP_ATTRIB_BIT_B;
+	    $$ = GL_PIXEL_MAP_B_TO_B;
+	}
+    } else if (!strcmp ($1, "ALPHA")) {
+	if (specified_pixmap_attribs & PIXMAP_ATTRIB_BIT_A) {
+	    __pfdLoadShader_error ("Redefinition of pixmap "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_pixmap_attribs |= PIXMAP_ATTRIB_BIT_A;
+	    $$ = GL_PIXEL_MAP_A_TO_A;
+	}
+    } else {
+	__pfdLoadShader_error ("%s is not a valid pixmap component.\n",
+			       $1);
+    }
+    
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+pixmap_size_rule:
+TOK_PIXMAP_SIZE integer_number_type_rule
+{
+    pixmap_size = $2;
+
+    if ((pixmap_size <= 0) ||
+	(pixmap_size & (pixmap_size - 1))) {
+	__pfdLoadShader_error ("Invalid value for pixmap size");
+	YYERROR;
+    } else {
+	pixmap_values = (float*) pfMalloc (sizeof (float) * pixmap_size,
+					   pfGetSharedArena ());
+    }
+}
+;
+
+pixmap_entries_rule:
+pixmap_entry_rule
+{
+    curr_pixmap_entry = 0;
+    pixmap_values [curr_pixmap_entry] = $1;
+    curr_pixmap_entry++;
+}
+| pixmap_entries_rule pixmap_entry_rule
+{
+    if (curr_pixmap_entry >= pixmap_size) {
+	__pfdLoadShader_error ("Pixmap entries exceed pixmap size.");
+	YYERROR;	
+    }
+    pixmap_values [curr_pixmap_entry] = $2;
+    curr_pixmap_entry++;
+}
+;
+
+pixmap_entry_rule:
+TOK_PIXMAP_DATA real_number_type_rule
+{
+    $$ = $2;
+}
+;
+
+
+
+/*************************************************************************
+ * Shade Model
+ ************************************************************************/
+
+shade_model_rule:
+shade_model_token_rule '{' shade_model_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_SHADE_MODEL;
+}
+;
+
+shade_model_token_rule:
+TOK_SHADE_MODEL
+{
+    if (specified_attribs & ATTRIB_BIT_SHADE_MODEL) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+shade_model_args_rule:
+TOK_SHADE_MODEL_MODE shade_model_mode_rule
+{
+    pfFBStateShadeModel (currFBState, $2);
+}
+;
+
+shade_model_mode_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "FLAT")) {
+	$$ = GL_FLAT;
+    } else if (!strcmp ($1, "SMOOTH")) {
+	$$ = GL_SMOOTH;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid shade model.\n",
+			       $1);
+    }
+
+    free ($1);
+}
+;
+
+
+
+/*************************************************************************
+ * Stencil test
+ ************************************************************************/
+
+stencil_test_rule:
+stencil_test_token_rule '{' stencil_args_rule '}'
+{
+    pfFBStateEnable (currFBState, GL_STENCIL_TEST, GL_ONE);
+    specified_attribs |= ATTRIB_BIT_STENCIL_TEST;
+}
+| stencil_test_token_rule '{' TOK_DISABLE '}'
+{
+    pfFBStateEnable (currFBState, GL_STENCIL_TEST, GL_ZERO);
+    disabled_attribs |= ATTRIB_BIT_STENCIL_TEST;
+}
+;
+
+stencil_test_token_rule:
+TOK_STENCIL_TEST
+{
+    if ((specified_attribs & ATTRIB_BIT_STENCIL_TEST) ||
+	(disabled_attribs & ATTRIB_BIT_STENCIL_TEST)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+stencil_args_rule:
+TOK_STENCIL_TEST_FUNC test_func_rule 
+TOK_STENCIL_TEST_REF integer_number_type_rule 
+TOK_STENCIL_TEST_MSK integer_number_type_rule 
+TOK_STENCIL_TEST_SFAIL stencil_op_rule 
+TOK_STENCIL_TEST_ZFAIL stencil_op_rule 
+TOK_STENCIL_TEST_ZPASS stencil_op_rule 
+TOK_STENCIL_TEST_WMASK integer_number_type_rule
+{
+    pfFBStateStencilFunc (currFBState, $2, $4, $6);
+    pfFBStateStencilOp (currFBState, $8, $10, $12);
+    pfFBStateStencilMask (currFBState, $14);
+}
+;
+
+stencil_op_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "KEEP")) {
+	$$ = GL_KEEP;
+    } else if (!strcmp ($1, "ZERO")) {
+	$$ = GL_ZERO;
+    } else if (!strcmp ($1, "REPLACE")) {
+	$$ = GL_REPLACE;
+    } else if (!strcmp ($1, "INCR")) {
+	$$ = GL_INCR;
+    } else if (!strcmp ($1, "DECR")) {
+	$$ = GL_DECR;
+    } else if (!strcmp ($1, "INVERT")) {
+	$$ = GL_INVERT;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid stencil "
+			       "operation.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+test_func_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "NEVER")) {
+	$$ = GL_NEVER;
+    } else if (!strcmp ($1, "LESS")) {
+	$$ = GL_LESS;
+    } else if (!strcmp ($1, "LEQUAL")) {
+	$$ = GL_LEQUAL;
+    } else if (!strcmp ($1, "GREATER")) {
+	$$ = GL_GREATER;
+    } else if (!strcmp ($1, "GEQUAL")) {
+	$$ = GL_GEQUAL;
+    } else if (!strcmp ($1, "EQUAL")) {
+	$$ = GL_EQUAL;
+    } else if (!strcmp ($1, "NOTEQUAL")) {
+	$$ = GL_NOTEQUAL;
+    } else if (!strcmp ($1, "ALWAYS")) {
+	$$ = GL_ALWAYS;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid test function.\n",
+			       $1);
+    }
+    
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+
+
+/*************************************************************************
+ * Texenv
+ ************************************************************************/
+
+texenv_rule:
+texenv_token_rule '{' texenv_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_TEXENV;
+}
+;
+
+texenv_token_rule:
+TOK_TEXENV
+{
+    if (specified_attribs & ATTRIB_BIT_TEXENV) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+texenv_args_rule:
+TOK_TEXENV_MODE texenv_mode_rule
+{
+    pfTexEnv *texenv = pfNewTEnv (pfGetSharedArena ());
+
+    pfTEnvMode (texenv, $2);
+    pfGStateAttr (currGeoState, PFSTATE_TEXENV, texenv);
+}
+| TOK_TEXENV_MODE texenv_mode_rule TOK_TEXENV_COLOR vector_type_rule
+{
+    pfTexEnv *texenv = pfNewTEnv (pfGetSharedArena ());
+
+    pfTEnvMode (texenv, $2);
+    pfTEnvBlendColor (texenv, $4[0], $4[1], $4[2], $4[3]);
+    pfGStateAttr (currGeoState, PFSTATE_TEXENV, texenv);
+}
+;
+
+texenv_mode_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "MODULATE")) {
+	$$ = PFTE_MODULATE;
+    } else if (!strcmp ($1, "BLEND")) {
+	$$ = PFTE_BLEND;
+    } else if (!strcmp ($1, "DECAL")) {
+	$$ = PFTE_DECAL;
+    } else if (!strcmp ($1, "REPLACE")) {
+	$$ = PFTE_REPLACE;
+    } else if (!strcmp ($1, "ADD")) {
+	$$ = PFTE_ADD;
+    } else if (!strcmp ($1, "ALPHA")) {
+	$$ = PFTE_ALPHA;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid texenv mode.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+
+
+/*************************************************************************
+ * Texgens
+ ************************************************************************/
+texgens_rule:
+texgen_list_token_rule '{' texgen_list_rule '}'
+{
+    pfGStateMode (currGeoState, PFSTATE_ENTEXGEN, PF_ON);
+    pfGStateAttr (currGeoState, PFSTATE_TEXGEN, texgen);
+    specified_attribs |= ATTRIB_BIT_TEXGENS;
+}
+| texgen_list_token_rule error
+{
+    pfGStateMode (currGeoState, PFSTATE_ENTEXGEN, PF_ON);
+    pfGStateAttr (currGeoState, PFSTATE_TEXGEN, texgen);
+    specified_attribs |= ATTRIB_BIT_TEXGENS;
+}
+| texgen_list_token_rule '{' TOK_DISABLE '}'
+{
+    pfGStateMode (currGeoState, PFSTATE_ENTEXGEN, PF_OFF);
+    disabled_attribs |= ATTRIB_BIT_TEXGENS;
+};
+
+texgen_list_token_rule:
+TOK_TEXGENS
+{
+    if ((specified_attribs & ATTRIB_BIT_TEXGENS) ||
+	(disabled_attribs & ATTRIB_BIT_TEXGENS)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    } else {
+	texgen = pfNewTGen (pfGetSharedArena ());
+    }
+}
+;
+
+texgen_list_rule:    /* can't be empty */
+error
+| texgen_rule
+| texgen_list_rule texgen_rule
+;
+
+texgen_rule:
+texgen_token_rule '{' texgen_args_rule '}'
+;
+
+texgen_token_rule:
+TOK_TEXGEN
+;
+
+texgen_args_rule:
+TOK_TEXGEN_COORD texgen_coord_rule TOK_TEXGEN_MODE texgen_mode_rule
+{
+    pfTGenMode (texgen, $2, $4);
+}
+| TOK_TEXGEN_COORD texgen_coord_rule TOK_TEXGEN_MODE texgen_mode_rule
+TOK_TEXGEN_PLANE vector_type_rule
+{
+    if (($4 == PFTG_OBJECT_LINEAR) || ($4 == PFTG_EYE_LINEAR)) {
+	pfTGenMode (texgen, $2, $4);
+	pfTGenPlane (texgen, $2, $6[0], $6[1], $6[2], $6[3]);
+    } else {
+	__pfdLoadShader_error ("Texgen plane has no effect for"
+			       "non-object_linear/eye_linear texgens.\n");
+    }
+}
+;
+
+texgen_coord_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "S")) {
+	if (specified_texgen_attribs & TEXGEN_ATTRIB_BIT_S) {
+	    __pfdLoadShader_error ("Redefinition of texgen "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_texgen_attribs |= TEXGEN_ATTRIB_BIT_S;
+	    $$ = PF_S;
+	}
+    } else if (!strcmp ($1, "T")) {
+	if (specified_texgen_attribs & TEXGEN_ATTRIB_BIT_T) {
+	    __pfdLoadShader_error ("Redefinition of texgen "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_texgen_attribs |= TEXGEN_ATTRIB_BIT_T;
+	    $$ = PF_T;
+	}
+    } else if (!strcmp ($1, "R")) {
+	if (specified_texgen_attribs & TEXGEN_ATTRIB_BIT_R) {
+	    __pfdLoadShader_error ("Redefinition of texgen "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_texgen_attribs |= TEXGEN_ATTRIB_BIT_R;
+	    $$ = PF_R;
+	}
+    } else if (!strcmp ($1, "Q")) {
+	if (specified_texgen_attribs & TEXGEN_ATTRIB_BIT_Q) {
+	    __pfdLoadShader_error ("Redefinition of texgen "
+				   "attribute.\n");
+	    YYERROR;
+	} else {
+	    specified_texgen_attribs |= TEXGEN_ATTRIB_BIT_Q;
+	    $$ = PF_Q;
+	}
+    } else {
+	__pfdLoadShader_error ("%s is not a valid texgen "
+			       "coordinate.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+texgen_mode_rule:
+TOK_CONSTANT
+{
+    if (!strcmp ($1, "EYE_LINEAR")) {
+	$$ = PFTG_EYE_LINEAR;
+    } else if (!strcmp ($1, "OBJECT_LINEAR")) {
+	$$ = PFTG_OBJECT_LINEAR;
+    } else if (!strcmp ($1, "SPHERE_MAP")) {
+	$$ = PFTG_SPHERE_MAP;
+    } else {
+	__pfdLoadShader_error ("%s is not a valid texgen mode.\n",
+			       $1);
+    }
+
+    /* the lexer returns a copy of the original string which
+     * must be freed here now that it's no longer needed. */
+    free ($1);
+}
+;
+
+/*************************************************************************
+ * Texture
+ ************************************************************************/
+
+texture_rule:
+texture_token_rule '{' texture_args_rule '}'
+{
+    specified_attribs |= ATTRIB_BIT_TEXTURE;
+}
+| texture_token_rule '{' TOK_DISABLE '}'
+{
+    pfGStateMode (currGeoState, PFSTATE_ENTEXTURE, PF_OFF);
+    disabled_attribs |= ATTRIB_BIT_TEXTURE;
+}
+;
+
+texture_token_rule:
+TOK_TEXTURE
+{
+    if ((specified_attribs & ATTRIB_BIT_TEXTURE) ||
+	(disabled_attribs & ATTRIB_BIT_TEXTURE)) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }
+}
+;
+
+texture_args_rule:
+TOK_TEXTURE_ID texture_identifier_rule
+{
+    int passType;
+    texIDMapEntry *currEntry;
+    int textureFound = 0;
+    
+    currEntry = __pfdLoadShader_texIDMap;
+    passType = pfGetShaderCurPassType (__pfdLoadShader_shader);
+    while (currEntry != NULL) {
+	if (!strcmp ($2, currEntry->identifierString)) {
+	    textureFound = 1;
+	    if (passType == PF_SHADERPASS_COPYPIXELS) {
+		if (currEntry->src != PFDLOADSHADER_TEXTURE_SRC_TMP) {
+		    __pfdLoadShader_error ("Illegal use of "
+					   "non-temporary texture with "
+					   "copypixels pass.\n");
+		} else {
+		    pfShaderPassVal (__pfdLoadShader_shader,
+				     PF_SHADERPASS_TEMP_TEXTURE_ID,
+				     currEntry->texID);
+		    currEntry->inUse = 1;
+		}
+	    } else if ((passType == PF_SHADERPASS_GEOMETRY) ||
+		       (passType == PF_SHADERPASS_QUAD)) {
+		if (currEntry->src == PFDLOADSHADER_TEXTURE_SRC_TMP) {
+		    __pfdLoadShader_error ("Illegal use of "
+					   "temporary texture with "
+					   "non-copypixels pass.\n");
+		} else {
+		    pfGStateAttr (currGeoState, PFSTATE_TEXTURE, 
+				  currEntry->texture);
+		    pfGStateMode (currGeoState, PFSTATE_ENTEXTURE, PF_ON);
+		    currEntry->inUse = 1;
+		} 
+	    }
+	    break;
+	}
+	currEntry = currEntry->next;
+    }  
+	
+    if (!textureFound) {
+	__pfdLoadShader_error ("Texture %s not declared.\n", $2);
+    }
+}
+;
+
+
+
+/*************************************************************************
+ * Texture matrix
+ ************************************************************************/
+
+texture_matrix_rule:
+texture_matrix_token_rule '{' texture_matrix_args_rule '}' 
+{
+    specified_attribs |= ATTRIB_BIT_TEXTURE_MATRIX;
+}
+;
+
+texture_matrix_token_rule:
+TOK_TEXTURE_MATRIX
+{
+    if (specified_attribs & ATTRIB_BIT_TEXTURE_MATRIX) {
+	__pfdLoadShader_error ("Redefinition of per pass attribute.\n");
+	YYERROR;
+    }    
+}
+;
+
+texture_matrix_args_rule:
+TOK_MATRIX_DATA matrix_type_rule
+{
+    pfMatrix *matrix = (pfMatrix *) pfMalloc(sizeof(pfMatrix), 
+					     pfGetSharedArena ());
+    
+    pfSetMat (matrix, $2);
+    pfGStateMode (currGeoState, PFSTATE_ENTEXMAT, PF_ON);
+    pfGStateAttr (currGeoState, PFSTATE_TEXMAT, matrix);
+}
+;
+
+
+
+/*************************************************************************
+ * Begin basic types
+ ************************************************************************/
+matrix_type_rule:
+vector_type_rule vector_type_rule vector_type_rule vector_type_rule
+{
+    $$[0] = $1[0];
+    $$[1] = $2[0];
+    $$[2] = $3[0];
+    $$[3] = $4[0];
+    $$[4] = $1[1];
+    $$[5] = $2[1];
+    $$[6] = $3[1];
+    $$[7] = $4[1];
+    $$[8] = $1[2];
+    $$[9] = $2[2];
+    $$[10] = $3[2];
+    $$[11] = $4[2];
+    $$[12] = $1[3];
+    $$[13] = $2[3];
+    $$[14] = $3[3];
+    $$[15] = $4[3];
+}
+;
+
+vector_type_rule:
+'(' real_number_type_rule 
+    real_number_type_rule 
+    real_number_type_rule 
+    real_number_type_rule ')'
+{
+    $$[0] = $2;
+    $$[1] = $3;
+    $$[2] = $4;
+    $$[3] = $5;    
+}
+;
+
+real_number_type_rule: 
+TOK_REAL_NUMBER
+{
+    $$ = $1;
+}
+| TOK_INTEGER_NUMBER
+{
+    $$ = (float) $1;
+}
+;
+
+integer_number_type_rule:
+TOK_INTEGER_NUMBER
+{
+    $$ = $1;
+}
+;
+
+identifier_type_rule:
+TOK_IDENTIFIER
+{
+    $$ = $1;
+}
+;
+
+string_type_rule:
+TOK_STRING
+{
+    $$ = $1;
+}
+;
+
+%%
+
+void initLoader(void) {
+/* static globals */
+  curr_pass_number = 0;
+
+  currGeoState = 0;
+  currFBState = 0;
+  lights = 0;
+  material = 0;
+  texgen = 0;
+
+  curr_texture_table_entry = 0;
+  texture_table_size = 0;
+
+  curr_pixmap_entry = 0;
+  
+  light_constant_attenuation = 1.0;
+  light_linear_attenuation = 0.0;
+  light_quadratic_attenuation = 0.0;
+  spot_light_exponent = 1.0;
+  spot_light_cutoff = 90.0;
+
+  curr_light = 0;
+  specified_lights = 0;
+
+  specified_attribs = 0;
+  specified_light_attribs = 0;
+  specified_material_attribs = 0;
+  specified_pixmap_attribs = 0;
+  specified_texgen_attribs = 0;
+ 
+  disabled_attribs = 0;
+
+  /* non-static globals */
+  __pfdLoadShader_texIDMap = NULL;
+}

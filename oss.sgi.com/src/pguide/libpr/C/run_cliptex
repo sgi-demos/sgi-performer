@@ -1,0 +1,4 @@
+#!/bin/sh
+PFCLIPDATA=/usr/share/Performer/data/clipdata/hunter/
+export PFCLIPDATA
+./cliptex hl.ct

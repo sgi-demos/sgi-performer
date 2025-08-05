@@ -1,0 +1,306 @@
+10000
+L 100 10 130 900 130
+L 50 227 834 211 905
+L 50 211 905 131 903
+;
+A 500 600 100 0.01 esprit.flt
+A 600 400 100 0.01 house1.flt
+A 300 400 100 0.01 boat.flt
+; ==========================================================
+Road
+T
+    v -20 -70 0
+    v -20  70 0
+    v  20  70 0
+    v  20  70 0
+    v  20 -70 0
+    v -20 -70 0
+    t 0 0
+    t 0 30
+    t 1 30 
+    t 1 30 
+    t 1 0 
+    t 0 0 
+    base 700 700 0
+    c 1.0 1.0 1.0 1.0
+    texture road.rgb
+    transform AXIS_TRANSLATE
+.
+; ==========================================================
+;
+;
+B 401 501 20.0 40.0 tree.rgba
+T
+    v -10 0 0
+    v -10 0 40
+    v  0 0 0
+    v -10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  10 0 0
+    t 0 0
+    t 0 1
+    t 0.5 0
+    t 0 1
+    t 0.5 0
+    t 1 1
+    t 0.5 0
+    t 1 1
+    t 1 0
+    projection 1 -1 -2
+    base 401 501 0
+    c 0.0 0.0 0.0 0.6
+    texture tree.rgba
+    transform AXIS_BILLBOARD
+.
+; =================================================================
+; Trees on three islands
+;
+B 227 834 20.0 40.0 tree.rgba
+T
+    v -10 0 0
+    v -10 0 40
+    v  0 0 0
+    v -10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  10 0 0
+    t 0 0
+    t 0 1
+    t 0.5 0
+    t 0 1
+    t 0.5 0
+    t 1 1
+    t 0.5 0
+    t 1 1
+    t 1 0
+    projection 1 -1 -2
+    base 227 834 0
+    c 0.0 0.0 0.0 0.6
+    texture tree.rgba
+    transform AXIS_BILLBOARD
+.
+;
+B 211 905 20.0 40.0 tree.rgba
+T
+    v -10 0 0
+    v -10 0 40
+    v  0 0 0
+    v -10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  10 0 0
+    t 0 0
+    t 0 1
+    t 0.5 0
+    t 0 1
+    t 0.5 0
+    t 1 1
+    t 0.5 0
+    t 1 1
+    t 1 0
+    projection 1 -1 -2
+    base 211 905 0
+    c 0.0 0.0 0.0 0.6
+    texture tree.rgba
+    transform AXIS_BILLBOARD
+.
+;
+B 131 903 20.0 40.0 tree.rgba
+T
+    v -10 0 0
+    v -10 0 40
+    v  0 0 0
+    v -10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  10 0 0
+    t 0 0
+    t 0 1
+    t 0.5 0
+    t 0 1
+    t 0.5 0
+    t 1 1
+    t 0.5 0
+    t 1 1
+    t 1 0
+    projection 1 -1 -2
+    base 131 903 0
+    c 0.0 0.0 0.0 0.6
+    texture tree.rgba
+    transform AXIS_BILLBOARD
+.
+; Another tree
+;
+B 148 120 20.0 40.0 tree.rgba
+T
+    v -10 0 0
+    v -10 0 40
+    v  0 0 0
+    v -10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  0 0 0
+    v  10 0 40
+    v  10 0 0
+    t 0 0
+    t 0 1
+    t 0.5 0
+    t 0 1
+    t 0.5 0
+    t 1 1
+    t 0.5 0
+    t 1 1
+    t 1 0
+    projection 1 -1 -2
+    base 148 120 0
+    c 0.0 0.0 0.0 0.6
+    texture tree.rgba
+    transform AXIS_BILLBOARD
+.
+;;
+;B 499 768 20.0 30.0 tree.rgba
+;T
+;    v -10 0 0
+;    v -10 0 30
+;    v  0 0 0
+;    v -10 0 30
+;    v  0 0 0
+;    v  10 0 30
+;    v  0 0 0
+;    v  10 0 30
+;    v  10 0 0
+;    t 0 0
+;    t 0 1
+;    t 0.5 0
+;    t 0 1
+;    t 0.5 0
+;    t 1 1
+;    t 0.5 0
+;    t 1 1
+;    t 1 0
+;    projection 1 -1 -2
+;    base 499 768 0
+;    c 0.0 0.0 0.0 0.6
+;    texture tree.rgba
+;    transform AXIS_BILLBOARD
+;.
+;;
+;B 541 780 10.0 40.0 tree.rgba
+;T
+;    v -5 0 0
+;    v -5 0 40
+;    v  0 0 0
+;    v -5 0 40
+;    v  0 0 0
+;    v  5 0 40
+;    v  0 0 0
+;    v  5 0 40
+;    v  5 0 0
+;    t 0 0
+;    t 0 1
+;    t 0.5 0
+;    t 0 1
+;    t 0.5 0
+;    t 1 1
+;    t 0.5 0
+;    t 1 1
+;    t 1 0
+;    projection 1 -1 -2
+;    base 541 780 0
+;    c 0.0 0.0 0.0 0.6
+;    texture tree.rgba
+;    transform AXIS_BILLBOARD
+;.
+;
+; B 739 427 20.0 40.0 tree.rgba
+; T
+;    v -10 0 0
+;    v -10 0 40
+;    v  0 0 0
+;    v -10 0 40
+;    v  0 0 0
+;    v  10 0 40
+;    v  0 0 0
+;    v  10 0 40
+;    v  10 0 0
+;    t 0 0
+;    t 0 1
+;    t 0.5 0
+;    t 0 1
+;    t 0.5 0
+;    t 1 1
+;    t 0.5 0
+;    t 1 1
+;    t 1 0
+;    projection 1 -1 -2
+;    base 739 427 0
+;    c 0.0 0.0 0.0 0.6
+;    texture tree.rgba
+;    transform AXIS_BILLBOARD
+;.
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+

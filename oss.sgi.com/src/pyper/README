@@ -1,0 +1,93 @@
+This is a beta version of PyPer.
+PyPer stands for "Python Performer connection".
+
+To build it, it requires:
+
+- X11R6
+- OpenGL
+- SGI's OpenGL|Performer eoe+sdk
+- Python 2.0
+- Swig 1.3u5
+
+I tried to have a nice autoconf interface, but it may
+require some work to make it actually build ok.
+
+Not many people know this, but when using automake/autoconf, the
+preferred method to run configure is running it from a clean
+directory, thus:
+
+On SGI, I use:
+
+  cd pyper
+  mkdir ../scratch
+  cd ../scratch
+  export CC=cc
+  export CXX=CC
+  export CFLAGS="-ptused -O2 -g -n32"
+  export CXXFLAGS="-ptused -O2 -g -n32"
+  export LDFLAGS="-n32 -L/home/sara/bram/lib"
+  export LD="ld -demangle -woff 131 -all"
+  
+
+../pyper/configure \
+  --prefix=/usr/local \
+  --with-python-inc=/home/sara/bram/include/python2.0  \
+  --with-python-lib=/home/sara/bram/lib/python2.0
+
+Also, on Irix, you MUST use gmake to build it, SGI's make does not work.
+
+To run it, do:
+$ gmake install
+$ cd /usr/local/share/pyper
+$ ./runtest.sh
+
+This runs one of the test script.
+A minimal pyper script looks like this:
+
+  from libpyper import *
+  pfInit()
+  pfConfig()
+  p = pfVec3()
+  p.set(1,2,3)
+  p.length()
+  q = p+p
+  print q
+  pfExit()
+
+Before firing up python, be sure that PYTHONPATH is set up properly.
+Also, some versions of Performer may require a LDPRELOAD, both vars
+are properly set up in $prefix/share/runtest.sh
+
+
+On linux, no special stuff is req'd to configure.
+
+
+IMPORTANT!
+If you use Performer 2.3 on linux, you can use a stock Python2.0 interpreter.
+However, for 2.4 on linux, or for any version on Irix, it is req'd that you
+modify the Python sources.
+Add a '#undef RTLD_NOW' to the file Python/dynload_shlib.c after the includes.
+I've offered a patch at python's sourceforge page, but that awaits approval
+for inclusion. At the time of writing, Python is at a code-freeze, so it may
+take some time for the patch to be included in the official Python tree.
+Until then, PyPer requires a modified python interpreter unfortunately.
+
+IMPORTANT!
+Swig doesn't build libswigpy.so per default.
+Do an explicit 'make ; make install' in the dir 
+/usr/local/src/SWIG1.3a5/Runtime
+
+Getting swig to work in an automake environment was quite an effort.
+Automake requires that shared libraries have a name that is prefixed with 'lib'.
+This is why our python module is called 'libpyper' instead of simply 'pyper'.
+
+In addition to the pure Performer api, available in the libpyper module,
+this package also comes with the libpyperbonus module, which adds some
+handy stuff: event handling using python scripts on a per-pfnode basis,
+and a keyframe animation system.
+
+NOTE: OpenGL|Performer is (c) by SGI.
+      The binding specific code, and the the pyperbonus module are (c) by SARA.
+
+For more information, contact bram at sara.nl
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+PFPATH=$PFROOT/perf/data:$PFROOT/perf/data/asddata:$PFROOT/usr/share/Performer/data/:$PFROOT/usr/share/Performer/data/asddata:$PFPATH
+export PFPATH
+./asdfly -M0 -m38 -c 3 -f -l2 -L -N -p3281.010498,19320.986328,900.051819 -e -141.772812,-2.514926,0.000000 $* multi.config 

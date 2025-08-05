@@ -1,0 +1,199 @@
+This directory contains the source to the demo program fakeclipfly,
+which demonstrates some concepts of clip textures
+on any texture-capable SGI machine.
+
+The program is based on perfly, and has most of perfly's
+functionality and command-line options.
+
+STARTING IT UP:
+    The simplest way to run it is just to give it the
+    the name of a file containing a square image in SGI format
+    (512x512 is a good size, bigger than that will probably exceed texture
+    memory on an Impact), e.g.
+	% fakeclipfly <perfly options> logo.512.rgb
+    It will automatically search your $PFPATH to find the file,
+    and it will generate the mipmap levels automatically.
+
+    If you want to specify the levels explicitly (you might want to do this
+    if they are color-coded), specify a format string for generating
+    the filenames containing the images, and the maximum size, e.g.:
+	% fakeclipfly <perfly options> coloredlevels.%dx%d.rgb 512
+    This loads the levels from files with the following names:
+	    coloredlevels.512x512.rgb
+	    coloredlevels.256x256.rgb
+	    coloredlevels.128x128.rgb
+	    ...
+	    coloredlevels.1x1.rgb
+    The format string must have either one or two %'s of integer type.
+
+WHAT IT MEANS:
+    The large square on the left represents a square textured
+    by the clip texture.
+    The clips and pyramid on the right represent the contents of the various
+    levels of the clip texture in texture memory.
+
+    Notice that the area of the big square (the "virtual size"
+    of the clip texture) is much bigger than the sum of the areas
+    of the clips on the right (what would actually be stored in texture
+    memory in a clip texture) but the fine levels of detail are only available
+    near the "clip center" (which can be moved),
+    so the picture gets progressively blurrier near the edges.
+    This is the essence of clip texturing.
+    When using a real clip texture on an iR,
+    the clip size is typically 1024 or 2048
+    and the clip center is chosen intelligently per frame
+    so that those blurry regions are not visible.
+    Thus the scene can be rendered with the full
+    quality of a normal mipmap of very high resolution
+    (which would be too big to fit in texture memory).
+
+WHAT TO DO:
+    Rotate the scene slightly from its original position
+    to make the clip center move,
+    and fiddle with the group of sliders and menu buttons
+    in the lower left corner.
+
+    "Min LOD" slider:
+	This simulates changing the Min LOD of the clip texture.
+	This is a floating point number representing the
+	min LOD (i.e. finest resolution) allowed to be used by the hardware.
+	0 means use all the levels,
+	1 means don't use the finest level, etc.
+	Notice that increasing the Min LOD blurs out the fine
+	levels of the picture.
+	You can do this on the fly in a real clip texture application.
+
+	See the man pages for pfTexture::setLODRange() and
+	glTexParameterf(GL_TEXTURE_MIN_LOD_SGIS) for more details.
+    
+    "Invalid Border" slider:
+	This simulates setting the invalid border of the clip texture
+	(in level texels).
+	The hardware is not allowed to use any texels closer than
+	this number of texels from the edge of the clip region
+	on any of the clipped levels.
+	Notice that as you increase the invalid border, the
+	concentric regions of blurriness in the main square picture
+	decrease in size, and the grey regions (representing the invalid
+	border) in the clips on the right increase.
+	You can do this on the fly in a real clip texture application.
+
+	Valid values are 0 up to half the clip size.  (Notice that
+	the max value of the slider changes if you change the clip size.)
+	The default value is 8 texels.
+
+	In a real clip texture on an iR,
+	the invalid border is always a multiple of 8 texels.
+	Also, notice that in this demo program the invalid border
+	does not affect the largest pyramid level, but in a real clip texture,
+	it does (this is an iR bug).
+	Another iR bug (not shown in this demo program)
+	makes the effect of the invalid border
+	on all but the finest level of an actual clip texture
+	only half of what it should be,
+	so the effective size of the invalid border on these levels
+	maxes out at 1/4 the clip size.
+
+	See the man pages for pfClipTexture::setInvalidBorder()
+	and glTexParameter(GL_TEXTURE_CLIPMAP_FRAME_SGIX) for more details.
+
+    "Clip Center" menu button:
+	This allows you to select among a number of methods
+	for changing the clip center.
+
+	The selections are:
+	"Fixed"
+	    The clip center does not change; it stays wherever
+	    it was at the time when "Fixed" was selected.
+	"Auto" (default)
+	    The clip center is always the closest point to the eye
+	    on the big textured square.  Notice it changing
+	    as you rotate the image slightly with the middle mouse button.
+	"Spiral"
+	    The clip center cycles through a spiral path.
+	"Mouse Drag"
+	    This is not implemented.
+
+	Notice that in this demo program, the clip center
+	takes on arbitrary floating point values,
+	but in a real clip texture on an iR, the coordinates
+	must be multiples of 8 texels.
+
+	See the man pages for pfClipTextre::setCenter()
+	and glTexParameter(GL_TEXTURE_CLIPMAP_CENTER_SGIX) for more details.
+
+    "Virtual Size" label:
+	This shows the virtual size of the clip texture, in finest-level
+	texels.  You can't change it (just like for a real clip texture).
+
+    "Clip Size" menu button:
+	This allows you to select the clip size (in level texels),
+	any power of 2 up to the virtual size.
+
+	The default is 1/4 of the virtual size (so there will
+	be two clipped levels, not including the top pyramid level
+	whose size is also the clip size).
+
+	With a real clip texture, you can't change the clip size on the fly.
+
+	See the man page for pfClipTexture::setClipSize()
+	for more details.
+
+    "Clip Visualization" menu button:
+	This allows you to select among a number of methods
+	for visualizing the clip levels shown on the right.
+	The selections are:
+
+	"Default"
+	    Show the clip levels as squares contiguously representing
+	    the region of the image contained in texture memory.
+	    The invalid border is always a grey border around the edge
+	    of the clip.  Notice the imagery panning within the square
+	    as the clip center is moved.
+	"Wrap"
+	    Show the clip levels as squares representing the actual
+	    contents of texture memory.
+	    Notice that the imagery as well as the grey invalid border
+	    wraps toroidally around the square so that
+	    as the clip center is moved, a given texel always
+	    stays in the same place, as it does in texture memory
+	    in a real clip texture.
+	"Roam in Level"
+	    This is the same as "Default", but the
+	    clip square roams inside a larger wireframe
+	    representing the virtual size of the texture level.
+	"Wrap in Level"
+	    This is the same is "Wrap", but the clip square
+	    is placed in the lower-left corner of a larger wireframe
+	    representing the virtual size of the texture level.
+
+    "Min Filter" and "Mag Filter" menu button:
+	This allows you to select among the legal minification
+	and magnification filters to be used when displaying
+	the main textured square.
+
+	A subtle point here is that the min filter (not the mag filter)
+	is used when magnifying texels that are selected
+	due to the desired finer resolution not being available in the
+	clipped level (as opposed to being selected due to being the desired
+	size with respect to pixel size).
+	I don't know whether this was the original intent,
+	but the demo mimics the real clip texture behavior on the iR
+	in this respect.
+
+	Note that in a real clipmap, the names of the filters
+	used are different (they have CLIPMAP in the names)
+	and the only min filter currently implemented for the iR
+	is PFTEX_MIPMAP_TRILINEAR.
+
+	See the man pages for pfTexture::setFilter()
+	and glTexParameter(GL_TEXTURE_MIN_FILTER and GL_TEXTURE_MAG_FILTER)
+	for more details.
+
+Notes:
+    - Ignore the warning message:
+      pfdFindConverterDSO() - Could not load DSO for extension "rgb"
+    - 512x512 is a good size for the texture image; bigger than that
+      will probably exceed texture memory on an Impact.
+    - Selecting the clip center by "Mouse Drag" is unimplemented.
+    - The IRISGL version won't compile, much less work.

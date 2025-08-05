@@ -1,0 +1,3 @@
+export PFPATH=/usr/share/Performer/data
+
+./framework $PFPATH/ch53.pfb

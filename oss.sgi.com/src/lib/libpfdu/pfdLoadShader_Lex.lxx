@@ -1,0 +1,516 @@
+%{
+
+#include <GL/gl.h>
+
+#include "pfdLoadShader_Parse.h"
+
+#include <string.h>
+
+#define YY_DECL int __pfdLoadShader_lex()
+
+int __pfdLoadShader_error (const char*, ...);
+
+extern int __pfdLoadShader_lineNum;
+
+%}
+
+white       [ \t]+
+comment     \#.*$
+decimal     [0-9]+
+integer     (0[xX][0-9a-fA-F]+)|(0[0-7]+)|({decimal})
+exp         [eE][+-]?{decimal}
+constant    [A-Z][A-Z0-9_]*
+identifier  $[a-zA-Z][a-zA-Z0-9_]*
+string      \"([^"]|\\\")*\"
+bogus_fix_emacs_autoindent      "
+
+%%
+
+\\\n				;
+\n				{
+    __pfdLoadShader_lineNum++;
+}
+
+
+
+
+{comment}   ;
+{white}     ;
+
+[+-]?{decimal}\.{decimal}?{exp}? {
+    __pfdLoadShader_lval.real_number = atof (yytext);
+    return TOK_REAL_NUMBER;
+}
+
+[+-]?\.{decimal}{exp}? {
+    __pfdLoadShader_lval.real_number = atof (yytext);
+    return TOK_REAL_NUMBER;
+}
+
+[+-]?{decimal}{exp} {
+    __pfdLoadShader_lval.real_number = atof (yytext);
+    return TOK_REAL_NUMBER;
+}
+
+[+-]?{integer} {
+    /* XXX Type conversion. */
+    __pfdLoadShader_lval.integer_number = strtoll (yytext, NULL, 0);
+    return TOK_INTEGER_NUMBER;
+}
+
+{constant} {
+    __pfdLoadShader_lval.constant = strdup (yytext);
+    return TOK_CONSTANT;
+}
+
+{identifier} {
+    __pfdLoadShader_lval.identifier = strdup (yytext);
+    return TOK_IDENTIFIER;
+}
+
+{string} {
+    int stringLen;
+    __pfdLoadShader_lval.string = strdup (yytext + 1);
+    stringLen = strlen (__pfdLoadShader_lval.string);
+    *(__pfdLoadShader_lval.string + stringLen - 1) = 0;
+    return TOK_STRING;
+}
+
+[\$\:()\,\{\}] { 
+    return *yytext; 
+}
+
+shader {
+    return TOK_SHADER;
+}
+
+shader_header {
+    return TOK_SHADER_HEADER;
+}
+
+shader_name {
+    return TOK_SHADER_NAME;
+}
+
+shader_major_rev {
+    return TOK_SHADER_MAJOR_REV;
+}
+
+shader_minor_rev {
+    return TOK_SHADER_MINOR_REV;
+};
+
+shader_locals {
+    return TOK_SHADER_LOCALS;
+};
+
+shader_default_state {
+    return TOK_SHADER_DEFAULT_STATE;
+}
+
+shader_passes {
+    return TOK_SHADER_PASSES;
+}
+
+
+
+
+texture_def {
+    return TOK_TEXTURE_DEF;
+}
+
+texture_id {
+    return TOK_TEXTURE_ID;
+}
+
+texture_src {
+    return TOK_TEXTURE_SRC;
+}
+
+texture_file {
+    return TOK_TEXTURE_FILE;
+}
+
+texture_table {
+    return TOK_TEXTURE_TABLE;
+}
+
+texture_table_size {
+    return TOK_TEXTURE_TABLE_SIZE;
+}
+
+texture_table_data {
+    return TOK_TEXTURE_TABLE_DATA;
+}
+
+
+
+
+geom_pass {
+    return TOK_GEOM_PASS;
+}
+
+quad_geom_pass {
+    return TOK_QUAD_GEOM_PASS;
+}
+
+copy_pass {
+    return TOK_COPY_PASS;
+}
+
+copy_to_tex_pass {
+    return TOK_COPY_TO_TEX_PASS;
+}
+
+copy_from_tex_pass {
+    return TOK_COPY_FROM_TEX_PASS;
+}
+
+accum_pass {
+    return TOK_ACCUM_PASS;
+}
+
+
+disable {
+    return TOK_DISABLE;
+}
+
+
+accum {
+    return TOK_ACCUM;
+}
+
+accum_op {
+    return TOK_ACCUM_OP;
+}
+
+accum_val {
+    return TOK_ACCUM_VAL;
+}
+
+
+
+
+alpha_test {
+    return TOK_ALPHA_TEST;
+}
+
+alpha_test_func {
+    return TOK_ALPHA_TEST_FUNC;
+}
+
+alpha_test_ref {
+    return TOK_ALPHA_TEST_REF;
+}
+
+
+
+
+blend {
+    return TOK_BLEND;
+}
+
+blend_eqn {
+    return TOK_BLEND_EQN;
+}
+
+blend_src {
+    return TOK_BLEND_SRC;
+}
+
+blend_dst {
+    return TOK_BLEND_DST;
+}
+
+blend_color {
+    return TOK_BLEND_COLOR;
+}
+
+
+
+
+color {
+    return TOK_COLOR;
+}
+
+color_data {
+    return TOK_COLOR_DATA;
+}
+
+
+
+
+color_mask {
+    return TOK_COLOR_MASK;
+}
+
+color_mask_data {
+    return TOK_COLOR_MASK_DATA;
+}
+
+
+
+
+color_matrix {
+    return TOK_COLOR_MATRIX;
+}
+
+
+
+
+depth_test {
+    return TOK_DEPTH_TEST;
+}
+
+depth_test_func {
+    return TOK_DEPTH_TEST_FUNC;
+}
+
+
+
+
+lights {
+    return TOK_LIGHTS;
+}
+
+light {
+    return TOK_LIGHT;
+}
+
+light_number {
+    return TOK_LIGHT_NUMBER;
+}
+
+light_matrix {
+    return TOK_LIGHT_MATRIX;
+};
+
+light_position {
+    return TOK_LIGHT_POSITION;
+}
+
+spot_light_cone {
+    return TOK_SPOT_LIGHT_CONE;
+}
+
+spot_light_exponent {
+    return TOK_SPOT_LIGHT_EXPONENT;
+}
+
+spot_light_cutoff {
+    return TOK_SPOT_LIGHT_CUTOFF;
+}
+
+light_ambient {
+    return TOK_LIGHT_AMBIENT;
+}
+
+light_diffuse {
+    return TOK_LIGHT_DIFFUSE;
+}
+
+light_specular {
+    return TOK_LIGHT_SPECULAR;
+}
+
+light_attenuation {
+    return TOK_LIGHT_ATTENUATION;
+}
+
+light_constant_attenuation {
+    return TOK_LIGHT_ATTENUATION_CONSTANT;
+}
+
+light_linear_attenuation {
+    return TOK_LIGHT_ATTENUATION_LINEAR;
+}
+
+light_quadratic_attenuation {
+    return TOK_LIGHT_ATTENUATION_QUADRATIC;
+}
+
+
+
+
+material {
+    return TOK_MATERIAL;
+}
+
+material_emission {
+    return TOK_MATERIAL_EMISSION;
+}
+
+material_ambient {
+    return TOK_MATERIAL_AMBIENT;
+}
+
+material_diffuse {
+    return TOK_MATERIAL_DIFFUSE;
+}
+
+material_specular {
+    return TOK_MATERIAL_SPECULAR;
+}
+
+material_shininess {
+    return TOK_MATERIAL_SHININESS;
+}
+
+
+
+
+matrix_data {
+    return TOK_MATRIX_DATA;
+}
+
+
+
+
+pixel_bias {
+    return TOK_PIXEL_BIAS;
+}
+
+pixel_bias_data {
+    return TOK_PIXEL_BIAS_DATA;
+}
+
+
+
+
+pixel_scale {
+    return TOK_PIXEL_SCALE;
+}
+
+pixel_scale_data {
+    return TOK_PIXEL_SCALE_DATA;
+}
+
+
+
+
+pixmaps {
+    return TOK_PIXMAPS;
+}
+
+pixmap {
+    return TOK_PIXMAP;
+}
+
+pixmap_component {
+    return TOK_PIXMAP_COMPONENT;
+}
+
+pixmap_size {
+    return TOK_PIXMAP_SIZE;
+}
+
+pixmap_data {
+    return TOK_PIXMAP_DATA;
+}
+
+
+
+
+shade_model {
+    return TOK_SHADE_MODEL;
+}
+
+shade_model_mode {
+    return TOK_SHADE_MODEL_MODE;
+}
+
+
+
+
+stencil_test {
+    return TOK_STENCIL_TEST;
+}
+
+stencil_test_func {
+    return TOK_STENCIL_TEST_FUNC;
+}
+
+stencil_test_ref {
+    return TOK_STENCIL_TEST_REF;
+}
+
+stencil_test_mask {
+    return TOK_STENCIL_TEST_MSK;
+}
+
+stencil_test_sfail {
+    return TOK_STENCIL_TEST_SFAIL;
+}
+
+stencil_test_zfail {
+    return TOK_STENCIL_TEST_ZFAIL;
+}
+
+stencil_test_zpass {
+    return TOK_STENCIL_TEST_ZPASS;
+}
+
+stencil_test_wmask {
+    return TOK_STENCIL_TEST_WMASK;
+}
+
+
+
+
+texenv {
+    return TOK_TEXENV;
+}
+
+texenv_mode {
+    return TOK_TEXENV_MODE;
+}
+
+texenv_color {
+    return TOK_TEXENV_COLOR;
+}
+
+
+
+
+texgens {
+    return TOK_TEXGENS;
+}
+
+texgen {
+    return TOK_TEXGEN;
+}
+
+texgen_coord {
+    return TOK_TEXGEN_COORD;
+}
+
+texgen_mode {
+    return TOK_TEXGEN_MODE;
+}
+
+texgen_plane {
+    return TOK_TEXGEN_PLANE;
+}
+
+
+
+
+texture {
+    return TOK_TEXTURE;
+}
+
+
+
+
+texture_matrix {
+    return TOK_TEXTURE_MATRIX;
+}
+
+
+.   __pfdLoadShader_error("Unrecognized token");
+
+%%
+
+int __pfdLoadShader_wrap(void) {
+    return 1;
+}

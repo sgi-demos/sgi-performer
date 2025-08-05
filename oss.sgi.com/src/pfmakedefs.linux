@@ -1,0 +1,169 @@
+#-------------------------------------------------------------------#
+#-- pfmakedefs - Common make definitiond for performer source     --#
+#--		 example source.				  --#
+#-------------------------------------------------------------------#
+#-- RCS version information					  --#
+#--   $Revision: 1.1 $						  --#
+#--   $Date: 2000/11/21 21:39:32 $				  --#
+#-------------------------------------------------------------------#
+
+#--
+#--	definitions
+#--
+
+LIBBITSUF=
+PFABI=I386
+PFRELEASE:=$(shell uname -s)
+
+###include $(ROOT)/usr/include/make/commondefs
+
+BISON       = $(TOOLROOT)/usr/bin/bison
+CC      = $(TOOLROOT)/usr/bin/gcc
+CPP     = $(CC) -E
+CXX     = $(TOOLROOT)/usr/bin/g++
+FLEX        = $(TOOLROOT)/usr/bin/flex
+LD      = $(TOOLROOT)/usr/bin/ld
+LEX     = $(FLEX)
+RM      = rm -f
+YACC        = $(TOOLROOT)/usr/bin/yacc
+RPM     = $(TOOLROOT)/bin/rpm
+TAR     = $(TOOLROOT)/bin/tar
+
+BISONF      = $(BISON) $(YFLAGS)
+CCF     = $(CC) $(CFLAGS)
+CXXF        = $(CXX) $(CXXFLAGS)
+FLEXF       = $(FLEX) $(LFLAGS)
+LDF     = $(LD) $(LDFLAGS)
+LEXF        = $(LEX) $(LFLAGS)
+YACCF       = $(YACC) $(YFLAGS)
+RPMF        = $(RPM) $(RPMFLAGS)
+
+CC_WARN_LEVEL   =
+CC_OPTIMIZER    = -O3 -ffast-math -mpentiumpro
+CC_DEPOPTS  = -MD
+CC_INCDIR   = $(ROOT)/usr/include
+
+GCOPTS  = $(CC_OPTIMIZER) $(CC_WARN_LEVEL) $(CC_DEPOPTS)
+GCDEFS  =
+ifdef ROOT
+GCINCS  = -nostdinc -I$(CC_INCDIR) -I..
+else
+GCINCS  = -I..
+endif
+
+CFLAGS  = $(COPTS) $(CDEFS) $(CINCS)
+CDEFS   = $(GCDEFS) $(ICDEFS) $(LCDEFS) $(VCDEFS)
+COPTS   = $(GCOPTS) $(ICOPTS) $(LCOPTS) $(VCOPTS)
+CINCS   = $(GCINCS) $(ICINCS) $(LCINCS) $(VCINCS)
+
+GCXXOPTS    = $(CC_OPTIMIZER) $(CC_WARN_LEVEL) $(CC_DEPOPTS)
+GCXXDEFS    =
+ifdef ROOT
+GCXXINCS    = -nostdinc -I$(CC_INCDIR) -I$(CC_INCDIR)/g++
+else
+GCXXINCS    = -I$(CC_INCDIR)/g++
+endif
+
+CXXFLAGS    = $(CXXOPTS) $(CXXDEFS) $(CXXINCS)
+CXXDEFS = $(GCXXDEFS) $(ICXXDEFS) $(LCXXDEFS) $(VCXXDEFS)
+CXXOPTS = $(GCXXOPTS) $(ICXXOPTS) $(LCXXOPTS) $(VCXXOPTS)
+CXXINCS = $(VCXXINCS) $(LCXXINCS) $(ICXXINCS) $(GCXXINCS)
+
+# Linker flags
+
+ifdef ROOT
+GLDOPTS = -nostdlib -L$(ROOT)/lib -L$(ROOT)/usr/lib
+else
+GLDOPTS = 
+endif
+GLDLIBS =
+
+LDFLAGS = $(LDOPTS) $(LDLIBS)
+LDOPTS  = $(GLDOPTS) $(ILDOPTS) $(LLDOPTS) $(VLDOPTS)
+LDLIBS  = $(VLDLIBS) $(LLDLIBS) $(ILDLIBS) $(GLDLIBS)
+
+SOURCES = $(HFILES) $(ASFILES) $(CXXFILES) $(CFILES) $(FFILES) \
+          $(LFILES) $(SHFILES) $(YFILES) $(PLFILES) $(PMFILES) \
+          $(POFILES) $(LSOURCES) $(MKFILE)
+
+OBJECTS = $(ASFILES:.s=.o) \
+          $(_CPFFILES:.C=.o) \
+          $(_CXXFILES:.cxx=.o) \
+          $(_CCFILES:.cc=.o) \
+          $(_CPPFILES:.cpp=.o) \
+          $(_C++FILES:.c++=.o) \
+          $(CFILES:.c=.o) \
+          $(FFILES:.f=.o) \
+          $(LFILES:.l=.o) \
+          $(YFILES:.y=.o)
+
+MKFILE = GNUmakefile
+
+_CPPFILES = $(filter %.cpp, $(CXXFILES))
+_CPFFILES = $(filter %.C, $(CXXFILES))
+_CXXFILES = $(filter %.cxx, $(CXXFILES))
+_CCFILES  = $(filter %.cc, $(CXXFILES))
+_C++FILES = $(filter %.c++, $(CXXFILES))
+
+
+###end commondefs
+
+ifdef OPTIMIZER
+CC_OPTIMIZER = $(OPTIMIZER)
+endif
+
+LCINCS = -I$(PFROOT)/usr/include
+LCXXINCS = -I$(PFROOT)/usr/include
+LCDEFS = -D$(PFABI) -D$(PFRELEASE) $(GLDEFS) 
+LCXXDEFS = -D$(PFABI) -D$(PFRELEASE) $(GLDEFS) 
+LCOPTS =  
+LCXXOPTS =  
+
+
+# Use cc to link by default.
+# Directories of C++ programs should redefine LINKERF = $(CXXF)
+LINKERF = $(CCF)
+
+# Performer 2.4 for Linux DSO version number is 1
+DSOVERSION = 1
+DSOVERSIONOPT = -soname $@
+
+DSOLINKS = \
+        -L$(PFROOT)/usr/lib$(LIBBITSUF) \
+        -L$(PFROOT)/usr/lib$(LIBBITSUF)/libpfdb \
+        -L$(PFROOT)/lib$(LIBBITSUF)
+
+DDSOLINKS = \
+	-L$(PFROOT)/usr/lib$(LIBBITSUF)/Performer/Debug \
+	-L$(PFROOT)/usr/lib$(LIBBITSUF)/Performer/Debug/libpfdb \
+	-L$(PFROOT)/lib$(LIBBITSUF)
+
+DBGLINKS = \
+	-L$(PFROOT)/usr/lib$(LIBBITSUF)/Performer/DebugStatic \
+	-L$(PFROOT)/usr/lib$(LIBBITSUF)/Performer/DebugStatic/libpfdb \
+	-L$(PFROOT)/lib$(LIBBITSUF)
+
+OPTLINKS = \
+	-L$(PFROOT)/usr/lib$(LIBBITSUF)/Performer/Static \
+	-L$(PFROOT)/usr/lib$(LIBBITSUF)/Performer/Static/libpfdb \
+	-L$(PFROOT)/lib$(LIBBITSUF)
+
+PFLIB = -lpfdu -lpfutil -lpfdu -lpfui -lpf 
+
+ifdef $(PFSTATIC_CONVERTERS)
+     PFLIB += $(PFSTATIC_CONVERTERS) 
+endif
+
+LIBGL  = -L/usr/X11R6/lib -lGLU -lGL -lXext 
+
+ifeq ($(NEED_MOTIF_LIBS), 1)
+    MOTIF = -lGLw -lXm -lXt -lXp -lXpm
+endif
+
+SYSTEM = \
+	${LIBGL} \
+	${MOTIF} \
+	-lXmu \
+	-lX11 \
+	-lm \
+	-ldl

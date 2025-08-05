@@ -1,0 +1,150 @@
+Asdfly is a demo program (a variant of perfly) that demonstrates the
+Active Surface Definition library. See the Performer relnotes
+describing libpfs for more details.
+
+To run asdfly:
+
+1. install performer_eoe.sw.asddata
+
+    It installs the data and configuration files needed by asdfly. The data
+    is installed in /usr/share/Performer/data/asddata.
+
+2. Run an asdfly run_* script to see a demo
+
+    Three run_* scripts are provided to run asdfly on the installed data sets:
+	run_simple - uses a simple example data set
+	run_multi - gives a more interesting demo
+	run_multiclip - gives a full ASD terrain demo complete with clipmapping 
+
+    As asdfly is derived from perfly, you should refer to the perfly man page for
+    more information on the command line options and basic user interface.
+
+More details about running asdfly and the contents of these scripts are described below:
+
+o Running asdfly with a config file.
+
+    The asdfly program expects a configuration file argument. Three
+    sample configuration files are supplied for you to try. For
+    your convenience, these files are also located in the
+    /usr/share/Performer/data/asddata directory.
+
+
+    a) Simple demo data "simple.config"
+       To see the simple demo program, run:
+
+	% asdfly simple.config
+
+	Contents of simple.config:
+	    0
+	    /usr/share/Performer/data/asddata/simple.asd
+	    3 
+
+	Note: The value three can be any value between 1 and 5
+
+
+    b) MultiGen demo data "multi.config"
+	    To see the MultiGen demo data (produced by MultiGen's
+	    Continuous Adaptive Terrain (CAT) tools), run:
+
+	% asdfly multi.config
+
+	Contents of multi.config:
+	    0 
+	    /usr/share/Performer/data/asddata/mesh.evt
+
+
+    c) MultiGen demo data with clipmapping
+	    To see the MultiGen demo data (produced by MultiGen's
+	    Continuous Adaptive Terrain (CAT) tools) WITH clipmap texture,
+	    run:
+
+	% asdfly multiclip.config
+
+
+	Contents of multiclip.config
+	    1
+	    /usr/share/Performer/data/asddata/mesh.evt
+
+
+o The PFASDDATA environment variable:
+
+    The provided sample run_* scripts set PFASDDATA to the normal location
+    for the installed data:
+	/usr/share/Performer/data/asddata/
+
+    To run asdfly on a different data set you can set this environment variable
+    to point to the appropriate location.
+    Set the environment variable PFASDDATA to match the directory path to
+    the asddata directory. Terminate the pathname with a trailing forward
+    slash (/).  This variable is used by the clip texture configuration
+    files.
+
+    For example, if Performer is installed in the default location
+    /usr/share:
+    % setenv PFASDDATA /usr/share/Performer/data/asddata/
+
+
+    Note: The asddata configuration files are set up so that you don't need to
+    set PFASDDATA if you run asdfly in the asddata directory. If you try
+    to run in any other directory without PFASDDATA properly set, the
+    clip texture config files won't find the data, and "asdfly multiclip.config"
+    won't work.
+
+What is in asdfly:
+
+The file "pfuterrain.c" gives two examples to show how
+pfTerrain can be used: terrainNode() and terrainMultNode().
+terrainNode creates a pfGroup that has APP, CULL callbacks set up.
+It evaluates the terrain once per frame, with about half of the work
+done in APP callback and the rest of the work done in CULL callback.
+Cyclebuffers are used to shift the buffers between processes.
+The pfGroup has one pfSwitch node as a child. The value of the switch
+node is equal to the index of the current cyclebuffer for the CULL 
+process, and the value is set by the CULL callback.
+The pfSwitch has several geodes that hold the generated terrain
+geosets.
+The advantage of this arrangement is short lag and tight culling,
+however the frame rate is directly affected by terrain evaluation.
+
+terrainMultNode evaluates the terrain in multiple passes in the APP 
+process. In this particular example, terrain is evaluated once
+every numpasses(e.g. 4) frames. A pfGroup node is created with the
+APP, CULL callbacks. The output geoset is double buffered 
+between APP and CULL. 
+The advange of this approach is that the frame rate is higher than
+the terrainNode, but user needs to adjust the culling polytope
+according to the flying speed and frame rate.
+In this example, we enlarge the FOV by about 8 degrees and bring
+in the near clip plane by 20%.
+
+We adjust several variables in the APP callback:
+detail LodRanges, maximum LOD evaluated, and load balance ratio.
+They are carried over to APP callback via ViewState variable.
+User should plug in his/her own controls.
+
+In general, terrainNode() or terrainMultNode() can be called to
+add a node with terrain in a Performer scene graph.
+The file terrain.c shows how the terrain is plugged into
+the perfly. It also shows how you can create a 2nd channel to
+view the terrain.
+
+You are welcome to play with the sliders. Turn on and off
+the scribed mode to see the terrain change. 
+Notice, when you fly at a low speed, terrain morphing is
+not very visible.
+
+
+Credits and Caveats:
+
+The "mesh.evt" database is provided by MultiGen Inc for the sole
+purposes of demonstration and may not be distributed, duplicated, sold
+or otherwise used for profit except with the permission of MultiGen
+Inc, Suite 500, 550 Winchester Blvd South, San Jose, California 95128
+USA
+
+Note that the ".evt" and ".asd" files are in temporary file formats for
+demonstration purposes only.  Alternate "official" file formats will be
+defined and supported by the software vendors, such as MultiGen, in
+their tools for constructing IRIS Performer Active Surface Definition
+data.
+

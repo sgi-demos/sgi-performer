@@ -1,0 +1,100 @@
+		.pfb Performer Fast Binary File Format
+
+The .pfb file format was designed with load speed in mind.  For example
+Performer town converted to this format loads in 2.8 seconds on a 200 Mhz
+Indigo2 IMPACT, and skiff_o.stla after conversion loads at the rate of
+190,000 primitives a second.  An added benefit is that .pfb files tend
+to be around half the size of their pre converted form.
+
+Here is the api for the .pfb format.
+
+pfNode* pfdLoadFile_pfb(const char *fileName);
+int     pfdStoreFile_pfb(pfNode *root, const char *fileName);
+void    pfdConverterMode_pfb(int mode, int value);
+int     pfdGetConverterMode_pfb(int mode);
+void    pfdConverterVal_pfb(int which, float val);
+float   pfdGetConverterVal_pfb(int which);
+void    pfdConverterAttr_pfb(int which, void *attr);
+void*   pfdGetConverterAttr_pfb(int which);
+
+All of these can of course be accessed through their standard libpfdu
+conterparts.
+
+Here are some things you should take not of when using the format.
+
+ - When saving textures pfdStoreFile_pfb() checks to see if it can find a
+   file matching the texture name.  If it does it will not save an image
+   for this texture and pfdLoadFile_pfb() will get the image by reading the
+   image file.  If it can't find a matching file it will save the whole 
+   image.  pfdStoreFile_pfb() can be forced to save all texture images
+   by setting the PFPFB_SAVE_TEXTURE_IMAGE mode to PF_ON.
+
+ - By default just the name of a texture file is saved and not the full
+   path of the texture file.  If you want the full path saved you should
+   set the PFPFB_SAVE_TEXTURE_PATH mode to PF_ON.
+
+ - By default pfdLoadFile_pfb() will share the following objects when
+   multiple files are loaded:
+	pfGeoState
+	pfTexture
+	pfMaterial
+	pfLightModel
+	pfLight
+	pfTexEnv
+	pfFog
+	pfTexGen
+	pfColortable
+	pfHighlight
+   This sharing can be stopped by setting the PFPFB_SHARE_GS_OBJECTS mode
+   to PF_OFF.
+   
+ - pfFonts are not currently shared.  This means that loading multiple
+   files with the same pfFont will result in a copy of that pfFont for
+   each file loaded.
+
+ - pfUserData is only saved if it is allocated with pfMalloc().  This is
+   because it is only through pfGetSize that the size of the user data
+   can be known.
+
+ - The .pfb format is designed to be GL independent.  However Performer
+   currently defines some of its constants with GL defines.  Since each
+   GL does not support some modes multiple performer constants get defined
+   to the same GL constant.  This means that pfdStoreFile_pfb() gets
+   one of these constants from the Performer scene graph it has no way
+   of knowing which Performer constant was intended.  It has to guess.
+
+ - A second GL independence issue is texture images.  Texture images
+   have a different format between the two GLs.  The format of the
+   image is saved in the .pfb file and if different will be converted
+   on loading but this will take extra time.  This is only an issue
+   if you are saving texture images in your pfb file.  See above about
+   texture image saving and PFPFB_SAVE_TEXTURE_IMAGE.
+
+ - The above to items mean that in most cases you do not need separate
+   IrisGL and OpenGL versions of your .pfb files, but that in a few cases
+   you might want them.
+
+ - The .pfb format is designed for backwards compatibility with future
+   versions of Performer.  This means you will not have to reconvert
+   your data when you get a new Performer version.
+
+
+				PFCONV
+
+
+A new utility called pfconv is also provided.  It will convert from
+any format for which Performer has a loader to any format for which
+Performer has a storer.  An example of it's usage would be:
+
+	pfconv town.flt town.pfb
+
+The source to pfconv can be found is
+
+	/usr/share/Performer/src/pguide/libpf/C/pfconv.c
+
+pfconv does a pfFlatten() and pfdCleanTree() after loading from the old
+format and before storing to the new.  You should edit pfconv.c if 
+this behavior is not good for your data.
+
+
+Rob Mace
