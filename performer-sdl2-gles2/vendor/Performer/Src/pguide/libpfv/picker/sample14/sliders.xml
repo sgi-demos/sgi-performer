@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<main>
+
+	<sliderRED>
+		<pos>0.01,0.15,0.09,0.12</pos>
+		<value>0.5</value>
+		<onColor>1.0,0.0,0.0,1.0</onColor>
+		<offColor>0.5,0.0,0.0,0.5</offColor>
+	</sliderRED>
+
+	<sliderGREEN>
+		<pos>0.01,0.15,0.05,0.08</pos>
+		<value>0.2</value>
+		<onColor>0.0,1.0,0.0,1.0</onColor>
+		<offColor>0.0,0.5,0.0,0.5</offColor>
+	</sliderGREEN>
+
+	<sliderBLUE>
+		<pos>0.01,0.15,0.01,0.04</pos>
+		<value>0.2</value>
+		<onColor>0.0,0.0,1.0,1.0</onColor>
+		<offColor>0.0,0.0,0.5,0.5</offColor>
+	</sliderBLUE>
+
+			
+</main>
+
+
+

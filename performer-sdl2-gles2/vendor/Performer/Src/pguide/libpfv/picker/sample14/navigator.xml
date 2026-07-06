@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<navigator>
+	<default_xyz>0.0,-10.0,3.0</default_xyz>
+	<default_hpr>15.0,-15.0,0.0</default_hpr>
+	<deltaH>0.1</deltaH>	
+	<deltaP>0.1</deltaP>
+	<initSpeed>0.005</initSpeed>
+	<minSpeed>0.001</minSpeed>
+	<maxSpeed>0.1</maxSpeed>
+	<deltaSpeed>1.04</deltaSpeed>
+	<deltaStrafe>0.04</deltaStrafe>
+	<deltaZ>0.04</deltaZ>
+	<dzone>0.3,0.3</dzone>
+</navigator>
+
+
+

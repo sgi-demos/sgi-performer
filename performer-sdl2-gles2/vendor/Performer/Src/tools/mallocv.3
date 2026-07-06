@@ -1,0 +1,160 @@
+.\" mallocv.3
+.TH MALLOCV 3 "19 March 1990"
+.SH NAME
+mallocv, mallocl, mallocv_space_needed, mallocl_space_needed
+\- allocate a multidimensional array
+.SH SYNOPSIS
+.nf
+.ft B
+char *mallocv(elsize, ndims, dims)
+int elsize, ndims, dims[];
+.LP
+.ft B
+char *mallocl(elsize, ndims, dim1, dim2, ..., dimn)
+int elsize, ndims, dim1, dim2, ..., dimn;
+.LP
+.ft B
+int mallocv_space_needed(elsize, ndims, dims)
+int elsize, ndims, dims[];
+.LP
+.ft B
+int mallocl_space_needed(elsize, ndims, dim1, dim2, ..., dimn)
+int elsize, ndims, dim1, dim2, ..., dimn;
+.ft R
+.fi
+.SH DESCRIPTION
+These routines implement an allocator for "multi-dimensional arrays"
+with number and values of the dimensions unknown at compile time.
+Actually these are multiple-indirection pointers, but they are convenient
+because they are referenced in a C program like multidimensional arrays.
+.LP
+.B Mallocv(\|)
+and
+.B mallocl(\|)
+each make a single call to
+.BR malloc (3),
+and return a
+.B char *
+which should be typecast into the desired pointer type.
+The pointer returned can be freed using the function
+.BR free (3).
+.LP
+The total number of bytes needed to be
+.BR malloc(\|) ed
+for given dimensions can be obtained by calling
+.B mallocv_space_needed(\|)
+or
+.BR mallocl_space_needed(\|) .
+.LP
+.B Ndims
+must be at least 1.
+Arrays are allowed to have length 0 in one or more dimensions,
+in which case an array of pointers will be
+allocated so that any sensible expression can be used.
+For example, if
+.B array
+is allocated with dimensions {2,2,0,2}, then the expressions
+.B array[0]
+and
+.B array[1][1]
+are valid, but
+.B array[0][0][0]
+is not, since it refers to an element out of the bounds of the array.
+.LP
+To avoid special cases, a successful call to
+.B mallocv
+always returns a valid pointer which can be freed using
+.BR free(\|) .
+(This is in contrast with the call
+.BR  malloc(0) ,
+which on some systems returns
+.SM NULL,
+which it is an error to attempt to free).
+.LP
+Since it is usually faster to follow pointers than
+to compute indices by multiplying, using
+.B mallocv
+can be a good idea even when the dimensions of an array
+are known at compile time.
+.SH EXAMPLES
+To get something that acts like
+.LP
+.nf
+.ft B
+.if t .ps -1
+.if t .vs -1
+	struct foo ptr[length][width][height][depth];
+.if t .vs
+.if t .ps
+.ft R
+.fi
+.LP
+use the following:
+.LP
+.nf
+.ft B
+.if t .ps -1
+.if t .vs -1
+	struct foo ****ptr;
+	ptr = (struct foo ****)
+		mallocl(sizeof(struct foo), 4, length, width, height, depth);
+.if t .vs
+.if t .ps
+.ft R
+.fi
+.LP
+or equivalently:
+.LP
+.nf
+.ft B
+.if t .ps -1
+.if t .vs -1
+	int dims[] = {length, width, height, depth};
+	struct foo ****ptr;
+	ptr = (struct foo ****) mallocv(sizeof(struct foo), 4, dims);
+.if t .vs
+.if t .ps
+.ft R
+.fi
+.LP
+Error checking would then be done as follows:
+.LP
+.nf
+.ft B
+.if t .ps -1
+.if t .vs -1
+	if (!ptr) {
+		fprintf(stderr, "malloc %d:",
+			mallocv_space_needed(sizeof(struct foo), 4, dims));
+		perror("");
+	}
+.if t .vs
+.if t .ps
+.ft R
+.fi
+.LP
+.SH "SEE ALSO"
+.BR malloc (3)
+.SH DIAGNOSTICS
+.B mallocl
+and
+.B mallocv
+return
+.SM NULL
+and set
+.B errno
+if not enough space is available or arguments are invalid.
+.LP
+.B mallocl_space_needed
+and
+.B mallocv_space_needed
+return -1
+and set
+.B errno
+if they are passed invalid arguments.
+.SH BUGS
+The number of dimensions is limited to 128 for
+.B mallocl
+(there is no
+limit for
+.BR mallocv ).

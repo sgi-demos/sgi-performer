@@ -1,0 +1,9 @@
+Performer Town Database
+
+The file town.pfb contains everything in the town database except 
+for the textures, which are in separate image files.  To run perfly
+with this database, type:
+
+	RUNTOWN.sh
+
+

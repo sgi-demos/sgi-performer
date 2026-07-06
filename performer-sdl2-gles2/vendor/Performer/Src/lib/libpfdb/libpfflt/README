@@ -1,0 +1,36 @@
+This README concerns loaders for Flight and OpenFlight (TM) databases.
+
+/usr/share/Performer/lib/libpfflt.a is a loader for Flight Version 13 
+databases.  It is used by /usr/share/Performer/bin/perfly.
+
+Software Systems very recently released an OpenFlight (TM) Version 14
+loader.  This loader can be found in /usr/share/Performer/lib/libpfflt14.a.
+A perfly executable using Version 14 can be found in
+/usr/share/Performer/bin/perfly.flt14.
+
+The two libraries libpfflt.a and libpfflt14.a can be used
+interchangeably when linking applications.  In each case, LoadFlt() is
+the routine which loads a database.  The sample Makefiles link with
+the Flight Version 13 loader.  This can be changed by adding a line
+to the top of the makefile:
+
+	FLTVER=14
+
+or by specifying this on the make command line, e.g:
+
+	make FLTVER=14 dbg
+
+To request more information about these loaders, contact Software
+Systems at (408) 247-4326.  The files README.V13 and README.V14
+provided by Software Systems describe the Version 13 and 14 loaders.
+
+A loader for Version 11 Flight format is included in libpfsgi.  Source
+code can be found in /usr/share/Performer/src/libpfsgi.
+
+
+Viewers:	/usr/share/Performer/bin/perfly.flt14	V14
+		/usr/share/Performer/bin/perfly		V13
+
+Libraries:	/usr/share/Performer/lib/libpfflt14.a	V14
+		/usr/share/Performer/lib/libpfflt.a	V13
+		/usr/share/Performer/lib/libpfsgi.a	V11

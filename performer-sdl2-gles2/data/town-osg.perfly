@@ -1,0 +1,71 @@
+#
+# data/town-osg.perfly - repo-local copy of the shipped town.perfly for the
+# pfosg shim: starts in DRIVE mode at the street-level Default position
+# (tether needs pfuPath vehicle animation, not yet implemented).
+# Run from the repo root:  ./build/apps/perfly/perfly data/town-osg.perfly
+#
+cmdline -d
+# town.perfly - perfly config file for town demo
+#
+# This configuration file format is subject to radical change!
+#
+
+#
+# Options that could also be specified as command-line args to perfly...
+#
+#cmdline -N		# Assign non-degrading priorities to Performer processes
+#cmdline -L		# Free then Lock down processes (requires root ID)
+cmdline -E tag  	# Earth sky mode -> tag clear
+cmdline -l 2		# Set lighting enable -> lighting sky
+#cmdline -2		# Tether
+cmdline -p 2500,2500,2 -e 0,-0.10,0	# Initial view position and angle
+cmdline -g 1		# GUI format -> GUI_VERTICAL
+cmdline -F .:data/town	# self-contained demo data (repo-relative)
+#cmdline -2	# tether disabled: pfuPath not yet implemented in pfosg		# Tether
+cmdline -v 0		# GUI format -> GUI_VERTICAL
+cmdline town_ogl_pfi.pfb	# Model
+
+#
+# Items for the "Reposition" menu, each with its x,y,z, h,p,r.
+# Note that if a position (-p) or view angle (-e) is specified
+# on the command line or via the "cmdline" command above,
+# an additional menu item "Default" will appear on the menu.
+# In any case, if the menu ends up with one item,
+# it will appear as a button instead.
+#
+loc "Downtown center"           2465.0 2511.8 2.0       -92.0 0.0 0.0
+loc "North town entrance"       2497.0 2929.0 2.0       177.0 0.0 0.0
+loc "South town entrance"       2500.0 1940.0 2.0       0.0 0.0 0.0
+loc "Country 1"                 2221.0 1024.0 2.0       -98.0 0.0 0.0
+loc "Country 2"                 2904.0 4283.0 2.0       93.0 0.0 0.0
+loc "River"                     3668.0 4114.0 3.0       163.0 0.0 0.0
+loc "Detail Texture"            2494.0 2576.2 2.0	-43.4 0.0 0.0
+
+#
+# Vehicles moving in paths in the scene.
+# The format of the vehicle command is:
+#	vehicle <name> <model file> <pfuPath file> [x y z [h p r [scale]]]
+# The optional float args x,y,z,h,p,r,scale can be used to transform
+# the model into the standard vehicle orientation.
+#
+vehicle "Esprit" esprit.pfb city.path  0. 0. 0.5  0. 0. 0.  1.6
+vehicle "Truck"      truck.pfb city2.path
+#vehicle "Flintstones" flint.pfb  city2.path   0. 0. 1.    90. 0. 0.   .05
+vehicle "Blimp" perfBlimp.pfb blimp.path
+vehicle "Rocket Tux" rocket_tux.pfb tour.path  0. 0. 100.   90. 40. 0.   10.
+
+#
+# Tether views-- selectable via a menu, these specify
+# an additional transformation to be preconcatenated to the
+# view matrix when in tether mode.
+# The format of the tetherview command is:
+#	tetherview "Name" [x y z [h p r]]
+#
+tetherview "Inside"	0. 5. 2.
+tetherview "Behind"	0. -40. 7.
+#tetherview "Left"	0. 0. 2.	 90. 0. 0.
+#tetherview "Right"	0. 0. 2.	-90. 0. 0.
+tetherview "Back"	0. 0. 2.	180. 0. 0.
+tetherview "Down"	0. 0. 0.	0. -90. 0.
+tetherview "Under" 	# no additional transformation
+tetherview "From Above" 0. 0. 400.	0. -90. 0.

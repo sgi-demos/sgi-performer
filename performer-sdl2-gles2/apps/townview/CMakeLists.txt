@@ -1,0 +1,5 @@
+add_executable(townview main.cpp)
+target_link_libraries(townview PRIVATE pfb2osg SDL2::SDL2)
+if(APPLE)
+    target_link_libraries(townview PRIVATE "-framework OpenGL")
+endif()

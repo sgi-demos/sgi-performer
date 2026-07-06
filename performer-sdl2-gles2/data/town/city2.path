@@ -1,0 +1,29 @@
+# file: city.path
+# $Revision: 1.1 $
+# $Date: 1996/05/15 06:34:15 $
+
+# This file is a path for use in perfly. For example:
+#    perfly -A esprit.flt,city.path,Lotus 002_002.flt
+#
+
+speed 13 1000
+
+line 2548 2295 0 2589 2295 0
+fillet 12
+line 2589 2295 0 2589 2482 0
+fillet 20
+line 2589 2482 0 2604 2497 0
+fillet 20
+line 2604 2497 0 2604 2704 0
+fillet 12
+line 2604 2704 0 2296 2704 0
+fillet 55
+line 2296 2704 0 2296 2504 0
+fillet 9
+line 2296 2504 0 2195 2504 0
+fillet 12
+line 2195 2504 0 2195 2295 0
+fillet 56
+line 2195 2295 0 2548 2295 0
+
+close

@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+
+<tvset>
+
+	<on>0</on>
+
+	<screenWidth>4.0</screenWidth>
+	<screenAR>1.5</screenAR>
+	<border>0.1</border>
+	<depth>0.4</depth>
+	<btnAR>1.0</btnAR>
+	<btnGapRatio>2</btnGapRatio>
+		
+	<texture>/usr/share/Performer/data/pfgroup.rgb</texture>
+	<texture>/usr/share/Performer/data/iris.rgb</texture>
+	<texture>/usr/share/Performer/data/logo.512.rgb</texture>
+	<texture>/usr/share/Performer/data/henry.rgb</texture>
+	
+	<curChan>0</curChan>
+			
+</tvset>
+
+
+

@@ -1,0 +1,27 @@
+# file: sky.path
+# $Revision: 1.1 $
+# $Date: 1996/05/15 06:34:10 $
+
+# This file is a path for use in perfly. For example:
+#    perfly -A blimp.flt,blimp.path,Blimp 002_002.flt
+#
+
+speed -5 1000
+
+line 2312 2407 100 2312 2307 100
+fillet 90
+line 2312 2307 100 2482 2292 100
+fillet 90
+line 2482 2292 100 2749 2192 100
+fillet 90
+line 2749 2192 100 2947 2587 100
+fillet 90
+line 2947 2587 100 2507 2928 100
+fillet 90
+line 2507 2928 100 2484 2710 100
+fillet 90
+line 2484 2710 100 2312 2507 100
+fillet 50
+line 2312 2507 100 2312 2407 100
+
+close

@@ -1,0 +1,743 @@
+/*
+ * Copyright 1996, Silicon Graphics, Inc.
+ * ALL RIGHTS RESERVED
+ *
+ * This source code ("Source Code") was originally derived from a
+ * code base owned by Silicon Graphics, Inc. ("SGI")
+ * 
+ * LICENSE: SGI grants the user ("Licensee") permission to reproduce,
+ * distribute, and create derivative works from this Source Code,
+ * provided that: (1) the user reproduces this entire notice within
+ * both source and binary format redistributions and any accompanying
+ * materials such as documentation in printed or electronic format;
+ * (2) the Source Code is not to be used, or ported or modified for
+ * use, except in conjunction with OpenGL Performer; and (3) the
+ * names of Silicon Graphics, Inc.  and SGI may not be used in any
+ * advertising or publicity relating to the Source Code without the
+ * prior written permission of SGI.  No further license or permission
+ * may be inferred or deemed or construed to exist with regard to the
+ * Source Code or the code base of which it forms a part. All rights
+ * not expressly granted are reserved.
+ * 
+ * This Source Code is provided to Licensee AS IS, without any
+ * warranty of any kind, either express, implied, or statutory,
+ * including, but not limited to, any warranty that the Source Code
+ * will conform to specifications, any implied warranties of
+ * merchantability, fitness for a particular purpose, and freedom
+ * from infringement, and any warranty that the documentation will
+ * conform to the program, or any warranty that the Source Code will
+ * be error free.
+ * 
+ * IN NO EVENT WILL SGI BE LIABLE FOR ANY DAMAGES, INCLUDING, BUT NOT
+ * LIMITED TO DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES,
+ * ARISING OUT OF, RESULTING FROM, OR IN ANY WAY CONNECTED WITH THE
+ * SOURCE CODE, WHETHER OR NOT BASED UPON WARRANTY, CONTRACT, TORT OR
+ * OTHERWISE, WHETHER OR NOT INJURY WAS SUSTAINED BY PERSONS OR
+ * PROPERTY OR OTHERWISE, AND WHETHER OR NOT LOSS WAS SUSTAINED FROM,
+ * OR AROSE OUT OF USE OR RESULTS FROM USE OF, OR LACK OF ABILITY TO
+ * USE, THE SOURCE CODE.
+ * 
+ * Contact information:  Silicon Graphics, Inc., 
+ * 1600 Amphitheatre Pkwy, Mountain View, CA  94043, 
+ * or:  http://www.sgi.com
+*/
+
+/*
+ * pfprojtex.c
+ *
+ * Loader that creates creates a scene graph with a texture projected
+ * orthographically through the scene.  The projected texture is applied
+ * as the first texture if the pfGeoState has no texture and as the
+ * second texture if the pfGeoState alread has a first texture.  Hardware
+ * that can do multi-texturing is required in order for a second texture
+ * to be visible.  The input format is a text file that consists of the
+ * following commands:
+ *
+ *      scene             <scene filename>
+ *      texture           <texture filename>
+ *      texgenmode        <gen_mode>
+ *      texenvmode        <env_mode>
+ *      texrepeatmode     <repeat_mode>
+ *      useboundingsphere <use_bsphere>
+ *      newboundingsphere <center_x> <center_y> <center_z> <radius>
+ *      rotate            <angle> <axis_x> <axis_y> <axis_z>
+ *      translate         <xlate_x> <xlate_y> <xlate_z>
+ *      scale             <scale_x> <scale_y> <scale_z>
+ *      perframe
+ *      
+ * gen_mode defaults to PFTG_EYE_LINEAR_IDENT and can be one of
+ *      PFTG_EYE_LINEAR
+ *      PFTG_EYE_LINEAR_IDENT
+ *      PFTG_OBJECT_LINEAR
+ *      PFTG_SPHERE_MAP
+ *      PFTG_OBJECT_DISTANCE_TO_LINE
+ *      PFTG_EYE_DISTANCE_TO_LINE
+ * For more info see the pfTexGen man page.
+ *
+ * env_mode defaults to PFTE_MODULATE and can be one of
+ *      PFTE_MODULATE
+ *      PFTE_BLEND
+ *      PFTE_DECAL
+ *      PFTE_REPLACE
+ *      PFTE_ADD
+ *      PFTE_ALPHA
+ * For more info see the pfTexEnv man page.
+ *
+ * repeat_mode defaults to PFTEX_REPEAT and can be one of
+ *      PFTEX_REPEAT
+ *      PFTEX_CLAMP
+ * For more info see the pfTexture man page.
+ *
+ * use_bsphere defaults to TRUE and can be one of
+ *      TRUE
+ *      FALSE
+ * Using the bounding sphere causes the projected texture to be 
+ * centered at the bounding sphere center and scaled to the diameter
+ * of the bounding sphere.  When the bounding sphere is being used
+ * rotations and scales first have the bounding sphere translated to
+ * the origin, then the rotations and scales are done, then the
+ * bounding sphere is translated back to its original position.
+ * Note that the bounding sphere can be enabled and disabled as
+ * many times as necessary in the transform list.  The texture is
+ * only centered at the bounding sphere center and scaled to the
+ * diameter of the bounding sphere if useboundingsphere is enabled
+ * at the end of the parse.
+ *
+ * perframe causes all subsequent rotate, translate, and scale
+ * commands to be applied every frame, instead of as a one time
+ * only transformation.
+ *
+ * The rotate, translate, and scale commands are identical to those
+ * of the pfMatrix class and are used to generate additional
+ * transformations to the texture matrix (otherwise it is the matrix
+ * generated by the use_bsphere command).  The rotate, translate, and
+ * scale commands can be applied in any order and as many times as
+ * necessary to generate the appropriate matrix.
+ *
+ * author - Steve Kilthau
+ */
+
+#include <stdio.h>
+#include <math.h>
+
+#ifdef WIN32
+#include <windows.h>
+#include <process.h>
+
+#define PFPFB_DLLEXPORT __declspec(dllexport)
+#else
+#define PFPFB_DLLEXPORT
+
+#endif /* WIN32 */
+
+#include <Performer/pr.h>
+#include <Performer/pf.h>
+#include <Performer/pfdu.h>
+#include <Performer/pfutil.h>
+#include <Performer/pf/pfNode.h>
+#include <Performer/pf/pfGeode.h>
+#include <Performer/pf/pfGroup.h>
+#include <Performer/pr/pfGeoSet.h>
+#include <Performer/pr/pfGeoState.h>
+#include <Performer/pr/pfTexture.h>
+#include <Performer/pr/pfStruct.h>
+
+
+//
+// Exported symbols.
+//
+extern "C" {
+  PFPFB_DLLEXPORT pfNode* pfdLoadFile_projtex(const char *);
+}
+
+
+//
+// Structure for internal data.
+//
+typedef struct
+{
+PFSTRUCT_DECLARE
+
+  pfGroup*   root;
+  pfTexture* texture;
+  pfTexGen*  texgen;
+  pfTexEnv*  texenv;
+  pfMatrix*  texmat;
+  pfMatrix*  accumtexmat;
+  pfMatrix*  perframetexmat;
+  pfMatrix*  finaltexmat;
+  int        texgenmode;
+  int        texenvmode;
+  int        texrepeatmode;
+  int        usebsphere;
+  float      scale;
+  pfVec3     translate;
+  int        maxtextures;
+  int        frame;
+
+} InternalData;
+
+
+//
+// Traversal function to apply per-frame transformations
+// to the texture matrix before the draw process.
+//
+static int predrawCallback(pfTraverser* trav, void* userdata)
+{
+  InternalData* data = (InternalData*)userdata;
+  int f;
+  f = pfGetFrameCount();
+  if (f != data->frame)
+  {
+    data->frame = f;
+    data->accumtexmat->postMult(*data->perframetexmat);
+    *data->texmat = *data->accumtexmat;
+    data->texmat->postMult(*data->finaltexmat);
+  }
+  return PFTRAV_CONT;
+}
+
+
+//
+// Initialize the internal data structures values.
+//
+void initInternalData(InternalData* data)
+{
+  data->root = 0;
+  data->texture = 0;
+  data->texgen  = 0;
+  data->texenv  = 0;
+  data->texmat  = 0;
+  data->accumtexmat = 0;
+  data->perframetexmat = 0;
+  data->finaltexmat = 0;
+  data->texgenmode = PFTG_EYE_LINEAR_IDENT;
+  data->texenvmode = PFTE_MODULATE;
+  data->texrepeatmode = PFTEX_REPEAT;
+  data->usebsphere = 0;
+  data->scale   = 1.0f;
+  data->translate.set(0.0f, 0.0f, 0.0f);
+  pfQuerySys(PFQSYS_MAX_TEXTURES, &(data->maxtextures));
+  data->frame = -10;
+}
+
+
+//
+// Deletes the internal data structure values and resets all
+// pointers to NULL.
+//
+void cleanInternalData(InternalData* data)
+{
+  if (data->texture)
+    pfDelete(data->texture);
+
+  if (data->texgen)
+    pfDelete(data->texgen);
+
+  if (data->texenv)
+    pfDelete(data->texenv);
+
+  if (data->texmat)
+    pfDelete(data->texmat);
+
+  if (data->accumtexmat)
+    pfDelete(data->accumtexmat);
+
+  if (data->perframetexmat)
+    pfDelete(data->perframetexmat);
+
+  if (data->finaltexmat)
+    pfDelete(data->finaltexmat);
+
+  if (data->root)
+    pfDelete(data->root);
+
+  initInternalData(data);
+}
+
+
+//
+// Traverse the tree and add the projected texture to the
+// scene-graph.
+//
+static void texAddTraversal(pfNode* node, InternalData* data)
+{
+  // If the node is a group then traverse all children recursively
+  if (node->isOfType(pfGroup::getClassType()))
+  {
+    pfGroup* group;
+    pfNode*  child;
+    int      i;
+
+    // Loop through children and recurse
+    group = (pfGroup*)node;
+    for(i=0;i<group->getNumChildren();++i)
+    {
+      child = group->getChild(i);
+      texAddTraversal(child, data);
+    }
+  }
+  else if (node->isOfType(pfGeode::getClassType()))
+  {
+    pfGeoState* gstate;
+    pfGeode*    geode;
+    int         i;
+    int         j;
+    int         done;
+
+    // Get the geode and apply the projection texture to the
+    // geostates of all geosets in the geode.
+    geode = (pfGeode*)node;
+    for(i=0;i<geode->getNumGSets();++i)
+    {
+      gstate = (geode->getGSet(i))->getGState();
+
+      // Walk through the textures on the geostate and apply the
+      // new texture at the end of the list of textures.  But only
+      // apply it, if the texture has not been applied previously!
+      j = 0;
+      done = 0;
+      while((j < data->maxtextures) && !done)
+      {
+	if (gstate->getMultiMode(PFSTATE_ENTEXTURE, j) == PF_OFF)
+	{
+	  gstate->setMultiMode(PFSTATE_ENTEXTURE, j, PF_ON);
+	  gstate->setMultiMode(PFSTATE_ENTEXGEN, j, PF_ON);
+	  gstate->setMultiMode(PFSTATE_ENTEXMAT, j, PF_ON);
+	  gstate->setMultiAttr(PFSTATE_TEXTURE, j, data->texture);
+	  gstate->setMultiAttr(PFSTATE_TEXGEN, j, data->texgen);
+	  gstate->setMultiAttr(PFSTATE_TEXENV, j, data->texenv);
+	  gstate->setMultiAttr(PFSTATE_TEXMAT, j, data->texmat);
+	  done = 1;
+	}
+	if ((gstate->getMultiAttr(PFSTATE_TEXTURE, j) == (void*)data->texture))
+	  done = 1;
+	++j;
+      }
+    }
+  }
+
+  return;
+}
+
+
+//
+// Read and parse the .projtex file.  Set up the texture
+// matrix, the texture generator, and the texutre environment.
+//
+static void parseProjTex(const char* filename, InternalData* data)
+{
+  int      stats[8] = {0,0,0,0,0,0,0,0};
+  int      pos = 0;
+  int      len = 0;
+  float    f0, f1, f2, f3;
+  char     str[1024];
+  char*    buffer;
+  FILE*    ifp;
+  pfSphere boundsphere;
+
+  // Read in the file
+  ifp = fopen(filename, "r");
+  if (ifp)
+  {
+    int length;
+
+    fseek(ifp, 0, SEEK_END);
+    length = ftell(ifp);
+    fseek(ifp, 0, SEEK_SET);
+    buffer = new char[length+1];
+    fread(buffer, 1, length, ifp);
+    buffer[length] = 0;
+    fclose(ifp);
+  }
+  else
+  {
+    pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: unable to read file \"%s\"\n", filename);
+    cleanInternalData(data);
+    return;
+  }
+
+  // Reset the bounding sphere
+  boundsphere.center.set(0.0f, 0.0f, 0.0f);
+  boundsphere.radius = 0.0f;
+
+  // Allocate the texture variables
+  data->texgen = new pfTexGen;
+  data->texenv = new pfTexEnv;
+  data->texmat = new pfMatrix;
+  data->accumtexmat = new pfMatrix;
+  data->perframetexmat = new pfMatrix;
+  data->finaltexmat = new pfMatrix;
+  data->texmat->makeIdent();
+  data->accumtexmat->makeIdent();
+  data->perframetexmat->makeIdent();
+  data->finaltexmat->makeIdent();
+
+  do
+  {
+    stats[7] = 0;
+
+    // Read and setup the scene-graph
+    if (!stats[0] && (sscanf(&buffer[pos], " scene %s %n", str, &len) == 1))
+    {
+      pfNode* scene;
+
+      // Load DSO for the input file
+      pfdInitConverter(str);
+
+      // Read in the file
+      scene = pfdLoadFile(str);
+      if (scene == NULL)
+      {
+	pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: unable to load file \"%s\".\n", str);
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      // Create group node so that per-frame movement can be attached
+      // to the texture.
+      data->root = new pfGroup;
+      data->root->addChild(scene);
+      data->root->setTravData(PFTRAV_DRAW, (void*)data);
+      data->root->setTravFuncs(PFTRAV_DRAW, predrawCallback, 0);
+
+      // Get info from the scene's bounding sphere
+      data->root->getBound(&boundsphere);
+      data->scale = 1.0f/boundsphere.radius;
+      data->translate.negate(boundsphere.center);
+
+      stats[0] = 1;
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read the input texture
+    if (!stats[1] && (sscanf(&buffer[pos], " texture %s %n", str, &len) == 1))
+    {
+      // Read in the texture
+      data->texture = new pfTexture;
+      if (!(data->texture->loadFile(str)))
+      {
+	pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: unable to load file \"%s\".\n", str);
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      stats[1] = 1;
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read a texture generation mode command
+    if (!stats[2] && (sscanf(&buffer[pos], " texgenmode %s %n", str, &len) == 1))
+    {
+      if (!strcmp(str, "PFTG_OBJECT_LINEAR"))
+	data->texgenmode = PFTG_OBJECT_LINEAR;
+      else if (!strcmp(str, "PFTG_EYE_LINEAR"))
+	data->texgenmode = PFTG_EYE_LINEAR;
+      else if (!strcmp(str, "PFTG_EYE_LINEAR_IDENT"))
+	data->texgenmode = PFTG_EYE_LINEAR_IDENT;
+      else if (!strcmp(str, "PFTG_SPHERE_MAP"))
+	data->texgenmode = PFTG_SPHERE_MAP;
+      else if (!strcmp(str, "PFTG_OBJECT_DISTANCE_TO_LINE"))
+	data->texgenmode = PFTG_OBJECT_DISTANCE_TO_LINE;
+      else if (!strcmp(str, "PFTG_EYE_DISTANCE_TO_LINE"))
+	data->texgenmode = PFTG_EYE_DISTANCE_TO_LINE;
+      else
+      {
+	pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: illegal texgen mode \"%s\".\n", str);
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      stats[2] = 1;
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read a texture environment mode command
+    if (!stats[3] && (sscanf(&buffer[pos], " texenvmode %s %n", str, &len) == 1))
+    {
+      if (!strcmp(str, "PFTE_MODULATE"))
+	data->texenvmode = PFTE_MODULATE;
+      else if (!strcmp(str, "PFTE_BLEND"))
+	data->texenvmode = PFTE_BLEND;
+      else if (!strcmp(str, "PFTE_DECAL"))
+	data->texenvmode = PFTE_DECAL;
+      else if (!strcmp(str, "PFTE_REPLACE"))
+	data->texenvmode = PFTE_REPLACE;
+      else if (!strcmp(str, "PFTE_ADD"))
+	data->texenvmode = PFTE_ADD;
+      else if (!strcmp(str, "PFTE_ALPHA"))
+	data->texenvmode = PFTE_ALPHA;
+      else
+      {
+	pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: illegal texenv mode \"%s\".\n", str);
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      stats[3] = 1;
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read a texture repeat mode command
+    if (!stats[4] && (sscanf(&buffer[pos], " texrepeatmode %s %n", str, &len) == 1))
+    {
+      if (!strcmp(str, "PFTEX_REPEAT"))
+	data->texrepeatmode = PFTEX_REPEAT;
+      else if (!strcmp(str, "PFTEX_CLAMP"))
+	data->texrepeatmode = PFTEX_CLAMP;
+      else
+      {
+	pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: illegal texrepeat mode \"%s\".\n", str);
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      stats[4] = 1;
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read whether to use boundsphere or not
+    if (sscanf(&buffer[pos], " useboundingsphere %s %n", str, &len) == 1)
+    {
+      if (!strcmp(str, "TRUE"))
+	data->usebsphere = 1;
+      else if (!strcmp(str, "FALSE"))
+	data->usebsphere = 0;
+      else
+      {
+	pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: illegal value for useboundingsphere \"%s\".\n", str);
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read the perframe state change command
+    if (!stats[5] && (sscanf(&buffer[pos], " perframe %n", &len) == 0))
+    {
+      if (len != 0)
+      {
+	stats[5] = 1;
+	stats[7] = 1;
+	pos += len;
+	len = 0;
+      }
+    }
+
+    // Set a new bounding sphere for the object
+    if (!stats[6] && sscanf(&buffer[pos], " setboundingsphere %f %f %f %f %n", &f0, &f1, &f2, &f3, &len) == 4)
+    {
+      pfSphere* newbsphere;
+
+      if (!stats[0])
+      {
+        pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: no scene to set bound sphere on.\n");
+	cleanInternalData(data);
+	delete [] buffer;
+	return;
+      }
+
+      // Apply new bounding sphere to scene
+      newbsphere = new pfSphere;
+      newbsphere->center.set(f0, f1, f2);
+      newbsphere->radius = f3;
+      data->root->setBound(newbsphere, PFBOUND_STATIC);
+
+      // Change the bounding sphere data
+      data->scale = 1.0f/newbsphere->radius;
+      data->translate.negate(newbsphere->center);
+
+      stats[6] = 1;
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read a rotate command
+    if (sscanf(&buffer[pos], " rotate %f %f %f %f %n", &f0, &f1, &f2, &f3, &len) == 4)
+    {
+      if (data->usebsphere)
+      {
+	if (stats[5])
+	{
+	  data->perframetexmat->postTrans(*data->perframetexmat,
+					   data->translate[0], data->translate[1], data->translate[2]);
+	  data->perframetexmat->postRot(*data->perframetexmat, f0, f1, f2, f3);
+	  data->perframetexmat->postTrans(*data->perframetexmat,
+					   -data->translate[0], -data->translate[1], -data->translate[2]);
+	}
+	else
+	{
+	  data->accumtexmat->postTrans(*data->accumtexmat,
+				       data->translate[0], data->translate[1], data->translate[2]);
+	  data->accumtexmat->postRot(*data->accumtexmat, f0, f1, f2, f3);
+	  data->accumtexmat->postTrans(*data->accumtexmat,
+				       -data->translate[0], -data->translate[1], -data->translate[2]);
+	}
+      }
+      else
+      {
+	if (stats[5])
+	  data->perframetexmat->postRot(*data->perframetexmat, f0, f1, f2, f3);
+	else
+	  data->accumtexmat->postRot(*data->accumtexmat, f0, f1, f2, f3);
+      }
+
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read a translate command
+    if (sscanf(&buffer[pos], " translate %f %f %f %n", &f0, &f1, &f2, &len) == 3)
+    {
+      if (stats[5])
+	data->perframetexmat->postTrans(*data->perframetexmat, f0, f1, f2);
+      else
+	data->accumtexmat->postTrans(*data->accumtexmat, f0, f1, f2);
+
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+    // Read a scale command
+    if (sscanf(&buffer[pos], " scale %f %f %f %n", &f0, &f1, &f2, &len) == 3)
+    {
+      if (data->usebsphere)
+      {
+	if (stats[5])
+	{
+	  data->perframetexmat->postTrans(*data->perframetexmat,
+					   data->translate[0], data->translate[1], data->translate[2]);
+	  data->perframetexmat->postScale(*data->perframetexmat, f0, f1, f2);
+	  data->perframetexmat->postTrans(*data->perframetexmat,
+					   -data->translate[0], -data->translate[1], -data->translate[2]);
+	}
+	else
+	{
+	  data->accumtexmat->postTrans(*data->accumtexmat,
+				       data->translate[0], data->translate[1], data->translate[2]);
+	  data->accumtexmat->postScale(*data->accumtexmat, f0, f1, f2);
+	  data->accumtexmat->postTrans(*data->accumtexmat,
+				       -data->translate[0], -data->translate[1], -data->translate[2]);
+	}
+      }
+      else
+      {
+	if (stats[5])
+	  data->perframetexmat->postScale(*data->perframetexmat, f0, f1, f2);
+	else
+	  data->accumtexmat->postScale(*data->accumtexmat, f0, f1, f2);
+      }
+
+      stats[7] = 1;
+      pos += len;
+      len = 0;
+    }
+
+  }while(stats[7]);
+
+  // Check that the entire file was parsed
+  if (buffer[pos] != 0)
+  {
+    pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: failed to parse entire file.\n");
+    cleanInternalData(data);
+    delete [] buffer;
+    return;
+  }
+
+  // Check that a scene and a texture were provided
+  if (!stats[0] || !stats[1])
+  {
+    pfNotify(PFNFY_WARN, PFNFY_USAGE, "pfdLoadFile_projtex: must load a scene and a texture.\n");
+    cleanInternalData(data);
+    return;
+  }
+
+  // Delete the internal buffer
+  delete [] buffer;
+
+  // Control the texture repeat parameter
+  data->texture->setRepeat(PFTEX_WRAP, data->texrepeatmode);
+
+  // Make the texture coordinate generator
+  data->texgen->setMode(PF_S, data->texgenmode);
+  data->texgen->setMode(PF_T, data->texgenmode);
+  data->texgen->setMode(PF_R, data->texgenmode);
+  data->texgen->setPlane(PF_S, 1.0f, 0.0f, 0.0f, 0.0f);
+  data->texgen->setPlane(PF_T, 0.0f, 0.0f, 1.0f, 0.0f);
+  data->texgen->setPlane(PF_R, 0.0f, -1.0f, 0.0f, 0.0f);
+
+  // Adjust the texture environment mode
+  data->texenv->setMode(data->texenvmode);
+
+  // Create the texture matrix
+  if (data->usebsphere)
+  {
+    data->finaltexmat->postTrans(*data->finaltexmat, data->translate[0], data->translate[1], data->translate[2]);
+    data->finaltexmat->postScale(*data->finaltexmat, data->scale, data->scale, data->scale);
+  }
+  data->finaltexmat->postTrans(*data->finaltexmat, 1.0f, 1.0f, 1.0f);
+  data->finaltexmat->postScale(*data->finaltexmat, 0.5f, 0.5f, 0.5f);
+
+  // Add the texture to the scene-graph
+  texAddTraversal(data->root, data);
+}
+
+
+//
+// Parse and load the .projtex file.
+//
+PFPFB_DLLEXPORT pfNode* pfdLoadFile_projtex(const char* filename)
+{
+  InternalData* data;
+  pfNode*       node;
+  char          path[PF_MAXSTRING];
+
+  // Initialize the internal data
+  data = new InternalData;
+  initInternalData(data);
+
+  // Print notify about loader
+  pfNotify( PFNFY_INFO, PFNFY_PRINT, 
+	    "pfdLoadFile_projtex : Loading \"%s\".\n", filename );
+
+  // File the input file
+  if (!pfFindFile(filename, path, R_OK))
+  {
+    pfNotify(PFNFY_WARN, PFNFY_RESOURCE,
+	     "pfdLoadFile_projtex : Could not find file \"%s\"\n", filename);
+  }
+  else
+  {
+    // Parse the .projtex input file
+    parseProjTex(path, data);
+  }
+
+  // Clean up the internal data
+  node = data->root;
+  pfDelete(data);
+
+  return node;
+}
+

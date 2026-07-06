@@ -1,0 +1,9 @@
+# build output
+build/
+build-web/
+
+# OS noise
+.DS_Store
+
+# Claude Code local settings
+.claude/

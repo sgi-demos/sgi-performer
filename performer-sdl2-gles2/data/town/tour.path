@@ -1,0 +1,29 @@
+# file: tour.path
+# $Revision: 1.1 $
+# $Date: 1996/05/15 06:34:17 $
+
+# This file is a path for use in perfly. For example:
+#    perfly -A carpet.flt,tour.path,Tour 
+#
+
+speed 150 1000
+
+line 2696 4304 20 3355 4255 20
+fillet 600
+line 3355 4255 20 4223 3324 20
+fillet 600
+line 4223 3324 20 3738 1123 20
+fillet 600
+line 3738 1123 20 2128 1044 20
+fillet 600
+line 2128 1044 20 1115 1384 20
+fillet 600
+line 1115 1384 20  805 2444 20
+fillet 600
+line  805 2444 20 1217 3670 20
+fillet 600
+line 1217 3670 20 2038 4354 20
+fillet 600
+line 2038 4354 20 2696 4304 20
+
+close
