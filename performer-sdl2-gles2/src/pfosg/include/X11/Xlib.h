@@ -22,6 +22,8 @@ typedef unsigned long Window;
 typedef unsigned long KeySym;
 
 #define None       0L
+#define True       1
+#define False      0
 #define KeyPress   2
 #define KeyRelease 3
 

@@ -664,13 +664,17 @@ int  pfDelete(void*)                     { return 1; }   /* shim keeps refs */
 int  pfGetId(void*)                      { return 0; }
 int  pfIsOfType(void* obj, void* type)
 {
-    /* one real client: perfly asks whether the xformer's current model is a
-     * travel model (fly/drive) to decide if the eye matrix drives the view */
-    if (type == (void*)&pfi_travelClassCookie && obj) {
+    if (!obj) return 0;
+    /* perfly asks whether the xformer's current model is a travel model
+     * (fly/drive) to decide if the eye matrix drives the view */
+    if (type == (void*)&pfi_travelClassCookie) {
         int m = ((PfiXf*)obj)->model;
         return m == PFITDF_FLY || m == PFITDF_DRIVE;
     }
-    return 0;
+    /* scene-graph class cookies (Group/Geode/SCS/Switch): the pfb loader
+     * relies on these to decide how to read a node's children/geosets */
+    int r = pfosgIsOfNodeClass(obj, type);
+    return r < 0 ? 0 : r;
 }
 const char* pfGetFilePath(void)          { return ""; }
 int  pfFindFile(const char* file, char path[PF_MAXSTRING], int)

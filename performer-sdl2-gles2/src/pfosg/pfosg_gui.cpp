@@ -227,10 +227,15 @@ int pfosgIsOfNodeClass(void* obj, void* type)
 {
     osg::Node* n = (osg::Node*)obj;
     if (type == &nodeTypeCookie) return 1;
-    if (type == &groupTypeCookie)
-        return n->asGroup() != nullptr;
     if (type == &geodeTypeCookie)
         return dynamic_cast<osg::Geode*>(n) != nullptr;
+    if (type == &groupTypeCookie)
+        /* In modern OSG (3.4+) osg::Geode derives from osg::Group, so
+         * asGroup() is non-null for a Geode.  Performer semantics — and
+         * the pfb loader, which tests Group before Geode — require a Geode
+         * to NOT be a Group, so exclude it explicitly. */
+        return n->asGroup() != nullptr &&
+               dynamic_cast<osg::Geode*>(n) == nullptr;
     if (type == &scsTypeCookie)
         return dynamic_cast<osg::MatrixTransform*>(n) != nullptr;
     if (type == &switchTypeCookie)

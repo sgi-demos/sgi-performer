@@ -3,7 +3,9 @@
 #ifndef PFOSG_INTERNAL_H
 #define PFOSG_INTERNAL_H
 
+#include <osg/Geometry>
 #include <osg/Group>
+#include <osg/Texture2D>
 #include <osgViewer/Viewer>
 
 #include <SDL.h>
@@ -11,8 +13,40 @@
 #include <string>
 #include <vector>
 
-struct PfOsgGSet;
 struct PfOsgESky;
+
+/* one pfGeoSet: raw attribute pointers as the app supplied them, compiled
+ * lazily into the osg::Geometry by compileGSet (pfosg.cpp) */
+struct PfOsgGSet {
+    osg::ref_ptr<osg::Geometry> geom;
+    int ptype = 3;                  /* PFGS_* primitive type; 3 = PFGS_TRIS */
+    int nprims = 0;
+    int* lengths = nullptr;
+    struct Attr {
+        int binding = 0;            /* PFGS_OFF */
+        const float* data = nullptr;
+        const ushort* ilist = nullptr;
+    } attr[4];
+    /* pfGSetDrawMode / draw attributes (pfpfb.c reads these back) */
+    bool flatShade = false;
+    bool wireframe = false;
+    bool compileGL = false;
+    float lineWidth = 1.0f;
+    float pntSize = 1.0f;
+    unsigned isectMask = 0xffffffff;
+    bool dirty = true;
+};
+
+/* one pfTexture */
+struct PfOsgTex {
+    osg::ref_ptr<osg::Texture2D> tex;
+    osg::ref_ptr<osg::Image> img;
+    int repeatS = 0, repeatT = 0;   /* PFTEX_* wrap tokens, 0 = default */
+    int minFilt = 0, magFilt = 0;
+    int intFormat = 0, extFormat = 0, imgFormat = 0;
+    int comp = 0, sx = 0, sy = 0, sz = 0;
+    unsigned int* imgData = nullptr;
+};
 
 typedef void (*PfosgChanFunc)(struct pfChannel*, void*);
 typedef void (*PfosgPWinFunc)(struct pfPipeWindow*);
@@ -95,6 +129,10 @@ void pfosgRunAuxChannels(void);
 
 /* resolve a pfChannel handle to its shim struct (pfosg.cpp) */
 PfOsgChan* pfosgChanOf(struct pfChannel* ch);
+
+/* pfIsOfType helper for scene-graph class cookies (pfosg_gui.cpp):
+ * returns 1/0 for a recognized cookie, -1 if the cookie isn't ours */
+int pfosgIsOfNodeClass(void* obj, void* type);
 
 /* geoset compile hook (pfosg.cpp) needed by intersection/xformer code */
 void pfosgCompileDirtyGSets(void);

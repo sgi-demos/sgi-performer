@@ -11,10 +11,8 @@
 #ifndef PF_MAX_TEXTURES
 #define PF_MAX_TEXTURES 4
 #endif
-typedef struct pfASDFace     pfASDFace;
-typedef struct pfASDLODRange pfASDLODRange;
-typedef struct pfASDVert     pfASDVert;
-typedef struct islAppearance islAppearance;
+/* pfASDFace/pfASDLODRange/pfASDVert (real structs) and islAppearance come
+ * from pf.h's pf_pfb_api.h tail, included via pfutil.h above */
 
 #include_next <Performer/pfdu.h>
 

@@ -448,8 +448,9 @@ extern int  (pfGetNumGSets)(pfGeode* geode);
 extern pfTexture* pfNewTex(void* arena);
 extern int  pfLoadTexFile(pfTexture* tex, const char* fileName);
 extern void pfTexFilter(pfTexture* tex, int which, int filter);
-extern void pfGetTexImage(pfTexture* tex, uint** image, int* comp,
-                          int* sx, int* sy, int* sz);
+extern void pfGetTexImage(const pfTexture* tex, unsigned int** image,
+                          int* comp, int* sx, int* sy, int* sz);
+#define PFTEX_IMAGE_FORMAT 9    /* real pr.h value */
 
 #define PFTE_MODULATE 0
 #define PFTE_BLEND    1
@@ -975,5 +976,21 @@ extern int pfChanNodeIsectSegs(pfChannel* chan, pfNode* node,
 #ifdef __cplusplus
 }
 #endif
+
+/* extended API surface for SGI's pfpfb.c loader (generated; self-guarded) */
+#include <Performer/pf_pfb_api.h>
+
+/* PFASSERTDEBUG: exact pr.h definition (release flavor) */
+#ifndef PFASSERTDEBUG
+#define PFASSERTDEBUG(_exp)  ((_exp)?((void)0):pfNotify(PFNFY_FATAL, \
+    PFNFY_INTERNAL, "Assertion failed: %s in %s at line %d", "_exp", \
+    __FILE__, __LINE__))
+#endif
+#ifndef PFNFY_INTERNAL
+#define PFNFY_INTERNAL 4
+#endif
+
+/* pfpfb.c loads converter DSOs via dlopen without including dlfcn.h */
+#include <dlfcn.h>
 
 #endif /* PFOSG_PF_H */

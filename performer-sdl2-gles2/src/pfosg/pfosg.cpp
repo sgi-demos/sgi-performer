@@ -30,6 +30,8 @@
 #include <osg/Texture2D>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osg/LineWidth>
+#include <osg/ShadeModel>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/LineSegmentIntersector>
 #include <osgUtil/PolytopeIntersector>
@@ -46,28 +48,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <set>
 #include <string>
 #include <vector>
 
 /* ---- shim object structs -------------------------------------------------- */
 
-struct PfOsgGSet {
-    osg::ref_ptr<osg::Geometry> geom;
-    int ptype = PFGS_TRIS;
-    int nprims = 0;
-    int* lengths = nullptr;
-    struct Attr {
-        int binding = PFGS_OFF;
-        const float* data = nullptr;
-        const ushort* ilist = nullptr;
-    } attr[4];
-    bool dirty = true;
-};
-
-struct PfOsgTex {
-    osg::ref_ptr<osg::Texture2D> tex;
-    osg::ref_ptr<osg::Image> img;
-};
+/* PfOsgGSet / PfOsgTex live in pfosg_internal.h (shared with the pfpfb
+ * loader support in pfosg_pfb.cpp) */
 
 struct PfOsgESky {
     osg::Vec4 clearColor = osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -348,7 +336,13 @@ void openWindow()
     S.winOpen = true;
 }
 
-/* build the osg::Geometry from a PfOsgGSet spec (de-indexed per-vertex) */
+/* build the osg::Geometry from a PfOsgGSet spec (de-indexed per-vertex).
+ * Mirrors the pfb2osg loader: FLAT_* primitives carry per-triangle colors
+ * and normals (arrays omit each strip's leading verts), and surface
+ * primitives are re-emitted as independent triangles with long edges
+ * subdivided — Apple's Metal rasterizer drops huge camera-plane-straddling
+ * slivers (see apps/shim_tests/sliver_check.c), and GLES2 has no
+ * QUADS/POLYGON. */
 void compileGSet(PfOsgGSet* g)
 {
     g->dirty = false;
@@ -356,7 +350,7 @@ void compileGSet(PfOsgGSet* g)
     geom->getPrimitiveSetList().clear();
 
     GLenum glmode = GL_TRIANGLES;
-    int fixed = 0;
+    int fixed = 0, flatSkip = 0;
     bool strip = false;
     switch (g->ptype) {
         case PFGS_POINTS:     glmode = GL_POINTS;         fixed = 1; break;
@@ -364,8 +358,14 @@ void compileGSet(PfOsgGSet* g)
         case PFGS_TRIS:       glmode = GL_TRIANGLES;      fixed = 3; break;
         case PFGS_QUADS:      glmode = GL_QUADS;          fixed = 4; break;
         case PFGS_TRISTRIPS:  glmode = GL_TRIANGLE_STRIP; strip = true; break;
+        case PFGS_FLAT_TRISTRIPS:
+            glmode = GL_TRIANGLE_STRIP; strip = true; flatSkip = 2; break;
         case PFGS_TRIFANS:    glmode = GL_TRIANGLE_FAN;   strip = true; break;
+        case PFGS_FLAT_TRIFANS:
+            glmode = GL_TRIANGLE_FAN;   strip = true; flatSkip = 2; break;
         case PFGS_LINESTRIPS: glmode = GL_LINE_STRIP;     strip = true; break;
+        case PFGS_FLAT_LINESTRIPS:
+            glmode = GL_LINE_STRIP;     strip = true; flatSkip = 1; break;
         case PFGS_POLYS:      glmode = GL_POLYGON;        strip = true; break;
         default:
             fprintf(stderr, "pfosg: geoset prim type %d not implemented\n",
@@ -383,12 +383,24 @@ void compileGSet(PfOsgGSet* g)
     else
         vtotal = g->nprims * fixed;
 
-    /* per attribute: element index for global vertex v in prim p */
-    auto srcIndex = [&](const PfOsgGSet::Attr& a, int v, int p) -> int {
+    /* per attribute: element index for global vertex v (offset k in prim p).
+     * flatAttr marks colors/normals, whose arrays omit each strip's first
+     * flatSkip vertices in FLAT_* primitives. */
+    auto srcIndex = [&](const PfOsgGSet::Attr& a, int v, int p, int k,
+                        bool flatAttr) -> int {
         switch (a.binding) {
             case PFGS_OVERALL:    return a.ilist ? a.ilist[0] : 0;
             case PFGS_PER_PRIM:   return a.ilist ? a.ilist[p] : p;
-            case PFGS_PER_VERTEX: return a.ilist ? a.ilist[v] : v;
+            case PFGS_PER_VERTEX: {
+                int idx = v;
+                if (flatSkip && flatAttr) {
+                    idx = 0;
+                    for (int q = 0; q < p; q++)
+                        idx += g->lengths[q] - flatSkip;
+                    idx += k < flatSkip ? 0 : k - flatSkip;
+                }
+                return a.ilist ? a.ilist[idx] : idx;
+            }
         }
         return -1;
     };
@@ -406,28 +418,132 @@ void compileGSet(PfOsgGSet* g)
         int plen = strip ? g->lengths[p] : fixed;
         for (int k = 0; k < plen; k++, v++) {
             const PfOsgGSet::Attr& va = g->attr[PFGS_COORD3];
-            int i = srcIndex(va, v, p);
+            int i = srcIndex(va, v, p, k, false);
             vout->push_back(i >= 0 && va.data
                 ? osg::Vec3(va.data[i*3], va.data[i*3+1], va.data[i*3+2])
                 : osg::Vec3());
             if (cout_) {
                 const PfOsgGSet::Attr& a = g->attr[PFGS_COLOR4];
-                i = srcIndex(a, v, p);
+                i = srcIndex(a, v, p, k, true);
                 cout_->push_back(osg::Vec4(a.data[i*4], a.data[i*4+1],
                                            a.data[i*4+2], a.data[i*4+3]));
             }
             if (nout) {
                 const PfOsgGSet::Attr& a = g->attr[PFGS_NORMAL3];
-                i = srcIndex(a, v, p);
+                i = srcIndex(a, v, p, k, true);
                 nout->push_back(osg::Vec3(a.data[i*3], a.data[i*3+1],
                                           a.data[i*3+2]));
             }
             if (tout) {
                 const PfOsgGSet::Attr& a = g->attr[PFGS_TEXCOORD2];
-                i = srcIndex(a, v, p);
+                i = srcIndex(a, v, p, k, false);
                 tout->push_back(osg::Vec2(a.data[i*2], a.data[i*2+1]));
             }
         }
+    }
+
+    /* surface primitives: independent triangles + subdivision (the same
+     * pass as the pfb2osg loader; see the header comment) */
+    bool surface = glmode == GL_TRIANGLES || glmode == GL_QUADS ||
+                   glmode == GL_TRIANGLE_STRIP ||
+                   glmode == GL_TRIANGLE_FAN || glmode == GL_POLYGON;
+    static const float subdivMax = [] {
+        const char* e = getenv("PFOSG_SUBDIV");
+        return e ? (float)atof(e) : 25.0f;
+    }();
+    bool retriangulated = false;
+    if (surface && subdivMax > 0.0f) {
+        struct VR { osg::Vec3 p; osg::Vec4 c; osg::Vec3 n; osg::Vec2 t; };
+        auto rec = [&](int i) {
+            VR r;
+            r.p = (*vout)[i];
+            if (cout_) r.c = (*cout_)[i];
+            if (nout)  r.n = (*nout)[i];
+            if (tout)  r.t = (*tout)[i];
+            return r;
+        };
+        auto mid = [&](const VR& a, const VR& b) {
+            VR m;
+            m.p = (a.p + b.p) * 0.5f;
+            m.c = (a.c + b.c) * 0.5f;
+            m.n = a.n + b.n;
+            m.n.normalize();
+            m.t = (a.t + b.t) * 0.5f;
+            return m;
+        };
+
+        struct Item { VR a, b, c; int d; };
+        std::vector<Item> work;
+        int first = 0;
+        for (int p = 0; p < g->nprims; p++) {
+            int plen = strip ? g->lengths[p] : fixed;
+            if (glmode == GL_TRIANGLES) {
+                for (int k = 0; k + 2 < plen; k += 3)
+                    work.push_back({rec(first + k), rec(first + k + 1),
+                                    rec(first + k + 2), 0});
+            } else if (glmode == GL_QUADS) {
+                for (int k = 0; k + 3 < plen; k += 4) {
+                    work.push_back({rec(first + k), rec(first + k + 1),
+                                    rec(first + k + 2), 0});
+                    work.push_back({rec(first + k), rec(first + k + 2),
+                                    rec(first + k + 3), 0});
+                }
+            } else if (glmode == GL_TRIANGLE_STRIP) {
+                for (int t = 0; t + 2 < plen; t++) {
+                    int a = first + t, b = first + t + 1, c = first + t + 2;
+                    if (t & 1) std::swap(a, b);
+                    work.push_back({rec(a), rec(b), rec(c), 0});
+                }
+            } else {                     /* TRIANGLE_FAN / POLYGON */
+                for (int t = 0; t + 2 < plen; t++)
+                    work.push_back({rec(first), rec(first + t + 1),
+                                    rec(first + t + 2), 0});
+            }
+            first += plen;
+        }
+
+        osg::ref_ptr<osg::Vec3Array> nv = new osg::Vec3Array;
+        osg::ref_ptr<osg::Vec4Array> nc = cout_ ? new osg::Vec4Array : nullptr;
+        osg::ref_ptr<osg::Vec3Array> nn = nout ? new osg::Vec3Array : nullptr;
+        osg::ref_ptr<osg::Vec2Array> nt = tout ? new osg::Vec2Array : nullptr;
+        auto emit = [&](const VR& r) {
+            nv->push_back(r.p);
+            if (nc) nc->push_back(r.c);
+            if (nn) nn->push_back(r.n);
+            if (nt) nt->push_back(r.t);
+        };
+        const float mx2 = subdivMax * subdivMax;
+        while (!work.empty()) {
+            Item it = work.back();
+            work.pop_back();
+            float e0 = (it.b.p - it.a.p).length2();
+            float e1 = (it.c.p - it.b.p).length2();
+            float e2 = (it.a.p - it.c.p).length2();
+            float longest = std::max(e0, std::max(e1, e2));
+            float area2 = ((it.b.p - it.a.p) ^ (it.c.p - it.a.p)).length2();
+            if (it.d >= 8 || longest <= mx2 || area2 < 1e-8f) {
+                emit(it.a); emit(it.b); emit(it.c);
+                continue;
+            }
+            if (e0 >= e1 && e0 >= e2) {
+                VR m = mid(it.a, it.b);
+                work.push_back({it.a, m, it.c, it.d + 1});
+                work.push_back({m, it.b, it.c, it.d + 1});
+            } else if (e1 >= e2) {
+                VR m = mid(it.b, it.c);
+                work.push_back({it.a, it.b, m, it.d + 1});
+                work.push_back({it.a, m, it.c, it.d + 1});
+            } else {
+                VR m = mid(it.c, it.a);
+                work.push_back({it.a, it.b, m, it.d + 1});
+                work.push_back({m, it.b, it.c, it.d + 1});
+            }
+        }
+        vout = nv;
+        if (cout_) cout_ = nc;
+        if (nout)  nout = nn;
+        if (tout)  tout = nt;
+        retriangulated = true;
     }
 
     geom->setVertexArray(vout);
@@ -435,7 +551,10 @@ void compileGSet(PfOsgGSet* g)
     if (nout)  geom->setNormalArray(nout, osg::Array::BIND_PER_VERTEX);
     if (tout)  geom->setTexCoordArray(0, tout);
 
-    if (strip) {
+    if (retriangulated) {
+        geom->addPrimitiveSet(
+            new osg::DrawArrays(GL_TRIANGLES, 0, (int)vout->size()));
+    } else if (strip) {
         int first = 0;
         for (int p = 0; p < g->nprims; p++) {
             geom->addPrimitiveSet(new osg::DrawArrays(glmode, first,
@@ -445,6 +564,17 @@ void compileGSet(PfOsgGSet* g)
     } else {
         geom->addPrimitiveSet(new osg::DrawArrays(glmode, 0, vtotal));
     }
+
+    /* FLAT primitives shade with the provoking (last) vertex, preserved by
+     * the triangle emission order above */
+    if (flatSkip || g->flatShade)
+        geom->getOrCreateStateSet()->setAttributeAndModes(
+            new osg::ShadeModel(osg::ShadeModel::FLAT));
+    if (g->lineWidth != 1.0f && (glmode == GL_LINES ||
+                                 glmode == GL_LINE_STRIP))
+        geom->getOrCreateStateSet()->setAttributeAndModes(
+            new osg::LineWidth(g->lineWidth));
+
     geom->dirtyBound();
     geom->dirtyGLObjects();
 }
@@ -716,6 +846,7 @@ struct PfOsgDCS : public osg::MatrixTransform {
 struct PfOsgLOD : public osg::Switch {
     pfLODEvalFuncType evalFunc = nullptr;
     std::vector<float> ranges;
+    osg::Vec3 center;
 
     struct Eval : public osg::NodeCallback {
         void operator()(osg::Node* node, osg::NodeVisitor* nv) override
@@ -1064,9 +1195,15 @@ extern "C" void pfDisable(int target)
 
 /* ---- notification -----------------------------------------------------------*/
 
-static int pfosg_notifyLevel = PFNFY_NOTICE;
+static int pfosg_notifyLevel =
+    getenv("PFOSG_NOTIFY") ? atoi(getenv("PFOSG_NOTIFY")) : PFNFY_NOTICE;
 
-extern "C" void pfNotifyLevel(int severity) { pfosg_notifyLevel = severity; }
+extern "C" void pfNotifyLevel(int severity)
+{
+    /* env override wins, so loader diagnostics survive perfly lowering it */
+    if (getenv("PFOSG_NOTIFY")) return;
+    pfosg_notifyLevel = severity;
+}
 extern "C" int pfGetNotifyLevel(void) { return pfosg_notifyLevel; }
 
 extern "C" void pfNotify(int severity, int, const char* format, ...)
@@ -1249,6 +1386,26 @@ extern "C" void (pfLODUserEvalFunc)(pfLOD* lod, pfLODEvalFuncType func)
     ((PfOsgLOD*)lod)->evalFunc = func;
 }
 
+extern "C" float pfGetLODRange(const pfLOD* lod, int index)
+{
+    const PfOsgLOD* l = (const PfOsgLOD*)lod;
+    if (!l || index < 0 || index >= (int)l->ranges.size()) return 0.0f;
+    return l->ranges[(size_t)index];
+}
+
+extern "C" void pfLODCenter(pfLOD* lod, pfVec3 c)
+{
+    if (lod) ((PfOsgLOD*)lod)->center.set(c[0], c[1], c[2]);
+}
+
+extern "C" void pfGetLODCenter(const pfLOD* lod, pfVec3 c)
+{
+    const PfOsgLOD* l = (const PfOsgLOD*)lod;
+    c[0] = l ? l->center.x() : 0;
+    c[1] = l ? l->center.y() : 0;
+    c[2] = l ? l->center.z() : 0;
+}
+
 /* ---- geosets --------------------------------------------------------------------*/
 
 extern "C" pfGeoSet* pfNewGSet(void*)
@@ -1363,23 +1520,33 @@ extern "C" int pfLoadTexFile(pfTexture* tex, const char* fileName)
 extern "C" void pfTexFilter(pfTexture* tex, int which, int filter)
 {
     PfOsgTex* t = (PfOsgTex*)tex;
-    if (which == PFTEX_MINFILTER)
+    if (which == PFTEX_MINFILTER) {
+        t->minFilt = filter;
         t->tex->setFilter(osg::Texture::MIN_FILTER,
             filter == PFTEX_POINT ? osg::Texture::NEAREST
           : filter == PFTEX_BILINEAR ? osg::Texture::LINEAR
           : osg::Texture::LINEAR_MIPMAP_LINEAR);
-    else
+    } else {
+        t->magFilt = filter;
         t->tex->setFilter(osg::Texture::MAG_FILTER,
             filter == PFTEX_POINT ? osg::Texture::NEAREST
                                   : osg::Texture::LINEAR);
+    }
 }
 
-extern "C" void pfGetTexImage(pfTexture* tex, uint** image, int* comp,
-                              int* sx, int* sy, int* sz)
+extern "C" int pfGetTexFilter(const pfTexture* tex, int which)
 {
-    PfOsgTex* t = (PfOsgTex*)tex;
-    osg::Image* img = t->img.get();
-    if (image) *image = img ? (uint*)img->data() : nullptr;
+    const PfOsgTex* t = (const PfOsgTex*)tex;
+    if (!t) return 0;
+    return which == PFTEX_MINFILTER ? t->minFilt : t->magFilt;
+}
+
+extern "C" void pfGetTexImage(const pfTexture* tex, unsigned int** image,
+                              int* comp, int* sx, int* sy, int* sz)
+{
+    const PfOsgTex* t = (const PfOsgTex*)tex;
+    const osg::Image* img = t->img.get();
+    if (image) *image = img ? (unsigned int*)img->data() : nullptr;
     if (comp)
         *comp = img ? osg::Image::computeNumComponents(img->getPixelFormat()) : 0;
     if (sx) *sx = img ? img->s() : 0;
@@ -1482,10 +1649,20 @@ extern "C" void pfGStateMode(pfGeoState* gs, int mode, int val)
         break;
     case PFSTATE_ENFOG:
     case PFSTATE_ENWIREFRAME:
+    case PFSTATE_ENLPOINTSTATE:
+    case PFSTATE_ENTEXGEN:
+    case PFSTATE_ENHIGHLIGHTING:
+    case PFSTATE_ANTIALIAS:
+    case PFSTATE_ENCOLORTABLE:
+    case PFSTATE_ENTEXLOD:
+        break;      /* accepted and ignored */
+    default: {
+        static std::set<int> warned;
+        if (warned.insert(mode).second)
+            fprintf(stderr, "pfosg: pfGStateMode(%d) not implemented\n",
+                    mode);
         break;
-    default:
-        fprintf(stderr, "pfosg: pfGStateMode(%d) not implemented\n", mode);
-        break;
+    }
     }
 }
 
@@ -1504,19 +1681,35 @@ extern "C" void pfGStateAttr(pfGeoState* gs, int which, void* attr)
     osg::StateSet* ss = g->ss.get();
     switch (which) {
     case PFSTATE_TEXTURE:
-        ss->setTextureAttributeAndModes(0, ((PfOsgTex*)attr)->tex.get());
+        /* NULL texture (or one whose image failed to load) = untextured */
+        if (attr && ((PfOsgTex*)attr)->tex)
+            ss->setTextureAttributeAndModes(0, ((PfOsgTex*)attr)->tex.get());
         break;
     case PFSTATE_TEXENV:
-        ss->setTextureAttributeAndModes(0, (osg::TexEnv*)attr);
+        if (attr) ss->setTextureAttributeAndModes(0, (osg::TexEnv*)attr);
         break;
     case PFSTATE_TEXMAT: {
+        if (!attr) break;
         osg::Matrixf m((const float*)attr);   /* pfMatrix* */
         ss->setTextureAttributeAndModes(0, new osg::TexMat(m));
         break;
     }
-    default:
-        fprintf(stderr, "pfosg: pfGStateAttr(%d) not implemented\n", which);
+    case PFSTATE_FRONTMTL:
+    case PFSTATE_BACKMTL:
+    case PFSTATE_LIGHTMODEL:
+    case PFSTATE_LIGHTS:
+    case PFSTATE_FOG:
+    case PFSTATE_HIGHLIGHT:
+    case PFSTATE_LPOINTSTATE:
+    case PFSTATE_TEXGEN:
+        break;      /* accepted; lighting comes from the viewer's sun */
+    default: {
+        static std::set<int> warned;
+        if (warned.insert(which).second)
+            fprintf(stderr, "pfosg: pfGStateAttr(%d) not implemented\n",
+                    which);
         break;
+    }
     }
 }
 
@@ -1985,6 +2178,9 @@ extern "C" int XLookupString(XKeyEvent*, char*, int, KeySym*, XComposeStatus*)
 
 extern "C" int pfdInitConverter(const char*) { return 1; }
 
+extern "C" pfNode* pfdLoadFile_pfb(const char* fileName);
+extern "C" pfNode* pfdLoadFile_pfa(const char* fileName);
+
 extern "C" pfNode* pfdLoadFile(const char* fileName)
 {
     std::string path = resolveFile(fileName);
@@ -1993,6 +2189,18 @@ extern "C" pfNode* pfdLoadFile(const char* fileName)
                  "pfdLoadFile: could not find \"%s\"", fileName);
         return nullptr;
     }
+    size_t dot = path.find_last_of('.');
+    std::string ext = dot == std::string::npos ? "" : path.substr(dot + 1);
+
+    /* SGI's shipped loader (pfpfb.c, compiled unmodified) is the default;
+     * PFOSG_LOADER=pfb2osg selects the direct-to-OSG loader instead */
+    static const char* pick = getenv("PFOSG_LOADER");
+    bool useSgi = !(pick && strcmp(pick, "pfb2osg") == 0);
+    if (ext == "pfa")
+        return pfdLoadFile_pfa(path.c_str());
+    if (ext == "pfb" && useSgi)
+        return pfdLoadFile_pfb(path.c_str());
+
     osg::ref_ptr<osg::Node> node = pfb2osgLoadFile(path);
     if (!node) return nullptr;
     S.keep.push_back(node);

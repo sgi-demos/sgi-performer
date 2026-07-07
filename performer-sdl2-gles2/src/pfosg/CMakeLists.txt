@@ -13,8 +13,17 @@ set_source_files_properties(${PFU_GUI_C} PROPERTIES
     COMPILE_OPTIONS "-std=gnu89;-Wno-int-conversion"
     INCLUDE_DIRECTORIES "${PF_PERFORMER_SRC_DIR}/lib/libpfutil")
 
+# SGI's shipped .pfb/.pfa database loader, also compiled UNMODIFIED; its
+# shim support is pfosg_pfb.cpp + generated stubs (see tools/harvest_pfb_api.py).
+# fsin/fcos are IRIX libm intrinsics, mapped like path.c's fatan2.
+set(PFDB_PFB_C ${PF_PERFORMER_SRC_DIR}/lib/libpfdb/libpfpfb/pfpfb.c)
+set_source_files_properties(${PFDB_PFB_C} PROPERTIES
+    COMPILE_OPTIONS "-std=gnu89;-Wno-int-conversion;-Dfcos=cosf;-Dfsin=sinf"
+    INCLUDE_DIRECTORIES "${PF_PERFORMER_SRC_DIR}/lib/libpfdb/libpfpfb")
+
 add_library(pfosg STATIC pfosg.cpp pfosg_perfly.cpp pfosg_gui.cpp
-            ${PFU_PATH_C} ${PFU_GUI_C})
+            pfosg_pfb.cpp pfosg_pfb_stubs.cpp
+            ${PFU_PATH_C} ${PFU_GUI_C} ${PFDB_PFB_C})
 # shim include dir first; the pristine Performer include tree follows it so
 # the shim's pfutil.h/pfui.h can #include_next the real ones (and so samples
 # can include <Performer/prmath.h> directly)
