@@ -1,10 +1,10 @@
 #
-# data/town-osg.perfly - the shipped town demo config, adapted for this repo:
-# repo-relative file path, DRIVE mode start (interactive: left mouse
-# accelerates, pointer steers, right mouse brakes).
-# Run from the repo root:  ./build/apps/perfly/perfly data/town-osg.perfly
+# data/town-tether.perfly - the shipped town demo config with its original
+# TETHER start: the camera rides the Esprit through town on city.path,
+# as the 2002 demo shipped.
+# Run from the repo root:  ./build/apps/perfly/perfly data/town-tether.perfly
 #
-cmdline -d
+cmdline -2
 # town.perfly - perfly config file for town demo
 #
 # This configuration file format is subject to radical change!

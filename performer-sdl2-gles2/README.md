@@ -30,6 +30,7 @@ src/libpr/            object-system experiments (not part of the demo build)
 vendor/Performer/     SGI's open-sourced Performer headers, utilities, and demos verbatim
 data/town/            the Performer Town demo database, textures, paths, vehicles
 data/town-osg.perfly  demo config: drive mode at the shipped street-level start
+data/town-tether.perfly  demo config: original tether start - ride the Esprit
 ```
 
 ## Building
@@ -62,7 +63,10 @@ emrun build-web/apps/hello_pf/hello_pf.html                   # simple test for 
   - **pfosg shim** ([src/pfosg](src/pfosg/pfosg.cpp)): Performer C API over OSG + SDL2. The shim's `pf.h` supplies object handles and tokens; the original `prmath.h`/`pfutil.h`/`pfui.h`/`pfdu.h` are consumed via `#include_next` (`PF_CPLUSPLUS_API=0`), so tokens, struct layouts, and declarations are exactly SGI's.
   - Six **unmodified** shipped programs compile and run: `simple`, `texture`, `lod_func`, `earthsky`, `intersect` — and perfly itself.
   - Real implementations: geoset building, textures, geostates, DCS/SCS/LOD, EarthSky clears, `pfNodeIsectSegs`, the pfu input system (SDL-backed `pfuMouse`/`pfuEventStream`), and pfiXformer motion models (trackball/fly/drive) with control laws transcribed from the shipped libpfui source — fly pitch sense verified against a real Performer install. IRIX hardware machinery (stats, calligraphics, compositors, DVR, clip textures, GUI panels) is accepted and ignored (~200 stubs in [pfosg_perfly.cpp](src/pfosg/pfosg_perfly.cpp)).
-- **M2** full demo experience: pfuPath vehicle animation (moving traffic, blimp, and tether mode — ride the Esprit), perfly's GUI panel, EarthSky sky/ground rendering, stats display; port the .pfb reader from the shipped source ([vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c](vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c)) to broaden database support
+- **M2** full demo experience:
+  - ✅ pfuPath vehicle animation: SGI's shipped `path.c` compiled in unmodified, driven through real APP-traversal node callbacks — the Esprit and truck circulate the streets, the blimp and Rocket Tux fly overhead, and **tether mode rides the Esprit** (`./build/apps/perfly/perfly data/town-tether.perfly`, the demo's original startup mode)
+  - ✅ **perfly's GUI control panel**: SGI's shipped libpfutil `gui.c` compiled in unmodified — the classic widget panel (position readout, motion/texture/fog/lighting menus, sliders, Reset All, GUI Off) drawn by the original immediate-mode code through a real second pfChannel, with a built-in bitmap font replacing the X11 fonts and heap-backed pfDataPools replacing IRIX shared memory. Buttons, menu cycling, sliders, Reset All, and GUI on/off all live
+  - remaining: EarthSky sky/ground rendering, stats display; port the .pfb reader from the shipped source ([vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c](vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c)) to broaden database support
 - **M3** town on the web: the shim + OSG stack on Emscripten/WebGL (GLES2-safe state via OSG's shader pipeline, SDL2 main loop already in place)
 - **M4** more demos: bring up further shipped SGI samples and databases as desired
 

@@ -17,6 +17,21 @@ struct PfOsgESky;
 typedef void (*PfosgChanFunc)(struct pfChannel*, void*);
 typedef void (*PfosgPWinFunc)(struct pfPipeWindow*);
 
+/* one Performer channel.  The first pfNewChan is the main scene channel
+ * (fields mostly live in PfOsgState for historical reasons); later channels
+ * are auxiliary 2D overlays (the libpfutil GUI panel) whose CULL/DRAW
+ * callbacks the frame loop invokes with raw GL after the OSG scene render. */
+struct PfOsgChan {
+    bool isMain = false;
+    float vpL = 0, vpR = 1, vpB = 0, vpT = 1;   /* window fractions */
+    bool ortho = false;
+    float orthoL = 0, orthoR = 1, orthoB = 0, orthoT = 1;
+    float nearD = 1, farD = 10000;
+    bool drawOn = true;                 /* pfChanTravMode(PFTRAV_DRAW) */
+    PfosgChanFunc cullFunc = nullptr;
+    PfosgChanFunc drawFunc = nullptr;
+};
+
 struct PfOsgState {
     bool inited = false;
     double startTicks = 0.0;
@@ -46,6 +61,13 @@ struct PfOsgState {
     osg::ref_ptr<osgViewer::Viewer> viewer;
     osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gw;
     long frameCount = 0;
+
+    std::vector<PfOsgChan*> chans;      /* [0] = main scene channel */
+
+    /* F9 debug pause: freezes pfGetTime so simulation (vehicles, tether,
+     * xformer) halts while rendering continues */
+    bool paused = false;
+    double pausedAt = 0.0;          /* frozen sim-time while paused */
 };
 
 extern PfOsgState pfosgState;
@@ -54,7 +76,18 @@ extern PfOsgState pfosgState;
 void pfosgInputBeginFrame(double now);
 void pfosgInputSDLEvent(const SDL_Event& ev, double now);
 
+/* immediate-mode draw phase (aux channel CULL/DRAW callbacks): pf state and
+ * matrix calls route to raw GL while this is true (pfosg_gui.cpp) */
+extern bool pfosgInDrawPhase;
+
+/* run aux (overlay) channels' CULL/DRAW callbacks with raw GL; called from
+ * pfFrame after the OSG scene render, before swap (pfosg.cpp) */
+void pfosgRunAuxChannels(void);
+
 /* geoset compile hook (pfosg.cpp) needed by intersection/xformer code */
 void pfosgCompileDirtyGSets(void);
+
+/* resolve a filename against the pfFilePath search list (pfosg.cpp) */
+std::string pfosgResolveFile(const char* name);
 
 #endif /* PFOSG_INTERNAL_H */

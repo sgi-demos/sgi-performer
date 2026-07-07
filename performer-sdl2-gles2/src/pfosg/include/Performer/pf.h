@@ -85,6 +85,7 @@ typedef struct pfLight            pfLight;
 typedef struct pfLightModel       pfLightModel;
 typedef struct pfLightPoint       pfLightPoint;
 typedef struct pfList             pfList;
+typedef struct pfPath             pfPath;
 typedef struct pfMPClipTexture    pfMPClipTexture;
 typedef struct pfMaterial         pfMaterial;
 typedef struct pfPartition        pfPartition;
@@ -105,6 +106,14 @@ typedef struct pfVirtualClipTexLimits pfVirtualClipTexLimits;
 typedef int (*pfReadImageTileFuncType)(pfImageTile* it, int ntexels);
 
 #define PF_MAXSTRING 300
+
+/* flag helpers (exact pr.h definitions; must be macros — an implicit
+ * function declaration here silently corrupts flag words) */
+#define PFFLAG_SET(flag, mask)      ((flag) |= (mask))
+#define PFFLAG_UNSET(flag, mask)    ((flag) &= ~(mask))
+#define PFFLAG_BOOL_SET(flag, mask, val) \
+            (val ? PFFLAG_SET(flag, mask) : PFFLAG_UNSET(flag, mask))
+#define PFFLAG_BOOL_GET(flag, mask) (((flag) & (mask)) ? 1 : 0)
 
 #define PF_OFF 0
 #define PF_ON  1
@@ -526,6 +535,8 @@ extern void pfFogRange(pfFog* fog, float onset, float opaque);
 #define PFSTATE_ANTIALIAS    20
 #define PFSTATE_ENTEXGEN     21
 #define PFSTATE_TEXGEN       22
+#define PFSTATE_ENHIGHLIGHTING 23
+#define PFSTATE_HIGHLIGHT    24
 
 #define PFTR_OFF          0
 #define PFTR_ON           1
@@ -644,7 +655,63 @@ extern int           pfIsectFunc(void (*func)(void*));
 #define PFHL_LINESPAT   (0x004 | PFHL_LINES)
 #define PFHL_FILLPAT    (0x0020 | PFHL_FILL)
 #define PFHL_FILLTEX    (0x080 | PFHL_FILL)
+/* node paths (pfPath = growable list of node pointers) */
+extern pfPath* pfNewPath(void);
+
+/* data pools (single-process shim: heap-backed; locks are no-ops) */
+extern volatile void* pfDPoolFind(pfDataPool* dpool, int id);
+extern int  pfDPoolLock(void* dpmem);
+extern void pfDPoolUnlock(void* dpmem);
+
+/* GUI-panel support (libpfutil gui.c) */
+extern void pfAddChan(pfPipeWindow* pw, pfChannel* chan);
+extern void pfApplyHlight(pfHighlight* hl);
+extern void pfHlightLineWidth(pfHighlight* hl, float width);
+extern void pfHlightPntSize(pfHighlight* hl, float size);
+extern int  pfGetHyperpipe(pfPipe* p);
+extern float pfGetSwitchVal(const pfSwitch* sw);
+extern volatile void* pfDPoolAlloc(pfDataPool* dpool, unsigned int size,
+                                   int id);
+extern int  pfDPoolFree(pfDataPool* dpool, void* dpmem);
+extern int  pfChanPick(pfChannel* chan, int mode, float px, float py,
+                       float radius, pfHit** pickList[]);
+extern void pfGetChanOutputOrigin(pfChannel* chan, int* x, int* y);
+extern void pfGetChanOutputSize(pfChannel* chan, int* xs, int* ys);
+extern pfWindow* pfGetCurWin(void);
+extern void pfGetWinSize(const pfWindow* win, int* xs, int* ys);
+
+/* class-type queries (pfIsOfType cookies) */
+extern pfType* pfGetNodeClassType(void);
+extern pfType* pfGetGroupClassType(void);
+extern pfType* pfGetGeodeClassType(void);
+extern pfType* pfGetSCSClassType(void);
+extern pfType* pfGetSwitchClassType(void);
+extern const char* pfGetTypeName(const void* data);
+extern pfGroup* (pfGetParent)(const pfNode* node, int i);
+extern void (pfGetSCSMat)(pfSCS* scs, pfMatrix m);
+extern void* (pfGetNodeTravData)(pfNode* node, int trav);
+extern void (pfGetNodeTravFuncs)(pfNode* node, int trav,
+                                 pfNodeTravFuncType* pre,
+                                 pfNodeTravFuncType* post);
+
+/* pfList (heap-backed) */
+extern pfList* pfNewList(int eltSize, int listLength, void* arena);
+extern void  pfResetList(pfList* list);
+extern void  pfAdd(pfList* list, void* elt);
+extern void* pfGet(const pfList* list, int index);
+extern int   pfGetNum(const pfList* list);
+extern int   pfSearch(const pfList* list, void* elt);
+extern int   pfCopy(void* dst, void* src);
+
+/* immediate-mode transforms (DRAW-phase only) */
+extern void pfScale(float x, float y, float z);
+extern void pfTranslate(float x, float y, float z);
+
+#define PFHL_FGCOLOR    0x1
+#define PFHL_BGCOLOR    0x2
 extern void pfHlightMode(pfHighlight* hl, unsigned int mode);
+extern void pfHlightColor(pfHighlight* hl, unsigned int which,
+                          float r, float g, float b);
 extern pfHighlight* pfNewHlight(void* arena);
 
 /* pfPrint verbosity */
@@ -882,11 +949,22 @@ extern void pfPVChanStressFilter(pfPipeVideoChannel* pvc, float frameFrac,
 #define PFTRAV_IS_CULL_BACK 0x4
 #define PFTRAV_IS_POINT     0x8
 #define PFTRAV_IS_UV        0x10
+#define PFTRAV_IS_PATH      0x400
+
+/* pick traversal modes (LOD/switch/sequence: current child = 0) */
+#define PFPK_M_NEAREST 0x0
+#define PFTRAV_LOD_CUR 0x0
+#define PFTRAV_SW_CUR  0x0
+#define PFTRAV_SEQ_CUR 0x0
 
 #define PFQHIT_FLAGS 0
 #define PFQHIT_POINT 1
 #define PFQHIT_NORM  2
 #define PFQHIT_XFORM 3
+#define PFQHIT_PATH  23
+
+/* pfQuerySys */
+#define PFQSYS_MAX_DBL_RGB_BITS 0x200630
 
 extern int (pfNodeIsectSegs)(pfNode* node, pfSegSet* segSet, pfHit** hits[]);
 #define pfNodeIsectSegs(n, s, h) (pfNodeIsectSegs)((pfNode*)(n), (s), (h))

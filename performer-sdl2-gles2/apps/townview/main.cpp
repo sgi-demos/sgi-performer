@@ -9,6 +9,7 @@
 #include "pfb2osg.h"
 
 #include <osg/ComputeBoundsVisitor>
+#include <osg/CullFace>
 #include <osgDB/WriteFile>
 #include <osgGA/TrackballManipulator>
 #include <osgUtil/Optimizer>
@@ -82,6 +83,11 @@ int main(int argc, char** argv)
     osgViewer::Viewer viewer;
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     viewer.setSceneData(scene.get());
+    /* Performer viewers cull backfaces by default (perfly: pfCullFace
+     * PFCF_BACK); town's sloppy FLAT strips have backfacing overlap
+     * triangles that must be culled */
+    scene->getOrCreateStateSet()->setAttributeAndModes(
+        new osg::CullFace(osg::CullFace::BACK));
 
     /* sun instead of headlight (perfly gets this from pfEarthSky) */
     viewer.setLightingMode(osg::View::SKY_LIGHT);

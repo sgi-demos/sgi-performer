@@ -16,6 +16,7 @@
 #include <osg/AlphaFunc>
 #include <osg/BlendFunc>
 #include <osg/CullFace>
+#include <osg/Depth>
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/Group>
@@ -31,9 +32,12 @@
 #include <osgDB/WriteFile>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/LineSegmentIntersector>
+#include <osgUtil/PolytopeIntersector>
 #include <osgViewer/Viewer>
 
 #include <SDL.h>
+
+#include <execinfo.h>
 
 #include <cmath>
 #include <cstdarg>
@@ -113,6 +117,187 @@ std::string resolveFile(const char* name)
         if (f) { fclose(f); return c; }
     }
     return std::string();
+}
+
+void pfosgDebugPick(float px, float py)
+{
+    /* unproject the pixel to a world-space ray (embedded viewers don't
+     * play well with View::computeIntersections) */
+    osg::Camera* cam = S.viewer->getCamera();
+    osg::Matrixd vpw = cam->getViewMatrix() * cam->getProjectionMatrix() *
+                       cam->getViewport()->computeWindowMatrix();
+    osg::Matrixd inv = osg::Matrixd::inverse(vpw);
+    osg::Vec3d nearPt = osg::Vec3d(px, py, 0.0) * inv;
+    osg::Vec3d farPt  = osg::Vec3d(px, py, 1.0) * inv;
+
+    /* depth-buffer probe: what actually won this pixel last frame?  compare
+     * with the road-plane prediction to distinguish "never rasterized"
+     * (depth = 1, clear) from "depth-blocked by an invisible occluder". */
+    {
+        float dz = -1.0f;
+        glReadPixels((int)px, (int)py, 1, 1,
+                     GL_DEPTH_COMPONENT, GL_FLOAT, &dz);
+        /* predicted window-z of the z=0 ground plane along this pixel ray */
+        double t = nearPt.z() / (nearPt.z() - farPt.z());
+        osg::Vec3d gp = nearPt + (farPt - nearPt) * t;
+        osg::Vec3d win = gp * vpw;
+        double fovy = 0, ar = 0, zn = 0, zf = 0;
+        cam->getProjectionMatrixAsPerspective(fovy, ar, zn, zf);
+        fprintf(stderr,
+                "pfosg: depth at (%.0f,%.0f) = %.6f (ground plane predicts "
+                "%.6f at world %.1f %.1f)  renderer=\"%s\" GL %s  "
+                "proj fovy=%.2f near=%.6f far=%.1f\n",
+                px, py, dz, win.z(), gp.x(), gp.y(),
+                (const char*)glGetString(GL_RENDERER),
+                (const char*)glGetString(GL_VERSION), fovy, zn, zf);
+    }
+
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> lsi =
+        new osgUtil::LineSegmentIntersector(nearPt, farPt);
+    osgUtil::IntersectionVisitor iv(lsi.get());
+    S.viewer->getSceneData()->accept(iv);
+    osgUtil::LineSegmentIntersector::Intersections& hits =
+        lsi->getIntersections();
+    if (!hits.empty()) {
+        fprintf(stderr, "pfosg: pick at (%.0f,%.0f): %zu hits\n",
+                px, py, hits.size());
+        int n = 0;
+        for (const auto& hit : hits) {
+            if (n++ >= 4) break;
+            std::string path;
+            for (osg::Node* pn : hit.nodePath) {
+                path += "/";
+                path += pn->getName().empty() ? pn->className()
+                                              : pn->getName();
+            }
+            const osg::Vec3d& p = hit.getWorldIntersectPoint();
+            fprintf(stderr, "  hit %d: %s drawable=%s world=(%.1f %.1f %.1f)\n",
+                    n, path.c_str(),
+                    hit.drawable.valid()
+                        ? (hit.drawable->getName().empty()
+                               ? hit.drawable->className()
+                               : hit.drawable->getName().c_str())
+                        : "?",
+                    p.x(), p.y(), p.z());
+            osg::Geometry* geom = hit.drawable.valid()
+                                      ? hit.drawable->asGeometry() : nullptr;
+            if (geom) {
+                const osg::Vec3Array* va =
+                    dynamic_cast<const osg::Vec3Array*>(geom->getVertexArray());
+                const osg::Vec4Array* ca =
+                    dynamic_cast<const osg::Vec4Array*>(geom->getColorArray());
+                const osg::StateSet* ss = geom->getStateSet();
+                const osg::Texture2D* tx = ss
+                    ? dynamic_cast<const osg::Texture2D*>(
+                          ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE))
+                    : nullptr;
+                fprintf(stderr,
+                        "        verts=%zu prims=%u color0=(%.2f %.2f %.2f %.2f) "
+                        "tex=%s texmode=%s\n",
+                        va ? va->size() : 0,
+                        geom->getNumPrimitiveSets(),
+                        ca && ca->size() ? (*ca)[0].r() : -1.0f,
+                        ca && ca->size() ? (*ca)[0].g() : -1.0f,
+                        ca && ca->size() ? (*ca)[0].b() : -1.0f,
+                        ca && ca->size() ? (*ca)[0].a() : -1.0f,
+                        tx ? tx->getName().c_str() : "(none)",
+                        ss && (ss->getTextureMode(0, GL_TEXTURE_2D)
+                               & osg::StateAttribute::ON) ? "ON" : "off");
+                for (unsigned pi = 0; pi < geom->getNumPrimitiveSets(); pi++) {
+                    const osg::DrawArrays* da =
+                        dynamic_cast<const osg::DrawArrays*>(
+                            geom->getPrimitiveSet(pi));
+                    if (da)
+                        fprintf(stderr, "        prim%u: mode=0x%x first=%d "
+                                "count=%d\n", pi, da->getMode(),
+                                da->getFirst(), da->getCount());
+                }
+                const osg::Vec2Array* ta = dynamic_cast<const osg::Vec2Array*>(
+                    geom->getTexCoordArray(0));
+                if (va && va->size() <= 16)
+                    for (size_t vi = 0; vi < va->size(); vi++)
+                        fprintf(stderr,
+                                "        v%zu=(%.1f %.1f %.1f) uv=(%.2f %.2f) "
+                                "c=(%.2f %.2f %.2f %.2f)\n", vi,
+                                (*va)[vi].x(), (*va)[vi].y(), (*va)[vi].z(),
+                                ta && vi < ta->size() ? (*ta)[vi].x() : -99.0f,
+                                ta && vi < ta->size() ? (*ta)[vi].y() : -99.0f,
+                                ca && vi < ca->size() ? (*ca)[vi].r() : -1.0f,
+                                ca && vi < ca->size() ? (*ca)[vi].g() : -1.0f,
+                                ca && vi < ca->size() ? (*ca)[vi].b() : -1.0f,
+                                ca && vi < ca->size() ? (*ca)[vi].a() : -1.0f);
+            }
+        }
+    } else {
+        fprintf(stderr, "pfosg: pick at (%.0f,%.0f): no hits\n", px, py);
+    }
+
+    /* second pass: pixel-frustum pick.  LineSegmentIntersector skips
+     * degenerate/zero-area triangles, which can still rasterize as visible
+     * slivers; PolytopeIntersector catches them. */
+    {
+        double vw = cam->getViewport()->width();
+        double vh = cam->getViewport()->height();
+        double nx = 2.0 * px / vw - 1.0, ny = 2.0 * py / vh - 1.0;
+        double dx = 4.0 / vw, dy = 4.0 / vh;  /* ~2px half-extent */
+        osg::ref_ptr<osgUtil::PolytopeIntersector> pti =
+            new osgUtil::PolytopeIntersector(
+                osgUtil::Intersector::PROJECTION,
+                nx - dx, ny - dy, nx + dx, ny + dy);
+        osgUtil::IntersectionVisitor piv(pti.get());
+        S.viewer->getSceneData()->accept(piv);
+        int n = 0;
+        for (const auto& hit : pti->getIntersections()) {
+            if (n++ >= 8) break;
+            std::string path;
+            for (osg::Node* pn : hit.nodePath) {
+                path += "/";
+                path += pn->getName().empty() ? pn->className()
+                                              : pn->getName();
+            }
+            osg::Vec3d p = hit.localIntersectionPoint;
+            if (!hit.matrix.valid()) ; else p = p * (*hit.matrix);
+            fprintf(stderr,
+                    "  poly %d: %s drawable=%s prim=%u %s=(%.1f %.1f %.1f)\n",
+                    n, path.c_str(),
+                    hit.drawable.valid()
+                        ? (hit.drawable->getName().empty()
+                               ? hit.drawable->className()
+                               : hit.drawable->getName().c_str())
+                        : "?",
+                    hit.primitiveIndex,
+                    hit.matrix.valid() ? "world" : "local",
+                    p.x(), p.y(), p.z());
+            osg::Geometry* g = hit.drawable.valid()
+                                   ? hit.drawable->asGeometry() : nullptr;
+            if (g) {
+                const osg::Vec3Array* va =
+                    dynamic_cast<const osg::Vec3Array*>(g->getVertexArray());
+                const osg::Vec4Array* ca =
+                    dynamic_cast<const osg::Vec4Array*>(g->getColorArray());
+                const osg::StateSet* ss = g->getStateSet();
+                const osg::Texture2D* tx = ss
+                    ? dynamic_cast<const osg::Texture2D*>(
+                          ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE))
+                    : nullptr;
+                fprintf(stderr,
+                        "        verts=%zu prims=%u color0=(%.2f %.2f %.2f %.2f)"
+                        " tex=%s\n",
+                        va ? va->size() : 0, g->getNumPrimitiveSets(),
+                        ca && ca->size() ? (*ca)[0].r() : -1.0f,
+                        ca && ca->size() ? (*ca)[0].g() : -1.0f,
+                        ca && ca->size() ? (*ca)[0].b() : -1.0f,
+                        ca && ca->size() ? (*ca)[0].a() : -1.0f,
+                        tx ? tx->getName().c_str() : "(none)");
+                if (va)
+                    for (size_t vi = 0; vi < va->size() && vi < 12; vi++)
+                        fprintf(stderr, "        v%zu=(%.2f %.2f %.2f)\n", vi,
+                                (*va)[vi].x(), (*va)[vi].y(), (*va)[vi].z());
+            }
+        }
+        if (n == 0)
+            fprintf(stderr, "  poly: no hits\n");
+    }
 }
 
 void openWindow()
@@ -255,8 +440,13 @@ void compileGSet(PfOsgGSet* g)
 void applyChannel()
 {
     if (!S.viewer) return;
-    if (S.scene && S.viewer->getSceneData() != S.scene.get())
+    if (S.scene && S.viewer->getSceneData() != S.scene.get()) {
         S.viewer->setSceneData(S.scene.get());
+        /* Performer's default depth func is LEQUAL (OSG's is LESS); SGI
+         * databases rely on it for coplanar base/decal geometry */
+        S.scene->getOrCreateStateSet()->setAttributeAndModes(
+            new osg::Depth(osg::Depth::LEQUAL));
+    }
 
     for (PfOsgGSet* g : S.gsets)
         if (g->dirty) compileGSet(g);
@@ -272,11 +462,40 @@ void applyChannel()
 
     int dw = 1, dh = 1;
     SDL_GL_GetDrawableSize(S.window, &dw, &dh);
-    double aspect = (double)dw / (double)dh;
+
+    /* honor the main channel's viewport (perfly shrinks the 3D view to make
+     * room for the GUI panel strip); OSG scissors its clear to the viewport,
+     * leaving the panel region to the aux channel */
+    double vx = 0, vy = 0, vw = dw, vh = dh;
+    for (PfOsgChan* m : S.chans) {
+        if (!m->isMain) continue;
+        vx = m->vpL * dw;
+        vy = m->vpB * dh;
+        vw = (m->vpR - m->vpL) * dw;
+        vh = (m->vpT - m->vpB) * dh;
+        /* the main channel's near/far is authoritative for the projection */
+        S.nearD = m->nearD;
+        S.farD = m->farD;
+        break;
+    }
+    osg::Viewport* vp = S.viewer->getCamera()->getViewport();
+    if (!vp)
+        S.viewer->getCamera()->setViewport((int)vx, (int)vy, (int)vw, (int)vh);
+    else if ((int)vp->x() != (int)vx || (int)vp->y() != (int)vy ||
+             (int)vp->width() != (int)vw || (int)vp->height() != (int)vh)
+        vp->setViewport((int)vx, (int)vy, (int)vw, (int)vh);
+
+    double aspect = vh > 0 ? vw / vh : 1.0;
     double fovy = (S.fovV > 0.0f)
         ? S.fovV
         : osg::RadiansToDegrees(
               2.0 * atan(tan(osg::DegreesToRadians((double)S.fovH) * 0.5) / aspect));
+    /* the channel's near/far is authoritative, as in real Performer.  OSG's
+     * default per-frame auto near/far pushes the near plane right up against
+     * the closest geometry, and Apple's GL-on-Metal drops whole triangles
+     * that straddle such a near plane (the "missing road triangle" wedge). */
+    S.viewer->getCamera()->setComputeNearFarMode(
+        osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
     S.viewer->getCamera()->setProjectionMatrixAsPerspective(
         fovy, aspect, S.nearD, S.farD);
 
@@ -386,6 +605,74 @@ extern "C" int pfFrame(void)
 
     double now = pfGetTime();
     pfosgInputBeginFrame(now);
+
+    /* debug: synthesize a window resize at frame N (repro harness) */
+    static long testResize = getenv("PFOSG_TEST_RESIZE")
+        ? atol(getenv("PFOSG_TEST_RESIZE")) : 0;
+    if (testResize && S.frameCount == testResize)
+        SDL_SetWindowSize(S.window, 1470, 862);
+
+    /* debug: hide all nodes with the given name (bisection harness) */
+    static const char* hideName = getenv("PFOSG_HIDE");
+    if (hideName && S.viewer->getSceneData()) {
+        struct HideVisitor : osg::NodeVisitor {
+            const char* name;
+            int hid = 0;
+            HideVisitor(const char* n)
+                : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN), name(n) {}
+            void apply(osg::Node& node) override {
+                if (node.getName() == name && node.getNodeMask()) {
+                    node.setNodeMask(0);
+                    hid++;
+                } else
+                    traverse(node);
+            }
+        } hv(hideName);
+        S.viewer->getSceneData()->accept(hv);
+        if (hv.hid)
+            fprintf(stderr, "pfosg: PFOSG_HIDE hid %d \"%s\"\n",
+                    hv.hid, hideName);
+    }
+
+
+    /* debug: synthetic clicks "frame:x:y[,frame:x:y...]" (window points,
+     * top-down, like real SDL mouse events); button releases 5 frames on */
+    static const char* testClick = getenv("PFOSG_TEST_CLICK");
+    if (testClick) {
+        const char* p = testClick;
+        while (*p) {
+            long f = 0; int cx = 0, cy = 0; int n = 0;
+            if (sscanf(p, "%ld:%d:%d%n", &f, &cx, &cy, &n) == 3) {
+                if (S.frameCount == f || S.frameCount == f + 5) {
+                    SDL_Event ev;
+                    memset(&ev, 0, sizeof ev);
+                    ev.motion.type = SDL_MOUSEMOTION;
+                    ev.motion.x = cx; ev.motion.y = cy;
+                    SDL_PushEvent(&ev);
+                    memset(&ev, 0, sizeof ev);
+                    ev.button.type = S.frameCount == f ? SDL_MOUSEBUTTONDOWN
+                                                       : SDL_MOUSEBUTTONUP;
+                    ev.button.button = SDL_BUTTON_LEFT;
+                    ev.button.x = cx; ev.button.y = cy;
+                    SDL_PushEvent(&ev);
+                    fprintf(stderr, "pfosg: test click %s at (%d,%d)\n",
+                            S.frameCount == f ? "DOWN" : "UP", cx, cy);
+                }
+                p += n;
+            }
+            if (*p == ',') p++; else break;
+        }
+    }
+
+    /* debug: programmatic pick "frame:px:py" (drawable pixels, GL y-up) */
+    static const char* testPick = getenv("PFOSG_TEST_PICK");
+    if (testPick) {
+        long f = 0; float px = 0, py = 0;
+        if (sscanf(testPick, "%ld:%f:%f", &f, &px, &py) == 3 &&
+            f == S.frameCount)
+            pfosgDebugPick(px, py);
+    }
+
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
         if (ev.type == SDL_QUIT) {
@@ -399,34 +686,89 @@ extern "C" int pfFrame(void)
             S.gw->resized(0, 0, dw, dh);
             S.gw->getEventQueue()->windowResize(0, 0, dw, dh);
         }
-        pfosgInputSDLEvent(ev, now);
+        if (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_F9) {
+            /* debug pause: freeze sim time, keep rendering */
+            if (!S.paused) {
+                S.pausedAt = now;
+                S.paused = true;
+                fprintf(stderr, "pfosg: PAUSED (F9 resumes; F10 picks geometry under pointer)\n");
+            } else {
+                /* remove the pause gap from the clock */
+                S.startTicks += (SDL_GetTicks() / 1000.0 - S.startTicks)
+                                - S.pausedAt;
+                S.paused = false;
+                fprintf(stderr, "pfosg: resumed\n");
+            }
+            continue;                    /* not forwarded to the app */
+        }
+        if (ev.type == SDL_KEYDOWN && ev.key.keysym.sym == SDLK_F10) {
+            /* debug pick: identify the geometry under the mouse pointer */
+            int mx = 0, my = 0;
+            SDL_GetMouseState(&mx, &my);
+            int ww = 1, wh = 1, dw = 1, dh = 1;
+            SDL_GetWindowSize(S.window, &ww, &wh);
+            SDL_GL_GetDrawableSize(S.window, &dw, &dh);
+            pfosgDebugPick(mx * (float)dw / ww,
+                           (wh - my) * (float)dh / wh);   /* GL y-up */
+            continue;
+        }
+                pfosgInputSDLEvent(ev, now);
     }
 
     applyChannel();
 
-    /* user DRAW callback: pfClearChan/pfDraw inside it are no-ops because
-     * viewer.frame() below performs the actual clear+draw */
-    if (S.drawFunc)
-        S.drawFunc((pfChannel*)&S, nullptr);
-
     S.viewer->frame();
+    /* channel DRAW callbacks run after the scene render: pfClearChan/pfDraw
+     * inside them are no-ops (viewer.frame() did the clear+draw), so what
+     * remains is their overlay drawing — perfly's messages on the main
+     * channel, the libpfutil GUI panel on its own channel */
+    pfosgRunAuxChannels();
     SDL_GL_SwapWindow(S.window);
     S.frameCount++;
 
+    /* once-per-second heartbeat: wall time, sim time, frame, camera pos */
+    {
+        static double lastLog = 0.0;
+        double wall = SDL_GetTicks() / 1000.0;
+        if (wall - lastLog >= 1.0) {
+            lastLog = wall;
+            osg::Vec3d eye = S.viewer->getCamera()->getInverseViewMatrix()
+                                 .getTrans();
+            fprintf(stderr,
+                    "pfosg: wall=%.1f sim=%.1f frame=%ld eye=(%.1f %.1f %.1f)%s\n",
+                    wall, pfGetTime(), S.frameCount,
+                    eye.x(), eye.y(), eye.z(),
+                    S.paused ? " [PAUSED]" : "");
+        }
+    }
+
     const char* shot = getenv("PFOSG_SCREENSHOT");
-    if (shot && S.frameCount == 30) {
+    static long shotFrame = getenv("PFOSG_SCREENSHOT_FRAME")
+        ? atol(getenv("PFOSG_SCREENSHOT_FRAME")) : 30;
+    static long shotEvery = getenv("PFOSG_SCREENSHOT_EVERY")
+        ? atol(getenv("PFOSG_SCREENSHOT_EVERY")) : 0;
+    bool capture = shot && (shotEvery > 0 ? (S.frameCount % shotEvery == 0 &&
+                                             S.frameCount > 0)
+                                          : S.frameCount == shotFrame);
+    if (capture) {
         int dw = 0, dh = 0;
         SDL_GL_GetDrawableSize(S.window, &dw, &dh);
         osg::ref_ptr<osg::Image> img = new osg::Image;
         img->readPixels(0, 0, dw, dh, GL_RGB, GL_UNSIGNED_BYTE);
-        if (osgDB::writeImageFile(*img, shot))
-            fprintf(stderr, "pfosg: wrote %s\n", shot);
+        char name[1024];
+        if (shotEvery > 0)
+            snprintf(name, sizeof name, "%s.%05ld.png", shot, S.frameCount);
+        else
+            snprintf(name, sizeof name, "%s", shot);
+        if (osgDB::writeImageFile(*img, name))
+            fprintf(stderr, "pfosg: wrote %s\n", name);
     }
     return 1;
 }
 
 extern "C" double pfGetTime(void)
 {
+    if (S.paused) return S.pausedAt;
     return SDL_GetTicks() / 1000.0 - S.startTicks;
 }
 
@@ -484,6 +826,9 @@ extern "C" void pfNotify(int severity, int, const char* format, ...)
     fprintf(stderr, "PF %s: %s\n",
             (severity >= 0 && severity <= 5) ? sev[severity] : "?", msg);
     if (severity == PFNFY_FATAL) {
+        void* frames[32];
+        int n = backtrace(frames, 32);
+        backtrace_symbols_fd(frames, n, 2);
         pfExit();
         exit(1);
     }
@@ -603,7 +948,16 @@ extern "C" void (pfNodeName)(pfNode* node, const char* name)
     if (node && name) ((osg::Node*)node)->setName(name);
 }
 
-extern "C" void (pfNodeTravMask)(pfNode*, int, unsigned int, int, int) {}
+extern "C" void (pfNodeTravMask)(pfNode* node, int which, unsigned int mask,
+                                 int /*setMode*/, int /*bitOp*/)
+{
+    if (!node) return;
+    /* CULL mask 0 = excluded from the rendering traversal (perfly uses this
+     * to hide its cull-volume visualization from the channel that owns it) */
+    if (which == PFTRAV_CULL)
+        ((osg::Node*)node)->setNodeMask(mask ? ~0u : 0u);
+    /* APP/DRAW/ISECT masks: not needed by the demos yet */
+}
 
 extern "C" void (pfDCSTrans)(pfDCS* dcs, float x, float y, float z)
 {
@@ -844,6 +1198,9 @@ extern "C" void pfGStateMode(pfGeoState* gs, int mode, int val)
             ss->setAttributeAndModes(
                 new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
             ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+            /* no depth writes from blended surfaces (see pfb2osg loader) */
+            ss->setAttributeAndModes(
+                new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false));
         } else {
             ss->setMode(GL_BLEND, osg::StateAttribute::OFF);
             ss->setRenderingHint(osg::StateSet::OPAQUE_BIN);
@@ -974,8 +1331,10 @@ extern "C" void pfPWinOriginSize(pfPipeWindow*, int x, int y, int xs, int ys)
 
 extern "C" void pfGetPWinSize(pfPipeWindow*, int* xs, int* ys)
 {
-    if (xs) *xs = S.winW;
-    if (ys) *ys = S.winH;
+    int ww = S.winW, wh = S.winH;
+    if (S.window) SDL_GetWindowSize(S.window, &ww, &wh);
+    if (xs) *xs = ww;
+    if (ys) *ys = wh;
 }
 
 extern "C" int pfOpenPWin(pfPipeWindow*)
@@ -1004,11 +1363,109 @@ extern "C" void* pfGetCurWSConnection(void)
 
 extern "C" unsigned long pfGetPWinWSWindow(pfPipeWindow*) { return 0; }
 
-extern "C" pfChannel* pfNewChan(pfPipe*) { return (pfChannel*)&S; }
+/* The main (3D scene) channel is whichever one pfChanScene designates —
+ * perfly's GUI library creates ITS channel first, so creation order can't
+ * pick it.  Until a scene is attached, the first channel acts as main. */
+extern "C" pfChannel* pfNewChan(pfPipe*)
+{
+    PfOsgChan* c = new PfOsgChan;
+    c->isMain = S.chans.empty();
+    S.chans.push_back(c);
+    return (pfChannel*)c;
+}
 
-extern "C" void pfChanScene(pfChannel*, pfScene* scene)
+static PfOsgChan* mainChan(void)
+{
+    for (PfOsgChan* c : S.chans)
+        if (c->isMain) return c;
+    return S.chans.empty() ? nullptr : S.chans[0];
+}
+
+/* legacy callers (and shim-internal code) pass &S or nullptr for "the
+ * channel"; treat anything that isn't a registered channel as main */
+static PfOsgChan* chanOf(pfChannel* ch)
+{
+    for (PfOsgChan* c : S.chans)
+        if ((pfChannel*)c == ch) return c;
+    return mainChan();
+}
+
+extern "C" void pfAddChan(pfPipeWindow*, pfChannel*) {}
+
+extern "C" void pfChanViewport(pfChannel* ch, float l, float r,
+                               float b, float t)
+{
+    PfOsgChan* c = chanOf(ch);
+    if (!c) return;
+    c->vpL = l; c->vpR = r; c->vpB = b; c->vpT = t;
+}
+
+extern "C" void pfGetChanViewport(pfChannel* ch, float* l, float* r,
+                                  float* b, float* t)
+{
+    PfOsgChan* c = chanOf(ch);
+    if (l) *l = c ? c->vpL : 0;
+    if (r) *r = c ? c->vpR : 1;
+    if (b) *b = c ? c->vpB : 0;
+    if (t) *t = c ? c->vpT : 1;
+}
+
+extern "C" void pfMakeOrthoChan(pfChannel* ch, float l, float r,
+                                float b, float t)
+{
+    PfOsgChan* c = chanOf(ch);
+    if (!c) return;
+    c->ortho = true;
+    c->orthoL = l; c->orthoR = r; c->orthoB = b; c->orthoT = t;
+}
+
+/* channel pixel queries are in SDL window points — the same space as
+ * pfuMouse and pfGetPWinSize; only the shim's internal glViewport code
+ * deals in HiDPI drawable pixels */
+extern "C" void pfGetChanOrigin(pfChannel* ch, int* x, int* y)
+{
+    int ww = S.winW, wh = S.winH;
+    if (S.window) SDL_GetWindowSize(S.window, &ww, &wh);
+    PfOsgChan* c = chanOf(ch);
+    if (x) *x = c ? (int)(c->vpL * ww) : 0;
+    if (y) *y = c ? (int)(c->vpB * wh) : 0;
+}
+
+extern "C" void pfGetChanSize(pfChannel* ch, int* xs, int* ys)
+{
+    int ww = S.winW, wh = S.winH;
+    if (S.window) SDL_GetWindowSize(S.window, &ww, &wh);
+    PfOsgChan* c = chanOf(ch);
+    if (xs) *xs = c ? (int)((c->vpR - c->vpL) * ww) : ww;
+    if (ys) *ys = c ? (int)((c->vpT - c->vpB) * wh) : wh;
+}
+
+extern "C" void pfChanTravMode(pfChannel* ch, int trav, int mode)
+{
+    /* the GUI library turns its overlay on/off this way (pfuEnableGUI) */
+    PfOsgChan* c = chanOf(ch);
+    if (c && trav == PFTRAV_DRAW) c->drawOn = mode != 0;
+}
+
+extern "C" void pfGetChanOutputOrigin(pfChannel* ch, int* x, int* y)
+{
+    pfGetChanOrigin(ch, x, y);
+}
+
+extern "C" void pfGetChanOutputSize(pfChannel* ch, int* xs, int* ys)
+{
+    pfGetChanSize(ch, xs, ys);
+}
+
+extern "C" void pfChanScene(pfChannel* ch, pfScene* scene)
 {
     S.scene = ((osg::Node*)scene)->asGroup();
+    /* attaching a scene designates the main 3D channel */
+    PfOsgChan* c = chanOf(ch);
+    if (c) {
+        for (PfOsgChan* o : S.chans) o->isMain = false;
+        c->isMain = true;
+    }
 }
 
 extern "C" void pfChanFOV(pfChannel*, float fovh, float fovv)
@@ -1017,10 +1474,20 @@ extern "C" void pfChanFOV(pfChannel*, float fovh, float fovv)
     S.fovV = fovv;
 }
 
-extern "C" void pfChanNearFar(pfChannel*, float nearDist, float farDist)
+extern "C" void pfChanNearFar(pfChannel* ch, float nearDist, float farDist)
 {
-    S.nearD = nearDist;
-    S.farD = farDist;
+    /* per channel; applyChannel projects with the main channel's values
+     * (the GUI channel sets -1..1 ortho depth, which must not leak into the
+     * 3D projection while channel roles are still being assigned) */
+    PfOsgChan* c = chanOf(ch);
+    if (c) {
+        c->nearD = nearDist;
+        c->farD = farDist;
+    }
+    if (!c || c->isMain) {
+        S.nearD = nearDist;
+        S.farD = farDist;
+    }
 }
 
 extern "C" void pfChanView(pfChannel*, pfVec3 xyz, pfVec3 hpr)
@@ -1072,15 +1539,69 @@ extern "C" void pfChanESky(pfChannel*, pfEarthSky* esky)
     S.esky = (PfOsgESky*)esky;
 }
 
-extern "C" void pfChanTravFunc(pfChannel*, int trav, pfChanFuncType func)
+extern "C" void pfChanTravFunc(pfChannel* ch, int trav, pfChanFuncType func)
 {
-    if (trav == PFTRAV_DRAW) S.drawFunc = (PfosgChanFunc)func;
+    /* stored per channel; the frame loop reads the main channel's DRAW func
+     * (role assignment can change until pfChanScene runs) */
+    PfOsgChan* c = chanOf(ch);
+    if (!c) return;
+    if (trav == PFTRAV_CULL) c->cullFunc = (PfosgChanFunc)func;
+    if (trav == PFTRAV_DRAW) c->drawFunc = (PfosgChanFunc)func;
+}
+
+void pfosgRunAuxChannels(void)
+{
+    PfOsgChan* main = mainChan();
+    bool any = false;
+    for (PfOsgChan* c : S.chans)
+        if (c->drawFunc) any = true;
+    if (!any) return;
+
+    int dw = 1, dh = 1;
+    SDL_GL_GetDrawableSize(S.window, &dw, &dh);
+
+    /* sandbox: raw fixed-function GL behind OSG's back, fully restored so
+     * osg::State's cache stays truthful */
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    pfosgInDrawPhase = true;
+    /* main channel's callback first (scene overlays), then aux overlays */
+    for (int pass = 0; pass < 2; pass++)
+        for (PfOsgChan* c : S.chans) {
+            if ((pass == 0) != (c == main) || !c->drawFunc || !c->drawOn)
+                continue;
+            glViewport((int)(c->vpL * dw), (int)(c->vpB * dh),
+                       (int)((c->vpR - c->vpL) * dw),
+                       (int)((c->vpT - c->vpB) * dh));
+            if (c->cullFunc) c->cullFunc((pfChannel*)c, nullptr);
+            c->drawFunc((pfChannel*)c, nullptr);
+        }
+    pfosgInDrawPhase = false;
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glPopClientAttrib();
+    glPopAttrib();
 }
 
 void pfosgCompileDirtyGSets(void)
 {
     for (PfOsgGSet* g : S.gsets)
         if (g->dirty) compileGSet(g);
+}
+
+std::string pfosgResolveFile(const char* name)
+{
+    return resolveFile(name);
 }
 
 extern "C" void pfClearChan(pfChannel*) {}   /* viewer.frame() clears */

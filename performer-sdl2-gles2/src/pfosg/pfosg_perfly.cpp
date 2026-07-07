@@ -45,6 +45,7 @@
 #include "pfosg_internal.h"
 
 #include <osg/Matrixd>
+#include <osg/CullFace>
 #include <osg/MatrixTransform>
 
 #include <cmath>
@@ -605,6 +606,9 @@ void pfiUpdateXformer(pfiXformer* xf)
 
 extern "C" {
 
+/* IRIX libm float intrinsics referenced by the shipped libpfutil sources */
+float fatan2(float y, float x) { return atan2f(y, x); }
+
 /* --- X11 conveniences the samples use (Xlib macros originally) --- */
 int DefaultScreen(void*)          { return 0; }
 int ScreenCount(void*)            { return 1; }
@@ -628,14 +632,29 @@ float pfGetVideoRate(void)               { return 60.0f; }
 void pfVideoRate(float)                  {}
 unsigned int pfGetMPBitmask(void)        { return 0; }
 const char* pfGetMachString(void)        { return "pfosg"; }
-int  pfQueryFeature(int, int* dst)       { if (dst) *dst = 0; return 0; }
+/* every queried feature is "fast" here — a zeroed/short answer makes
+ * perfly default texturing (and friends) OFF from stack garbage */
+int  pfQueryFeature(int, int* dst)
+{
+    if (dst) *dst = PFQFTR_FAST;
+    return sizeof(int);
+}
 int  pfMQueryFeature(int* which, int* dst)
 {
-    (void)which;
-    if (dst) *dst = 0;
-    return 0;
+    int n = 0;
+    if (which && dst)
+        for (; which[n]; n++) dst[n] = PFQFTR_FAST;
+    return n * (int)sizeof(int);
 }
-int  pfQuerySys(int, int* dst)           { if (dst) *dst = 0; return 0; }
+int  pfQuerySys(int which, int* dst)
+{
+    if (!dst) return 0;
+    switch (which) {
+    case PFQSYS_MAX_DBL_RGB_BITS: *dst = 8; break;   /* deep color GUI */
+    default:                      *dst = 0; break;
+    }
+    return sizeof(int);
+}
 int  pfIsectFunc(void (*)(void*))        { return 0; }
 void pfStageConfigFunc(int, unsigned int, pfStageFuncType) {}
 void pfConfigStage(int, unsigned int)    {}
@@ -656,26 +675,40 @@ int  pfIsOfType(void* obj, void* type)
 const char* pfGetFilePath(void)          { return ""; }
 int  pfFindFile(const char* file, char path[PF_MAXSTRING], int)
 {
-    extern pfNode* pfdLoadFile(const char*);   /* uses same search rules */
-    FILE* f = fopen(file, "rb");
-    if (f) { fclose(f); strncpy(path, file, PF_MAXSTRING); return 1; }
-    return 0;
+    std::string found = pfosgResolveFile(file);
+    if (found.empty() || found.size() >= 256) return 0;
+    /* callers pass buffers as small as 256 bytes (pfuAddFile); write only
+     * the bytes needed, as the original did */
+    strcpy(path, found.c_str());
+    return 1;
 }
 void pfOverride(unsigned long long, int) {}
 int  pfGetNotifyLevel(void);             /* defined in pfosg.cpp */
 
-/* --- immediate mode / draw-callback helpers --- */
-void pfPushState(void) {}
-void pfPopState(void)  {}
-void pfBasicState(void) {}
-void pfMakeBasicState(void) {}
-void pfPushMatrix(void) {}
-void pfPushIdentMatrix(void) {}
-void pfPopMatrix(void) {}
-void pfMultMatrix(pfMatrix) {}
-void pfRotate(int, float) {}
-void pfClear(int, const pfVec4) {}
-void pfCullFace(int) {}
+/* immediate-mode state/matrix/clear/text live in pfosg_gui.cpp */
+void pfCullFace(int cull)
+{
+    /* global default face culling (perfly sets PFCF_BACK; database gstates
+     * with an explicit CULLFACE element still override, as in Performer) */
+    if (!pfosgState.viewer) return;
+    osg::StateSet* ss =
+        pfosgState.viewer->getCamera()->getOrCreateStateSet();
+    switch (cull) {
+    case PFCF_OFF:
+        ss->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
+        break;
+    case PFCF_BACK:
+        ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+        break;
+    case PFCF_FRONT:
+        ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::FRONT));
+        break;
+    case PFCF_BOTH:
+        ss->setAttributeAndModes(
+            new osg::CullFace(osg::CullFace::FRONT_AND_BACK));
+        break;
+    }
+}
 void pfAntialias(int) {}
 void pfApplyMtl(pfMaterial*) {}
 void pfApplyLModel(pfLightModel*) {}
@@ -704,9 +737,84 @@ int (pfGetNumParents)(pfNode* n)
     return (int)((osg::Node*)n)->getNumParents();
 }
 void (pfNodeBSphere)(pfNode*, pfSphere*, int) {}
-void (pfNodeTravFuncs)(pfNode*, int, pfNodeTravFuncType, pfNodeTravFuncType) {}
-void (pfNodeTravData)(pfNode*, int, void*) {}
-pfNode* (pfGetTravNode)(pfTraverser*) { return nullptr; }
+
+/* ---- APP-traversal node callbacks (vehicle animation etc.) ----------------
+ * pfNodeTravFuncs/pfNodeTravData attach per-frame callbacks to a node; the
+ * shim runs them from an osg update callback.  The pfTraverser* handed to
+ * the user func is simply the node itself. */
+
+pfNode* (pfGetTravNode)(pfTraverser* trav) { return (pfNode*)trav; }
+struct PfTravCallback;
+static PfTravCallback* travCallbackFor(osg::Node* n);
+
+}   /* extern "C" pause: define the C++ callback class */
+
+struct PfTravCallback : public osg::NodeCallback {
+    pfNodeTravFuncType pre = nullptr;
+    pfNodeTravFuncType post = nullptr;
+    void* data = nullptr;
+    void operator()(osg::Node* node, osg::NodeVisitor* nv) override
+    {
+        if (pre)  pre((pfTraverser*)node, data);
+        traverse(node, nv);
+        if (post) post((pfTraverser*)node, data);
+    }
+};
+
+static PfTravCallback* travCallbackFor(osg::Node* n)
+{
+    PfTravCallback* cb = dynamic_cast<PfTravCallback*>(n->getUpdateCallback());
+    if (!cb) {
+        cb = new PfTravCallback;
+        n->addUpdateCallback(cb);
+    }
+    return cb;
+}
+
+extern "C" {
+
+void (pfNodeTravFuncs)(pfNode* node, int which, pfNodeTravFuncType pre,
+                       pfNodeTravFuncType post)
+{
+    if (!node || which != PFTRAV_APP) return;  /* CULL/DRAW/ISECT: ignored */
+    PfTravCallback* cb = travCallbackFor((osg::Node*)node);
+    cb->pre = pre;
+    cb->post = post;
+}
+
+void (pfNodeTravData)(pfNode* node, int which, void* data)
+{
+    if (!node || which != PFTRAV_APP) return;
+    travCallbackFor((osg::Node*)node)->data = data;
+}
+void (pfGetNodeTravFuncs)(pfNode* node, int which,
+                          pfNodeTravFuncType* pre, pfNodeTravFuncType* post)
+{
+    PfTravCallback* cb = (node && which == PFTRAV_APP)
+        ? dynamic_cast<PfTravCallback*>(
+              ((osg::Node*)node)->getUpdateCallback())
+        : nullptr;
+    if (pre)  *pre = cb ? cb->pre : nullptr;
+    if (post) *post = cb ? cb->post : nullptr;
+}
+void* (pfGetNodeTravData)(pfNode* node, int which)
+{
+    PfTravCallback* cb = (node && which == PFTRAV_APP)
+        ? dynamic_cast<PfTravCallback*>(
+              ((osg::Node*)node)->getUpdateCallback())
+        : nullptr;
+    return cb ? cb->data : nullptr;
+}
+const char* (pfGetNodeName)(pfNode* node)
+{
+    static char name[256];
+    if (!node) return nullptr;
+    const std::string& n = ((osg::Node*)node)->getName();
+    if (n.empty()) return nullptr;
+    strncpy(name, n.c_str(), sizeof name - 1);
+    name[sizeof name - 1] = '\0';
+    return name;
+}
 int  (pfFlatten)(pfNode*, int) { return 0; }
 void (pfDCSMat)(pfDCS* dcs, pfMatrix m)
 {
@@ -715,6 +823,11 @@ void (pfDCSMat)(pfDCS* dcs, pfMatrix m)
 }
 void (pfDCSCoord)(pfDCS* dcs, pfCoord* c)
 {
+    static int trace = -1;
+    if (trace < 0) trace = getenv("PFOSG_TRACE_DCS") != nullptr;
+    if (trace)
+        fprintf(stderr, "pfDCSCoord %p: %.1f %.1f %.1f  h %.1f\n",
+                (void*)dcs, c->xyz[0], c->xyz[1], c->xyz[2], c->hpr[0]);
     pfMatrix m;
     pfMakeCoordMat(m, c);
     (pfDCSMat)(dcs, m);
@@ -740,9 +853,8 @@ int pfGetGSetPrimType(pfGeoSet*) { return PFGS_TRIS; }
 int pfGetGSetNumPrims(pfGeoSet*) { return 0; }
 pfGeoState* pfGetGSetGState(pfGeoSet*) { return nullptr; }
 pfGeoState* pfMakeBasicGState(pfGeoState* gs) { return gs; }
-void pfCopy(void*, void*) {}
 void pfPrint(void*, unsigned long long, int, void*) {}
-pfList* pfNewList(int, int, void*) { return (pfList*)calloc(1, 64); }
+/* pfCopy / pfNewList (+ the rest of pfList): real, in pfosg_gui.cpp */
 
 /* --- materials / lights / fog --- */
 pfMaterial* pfNewMtl(void*) { return (pfMaterial*)calloc(1, 64); }
@@ -865,23 +977,8 @@ pfMPClipTexture* pfGetPipeMPClipTexture(pfPipe*, int) { return nullptr; }
 pfClipTexture* pfGetMPClipTextureClipTexture(pfMPClipTexture*) { return nullptr; }
 void pfChanViewOffsets(pfChannel*, pfVec3, pfVec3) {}
 void pfGetChanOffsetViewMat(pfChannel*, pfMatrix m) { pfMakeIdentMat(m); }
-void pfChanViewport(pfChannel*, float, float, float, float) {}
-void pfGetChanViewport(pfChannel*, float* l, float* r, float* b, float* t)
-{
-    if (l) *l = 0; if (r) *r = 1; if (b) *b = 0; if (t) *t = 1;
-}
-void pfGetChanOrigin(pfChannel*, int* x, int* y)
-{
-    if (x) *x = 0;
-    if (y) *y = 0;
-}
-void pfGetChanSize(pfChannel*, int* xs, int* ys)
-{
-    int dw = pfosgState.winW, dh = pfosgState.winH;
-    if (pfosgState.window) SDL_GL_GetDrawableSize(pfosgState.window, &dw, &dh);
-    if (xs) *xs = dw;
-    if (ys) *ys = dh;
-}
+/* pfChanViewport / pfGetChanViewport / pfGetChanOrigin / pfGetChanSize are
+ * real, per-channel, in pfosg.cpp */
 void pfChanShare(pfChannel*, unsigned int) {}
 unsigned int pfGetChanShare(pfChannel*) { return 0; }
 void pfChanAutoAspect(pfChannel*, int) {}
@@ -898,11 +995,11 @@ pfFrameStats* pfGetChanFStats(pfChannel*)
 }
 void pfChanCullPtope(pfChannel*, void*) {}
 void pfGetChanBaseFrust(pfChannel*, pfFrustum*) {}
-void pfChanTravMode(pfChannel*, int, int) {}
+/* pfChanTravMode is real (per-channel DRAW on/off) in pfosg.cpp */
 int  pfGetChanTravMode(pfChannel*, int) { return 0; }
 void pfChanTravMask(pfChannel*, int, unsigned int) {}
 void pfMakeSimpleChan(pfChannel* chan, float fov) { pfChanFOV(chan, fov, -1.0f); }
-void pfMakeOrthoChan(pfChannel*, float, float, float, float) {}
+/* pfMakeOrthoChan is real, per-channel, in pfosg.cpp */
 void pfAttachChan(pfChannel*, pfChannel*) {}
 pfPipeVideoChannel* pfGetChanPVChan(pfChannel*)
 {
@@ -1002,23 +1099,17 @@ pfuGLXWindow* pfuGLXWinopen(pfPipe*, pfPipeWindow* pw, const char*)
     return (pfuGLXWindow*)&cookie;
 }
 void pfuCollideSetup(pfNode*, int, int) {}
-int  pfuAddFile(pfuPath*, char*) { return 0; }
+/* pfuNewPath/pfuAddFile/pfuFollowPath/...: SGI's shipped path.c, compiled in */
 pfList* pfuMakeSceneTexList(pfScene*) { return nullptr; }
 void pfuDownloadTexList(pfList*, int) {}
 void pfuLoadDetailTextures(pfList*, pfuDetailInfo*, int) {}
 int  pfuSaveImage(char*, int, int, int, int, int) { return 0; }
-void pfuDrawMessage(pfChannel*, const char*, int, int, float, float,
-                    int, int) {}
-void pfuDrawMessageCI(pfChannel*, const char*, int, int, float, float,
-                      int, int, int) {}
-void pfuDrawTree(pfChannel*, pfNode*, pfVec3) {}
-int  pfuFollowPath(pfuPath*, float, pfVec3, pfVec3) { return 0; }
-pfuPath* pfuNewPath(void) { return nullptr; }
-pfuPath* pfuDeletePath(pfuPath*) { return nullptr; }
+/* pfuDrawMessage/pfuDrawMessageCI/pfuDrawTree: real, from gui.c */
+pfuPath* pfuDeletePath(pfuPath*) { return nullptr; }   /* not in path.c */
 void pfuTravSetDListMode(pfNode*, int) {}
 void pfuTravCompileDLists(pfNode*, int) {}
 void pfuTravCreatePackedAttrs(pfNode*, int, int) {}
-void pfuDrawChanDVRBox(pfChannel*) {}
+/* pfuDrawChanDVRBox: real, from gui.c */
 void pfuDrawPWin2DCursor(pfPipeWindow*, int, int) {}
 void pfuMapWinColors(pfWindow*, pfVec3*, int, int) {}
 void pfuAddMPClipTexturesToPipes(pfList*, pfPipe*, pfPipe*[]) {}
@@ -1027,94 +1118,11 @@ void pfuProcessClipCentersWithChannel(pfNode*, pfList*, pfChannel*) {}
 int  pfuGridifyClipTexture(pfClipTexture*) { return 0; }
 int  pfuUnGridifyClipTexture(pfClipTexture*) { return 0; }
 
-/* GUI: no panel is drawn; widgets store their values so the callers'
- * get/set round trips behave */
-struct PfuWidgetImpl {
-    int id = 0;
-    int type = 0;
-    int on = 0;
-    float value = 0, defValue = 0, minv = 0, maxv = 1;
-    char label[128];
-    void (*actionFunc)(pfuWidget*);
-};
-void pfuInitGUI(pfPipeWindow*) {}
-void pfuExitGUI(void) {}
-void pfuEnableGUI(int) {}
-void pfuUpdateGUI(pfuMouse*) {}
-void pfuRedrawGUI(void) {}
-void pfuResetGUI(void) {}
-int  pfuInGUI(int, int) { return 0; }
-void pfuGUIViewport(float, float, float, float) {}
-void pfuGetGUIViewport(float* l, float* r, float* b, float* t)
-{
-    if (l) *l = 0; if (r) *r = 1; if (b) *b = 0; if (t) *t = 0.15f;
-}
-pfChannel* pfuGetGUIChan(void) { return nullptr; }
-pfHighlight* pfuGetGUIHlight(void)
-{
-    static pfHighlight* hl = (pfHighlight*)calloc(1, 64);
-    return hl;
-}
-void pfuGUICursor(int, int) {}
-void pfuUpdateGUICursor(void) {}
+/* The GUI panel library (pfuInitGUI, panels, widgets, messages, cursors,
+ * tree display) is SGI's shipped libpfutil gui.c, compiled in unmodified;
+ * its shim support lives in pfosg_gui.cpp.  pfuCursorType is not in gui.c */
 void pfuCursorType(int) {}
 int  pfuGetCursorType(void) { return 0; }
-pfuPanel* pfuNewPanel(void) { return (pfuPanel*)calloc(1, 32); }
-void pfuEnablePanel(pfuPanel*) {}
-void pfuGetPanelOriginSize(pfuPanel*, float* x, float* y, float* xs, float* ys)
-{
-    if (x) *x = 0; if (y) *y = 0; if (xs) *xs = 0; if (ys) *ys = 0;
-}
-pfuWidget* pfuNewWidget(pfuPanel*, int type, int id)
-{
-    PfuWidgetImpl* w = new PfuWidgetImpl;
-    w->type = type;
-    w->id = id;
-    return (pfuWidget*)w;
-}
-void pfuWidgetDim(pfuWidget* w, int, int, int, int) { (void)w; }
-void pfuGetWidgetDim(pfuWidget*, int* x, int* y, int* xs, int* ys)
-{
-    if (x) *x = 0; if (y) *y = 0; if (xs) *xs = 0; if (ys) *ys = 0;
-}
-void pfuWidgetLabel(pfuWidget* w, const char* label)
-{
-    strncpy(((PfuWidgetImpl*)w)->label, label ? label : "",
-            sizeof(((PfuWidgetImpl*)w)->label) - 1);
-}
-void pfuWidgetRange(pfuWidget* w, int, float minv, float maxv, float val)
-{
-    PfuWidgetImpl* wi = (PfuWidgetImpl*)w;
-    wi->minv = minv; wi->maxv = maxv; wi->value = val;
-}
-void pfuWidgetValue(pfuWidget* w, float v) { ((PfuWidgetImpl*)w)->value = v; }
-float pfuGetWidgetValue(pfuWidget* w) { return ((PfuWidgetImpl*)w)->value; }
-void pfuWidgetDefaultValue(pfuWidget* w, float v)
-{
-    ((PfuWidgetImpl*)w)->defValue = v;
-}
-void pfuWidgetOnOff(pfuWidget* w, int on) { ((PfuWidgetImpl*)w)->on = on; }
-void pfuWidgetDefaultOnOff(pfuWidget* w, int on)
-{
-    ((PfuWidgetImpl*)w)->on = on;
-}
-int  pfuIsWidgetOn(pfuWidget* w) { return ((PfuWidgetImpl*)w)->on; }
-void pfuWidgetActionFunc(pfuWidget* w, pfuWidgetActionFuncType func)
-{
-    ((PfuWidgetImpl*)w)->actionFunc = (void (*)(pfuWidget*))func;
-}
-pfuWidgetActionFuncType pfuGetWidgetActionFunc(pfuWidget* w)
-{
-    return (pfuWidgetActionFuncType)((PfuWidgetImpl*)w)->actionFunc;
-}
-int  pfuGetWidgetId(pfuWidget* w) { return ((PfuWidgetImpl*)w)->id; }
-void pfuWidgetSelections(pfuWidget*, pfuGUIString*, int*,
-                         void (**)(pfuWidget*), int) {}
-int  pfuGetWidgetSelection(pfuWidget*) { return 0; }
-void pfuHideWidget(pfuWidget*) {}
-void pfuUnhideWidget(pfuWidget*) {}
-void pfuEnableWidget(pfuWidget*) {}
-void pfuDisableWidget(pfuWidget*) {}
 void pfuPreDrawStyle(int, pfVec4) {}
 void pfuPostDrawStyle(int) {}
 

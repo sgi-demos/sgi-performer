@@ -57,6 +57,14 @@ extern int  XNextEvent(Display* dsp, XEvent* ev);
 extern int  XLookupString(XKeyEvent* ev, char* buf, int nbytes,
                           KeySym* keysym, XComposeStatus* status);
 
+/* X font queries (libpfutil gui.c): the shim renders text with its own
+ * built-in font, so XListFonts reports one fake match (a zero count would
+ * make gui.c disable text entirely) and the free functions are no-ops */
+extern char** XListFonts(Display* dsp, const char* pattern, int maxnames,
+                         int* count);
+extern int  XFreeFontNames(char** list);
+extern int  XFreeFont(Display* dsp, void* fontStruct);
+
 #ifdef __cplusplus
 }
 #endif

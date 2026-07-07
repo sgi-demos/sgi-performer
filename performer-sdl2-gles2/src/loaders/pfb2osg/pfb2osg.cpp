@@ -27,6 +27,7 @@
 #include <osg/BlendFunc>
 #include <osg/AlphaFunc>
 #include <osg/CullFace>
+#include <osg/Depth>
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/Group>
@@ -396,7 +397,9 @@ void Loader::readTex()
                      wrapS == 2 ? osg::Texture::CLAMP_TO_EDGE : osg::Texture::REPEAT);
     texture->setWrap(osg::Texture::WRAP_T,
                      wrapT == 2 ? osg::Texture::CLAMP_TO_EDGE : osg::Texture::REPEAT);
-    texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+    texture->setFilter(osg::Texture::MIN_FILTER,
+                       getenv("PFOSG_NO_MIPMAP") ? osg::Texture::LINEAR
+                                                 : osg::Texture::LINEAR_MIPMAP_LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
     tex.push_back(texture);
 }
@@ -441,6 +444,12 @@ void Loader::readGState()
                 ss->setAttributeAndModes(
                     new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
                 ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                /* blended surfaces must not write depth: the bin re-sorts by
+                 * bound-center distance every frame, and a decal (crosswalk/
+                 * stop-line) sorting ahead of its base road tile would
+                 * otherwise punch clear-color holes through it */
+                ss->setAttributeAndModes(
+                    new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false));
             }
             break;
         }
@@ -588,7 +597,7 @@ void Loader::readGSet()
     }
 
     osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
-    geom->setUseDisplayList(true);
+    geom->setUseDisplayList(getenv("PFOSG_NO_DLIST") == nullptr);
 
     /* attribute fetch: flatten to per-vertex (see file header) */
     auto vertexOf = [&](const int32_t* a, int vert, int prim,
@@ -651,12 +660,126 @@ void Loader::readGSet()
         }
     }
 
+    /* Surface primitives are re-emitted as independent triangles, and any
+     * triangle with an edge longer than PFOSG_SUBDIV (default 25 units) is
+     * recursively split.  Two reasons: Apple's GL-on-Metal drops whole
+     * triangles that straddle the eye plane (w-sign-mixed "external"
+     * triangles — the missing-road-triangle wedge under the vehicle), which
+     * only bites for very long slivers; and GLES2 has no QUADS/POLYGON, so
+     * this also keeps the draw modes web-safe.  Winding parity of strips is
+     * preserved; per-vertex attributes are interpolated at split points. */
+    bool surface = glmode == GL_TRIANGLES || glmode == GL_QUADS ||
+                   glmode == GL_TRIANGLE_STRIP ||
+                   glmode == GL_TRIANGLE_FAN || glmode == GL_POLYGON;
+    static const float subdivMax = [] {
+        const char* e = getenv("PFOSG_SUBDIV");
+        return e ? (float)atof(e) : 25.0f;
+    }();
+    bool retriangulated = false;
+    if (surface && subdivMax > 0.0f) {
+        struct VR { osg::Vec3 p; osg::Vec4 c; osg::Vec3 n; osg::Vec2 t; };
+        auto rec = [&](int i) {
+            VR r;
+            r.p = (*vout)[i];
+            if (cout_) r.c = (*cout_)[i];
+            if (nout)  r.n = (*nout)[i];
+            if (tout)  r.t = (*tout)[i];
+            return r;
+        };
+        auto mid = [&](const VR& a, const VR& b) {
+            VR m;
+            m.p = (a.p + b.p) * 0.5f;
+            m.c = (a.c + b.c) * 0.5f;
+            m.n = a.n + b.n;
+            m.n.normalize();
+            m.t = (a.t + b.t) * 0.5f;
+            return m;
+        };
+
+        struct Item { VR a, b, c; int d; };
+        std::vector<Item> work;
+        int first = 0;
+        for (int p = 0; p < nprims; p++) {
+            int plen = strip ? lens[p] : fixed;
+            if (glmode == GL_TRIANGLES) {
+                for (int k = 0; k + 2 < plen; k += 3)
+                    work.push_back({rec(first + k), rec(first + k + 1),
+                                    rec(first + k + 2), 0});
+            } else if (glmode == GL_QUADS) {
+                for (int k = 0; k + 3 < plen; k += 4) {
+                    work.push_back({rec(first + k), rec(first + k + 1),
+                                    rec(first + k + 2), 0});
+                    work.push_back({rec(first + k), rec(first + k + 2),
+                                    rec(first + k + 3), 0});
+                }
+            } else if (glmode == GL_TRIANGLE_STRIP) {
+                for (int t = 0; t + 2 < plen; t++) {
+                    int a = first + t, b = first + t + 1, c = first + t + 2;
+                    if (t & 1) std::swap(a, b);
+                    work.push_back({rec(a), rec(b), rec(c), 0});
+                }
+            } else {                     /* TRIANGLE_FAN / POLYGON */
+                for (int t = 0; t + 2 < plen; t++)
+                    work.push_back({rec(first), rec(first + t + 1),
+                                    rec(first + t + 2), 0});
+            }
+            first += plen;
+        }
+
+        osg::ref_ptr<osg::Vec3Array> nv = new osg::Vec3Array;
+        osg::ref_ptr<osg::Vec4Array> nc = cout_ ? new osg::Vec4Array : nullptr;
+        osg::ref_ptr<osg::Vec3Array> nn = nout ? new osg::Vec3Array : nullptr;
+        osg::ref_ptr<osg::Vec2Array> nt = tout ? new osg::Vec2Array : nullptr;
+        auto emit = [&](const VR& r) {
+            nv->push_back(r.p);
+            if (nc) nc->push_back(r.c);
+            if (nn) nn->push_back(r.n);
+            if (nt) nt->push_back(r.t);
+        };
+        const float mx2 = subdivMax * subdivMax;
+        while (!work.empty()) {
+            Item it = work.back();
+            work.pop_back();
+            float e0 = (it.b.p - it.a.p).length2();
+            float e1 = (it.c.p - it.b.p).length2();
+            float e2 = (it.a.p - it.c.p).length2();
+            float longest = std::max(e0, std::max(e1, e2));
+            /* leave degenerate slivers alone: they never rasterize */
+            float area2 = ((it.b.p - it.a.p) ^ (it.c.p - it.a.p)).length2();
+            if (it.d >= 8 || longest <= mx2 || area2 < 1e-8f) {
+                emit(it.a); emit(it.b); emit(it.c);
+                continue;
+            }
+            if (e0 >= e1 && e0 >= e2) {
+                VR m = mid(it.a, it.b);
+                work.push_back({it.a, m, it.c, it.d + 1});
+                work.push_back({m, it.b, it.c, it.d + 1});
+            } else if (e1 >= e2) {
+                VR m = mid(it.b, it.c);
+                work.push_back({it.a, it.b, m, it.d + 1});
+                work.push_back({it.a, m, it.c, it.d + 1});
+            } else {
+                VR m = mid(it.c, it.a);
+                work.push_back({it.a, it.b, m, it.d + 1});
+                work.push_back({m, it.b, it.c, it.d + 1});
+            }
+        }
+        vout = nv;
+        if (cout_) cout_ = nc;
+        if (nout)  nout = nn;
+        if (tout)  tout = nt;
+        retriangulated = true;
+    }
+
     geom->setVertexArray(vout);
     if (cout_) geom->setColorArray(cout_, osg::Array::BIND_PER_VERTEX);
     if (nout)  geom->setNormalArray(nout, osg::Array::BIND_PER_VERTEX);
     if (tout)  geom->setTexCoordArray(0, tout);
 
-    if (strip) {
+    if (retriangulated) {
+        geom->addPrimitiveSet(
+            new osg::DrawArrays(GL_TRIANGLES, 0, (int)vout->size()));
+    } else if (strip) {
         int first = 0;
         for (int p = 0; p < nstrips; p++) {
             geom->addPrimitiveSet(new osg::DrawArrays(glmode, first, lens[p]));
@@ -682,6 +805,7 @@ void Loader::readGSet()
         ss->setAttributeAndModes(new osg::ShadeModel(osg::ShadeModel::FLAT));
     }
 
+    geom->setName("gset" + std::to_string(gset.size()));
     gset.push_back(geom);
 }
 
