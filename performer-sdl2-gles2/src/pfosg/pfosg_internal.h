@@ -47,6 +47,7 @@ struct PfOsgState {
     bool winOpen = false;
     PfosgPWinFunc winConfigFunc = nullptr;
 
+    osg::ref_ptr<osg::Group> root;      /* viewer root: [esky, scene] */
     osg::ref_ptr<osg::Group> scene;
     float fovH = 45.0f, fovV = -1.0f;
     float nearD = 1.0f, farD = 10000.0f;

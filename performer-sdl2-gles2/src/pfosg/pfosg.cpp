@@ -73,9 +73,19 @@ struct PfOsgESky {
     /* Performer-like defaults so an esky with only ground colors set still
      * clears to a plausible sky */
     osg::Vec4 skyTop  = osg::Vec4(0.28f, 0.42f, 0.72f, 1.0f);
+    osg::Vec4 skyBot  = osg::Vec4(0.36f, 0.52f, 0.83f, 1.0f);
+    osg::Vec4 horiz   = osg::Vec4(0.72f, 0.68f, 0.6f, 1.0f);
     osg::Vec4 grndFar = osg::Vec4(0.3f, 0.15f, 0.05f, 1.0f);
     osg::Vec4 grndNear = osg::Vec4(0.5f, 0.3f, 0.1f, 1.0f);
+    float grndHt = -1.0f;
+    float horizAngle = 10.0f;           /* degrees of horizon band */
     int clearMode = PFES_FAST;
+    bool dirty = true;                  /* geometry/colors need a rebuild */
+
+    /* sky dome + ground sheet (built lazily when a SKY mode is active) */
+    osg::ref_ptr<osg::MatrixTransform> xform;
+    osg::ref_ptr<osg::Geometry> skyGeom;
+    osg::ref_ptr<osg::Geometry> grndGeom;
 };
 
 struct PfOsgDCS;   /* osg::MatrixTransform subclass, below */
@@ -437,15 +447,172 @@ void compileGSet(PfOsgGSet* g)
     geom->dirtyGLObjects();
 }
 
+/* ---- EarthSky sky/ground bands ---------------------------------------------
+ * Performer's pfEarthSky draws an eye-following background: a sky dome with
+ * a horizon band (HORIZ color at the horizon, SKY_BOT at horizAngle
+ * elevation, gradient to SKY_TOP at the zenith) and a ground sheet at world
+ * height grndHt (GRND_NEAR under the eye fading to GRND_FAR at the horizon).
+ * Rendered before the scene, depth writes off, in a unit dome scaled to
+ * ~0.9*far and translated to the eye each frame. */
+
+static const int ESKY_SEG = 24;
+
+static void rebuildESkyArrays(PfOsgESky* e)
+{
+    float ha = osg::clampBetween(e->horizAngle, 0.5f, 45.0f);
+    const float elev[4] = {0.0f, ha, ha + (90.0f - ha) / 3.0f,
+                           ha + 2.0f * (90.0f - ha) / 3.0f};
+    osg::Vec4 ringCol[5] = {
+        e->horiz, e->skyBot,
+        e->skyBot * (2.0f / 3.0f) + e->skyTop * (1.0f / 3.0f),
+        e->skyBot * (1.0f / 3.0f) + e->skyTop * (2.0f / 3.0f),
+        e->skyTop};
+
+    osg::Vec3Array* sv = (osg::Vec3Array*)e->skyGeom->getVertexArray();
+    osg::Vec4Array* sc = (osg::Vec4Array*)e->skyGeom->getColorArray();
+    int n = 0;
+    for (int k = 0; k < 4; k++) {
+        float el = osg::DegreesToRadians(elev[k]);
+        for (int i = 0; i <= ESKY_SEG; i++, n++) {
+            float az = 2.0f * (float)osg::PI * i / ESKY_SEG;
+            (*sv)[n].set(cosf(az) * cosf(el), sinf(az) * cosf(el), sinf(el));
+            (*sc)[n] = ringCol[k];
+        }
+    }
+    (*sv)[n].set(0, 0, 1);          /* apex */
+    (*sc)[n] = ringCol[4];
+    sv->dirty();
+    sc->dirty();
+
+    osg::Vec3Array* gv = (osg::Vec3Array*)e->grndGeom->getVertexArray();
+    osg::Vec4Array* gc = (osg::Vec4Array*)e->grndGeom->getColorArray();
+    /* center z (relative ground depth) is refreshed per frame */
+    for (int i = 0; i <= ESKY_SEG; i++) {
+        float az = 2.0f * (float)osg::PI * i / ESKY_SEG;
+        (*gv)[1 + i].set(cosf(az), sinf(az), 0.0f);   /* meets the horizon */
+        (*gc)[1 + i] = e->grndFar;
+    }
+    (*gc)[0] = e->grndNear;
+    gv->dirty();
+    gc->dirty();
+}
+
+static osg::Geometry* newESkyGeometry(int nverts)
+{
+    osg::Geometry* g = new osg::Geometry;
+    g->setUseDisplayList(false);
+    osg::Vec3Array* v = new osg::Vec3Array(nverts);
+    osg::Vec4Array* c = new osg::Vec4Array(nverts);
+    v->setDataVariance(osg::Object::DYNAMIC);
+    c->setDataVariance(osg::Object::DYNAMIC);
+    g->setVertexArray(v);
+    g->setColorArray(c, osg::Array::BIND_PER_VERTEX);
+    return g;
+}
+
+static void buildESkyNodes(PfOsgESky* e)
+{
+    const int RING = ESKY_SEG + 1;
+    e->skyGeom = newESkyGeometry(4 * RING + 1);
+    osg::DrawElementsUShort* si =
+        new osg::DrawElementsUShort(GL_TRIANGLES);
+    for (int k = 0; k < 3; k++)
+        for (int i = 0; i < ESKY_SEG; i++) {
+            int a = k * RING + i, b = (k + 1) * RING + i;
+            si->push_back(a); si->push_back(a + 1); si->push_back(b);
+            si->push_back(a + 1); si->push_back(b + 1); si->push_back(b);
+        }
+    for (int i = 0; i < ESKY_SEG; i++) {          /* apex fan */
+        int a = 3 * RING + i;
+        si->push_back(a); si->push_back(a + 1); si->push_back(4 * RING);
+    }
+    e->skyGeom->addPrimitiveSet(si);
+
+    e->grndGeom = newESkyGeometry(1 + RING);      /* cone to the horizon */
+    osg::DrawElementsUShort* gi =
+        new osg::DrawElementsUShort(GL_TRIANGLES);
+    for (int i = 0; i < ESKY_SEG; i++) {
+        gi->push_back(0); gi->push_back(1 + i); gi->push_back(2 + i);
+    }
+    e->grndGeom->addPrimitiveSet(gi);
+
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(e->skyGeom);
+    geode->addDrawable(e->grndGeom);
+    geode->setCullingActive(false);
+
+    e->xform = new osg::MatrixTransform;
+    e->xform->addChild(geode);
+    osg::StateSet* ss = e->xform->getOrCreateStateSet();
+    ss->setMode(GL_LIGHTING, osg::StateAttribute::OFF |
+                             osg::StateAttribute::PROTECTED);
+    ss->setMode(GL_CULL_FACE, osg::StateAttribute::OFF |
+                              osg::StateAttribute::PROTECTED);
+    ss->setMode(GL_FOG, osg::StateAttribute::OFF);
+    ss->setAttributeAndModes(
+        new osg::Depth(osg::Depth::ALWAYS, 0.0, 1.0, false));
+    ss->setRenderBinDetails(-10, "RenderBin");    /* behind everything */
+}
+
+static void updateESky()
+{
+    PfOsgESky* e = S.esky;
+    bool wantSky = e && (e->clearMode == PFES_SKY ||
+                         e->clearMode == PFES_SKY_GRND);
+    if (!wantSky) {
+        if (e && e->xform) e->xform->setNodeMask(0);
+        return;
+    }
+    if (!e->xform) {
+        buildESkyNodes(e);
+        e->dirty = true;
+    }
+    if (S.root && !S.root->containsNode(e->xform.get()))
+        S.root->insertChild(0, e->xform.get());
+    e->xform->setNodeMask(~0u);
+    e->grndGeom->setNodeMask(e->clearMode == PFES_SKY_GRND ? ~0u : 0u);
+    if (e->dirty) {
+        rebuildESkyArrays(e);
+        e->dirty = false;
+    }
+
+    osg::Vec3d eye =
+        S.viewer->getCamera()->getInverseViewMatrix().getTrans();
+    float R = 0.9f * S.farD;
+    if (R <= 0) R = 1.0f;
+    e->xform->setMatrix(osg::Matrixd::scale(R, R, R) *
+                        osg::Matrixd::translate(eye));
+
+    /* ground center sits at world grndHt below the eye */
+    osg::Vec3Array* gv = (osg::Vec3Array*)e->grndGeom->getVertexArray();
+    float zc = (e->grndHt - (float)eye.z()) / R;
+    zc = osg::clampBetween(zc, -1.0f, -0.0001f);
+    if ((*gv)[0].z() != zc) {
+        (*gv)[0].set(0, 0, zc);
+        gv->dirty();
+    }
+}
+
 void applyChannel()
 {
     if (!S.viewer) return;
-    if (S.scene && S.viewer->getSceneData() != S.scene.get()) {
-        S.viewer->setSceneData(S.scene.get());
-        /* Performer's default depth func is LEQUAL (OSG's is LESS); SGI
-         * databases rely on it for coplanar base/decal geometry */
-        S.scene->getOrCreateStateSet()->setAttributeAndModes(
-            new osg::Depth(osg::Depth::LEQUAL));
+    if (S.scene) {
+        if (!S.root) S.root = new osg::Group;
+        if (S.viewer->getSceneData() != S.root.get())
+            S.viewer->setSceneData(S.root.get());
+        if (!S.root->containsNode(S.scene.get())) {
+            /* replace a previous scene, keeping the esky child */
+            for (unsigned i = S.root->getNumChildren(); i-- > 0;) {
+                osg::Node* ch = S.root->getChild(i);
+                if (!S.esky || ch != (osg::Node*)S.esky->xform.get())
+                    S.root->removeChild(i, 1);
+            }
+            S.root->addChild(S.scene.get());
+            /* Performer's default depth func is LEQUAL (OSG's is LESS); SGI
+             * databases rely on it for coplanar base/decal geometry */
+            S.scene->getOrCreateStateSet()->setAttributeAndModes(
+                new osg::Depth(osg::Depth::LEQUAL));
+        }
     }
 
     for (PfOsgGSet* g : S.gsets)
@@ -520,6 +687,8 @@ void applyChannel()
         osg::Vec3d up  = osg::Matrixd::transform3x3(osg::Vec3d(0, 0, 1), rot);
         S.viewer->getCamera()->setViewMatrixAsLookAt(S.eye, S.eye + fwd, up);
     }
+
+    updateESky();       /* needs the final view matrix (eye position) */
 }
 
 }   /* anonymous namespace */
@@ -1281,13 +1450,22 @@ extern "C" pfEarthSky* pfNewESky(void) { return (pfEarthSky*)new PfOsgESky; }
 
 extern "C" void pfESkyMode(pfEarthSky* esky, int mode, int val)
 {
-    if (esky && mode == PFES_BUFFER_CLEAR)
+    if (esky && mode == PFES_BUFFER_CLEAR) {
         ((PfOsgESky*)esky)->clearMode = val;
+        ((PfOsgESky*)esky)->dirty = true;
+    }
 }
 
-extern "C" void pfESkyAttr(pfEarthSky*, int, float)
+extern "C" void pfESkyAttr(pfEarthSky* esky, int attr, float val)
 {
-    /* ground height etc.: no visual yet (sky/ground quads are M-later) */
+    PfOsgESky* e = (PfOsgESky*)esky;
+    if (!e) return;
+    switch (attr) {
+    case PFES_GRND_HT:      e->grndHt = val; break;
+    case PFES_HORIZ_ANGLE:  e->horizAngle = val; break;
+    default: return;
+    }
+    e->dirty = true;
 }
 
 extern "C" void pfESkyColor(pfEarthSky* esky, int which,
@@ -1299,10 +1477,14 @@ extern "C" void pfESkyColor(pfEarthSky* esky, int which,
         e->clearColor.set(r, g, b, a);
         e->haveClear = true;
         break;
-    case PFES_SKY_TOP: e->skyTop.set(r, g, b, a); break;
-    case PFES_GRND_FAR: e->grndFar.set(r, g, b, a); break;
+    case PFES_SKY_TOP:   e->skyTop.set(r, g, b, a); break;
+    case PFES_SKY_BOT:   e->skyBot.set(r, g, b, a); break;
+    case PFES_HORIZ:     e->horiz.set(r, g, b, a); break;
+    case PFES_GRND_FAR:  e->grndFar.set(r, g, b, a); break;
     case PFES_GRND_NEAR: e->grndNear.set(r, g, b, a); break;
+    default: return;
     }
+    e->dirty = true;
 }
 
 /* ---- pipe / window / channel --------------------------------------------------------*/

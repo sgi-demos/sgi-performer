@@ -66,7 +66,8 @@ emrun build-web/apps/hello_pf/hello_pf.html                   # simple test for 
 - **M2** full demo experience:
   - ✅ pfuPath vehicle animation: SGI's shipped `path.c` compiled in unmodified, driven through real APP-traversal node callbacks — the Esprit and truck circulate the streets, the blimp and Rocket Tux fly overhead, and **tether mode rides the Esprit** (`./build/apps/perfly/perfly data/town-tether.perfly`, the demo's original startup mode)
   - ✅ **perfly's GUI control panel**: SGI's shipped libpfutil `gui.c` compiled in unmodified — the classic widget panel (position readout, motion/texture/fog/lighting menus, sliders, Reset All, GUI Off) drawn by the original immediate-mode code through a real second pfChannel, with a built-in bitmap font replacing the X11 fonts and heap-backed pfDataPools replacing IRIX shared memory. Buttons, menu cycling, sliders, Reset All, and GUI on/off all live
-  - remaining: EarthSky sky/ground rendering, stats display; port the .pfb reader from the shipped source ([vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c](vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c)) to broaden database support
+  - ✅ **EarthSky sky/ground bands**: pfEarthSky renders the real eye-following background — sky dome with the horizon band gradient (horizon → sky-bottom → zenith), ground sheet with near→far colors at `PFES_GRND_HT` — driven live by perfly's BG menu (Sky/Grnd, Sky, Clear, Tag) and the Time-of-Day slider (env.c's color ramps and horizon-angle animation run as shipped)
+  - remaining: stats display; port the .pfb reader from the shipped source ([vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c](vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c)) to broaden database support
 - **M3** town on the web: the shim + OSG stack on Emscripten/WebGL (GLES2-safe state via OSG's shader pipeline, SDL2 main loop already in place)
 - **M4** more demos: bring up further shipped SGI samples and databases as desired
 
