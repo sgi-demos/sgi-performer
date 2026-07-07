@@ -28,6 +28,7 @@ struct PfOsgChan {
     float orthoL = 0, orthoR = 1, orthoB = 0, orthoT = 1;
     float nearD = 1, farD = 10000;
     bool drawOn = true;                 /* pfChanTravMode(PFTRAV_DRAW) */
+    unsigned statsClasses = 0x2;        /* PFFSTATS_ENPFTIMES default */
     PfosgChanFunc cullFunc = nullptr;
     PfosgChanFunc drawFunc = nullptr;
 };
@@ -69,6 +70,13 @@ struct PfOsgState {
      * xformer) halts while rendering continues */
     bool paused = false;
     double pausedAt = 0.0;          /* frozen sim-time while paused */
+
+    /* frame timing + scene counts for pfDrawChanStats */
+    static const int STATS_DTS = 128;
+    float statsDt[STATS_DTS] = {0};     /* recent frame times, seconds */
+    int statsDtHead = 0;
+    float statsAppMs = 0, statsCullMs = 0, statsDrawMs = 0;
+    long statsTris = 0, statsVerts = 0, statsGeodes = 0, statsDrawables = 0;
 };
 
 extern PfOsgState pfosgState;
@@ -84,6 +92,9 @@ extern bool pfosgInDrawPhase;
 /* run aux (overlay) channels' CULL/DRAW callbacks with raw GL; called from
  * pfFrame after the OSG scene render, before swap (pfosg.cpp) */
 void pfosgRunAuxChannels(void);
+
+/* resolve a pfChannel handle to its shim struct (pfosg.cpp) */
+PfOsgChan* pfosgChanOf(struct pfChannel* ch);
 
 /* geoset compile hook (pfosg.cpp) needed by intersection/xformer code */
 void pfosgCompileDirtyGSets(void);

@@ -988,11 +988,7 @@ void pfChanLODAttr(pfChannel*, int, float) {}
 float pfGetChanLODAttr(pfChannel*, int) { return 1.0f; }
 void pfChanStressFilter(pfChannel*, float, float, float, float, float) {}
 void pfChanStatsMode(pfChannel*, unsigned int, unsigned int) {}
-pfFrameStats* pfGetChanFStats(pfChannel*)
-{
-    static int dummy;
-    return (pfFrameStats*)&dummy;
-}
+/* pfGetChanFStats / pfFStatsClass are real, per-channel, in pfosg.cpp */
 void pfChanCullPtope(pfChannel*, void*) {}
 void pfGetChanBaseFrust(pfChannel*, pfFrustum*) {}
 /* pfChanTravMode is real (per-channel DRAW on/off) in pfosg.cpp */
@@ -1008,7 +1004,6 @@ pfPipeVideoChannel* pfGetChanPVChan(pfChannel*)
 }
 void pfApp(void) {}
 void pfCull(void) {}
-unsigned int pfFStatsClass(pfFrameStats*, unsigned int, int) { return 0; }
 unsigned int pfFStatsClassMode(pfFrameStats*, int, unsigned int, int) { return 0; }
 void pfFStatsAttr(pfFrameStats*, int, float) {}
 unsigned int pfGetFStatsClass(pfFrameStats*, unsigned int) { return 0; }

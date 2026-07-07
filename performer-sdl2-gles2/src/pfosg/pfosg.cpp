@@ -39,6 +39,8 @@
 
 #include <execinfo.h>
 
+#include <iostream>
+
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
@@ -767,10 +769,65 @@ extern "C" void pfExit(void)
 
 extern "C" int pfSync(void) { return 1; }
 
+/* count scene geometry for the stats overlay (approximate: everything the
+ * loader emits is independent triangles; strips count as n-2) */
+static void countSceneStats(void)
+{
+    struct CountVisitor : osg::NodeVisitor {
+        long tris = 0, verts = 0, geodes = 0, drawables = 0;
+        CountVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) {}
+        void apply(osg::Geode& g) override
+        {
+            geodes++;
+            for (unsigned i = 0; i < g.getNumDrawables(); i++) {
+                osg::Geometry* geom = g.getDrawable(i)->asGeometry();
+                if (!geom) continue;
+                drawables++;
+                const osg::Array* va = geom->getVertexArray();
+                verts += va ? (long)va->getNumElements() : 0;
+                for (unsigned p = 0; p < geom->getNumPrimitiveSets(); p++) {
+                    const osg::PrimitiveSet* ps = geom->getPrimitiveSet(p);
+                    unsigned n = ps->getNumIndices();
+                    switch (ps->getMode()) {
+                    case GL_TRIANGLES:      tris += n / 3; break;
+                    case GL_TRIANGLE_STRIP:
+                    case GL_TRIANGLE_FAN:
+                    case GL_POLYGON:        tris += n > 2 ? n - 2 : 0; break;
+                    case GL_QUADS:          tris += n / 2; break;
+                    default: break;
+                    }
+                }
+            }
+            traverse(g);
+        }
+    } cv;
+    if (S.scene) S.scene->accept(cv);
+    S.statsTris = cv.tris;
+    S.statsVerts = cv.verts;
+    S.statsGeodes = cv.geodes;
+    S.statsDrawables = cv.drawables;
+}
+
 extern "C" int pfFrame(void)
 {
     fatalIfUninited("pfFrame");
     openWindow();
+
+    /* frame timing for the stats overlay */
+    static osg::Timer_t lastTick = 0, lastExitTick = 0;
+    osg::Timer* timer = osg::Timer::instance();
+    osg::Timer_t entryTick = timer->tick();
+    if (lastTick) {
+        S.statsDt[S.statsDtHead] =
+            (float)timer->delta_s(lastTick, entryTick);
+        S.statsDtHead = (S.statsDtHead + 1) % PfOsgState::STATS_DTS;
+    }
+    lastTick = entryTick;
+    /* "app" = the application's work since pfFrame last returned (sim,
+     * input, callbacks) — the between-frames slice, like real Performer */
+    float appOutside = lastExitTick
+        ? (float)timer->delta_m(lastExitTick, entryTick) : 0.0f;
+    if (S.frameCount % 64 == 1) countSceneStats();
 
     double now = pfGetTime();
     pfosgInputBeginFrame(now);
@@ -886,11 +943,42 @@ extern "C" int pfFrame(void)
 
     applyChannel();
 
+    /* app time = between-frames work + this frame's pre-render section */
+    S.statsAppMs = appOutside + (float)osg::Timer::instance()->delta_m(
+        entryTick, osg::Timer::instance()->tick());
+
+    /* let the OSG renderer record cull/draw times for the stats overlay
+     * (osgViewer::View pre-installs a "Camera" stats object with collection
+     * off; flip its "rendering" switch rather than replacing it) */
+    {
+        osg::Camera* cam = S.viewer->getCamera();
+        if (!cam->getStats()) cam->setStats(new osg::Stats("pfosg-camera"));
+        if (!cam->getStats()->collectStats("rendering"))
+            cam->getStats()->collectStats("rendering", true);
+    }
+
     S.viewer->frame();
+
+    {
+        double v = 0.0;
+        osg::Stats* st = S.viewer->getCamera()->getStats();
+        if (st && st->getAveragedAttribute("Cull traversal time taken", v))
+            S.statsCullMs = (float)(v * 1000.0);
+        if (st && st->getAveragedAttribute("Draw traversal time taken", v))
+            S.statsDrawMs = (float)(v * 1000.0);
+        static bool dumpStats = getenv("PFOSG_STATS_DEBUG") != nullptr;
+        if (dumpStats && st && S.frameCount == 20) {
+            dumpStats = false;
+            st->report(std::cerr,
+                       S.viewer->getFrameStamp()->getFrameNumber() - 1);
+        }
+    }
+    lastExitTick = osg::Timer::instance()->tick();
+
     /* channel DRAW callbacks run after the scene render: pfClearChan/pfDraw
      * inside them are no-ops (viewer.frame() did the clear+draw), so what
-     * remains is their overlay drawing — perfly's messages on the main
-     * channel, the libpfutil GUI panel on its own channel */
+     * remains is their overlay drawing — perfly's messages and stats on the
+     * main channel, the libpfutil GUI panel on its own channel */
     pfosgRunAuxChannels();
     SDL_GL_SwapWindow(S.window);
     S.frameCount++;
@@ -1572,7 +1660,31 @@ static PfOsgChan* chanOf(pfChannel* ch)
     return mainChan();
 }
 
+PfOsgChan* pfosgChanOf(pfChannel* ch) { return chanOf(ch); }
+
 extern "C" void pfAddChan(pfPipeWindow*, pfChannel*) {}
+
+/* frame statistics: the fstats handle IS the channel; class enables live on
+ * the channel struct and pfDrawChanStats (pfosg_gui.cpp) reads them */
+extern "C" pfFrameStats* pfGetChanFStats(pfChannel* ch)
+{
+    return (pfFrameStats*)chanOf(ch);
+}
+
+extern "C" unsigned int pfFStatsClass(pfFrameStats* fs, unsigned int mask,
+                                      int val)
+{
+    PfOsgChan* c = chanOf((pfChannel*)fs);
+    if (!c) return 0;
+    unsigned prev = c->statsClasses;
+    switch (val) {
+    case PFSTATS_ON:      c->statsClasses |= mask; break;
+    case PFSTATS_OFF:     c->statsClasses &= ~mask; break;
+    case PFSTATS_SET:     c->statsClasses = mask; break;
+    case PFSTATS_DEFAULT: c->statsClasses = 0x2; break;   /* PFTIMES */
+    }
+    return prev;
+}
 
 extern "C" void pfChanViewport(pfChannel* ch, float l, float r,
                                float b, float t)
@@ -1788,7 +1900,7 @@ std::string pfosgResolveFile(const char* name)
 
 extern "C" void pfClearChan(pfChannel*) {}   /* viewer.frame() clears */
 extern "C" void pfDraw(void) {}              /* viewer.frame() draws  */
-extern "C" void pfDrawChanStats(pfChannel*) {}
+/* pfDrawChanStats: real overlay in pfosg_gui.cpp */
 
 /* ---- intersection ---------------------------------------------------------------------*/
 

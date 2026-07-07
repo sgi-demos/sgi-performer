@@ -488,3 +488,135 @@ extern "C" void pfuInitTraverser(pfuTraverser* trav)
 {
     if (trav) memset(trav, 0, sizeof(pfuTraverser));
 }
+
+/* ---- channel statistics overlay (pfDrawChanStats) ---------------------------
+ * The classic perfly stats display, redrawn from the shim's numbers: frame
+ * rate and frame-time strip chart (PFTIMES), plus scene geometry counts when
+ * the Gfx/DB classes are enabled.  Runs inside the channel DRAW phase. */
+
+static void statsText(float x, float y, int size, const char* s)
+{
+    pfuXFont f = { size, size, (HFONT)1 };
+    pfuSetXFont(&f);
+    drawStringAt(s, x, y, 0.0f);
+}
+
+extern "C" void pfDrawChanStats(pfChannel* ch)
+{
+    if (!pfosgInDrawPhase) return;
+    PfOsgChan* c = pfosgChanOf(ch);
+    unsigned cls = c ? c->statsClasses : 0x2;
+    PfOsgState& S = pfosgState;
+
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    float vw = (float)vp[2], vh = (float)vp[3];
+    if (vw < 64 || vh < 64) return;
+    float u = vh / 800.0f;              /* layout unit, HiDPI-friendly */
+    if (u < 0.5f) u = 0.5f;
+
+    /* averages over the last second-ish of frames */
+    float sum = 0, worst = 0;
+    int n = 0;
+    for (int i = 0; i < 60; i++) {
+        int idx = (S.statsDtHead - 1 - i + 2 * PfOsgState::STATS_DTS) %
+                  PfOsgState::STATS_DTS;
+        float dt = S.statsDt[idx];
+        if (dt <= 0) break;
+        sum += dt;
+        worst = dt > worst ? dt : worst;
+        n++;
+    }
+    float avg = n ? sum / n : 0;
+    float hz = avg > 0 ? 1.0f / avg : 0;
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, vw, 0, vh, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                 GL_POLYGON_BIT);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    bool gfx = (cls & (0x1 | 0x4 | 0x8)) != 0;   /* ENGFX | ENDB | ENCULL */
+    float pad = 12 * u;
+    float chartW = 240 * u, chartH = 64 * u;
+    float lineH = 22 * u;
+    float panelW = chartW + 2 * pad;
+    float panelH = 2 * pad + chartH + lineH * (gfx ? 4.4f : 2.4f);
+    float px0 = pad, py1 = vh - pad;    /* top-left anchor */
+    float py0 = py1 - panelH;
+
+    glColor4f(0.05f, 0.05f, 0.15f, 0.55f);
+    glBegin(GL_QUADS);
+    glVertex2f(px0, py0); glVertex2f(px0 + panelW, py0);
+    glVertex2f(px0 + panelW, py1); glVertex2f(px0, py1);
+    glEnd();
+
+    char buf[128];
+    float ty = py1 - pad - 16 * u;
+    glColor3f(0.95f, 0.95f, 0.7f);
+    snprintf(buf, sizeof buf, "%5.1f Hz   %5.2f ms", hz, avg * 1000.0f);
+    statsText(px0 + pad, ty, (int)(22 * u), buf);
+    ty -= lineH * 1.2f;
+    glColor3f(0.75f, 0.95f, 0.75f);
+    snprintf(buf, sizeof buf, "app %4.1f  cull %4.1f  draw %4.1f ms",
+             S.statsAppMs, S.statsCullMs, S.statsDrawMs);
+    statsText(px0 + pad, ty, (int)(15 * u), buf);
+    if (gfx) {
+        ty -= lineH;
+        glColor3f(0.75f, 0.85f, 0.95f);
+        snprintf(buf, sizeof buf, "scene: %ld tris  %ld verts",
+                 S.statsTris, S.statsVerts);
+        statsText(px0 + pad, ty, (int)(15 * u), buf);
+        ty -= lineH;
+        snprintf(buf, sizeof buf, "       %ld geodes  %ld gsets",
+                 S.statsGeodes, S.statsDrawables);
+        statsText(px0 + pad, ty, (int)(15 * u), buf);
+    }
+
+    /* frame-time strip chart: one bar per recent frame, 60 Hz reference
+     * line; green under 17.5ms, yellow under 33.3, red beyond */
+    const int BARS = 80;
+    float bx = px0 + pad, by = py0 + pad;
+    float barW = chartW / BARS;
+    const float fullScale = 0.0333f * 1.5f;      /* 1.5x a 30Hz frame */
+    glBegin(GL_QUADS);
+    for (int i = 0; i < BARS; i++) {
+        int idx = (S.statsDtHead - BARS + i + 2 * PfOsgState::STATS_DTS) %
+                  PfOsgState::STATS_DTS;
+        float dt = S.statsDt[idx];
+        if (dt <= 0) continue;
+        if (dt <= 0.0175f)      glColor4f(0.2f, 0.9f, 0.2f, 0.9f);
+        else if (dt <= 0.0333f) glColor4f(0.9f, 0.9f, 0.2f, 0.9f);
+        else                    glColor4f(0.95f, 0.25f, 0.2f, 0.9f);
+        float h = dt / fullScale;
+        h = (h > 1.0f ? 1.0f : h) * chartH;
+        glVertex2f(bx + i * barW, by);
+        glVertex2f(bx + (i + 1) * barW - 1, by);
+        glVertex2f(bx + (i + 1) * barW - 1, by + h);
+        glVertex2f(bx + i * barW, by + h);
+    }
+    /* 60 Hz reference line */
+    glColor4f(0.9f, 0.9f, 0.9f, 0.7f);
+    float refH = (0.0167f / fullScale) * chartH;
+    glVertex2f(bx, by + refH);
+    glVertex2f(bx + chartW, by + refH);
+    glVertex2f(bx + chartW, by + refH + 1);
+    glVertex2f(bx, by + refH + 1);
+    glEnd();
+
+    glPopAttrib();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+}

@@ -880,9 +880,9 @@ extern pfPipeVideoChannel* pfGetChanPVChan(pfChannel* chan);
 
 /* stats: everything accepted, nothing recorded */
 #define PFSTATS_ENGFX      0x1
-#define PFSTATS_ON         1
 #define PFSTATS_OFF        0
-#define PFSTATS_SET        0
+#define PFSTATS_ON         1
+#define PFSTATS_SET        3   /* real prstats.h values */
 #define PFFSTATS_ENPFTIMES 0x2
 #define PFFSTATS_ENDB      0x4
 #define PFFSTATS_ENCULL    0x8
