@@ -47,6 +47,9 @@ struct WebApp {
     osgViewer::GraphicsWindowEmbedded* gw;
     SDL_Window* window;
     float sx, sy;
+    osg::Vec3d center;              /* orbit target (downtown, ground level) */
+    double angle = 3.9;            /* current orbit azimuth */
+    bool userControl = false;      /* mouse drag hands control to trackball */
 };
 static void web_frame(void* arg)
 {
@@ -62,13 +65,15 @@ static void web_frame(void* arg)
         case SDL_MOUSEBUTTONUP: {
             int b = ev.button.button == SDL_BUTTON_LEFT   ? 1
                   : ev.button.button == SDL_BUTTON_MIDDLE ? 2 : 3;
-            if (ev.type == SDL_MOUSEBUTTONDOWN)
+            if (ev.type == SDL_MOUSEBUTTONDOWN) {
+                a->userControl = true;      /* stop auto-orbit, hand to user */
                 q->mouseButtonPress(ev.button.x * a->sx, ev.button.y * a->sy, b);
-            else
+            } else
                 q->mouseButtonRelease(ev.button.x * a->sx, ev.button.y * a->sy, b);
             break;
         }
         case SDL_MOUSEWHEEL:
+            a->userControl = true;
             q->mouseScroll(ev.wheel.y > 0
                                ? osgGA::GUIEventAdapter::SCROLL_UP
                                : osgGA::GUIEventAdapter::SCROLL_DOWN);
@@ -82,6 +87,17 @@ static void web_frame(void* arg)
             }
             break;
         }
+    }
+    if (!a->userControl) {
+        /* slow cinematic orbit around downtown; keep the trackball's own
+         * state in sync so the handoff on first drag is seamless */
+        a->angle += 0.0018;
+        double R = 1500.0, H = 620.0;
+        osg::Vec3d eye = a->center +
+            osg::Vec3d(R * cos(a->angle), R * sin(a->angle), H);
+        osg::Matrixd vm;
+        vm.makeLookAt(eye, a->center, osg::Vec3d(0, 0, 1));
+        a->viewer->getCameraManipulator()->setByInverseMatrix(vm);
     }
     a->viewer->frame();
     SDL_GL_SwapWindow(a->window);
@@ -284,7 +300,7 @@ int main(int argc, char** argv)
             "  gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
             "  vec3 n = normalize(osg_NormalMatrix * osg_Normal);\n"
             "  vec3 L = normalize(vec3(0.3, -0.4, 1.0));\n"
-            "  diffuse = 0.7 + 0.5 * max(dot(n, L), 0.0);\n"
+            "  diffuse = 0.95 + 0.45 * max(dot(n, L), 0.0);\n"
             "  uv = osg_MultiTexCoord0.xy;\n"
             "  vcolor = osg_Color;\n"
             "}\n";
@@ -296,7 +312,8 @@ int main(int argc, char** argv)
             "varying float diffuse;\n"
             "void main() {\n"
             "  vec4 t = texture2D(tex, uv);\n"
-            "  gl_FragColor = vec4(t.rgb * vcolor.rgb * diffuse, t.a * vcolor.a);\n"
+            "  vec3 c = t.rgb * vcolor.rgb * diffuse * 1.25;\n"   /* daylight gain */
+            "  gl_FragColor = vec4(c, t.a * vcolor.a);\n"
             "}\n";
         osg::Program* prog = new osg::Program;
         prog->addShader(new osg::Shader(osg::Shader::VERTEX, vsrc));
@@ -325,7 +342,8 @@ int main(int argc, char** argv)
         state->setUseModelViewAndProjectionUniforms(true);
         state->setUseVertexAttributeAliasing(true);
     }
-    static WebApp app{&viewer, gw.get(), window, sx, sy};
+    static WebApp app{&viewer, gw.get(), window, sx, sy,
+                      osg::Vec3d(2500.0, 2450.0, 60.0)};
     emscripten_set_main_loop_arg(web_frame, &app, 0, 1);
     return 0;                       /* not reached; browser drives the loop */
 #else
