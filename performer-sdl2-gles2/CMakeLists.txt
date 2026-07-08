@@ -33,6 +33,26 @@ if(PF_WITH_OSG AND NOT EMSCRIPTEN)
     else()
         message(STATUS "OSG not found - stage-A backend disabled")
     endif()
+elseif(PF_WITH_OSG AND EMSCRIPTEN AND PF_EM_OSG)
+    # M3 web build: an OSG cross-compiled for Emscripten with the GLES2
+    # profile (built from external/OpenSceneGraph; see README).  PF_EM_OSG
+    # points at that OSG source root (its build tree is <root>/build-em).
+    set(_osgsrc ${PF_EM_OSG})
+    set(_osglib ${PF_EM_OSG}/build-em/lib)
+    if(EXISTS ${_osglib}/libosg.a)
+        set(OPENSCENEGRAPH_INCLUDE_DIRS
+            ${_osgsrc}/include ${_osgsrc}/build-em/include)
+        # static libs, most-dependent first
+        set(OPENSCENEGRAPH_LIBRARIES
+            ${_osglib}/libosgViewer.a ${_osglib}/libosgGA.a
+            ${_osglib}/libosgUtil.a   ${_osglib}/libosgText.a
+            ${_osglib}/libosgDB.a     ${_osglib}/libosg.a
+            ${_osglib}/libOpenThreads.a)
+        set(OPENSCENEGRAPH_FOUND TRUE)
+        message(STATUS "Emscripten OSG at ${_osgsrc} - web backend enabled")
+    else()
+        message(FATAL_ERROR "PF_EM_OSG=${PF_EM_OSG} has no build-em/lib/libosg.a")
+    endif()
 endif()
 
 # ---------------------------------------------------------------------------
@@ -83,15 +103,16 @@ if(OPENSCENEGRAPH_FOUND)
     add_subdirectory(src/loaders/pfb2osg)
     add_subdirectory(apps/townview)
 
-    # the pfosg shim consumes the original Performer headers (vendored) via
-    # include_next
-    if(PF_HAVE_HEADERS)
+    # the pfosg shim + perfly use immediate-mode/fixed-function GL (the GUI
+    # panel, stats overlay) that GLES2/WebGL lacks, so they are desktop-only
+    # for now; the web build is scene-first via townview
+    if(PF_HAVE_HEADERS AND NOT EMSCRIPTEN)
         add_subdirectory(src/pfosg)
         add_subdirectory(apps/simple)
         add_subdirectory(apps/pguide)
         add_subdirectory(apps/shim_tests)
         add_subdirectory(apps/perfly)
-    else()
+    elseif(NOT EMSCRIPTEN)
         message(STATUS "pfosg shim + perfly skipped (no Performer headers); "
                        "townview still builds against data/town")
     endif()

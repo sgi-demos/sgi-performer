@@ -16,6 +16,11 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <osgUtil/ShaderGen>          /* GLES2 has no fixed-function pipeline */
+#endif
+
 #include <SDL.h>
 
 #include <cstdio>
@@ -34,8 +39,62 @@ struct Stats : public osg::NodeVisitor {
     }
 };
 
+#ifdef __EMSCRIPTEN__
+/* per-frame state for the browser main loop (emscripten_set_main_loop needs
+ * a plain callback; stash everything the frame body touches here) */
+struct WebApp {
+    osgViewer::Viewer* viewer;
+    osgViewer::GraphicsWindowEmbedded* gw;
+    SDL_Window* window;
+    float sx, sy;
+};
+static void web_frame(void* arg)
+{
+    WebApp* a = (WebApp*)arg;
+    SDL_Event ev;
+    osgGA::EventQueue* q = a->gw->getEventQueue();
+    while (SDL_PollEvent(&ev)) {
+        switch (ev.type) {
+        case SDL_MOUSEMOTION:
+            q->mouseMotion(ev.motion.x * a->sx, ev.motion.y * a->sy);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP: {
+            int b = ev.button.button == SDL_BUTTON_LEFT   ? 1
+                  : ev.button.button == SDL_BUTTON_MIDDLE ? 2 : 3;
+            if (ev.type == SDL_MOUSEBUTTONDOWN)
+                q->mouseButtonPress(ev.button.x * a->sx, ev.button.y * a->sy, b);
+            else
+                q->mouseButtonRelease(ev.button.x * a->sx, ev.button.y * a->sy, b);
+            break;
+        }
+        case SDL_MOUSEWHEEL:
+            q->mouseScroll(ev.wheel.y > 0
+                               ? osgGA::GUIEventAdapter::SCROLL_UP
+                               : osgGA::GUIEventAdapter::SCROLL_DOWN);
+            break;
+        case SDL_WINDOWEVENT:
+            if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                int dw = 0, dh = 0;
+                SDL_GL_GetDrawableSize(a->window, &dw, &dh);
+                a->gw->resized(0, 0, dw, dh);
+                q->windowResize(0, 0, dw, dh);
+            }
+            break;
+        }
+    }
+    a->viewer->frame();
+    SDL_GL_SwapWindow(a->window);
+}
+#endif
+
 int main(int argc, char** argv)
 {
+#ifdef __EMSCRIPTEN__
+    /* the town database is bundled into the wasm virtual FS at build time */
+    if (argc < 2) { static const char* def[] = {argv[0],
+        (char*)"/data/town/town_ogl_pfi.pfb"}; argv = (char**)def; argc = 2; }
+#endif
     if (argc < 2) {
         fprintf(stderr, "usage: %s <file.pfb> [--screenshot out.png] [--dump]\n",
                 argv[0]);
@@ -145,6 +204,11 @@ int main(int argc, char** argv)
     }
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+#ifdef __EMSCRIPTEN__
+    /* WebGL1 == GLES2 */
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+#endif
     SDL_Window* window = SDL_CreateWindow("townview",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 960,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
@@ -167,6 +231,104 @@ int main(int argc, char** argv)
     viewer.getCamera()->setProjectionMatrixAsPerspective(
         45.0, (double)dw / dh, 1.0, 30000.0);
     viewer.home();
+
+#ifdef __EMSCRIPTEN__
+    /* frame the town with a Z-up eye (Performer databases are Z-up; OSG's
+     * auto-home assumes Y-up and stares at empty sky).  The bound center is
+     * up in the mountain/sky geometry (z~600), so aim at the downtown grid
+     * at ground level for an elevated 3/4 view of the buildings. */
+    {
+        osg::Vec3d townAt(2500.0, 2450.0, 40.0);
+        osg::Vec3d e = townAt + osg::Vec3d(-1100.0, -1400.0, 700.0);
+        viewer.getCameraManipulator()->setHomePosition(
+            e, townAt, osg::Vec3d(0, 0, 1));
+        viewer.home();
+    }
+    /* WebGL forbids client-side vertex arrays and has no display lists, so
+     * every drawable must use VBOs (pfb2osg defaults to display lists) */
+    {
+        struct UseVBO : osg::NodeVisitor {
+            UseVBO() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) {}
+            void apply(osg::Geode& g) override
+            {
+                for (unsigned i = 0; i < g.getNumDrawables(); i++)
+                    if (osg::Geometry* geom = g.getDrawable(i)->asGeometry()) {
+                        geom->setUseVertexBufferObjects(true);
+                        geom->setUseDisplayList(false);
+                    }
+                traverse(g);
+            }
+        } vbo;
+        scene->accept(vbo);
+    }
+    /* GLES2 has no fixed-function pipeline.  OSG 3.6.5's ShaderGen emits
+     * desktop GLSL (gl_LightSource, gl_NormalMatrix, ...) that WebGL rejects,
+     * so attach our own GLES2 uber shader to the scene root instead.  It uses
+     * the osg_* attributes/uniforms that OSG feeds when vertex-attribute
+     * aliasing + MVP uniforms are enabled (set after realize, below).  A 1x1
+     * white default texture on the root makes untextured geometry sample
+     * white, so one program covers textured and flat-colored surfaces. */
+    {
+        static const char* vsrc =
+            "precision highp float;\n"
+            "attribute vec4 osg_Vertex;\n"
+            "attribute vec3 osg_Normal;\n"
+            "attribute vec4 osg_Color;\n"
+            "attribute vec4 osg_MultiTexCoord0;\n"
+            "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+            "uniform mat3 osg_NormalMatrix;\n"
+            "varying vec2 uv;\n"
+            "varying vec4 vcolor;\n"
+            "varying float diffuse;\n"
+            "void main() {\n"
+            "  gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+            "  vec3 n = normalize(osg_NormalMatrix * osg_Normal);\n"
+            "  vec3 L = normalize(vec3(0.3, -0.4, 1.0));\n"
+            "  diffuse = 0.7 + 0.5 * max(dot(n, L), 0.0);\n"
+            "  uv = osg_MultiTexCoord0.xy;\n"
+            "  vcolor = osg_Color;\n"
+            "}\n";
+        static const char* fsrc =
+            "precision highp float;\n"
+            "uniform sampler2D tex;\n"
+            "varying vec2 uv;\n"
+            "varying vec4 vcolor;\n"
+            "varying float diffuse;\n"
+            "void main() {\n"
+            "  vec4 t = texture2D(tex, uv);\n"
+            "  gl_FragColor = vec4(t.rgb * vcolor.rgb * diffuse, t.a * vcolor.a);\n"
+            "}\n";
+        osg::Program* prog = new osg::Program;
+        prog->addShader(new osg::Shader(osg::Shader::VERTEX, vsrc));
+        prog->addShader(new osg::Shader(osg::Shader::FRAGMENT, fsrc));
+        osg::StateSet* ss = scene->getOrCreateStateSet();
+        ss->setAttributeAndModes(prog);
+        ss->addUniform(new osg::Uniform("tex", 0));
+
+        /* 1x1 white fallback texture at the root (overridden per-drawable) */
+        osg::Image* wimg = new osg::Image;
+        wimg->allocateImage(1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+        ((unsigned char*)wimg->data())[0] = 255;
+        ((unsigned char*)wimg->data())[1] = 255;
+        ((unsigned char*)wimg->data())[2] = 255;
+        ((unsigned char*)wimg->data())[3] = 255;
+        osg::Texture2D* white = new osg::Texture2D(wimg);
+        white->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+        white->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
+        ss->setTextureAttributeAndModes(0, white);
+    }
+    viewer.realize();
+    /* GLES2 has no fixed-function vertex setup (glVertexPointer/glNormal...)
+     * and no built-in gl_ModelViewProjectionMatrix: drive geometry through
+     * generic vertex attributes and matrix uniforms instead */
+    if (osg::State* state = gw->getState()) {
+        state->setUseModelViewAndProjectionUniforms(true);
+        state->setUseVertexAttributeAliasing(true);
+    }
+    static WebApp app{&viewer, gw.get(), window, sx, sy};
+    emscripten_set_main_loop_arg(web_frame, &app, 0, 1);
+    return 0;                       /* not reached; browser drives the loop */
+#else
     viewer.realize();
 
     bool running = true;
@@ -226,4 +388,5 @@ int main(int argc, char** argv)
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
+#endif
 }

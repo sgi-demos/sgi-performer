@@ -2,6 +2,11 @@
 build/
 build-web/
 
+# local-only heavy dependencies: a full Performer distribution and the
+# OpenSceneGraph source cross-compiled for Emscripten (M3 web build) both
+# live here; neither is committed
+external/
+
 # OS noise
 .DS_Store
 

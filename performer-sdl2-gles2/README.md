@@ -47,12 +47,38 @@ cmake -B build -G Ninja && cmake --build build
 
 perfly starts in drive mode at the shipped street-level position: left mouse accelerates, pointer steers, right mouse brakes/reverses, quick middle-click stops. Pass `-f` for fly mode or a bare `.pfb` path for trackball mode.
 
-Web (M0 platform layer only so far; town-on-web is the M3 milestone):
+### Web build
+
+The town's 3D scene runs in the browser via OpenSceneGraph cross-compiled for
+Emscripten with the GLES2/WebGL profile. First build OSG from source for
+Emscripten (once):
 
 ```
-emcmake cmake -B build-web -G Ninja && cmake --build build-web
-emrun build-web/apps/hello_pf/hello_pf.html                   # simple test for now
+git clone --depth 1 --branch OpenSceneGraph-3.6.5 \
+    https://github.com/openscenegraph/OpenSceneGraph.git external/OpenSceneGraph
+cd external/OpenSceneGraph
+emcmake cmake -B build-em -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 \
+    -DOPENGL_PROFILE=GLES2 -DDYNAMIC_OPENSCENEGRAPH=OFF \
+    -DOSG_WINDOWING_SYSTEM=None -DBUILD_OSG_APPLICATIONS=OFF \
+    -DOSG_GL1_AVAILABLE=OFF -DOSG_GL2_AVAILABLE=OFF -DOSG_GLES2_AVAILABLE=ON \
+    -DOSG_GL_DISPLAYLISTS_AVAILABLE=OFF -DOSG_GL_MATRICES_AVAILABLE=OFF \
+    -DOSG_GL_VERTEX_FUNCS_AVAILABLE=OFF -DOSG_GL_FIXED_FUNCTION_AVAILABLE=OFF \
+    -DEGL_LIBRARY=EGL -DOPENGL_egl_LIBRARY=EGL
+cmake --build build-em --target osg osgDB osgUtil osgGA osgViewer
+cd ../..
 ```
+
+Then build the web app (townview + the town data bundled into the wasm FS):
+
+```
+emcmake cmake -B build-web -G Ninja -DPF_EM_OSG=$PWD/external/OpenSceneGraph
+cmake --build build-web --target townview
+emrun build-web/apps/townview/townview.html          # the town, in a browser
+```
+
+The M0 hello-triangle still builds too:
+`cmake --build build-web --target hello_pf && emrun build-web/apps/hello_pf/hello_pf.html`
 
 ## Roadmap
 
@@ -69,7 +95,10 @@ emrun build-web/apps/hello_pf/hello_pf.html                   # simple test for 
   - ✅ **EarthSky sky/ground bands**: pfEarthSky renders the real eye-following background — sky dome with the horizon band gradient (horizon → sky-bottom → zenith), ground sheet with near→far colors at `PFES_GRND_HT` — driven live by perfly's BG menu (Sky/Grnd, Sky, Clear, Tag) and the Time-of-Day slider (env.c's color ramps and horizon-angle animation run as shipped)
   - ✅ **stats display**: `pfDrawChanStats` draws the classic overlay — frame rate, frame-time strip chart with the 60 Hz reference line, app/cull/draw milliseconds (cull/draw from the OSG renderer), and scene geometry counts when the Gfx class is enabled — toggled live from the panel's Stats buttons
   - ✅ **SGI's shipped .pfb/.pfa reader** ([vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c](vendor/Performer/Src/lib/libpfdb/libpfpfb/pfpfb.c)), 16k lines compiled **unmodified**, is now the default database loader — it builds scenes through the shim's `pf*` API (geosets, billboards, sequences, LODs, layers/decals, switches), so format coverage is Performer's own. The town, all four vehicles, and the tether demo load and render identically to the direct [pfb2osg](src/loaders/pfb2osg/pfb2osg.cpp) path; set `PFOSG_LOADER=pfb2osg` to use the direct loader instead. Its API surface (~450 tokens/decls beyond the base shim) is harvested from the vendored headers by [tools/harvest_pfb_api.py](tools/harvest_pfb_api.py) into `pf_pfb_api.h` + `pfosg_pfb_stubs.cpp`; the node types the demos use get real implementations in [pfosg_pfb.cpp](src/pfosg/pfosg_pfb.cpp)
-- **M3** town on the web: the shim + OSG stack on Emscripten/WebGL (GLES2-safe state via OSG's shader pipeline, SDL2 main loop already in place)
+- **M3** town on the web — **scene renders in a browser** 🎉:
+  - OpenSceneGraph 3.6.5 cross-compiled from source for Emscripten with the **GLES2 profile** (no fixed-function pipeline), static libs, windowing-system `None` — see [Web build](#web-build) below
+  - `townview` builds to wasm+WebGL: the town database (bundled into the wasm virtual FS) renders through OSG with VBO-only geometry, vertex-attribute aliasing, and a hand-written GLES2 uber shader (OSG 3.6.5's own ShaderGen emits desktop GLSL that WebGL rejects) — sky, mountain backdrop, roads, textured terrain, trees, water, and the circulating vehicles all draw; trackball navigation via SDL2 + the Emscripten main loop
+  - scene-first: the perfly GUI panel and stats overlay use immediate-mode GL (`glBegin`/`glVertex`, incl. SGI's unmodified `gui.c`) that GLES2 lacks; a follow-on immediate-mode emulation layer (or Emscripten's `regal` port) brings those to the web
 - **M4** more demos: bring up further shipped SGI samples and databases as desired
 
 ## Provenance & licensing
