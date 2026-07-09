@@ -147,6 +147,30 @@ sliders, checkboxes, 5x7-font labels) and on web; desktop unchanged.
   native build runs ~65 fps with the GUI (failure now logged as
   "vsync unavailable" if it ever regresses).
 
+## Stoplights lit + cycling (2026-07-08, same day)
+
+The town's stoplight bulbs are **light points** — `PFGS_POINTS` geosets
+(pure red/yellow/green) under `pfSequence` nodes with authored phase times
+(20s red / 3s yellow / 10s green), one per intersection.  Two bugs kept
+them dark on every flavor:
+
+1. **Point size never applied.**  The geosets carry `pntSize = 0` (real
+   Performer sizes light points from the pfLPointState, which the shim
+   stubs), so they rasterized as 1px-or-nothing.  `compileGSet` now sizes
+   POINTS geosets (authored size, or a 6px lit-bulb default): `osg::Point`
+   on desktop, a `pfPointSize` uniform + `gl_PointSize` in the uber vertex
+   shader on GLES2.
+2. **Sequence frame times orphaned.**  pfpfb sets per-frame times
+   (`pfSeqTime`) BEFORE attaching children, and `osg::Sequence::addChild`
+   inserts a default time ahead of them — every frame ended up on the 1s
+   default and the authored phases were never used.  `PfOsgSequence`
+   (pfosg_pfb.cpp) attaches children without touching the preloaded
+   frame-time list.
+
+Verified: green/amber bulbs lit at intersections on native GLES2 and
+desktop (street lamps got their lit points too); sequences run
+(PFSEQ_START in the database, osg::Sequence updates in the traversal).
+
 ## Build & run
 
 ```

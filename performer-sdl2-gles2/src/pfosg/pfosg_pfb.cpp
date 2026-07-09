@@ -89,9 +89,23 @@ extern "C" void pfBboardPos(pfBillboard* b, int i, const pfVec3 pos)
 
 /* ---- sequences ---------------------------------------------------------- */
 
+/* The pfb loader sets per-frame times (pfSeqTime) BEFORE attaching the
+ * children; osg::Sequence::addChild would insert a default time ahead of
+ * them, orphaning the authored durations (every stoplight state would run
+ * the 1s default).  When times are already loaded, attach children without
+ * touching the frame-time list so child i keeps its authored time i. */
+struct PfOsgSequence : public osg::Sequence {
+    bool addChild(osg::Node* child) override
+    {
+        if (_frameTime.size() > getNumChildren())
+            return osg::Group::addChild(child);
+        return osg::Sequence::addChild(child);
+    }
+};
+
 extern "C" pfSequence* pfNewSeq(void)
 {
-    osg::Sequence* sq = new osg::Sequence;
+    osg::Sequence* sq = new PfOsgSequence;
     sq->setDefaultTime(1.0f);
     return (pfSequence*)wrapNode(sq);
 }

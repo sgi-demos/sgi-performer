@@ -31,6 +31,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osg/LineWidth>
+#include <osg/Point>
 #include <osg/ShadeModel>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/LineSegmentIntersector>
@@ -623,6 +624,21 @@ void compileGSet(PfOsgGSet* g)
                                  glmode == GL_LINE_STRIP))
         geom->getOrCreateStateSet()->setAttributeAndModes(
             new osg::LineWidth(g->lineWidth));
+    if (glmode == GL_POINTS) {
+        /* light points (stoplight bulbs, street lamps): the town's geosets
+         * carry pntSize 0 — real Performer sizes them from the
+         * pfLPointState (stubbed here) — so default to a screen size that
+         * reads as a lit bulb; 1px would be invisible */
+        float sz = g->pntSize >= 1.0f ? g->pntSize : 6.0f;
+#ifdef PFOSG_GLES2
+        /* GLES2 sizes points from gl_PointSize in the vertex shader */
+        geom->getOrCreateStateSet()->addUniform(
+            new osg::Uniform("pfPointSize", sz));
+#else
+        geom->getOrCreateStateSet()->setAttributeAndModes(
+            new osg::Point(sz));
+#endif
+    }
 
 #ifdef PFOSG_GLES2
     geom->setUseVertexBufferObjects(true);   /* GLES2: no client vertex arrays */
@@ -802,11 +818,13 @@ static void gles2SetupRoot(osg::Group* root)
         "attribute vec4 osg_MultiTexCoord0;\n"
         "uniform mat4 osg_ModelViewProjectionMatrix;\n"
         "uniform mat3 osg_NormalMatrix;\n"
+        "uniform float pfPointSize;\n"     /* light points; 1.0 otherwise */
         "varying vec2 uv;\n"
         "varying vec4 vcolor;\n"
         "varying float diffuse;\n"
         "void main() {\n"
         "  gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+        "  gl_PointSize = pfPointSize;\n"
         "  vec3 nn = osg_NormalMatrix * osg_Normal;\n"
         "  float nl = length(nn);\n"           /* EarthSky has no normals */
         "  vec3 L = normalize(vec3(0.3, -0.4, 1.0));\n"
@@ -835,6 +853,7 @@ static void gles2SetupRoot(osg::Group* root)
     ss->setAttributeAndModes(prog);
     ss->addUniform(new osg::Uniform("tex", 0));
     ss->addUniform(new osg::Uniform("pfAlphaRef", 0.0f));   /* default: off */
+    ss->addUniform(new osg::Uniform("pfPointSize", 1.0f));
     /* depth test lives in the camera's global stateset, but per-frame raw GL
      * from the perfly draw callbacks can knock it out behind OSG's cache;
      * asserting it on the scene root keeps it in the per-frame apply path */
