@@ -51,8 +51,8 @@ extern "C" void pfPopState(void)
 extern "C" void pfBasicState(void)
 {
     if (!pfosgInDrawPhase) return;
-#ifndef __EMSCRIPTEN__
-    /* fixed-function enums: GL_INVALID_ENUM per call on GLES2/WebGL */
+#ifndef PFOSG_GLES2
+    /* fixed-function enums: GL_INVALID_ENUM per call on GLES2 */
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_FOG);

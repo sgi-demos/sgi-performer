@@ -1,12 +1,13 @@
-/* pfosg_gles_compat.cpp - Emscripten only.  Emscripten's <GL/gl.h>
- * DECLARES the legacy immediate-mode / fixed-function entry points (so the
- * desktop GUI/stats drawing code compiles) but only IMPLEMENTS them under
- * -sLEGACY_GL_EMULATION, which we don't use (it conflicts with the GLES2
- * shader path the scene renders through).  The web build is GUI-less, so
- * provide inert no-op definitions here; the panel/stats overlays simply do
- * not draw on the web.  Signatures match <GL/gl.h> exactly. */
+/* pfosg_gles_compat.cpp - GLES2 builds only (web and native ANGLE).  The
+ * legacy immediate-mode / fixed-function entry points are DECLARED so the
+ * desktop GUI/stats drawing code compiles (on web by Emscripten's
+ * <GL/gl.h>; natively by the shim GL/gl.h) but GLES2 has no implementation
+ * (Emscripten only implements them under -sLEGACY_GL_EMULATION, which
+ * conflicts with the GLES2 shader path).  The GLES2 builds are GUI-less,
+ * so provide inert no-op definitions here; the panel/stats overlays simply
+ * do not draw.  Signatures match <GL/gl.h> exactly. */
 
-#ifdef __EMSCRIPTEN__
+#ifdef PFOSG_GLES2
 
 #include <GL/gl.h>
 
@@ -49,4 +50,4 @@ const GLubyte* gluErrorString(GLenum) { return (const GLubyte*)""; }
 
 }   /* extern "C" */
 
-#endif /* __EMSCRIPTEN__ */
+#endif /* PFOSG_GLES2 */

@@ -24,9 +24,42 @@ else()
 endif()
 
 # ---------------------------------------------------------------------------
-# OpenSceneGraph (stage-A backend only; never built for Emscripten)
+# OpenSceneGraph backend selection:
+#   desktop GL   - system OSG via find_package (default native build)
+#   native GLES2 - PF_GLES2_OSG=<OSG source root with build-gles2/> against
+#                  ANGLE (PF_ANGLE=<opengl-for-mac root>, default ~/Github/
+#                  opengl-for-mac); same GLES2 shader path as the web build
+#   web (GLES2)  - PF_EM_OSG=<OSG source root with build-em/> (Emscripten)
 # ---------------------------------------------------------------------------
-if(PF_WITH_OSG AND NOT EMSCRIPTEN)
+if(PF_WITH_OSG AND NOT EMSCRIPTEN AND PF_GLES2_OSG)
+    if(NOT PF_ANGLE)
+        set(PF_ANGLE $ENV{HOME}/Github/opengl-for-mac)
+    endif()
+    set(_osgsrc ${PF_GLES2_OSG})
+    set(_osglib ${PF_GLES2_OSG}/build-gles2/lib)
+    if(EXISTS ${_osglib}/libosg.a AND EXISTS ${PF_ANGLE}/lib/libGLESv2.dylib)
+        set(OPENSCENEGRAPH_INCLUDE_DIRS
+            ${_osgsrc}/include ${_osgsrc}/build-gles2/include
+            ${PF_ANGLE}/include)
+        # static libs, most-dependent first; then ANGLE's GLES2/EGL.  ANGLE's
+        # install names are CWD-relative (./libGLESv2.dylib), so run with
+        # DYLD_FALLBACK_LIBRARY_PATH=${PF_ANGLE}/lib
+        set(OPENSCENEGRAPH_LIBRARIES
+            ${_osglib}/libosgViewer.a ${_osglib}/libosgGA.a
+            ${_osglib}/libosgUtil.a   ${_osglib}/libosgText.a
+            ${_osglib}/libosgDB.a     ${_osglib}/libosg.a
+            ${_osglib}/libOpenThreads.a
+            ${PF_ANGLE}/lib/libGLESv2.dylib ${PF_ANGLE}/lib/libEGL.dylib
+            "-framework CoreFoundation" "-framework Foundation")
+        set(OPENSCENEGRAPH_FOUND TRUE)
+        set(PF_GLES2 TRUE)
+        message(STATUS "Native GLES2: OSG at ${_osgsrc} + ANGLE at ${PF_ANGLE}")
+    else()
+        message(FATAL_ERROR "PF_GLES2_OSG=${PF_GLES2_OSG} needs "
+                "build-gles2/lib/libosg.a and PF_ANGLE=${PF_ANGLE} needs "
+                "lib/libGLESv2.dylib")
+    endif()
+elseif(PF_WITH_OSG AND NOT EMSCRIPTEN)
     find_package(OpenSceneGraph COMPONENTS osg osgDB osgUtil osgViewer osgGA)
     if(OPENSCENEGRAPH_FOUND)
         message(STATUS "OSG ${OPENSCENEGRAPH_VERSION} found - stage-A backend enabled")
@@ -101,21 +134,25 @@ endif()
 if(OPENSCENEGRAPH_FOUND)
     # self-contained: needs only OSG + the demo data in data/town
     add_subdirectory(src/loaders/pfb2osg)
-    add_subdirectory(apps/townview)
+    if(NOT PF_GLES2)
+        add_subdirectory(apps/townview)   # desktop-GL / web only
+    endif()
 
-    # the pfosg shim builds on both desktop and web.  The sample pguide
-    # programs and perfly's GUI panel use immediate-mode GL that GLES2/WebGL
-    # lacks; on the web perfly runs GUI-less (webfly), so the pguide samples
-    # stay desktop-only.
+    # the pfosg shim builds on desktop GL, native GLES2, and the web.  The
+    # sample pguide programs and perfly's GUI panel use immediate-mode GL
+    # that GLES2 lacks; the GLES2 builds (native + web) run perfly GUI-less,
+    # so the pguide samples stay desktop-GL-only.
     if(PF_HAVE_HEADERS)
         add_subdirectory(src/pfosg)
-        if(NOT EMSCRIPTEN)
+        if(EMSCRIPTEN)
+            add_subdirectory(apps/webfly)
+        elseif(PF_GLES2)
+            add_subdirectory(apps/perfly)
+        else()
             add_subdirectory(apps/simple)
             add_subdirectory(apps/pguide)
             add_subdirectory(apps/shim_tests)
             add_subdirectory(apps/perfly)
-        else()
-            add_subdirectory(apps/webfly)
         endif()
     elseif(NOT EMSCRIPTEN)
         message(STATUS "pfosg shim + perfly skipped (no Performer headers); "

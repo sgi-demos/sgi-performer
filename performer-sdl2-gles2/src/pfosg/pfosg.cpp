@@ -39,13 +39,17 @@
 
 #include <SDL.h>
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+/* PFOSG_GLES2 (set by CMake): the GLES2-subset render path — Emscripten/
+ * WebGL1 and native ANGLE builds.  __EMSCRIPTEN__ marks the web-only bits. */
+#ifdef PFOSG_GLES2
 #include <osg/Program>
 #include <osg/Shader>
 #include <osg/Uniform>
 #include <osg/Image>
 #include <osg/Notify>
+#endif
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
 #else
 #include <execinfo.h>
 #endif
@@ -314,7 +318,12 @@ void openWindow()
     if (S.winOpen) return;
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-#ifdef __EMSCRIPTEN__
+#ifdef PFOSG_GLES2
+#ifndef __EMSCRIPTEN__
+    /* native GLES2 via ANGLE (GLES-on-Metal on macOS); SDL needs the hint
+     * to pick the EGL/GLES driver instead of the platform desktop GL */
+    SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
+#endif
     /* WebGL1 == GLES2 */
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -322,8 +331,13 @@ void openWindow()
      * GL_LIGHTING) that GLES2 lacks; OSG logs a "not supported" warning for
      * each, per drawable, per frame.  Our GLES2 uber shader ignores them all,
      * but the ~1000+ warnings/frame flood the console (and each is an HTTP
-     * POST under --emrun), stalling the browser to ~1 fps.  Silence them. */
-    osg::setNotifyLevel(osg::FATAL);
+     * POST under --emrun), stalling the browser to ~1 fps.  Silence them —
+     * PFOSG_OSG_NOTIFY=<osg level> overrides for debugging (it also hides
+     * GLSL compile/link logs). */
+    if (const char* lvl = getenv("PFOSG_OSG_NOTIFY"))
+        osg::setNotifyLevel((osg::NotifySeverity)atoi(lvl));
+    else
+        osg::setNotifyLevel(osg::FATAL);
 #endif
     S.window = SDL_CreateWindow(S.winName.c_str(),
         S.winX ? S.winX : SDL_WINDOWPOS_CENTERED,
@@ -336,6 +350,9 @@ void openWindow()
         exit(1);
     }
     SDL_GL_SetSwapInterval(1);
+    fprintf(stderr, "pfosg: GL renderer: %s | %s\n",
+            (const char*)glGetString(GL_RENDERER),
+            (const char*)glGetString(GL_VERSION));
 
     int dw = 0, dh = 0;
     SDL_GL_GetDrawableSize(S.window, &dw, &dh);
@@ -353,11 +370,11 @@ void openWindow()
 
     S.viewer->getCamera()->setAllowEventFocus(false);
     S.viewer->realize();
-#ifdef __EMSCRIPTEN__
+#ifdef PFOSG_GLES2
     /* GLES2 has no fixed-function vertex setup (glVertexPointer/glNormal...)
      * and no built-in gl_ModelViewProjectionMatrix: drive geometry through
      * generic vertex attributes and matrix uniforms instead (paired with the
-     * osg_* uber shader attached to the scene root; see webglSetupRoot) */
+     * osg_* uber shader attached to the scene root; see gles2SetupRoot) */
     if (osg::State* state = S.gw->getState()) {
         state->setUseModelViewAndProjectionUniforms(true);
         state->setUseVertexAttributeAliasing(true);
@@ -605,8 +622,8 @@ void compileGSet(PfOsgGSet* g)
         geom->getOrCreateStateSet()->setAttributeAndModes(
             new osg::LineWidth(g->lineWidth));
 
-#ifdef __EMSCRIPTEN__
-    geom->setUseVertexBufferObjects(true);   /* WebGL: no client vertex arrays */
+#ifdef PFOSG_GLES2
+    geom->setUseVertexBufferObjects(true);   /* GLES2: no client vertex arrays */
 #endif
     geom->dirtyBound();
     geom->dirtyGLObjects();
@@ -666,8 +683,8 @@ static osg::Geometry* newESkyGeometry(int nverts)
 {
     osg::Geometry* g = new osg::Geometry;
     g->setUseDisplayList(false);
-#ifdef __EMSCRIPTEN__
-    g->setUseVertexBufferObjects(true);      /* WebGL: no client vertex arrays */
+#ifdef PFOSG_GLES2
+    g->setUseVertexBufferObjects(true);      /* GLES2: no client vertex arrays */
 #endif
     osg::Vec3Array* v = new osg::Vec3Array(nverts);
     osg::Vec4Array* c = new osg::Vec4Array(nverts);
@@ -761,15 +778,15 @@ static void updateESky()
     }
 }
 
-#ifdef __EMSCRIPTEN__
+#ifdef PFOSG_GLES2
 /* GLES2 has no fixed-function pipeline.  OSG 3.6.5's ShaderGen emits desktop
- * GLSL (gl_LightSource, gl_NormalMatrix, ...) that WebGL rejects, so attach
+ * GLSL (gl_LightSource, gl_NormalMatrix, ...) that GLES2 rejects, so attach
  * our own GLES2 uber shader to the viewer root (covers scene + EarthSky).  It
  * uses the osg_* attributes/uniforms OSG feeds once vertex-attribute aliasing
  * + MVP uniforms are enabled (see openWindow, after realize).  A 1x1 white
  * default texture makes untextured geometry sample white, so one program
  * covers textured, flat-colored, and normal-less (EarthSky) surfaces. */
-static void webglSetupRoot(osg::Group* root)
+static void gles2SetupRoot(osg::Group* root)
 {
     static bool done = false;
     if (done || !root) return;
@@ -839,8 +856,8 @@ void applyChannel()
         if (!S.root) S.root = new osg::Group;
         if (S.viewer->getSceneData() != S.root.get())
             S.viewer->setSceneData(S.root.get());
-#ifdef __EMSCRIPTEN__
-        webglSetupRoot(S.root.get());
+#ifdef PFOSG_GLES2
+        gles2SetupRoot(S.root.get());
 #endif
         if (!S.root->containsNode(S.scene.get())) {
             /* replace a previous scene, keeping the esky child */
@@ -1200,6 +1217,42 @@ extern "C" int pfFrame(void)
 
     S.viewer->frame();
 
+    /* PFOSG_GL_PROBE=<frame>: one-shot GL state dump right after the scene
+     * render — the black-screen debugging kit (viewport/program/depth/etc.) */
+    static long probeFrame = getenv("PFOSG_GL_PROBE")
+        ? atol(getenv("PFOSG_GL_PROBE")) : 0;
+    if (probeFrame && S.frameCount == probeFrame) {
+        GLint vp[4] = {0}, prog = 0, sbox[4] = {0};
+        GLfloat cc[4] = {0};
+        glGetIntegerv(GL_VIEWPORT, vp);
+        glGetIntegerv(0x8B8D /*GL_CURRENT_PROGRAM*/, &prog);
+        glGetIntegerv(GL_SCISSOR_BOX, sbox);
+        glGetFloatv(GL_COLOR_CLEAR_VALUE, cc);
+        fprintf(stderr,
+                "pfosg: GL probe frame=%ld err=0x%x viewport=%d,%d,%dx%d "
+                "prog=%d depth=%d cull=%d scissor=%d box=%d,%d,%dx%d "
+                "clear=%.2f,%.2f,%.2f\n",
+                S.frameCount, glGetError(), vp[0], vp[1], vp[2], vp[3],
+                prog, (int)glIsEnabled(GL_DEPTH_TEST),
+                (int)glIsEnabled(GL_CULL_FACE),
+                (int)glIsEnabled(GL_SCISSOR_TEST),
+                sbox[0], sbox[1], sbox[2], sbox[3], cc[0], cc[1], cc[2]);
+        int ww = 0, wh = 0, dw2 = 0, dh2 = 0;
+        SDL_GetWindowSize(S.window, &ww, &wh);
+        SDL_GL_GetDrawableSize(S.window, &dw2, &dh2);
+        GLint fbo = 0;
+        glGetIntegerv(0x8CA6 /*GL_FRAMEBUFFER_BINDING*/, &fbo);
+        osg::Viewport* cvp = S.viewer->getCamera()->getViewport();
+        fprintf(stderr,
+                "pfosg: GL probe win=%dx%d drawable=%dx%d fbo=%d "
+                "camVp=%.0f,%.0f,%.0fx%.0f gwTraits=%dx%d\n",
+                ww, wh, dw2, dh2, fbo,
+                cvp ? cvp->x() : -1, cvp ? cvp->y() : -1,
+                cvp ? cvp->width() : -1, cvp ? cvp->height() : -1,
+                S.gw->getTraits() ? S.gw->getTraits()->width : -1,
+                S.gw->getTraits() ? S.gw->getTraits()->height : -1);
+    }
+
     {
         double v = 0.0;
         osg::Stats* st = S.viewer->getCamera()->getStats();
@@ -1221,6 +1274,56 @@ extern "C" int pfFrame(void)
      * remains is their overlay drawing — perfly's messages and stats on the
      * main channel, the libpfutil GUI panel on its own channel */
     pfosgRunAuxChannels();
+
+    const char* shot = getenv("PFOSG_SCREENSHOT");
+    static long shotFrame = getenv("PFOSG_SCREENSHOT_FRAME")
+        ? atol(getenv("PFOSG_SCREENSHOT_FRAME")) : 30;
+    static long shotEvery = getenv("PFOSG_SCREENSHOT_EVERY")
+        ? atol(getenv("PFOSG_SCREENSHOT_EVERY")) : 0;
+    bool capture = shot && (shotEvery > 0 ? (S.frameCount % shotEvery == 0 &&
+                                             S.frameCount > 0)
+                                          : S.frameCount == shotFrame);
+    if (capture) {
+        int dw = 0, dh = 0;
+        SDL_GL_GetDrawableSize(S.window, &dw, &dh);
+        osg::ref_ptr<osg::Image> img = new osg::Image;
+#ifdef PFOSG_GLES2
+        /* GLES2/3 only guarantees RGBA8 reads from the default framebuffer;
+         * GL_RGB errors with INVALID_OPERATION and leaves the image black */
+        img->readPixels(0, 0, dw, dh, GL_RGBA, GL_UNSIGNED_BYTE);
+#else
+        img->readPixels(0, 0, dw, dh, GL_RGB, GL_UNSIGNED_BYTE);
+#endif
+        char name[1024];
+        if (shotEvery > 0)
+            snprintf(name, sizeof name, "%s.%05ld.png", shot, S.frameCount);
+        else
+            snprintf(name, sizeof name, "%s", shot);
+        if (osgDB::writeImageFile(*img, name)) {
+            fprintf(stderr, "pfosg: wrote %s\n", name);
+        } else {
+            /* plugin-less static OSG builds (native GLES2): raw PPM fallback,
+             * flipped to top-down (readPixels is GL bottom-up) */
+            char* dot = strrchr(name, '.');
+            if (dot) strcpy(dot, ".ppm");
+            int bpp = img->getPixelFormat() == GL_RGBA ? 4 : 3;
+            if (FILE* f = fopen(name, "wb")) {
+                fprintf(f, "P6\n%d %d\n255\n", dw, dh);
+                for (int y = dh - 1; y >= 0; y--) {
+                    const unsigned char* row =
+                        img->data() + (size_t)y * dw * bpp;
+                    for (int x = 0; x < dw; x++)
+                        fwrite(row + (size_t)x * bpp, 1, 3, f);
+                }
+                fclose(f);
+                fprintf(stderr, "pfosg: wrote %s\n", name);
+            }
+        }
+    }
+
+    /* the capture above must read the back buffer BEFORE the swap: reading
+     * after SDL_GL_SwapWindow returns stale/undefined pixels (black under
+     * ANGLE/Metal; it merely happened to work on Apple desktop GL) */
     SDL_GL_SwapWindow(S.window);
     S.frameCount++;
 
@@ -1238,28 +1341,6 @@ extern "C" int pfFrame(void)
                     eye.x(), eye.y(), eye.z(),
                     S.paused ? " [PAUSED]" : "");
         }
-    }
-
-    const char* shot = getenv("PFOSG_SCREENSHOT");
-    static long shotFrame = getenv("PFOSG_SCREENSHOT_FRAME")
-        ? atol(getenv("PFOSG_SCREENSHOT_FRAME")) : 30;
-    static long shotEvery = getenv("PFOSG_SCREENSHOT_EVERY")
-        ? atol(getenv("PFOSG_SCREENSHOT_EVERY")) : 0;
-    bool capture = shot && (shotEvery > 0 ? (S.frameCount % shotEvery == 0 &&
-                                             S.frameCount > 0)
-                                          : S.frameCount == shotFrame);
-    if (capture) {
-        int dw = 0, dh = 0;
-        SDL_GL_GetDrawableSize(S.window, &dw, &dh);
-        osg::ref_ptr<osg::Image> img = new osg::Image;
-        img->readPixels(0, 0, dw, dh, GL_RGB, GL_UNSIGNED_BYTE);
-        char name[1024];
-        if (shotEvery > 0)
-            snprintf(name, sizeof name, "%s.%05ld.png", shot, S.frameCount);
-        else
-            snprintf(name, sizeof name, "%s", shot);
-        if (osgDB::writeImageFile(*img, name))
-            fprintf(stderr, "pfosg: wrote %s\n", name);
     }
 #ifdef __EMSCRIPTEN__
     /* perfly's main() drives a blocking frame loop; Asyncify unwinds here so
@@ -1702,9 +1783,9 @@ struct PfOsgGState {
     int alphaFunc = PFAF_OFF;
     void applyAlpha()
     {
-#ifdef __EMSCRIPTEN__
+#ifdef PFOSG_GLES2
         /* GLES2 has no fixed-function alpha test; the uber shader discards
-         * fragments with alpha < pfAlphaRef (webglSetupRoot).  GREATER /
+         * fragments with alpha < pfAlphaRef (gles2SetupRoot).  GREATER /
          * GEQUAL are the cutout-billboard cases (town trees); other funcs
          * are not used by the demos and fall back to no test. */
         bool cutout = alphaFunc == PFAF_GREATER || alphaFunc == PFAF_GEQUAL;
@@ -2206,14 +2287,13 @@ void pfosgRunAuxChannels(void)
     glPopClientAttrib();
     glPopAttrib();
 
-#ifdef __EMSCRIPTEN__
+#ifdef PFOSG_GLES2
     /* glPushAttrib/glPopAttrib above are inert stubs on GLES2 (see
      * pfosg_gles_compat.cpp), so the real GL calls made here and inside the
      * callbacks (this glViewport/glBindBuffer, pfBasicState's glDisable of
      * DEPTH_TEST/CULL_FACE/BLEND while a message overlay is up) survive
-     * into the next frame behind osg::State's cache.  Re-sync: zero the
-     * buffer-binding cache and mark every mode/attribute dirty so the next
-     * scene render re-applies state instead of trusting stale entries. */
+     * into the next frame behind osg::State's cache.  Re-sync the cache
+     * with GL truth so the next scene render re-applies what it needs. */
     if (S.gw.valid() && S.gw->getState()) {
         osg::State* st = S.gw->getState();
         st->unbindVertexBufferObject();

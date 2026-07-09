@@ -1,6 +1,7 @@
 # build output
 build/
 build-web/
+build-gles2/
 
 # local-only heavy dependencies: a full Performer distribution and the
 # OpenSceneGraph source cross-compiled for Emscripten (M3 web build) both

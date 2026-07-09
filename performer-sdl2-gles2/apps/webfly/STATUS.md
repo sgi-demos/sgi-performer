@@ -1,4 +1,4 @@
-# webfly (web tether) — status
+# webfly (web tether) + unified GLES2 path — status
 
 **Goal:** SGI's `perfly` compiled byte-for-byte unmodified, running the shipped
 `town-tether.perfly` config in the browser (Emscripten/WebGL, GUI-less) via the
@@ -77,11 +77,58 @@ scene the full window — which is what GUI-less means.
   carry FFP state OSG would warn about per drawable per frame). Note it also
   hides GLSL compile logs — flip to `WARN` when debugging shaders.
 
+## M3 lead-in: unified GLES2 path, native + web (2026-07-08)
+
+The GLES2 render path is now ONE code path behind `PFOSG_GLES2` (set by
+CMake), with three build flavors:
+
+| flavor | tree | OSG | GL |
+|---|---|---|---|
+| desktop GL | `build/` | Homebrew (FFP) | Apple GL 2.1 |
+| **native GLES2** | `build-gles2/` | `external/OpenSceneGraph/build-gles2` | **ANGLE (Metal)** |
+| web | `build-web/` | `external/OpenSceneGraph/build-em` | WebGL1 |
+
+Native GLES2 perfly runs the tether demo correctly — verified by screenshot,
+renderer string `ANGLE (Apple, Apple M3, OpenGL 4.1 Metal)`. Web verified
+unchanged after the refactor. `__EMSCRIPTEN__` now guards only the truly
+web-only bits (Asyncify yield, emscripten.h, web-shell concerns).
+
+Native GLES2 specifics:
+- OSG-GLES2 native build: same flags as build-em, plus
+  `-DOPENGL_HEADER1='#include <GLES2/gl2.h>'` (OSG's cmake assumes iOS on
+  APPLE+GLES2), ANGLE include/libs from `~/Github/opengl-for-mac`,
+  `-DDYNAMIC_OPENTHREADS=OFF`, CoreFoundation+Foundation frameworks.
+- `src/pfosg/include/GL/gl.h` grew a GLES2 branch: `<GLES2/gl2.h>` + legacy
+  FFP declarations/tokens (matching pfosg_gles_compat.cpp) so the overlay
+  code and SGI loaders compile without desktop GL.
+- SDL needs `SDL_HINT_OPENGL_ES_DRIVER=1` (set in openWindow) and the run
+  needs `DYLD_FALLBACK_LIBRARY_PATH=$HOME/Github/opengl-for-mac/lib`
+  (ANGLE dylib install names are CWD-relative).
+- **glReadPixels(GL_RGB) silently fails on GLES default framebuffers**
+  (only RGBA8 is guaranteed) — the screenshot path reads RGBA on GLES2 and
+  falls back to PPM when no osgDB image plugin is linked. Capture must also
+  happen BEFORE SDL_GL_SwapWindow (post-swap reads are undefined; black on
+  ANGLE/Metal, worked by luck on Apple GL).
+- Debug knobs: `PFOSG_GL_PROBE=<frame>` one-shot GL state dump,
+  `PFOSG_OSG_NOTIFY=<level>` un-silences OSG (shows GLSL logs).
+
+Remaining for full unification: GLES2 overlay renderer (GUI panel, stats,
+messages — currently GUI-less on both GLES2 flavors), `.rgb`/png osgDB
+plugins in the static OSG builds, vsync under ANGLE (SwapInterval ignored;
+runs unthrottled).
+
 ## Build & run
 
 ```
+# web
 source ~/Github/emsdk/emsdk_env.sh
 cmake --build build-web --target webfly
 python3 -m http.server 8092 --directory build-web/apps/webfly
 # open: http://localhost:8092/webfly.html
+
+# native GLES2 (ANGLE)
+cmake -B build-gles2 -DPF_GLES2_OSG=$PWD/external/OpenSceneGraph
+cmake --build build-gles2 --target perfly
+DYLD_FALLBACK_LIBRARY_PATH=$HOME/Github/opengl-for-mac/lib \
+  ./build-gles2/apps/perfly/perfly data/town-tether.perfly
 ```
