@@ -42,6 +42,7 @@
 /* PFOSG_GLES2 (set by CMake): the GLES2-subset render path — Emscripten/
  * WebGL1 and native ANGLE builds.  __EMSCRIPTEN__ marks the web-only bits. */
 #ifdef PFOSG_GLES2
+extern "C" void pfuRedrawGUI(void);   /* gui.c; see pfosgRunAuxChannels */
 #include <osg/Program>
 #include <osg/Shader>
 #include <osg/Uniform>
@@ -2247,10 +2248,21 @@ extern "C" void pfChanTravFunc(pfChannel* ch, int trav, pfChanFuncType func)
 void pfosgRunAuxChannels(void)
 {
     PfOsgChan* main = mainChan();
-    bool any = false;
-    for (PfOsgChan* c : S.chans)
+    bool any = false, anyAux = false;
+    for (PfOsgChan* c : S.chans) {
         if (c->drawFunc) any = true;
+        if (c->drawFunc && !c->isMain) anyAux = true;
+    }
     if (!any) return;
+
+#ifdef PFOSG_GLES2
+    /* GLES2 default framebuffers don't persist across swaps (WebGL always
+     * invalidates; ANGLE's swap behavior is undefined), so gui.c's
+     * damage-based partial redraw leaves a blank panel: mark the GUI fully
+     * dirty every frame.  The aux channel is the GUI's, so its presence
+     * means pfuInitGUI ran. */
+    if (anyAux) pfuRedrawGUI();
+#endif
 
     int dw = 1, dh = 1;
     SDL_GL_GetDrawableSize(S.window, &dw, &dh);

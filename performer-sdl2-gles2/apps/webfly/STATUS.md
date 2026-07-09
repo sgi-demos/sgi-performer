@@ -112,10 +112,30 @@ Native GLES2 specifics:
 - Debug knobs: `PFOSG_GL_PROBE=<frame>` one-shot GL state dump,
   `PFOSG_OSG_NOTIFY=<level>` un-silences OSG (shows GLSL logs).
 
-Remaining for full unification: GLES2 overlay renderer (GUI panel, stats,
-messages — currently GUI-less on both GLES2 flavors), `.rgb`/png osgDB
-plugins in the static OSG builds, vsync under ANGLE (SwapInterval ignored;
-runs unthrottled).
+## GLES2 overlay renderer (2026-07-08, same day)
+
+The GUI panel, stats, and messages now draw on the GLES2 flavors — SGI's
+libpfutil `gui.c` compiles in UNMODIFIED (as on desktop) because
+pfosg_gles_compat.cpp is no longer no-op stubs but a **batched
+immediate-mode mini-GL**: MODELVIEW/PROJECTION matrix stacks, glBegin/glEnd
+vertex+color batching drawn through a small color-only shader, QUADS →
+triangles + POLYGON → fan conversion (GLES2 draws the other modes natively),
+and glPushAttrib/glPopAttrib real save/restore of the state the overlays
+touch.  Everything a batch clobbers (program, buffer binding, attrib
+enables) is queried and restored so osg::State's caches stay truthful.
+glGetIntegerv/glGetFloatv are interposed via the shim GL/gl.h (which now
+serves web too, not just native) so legacy queries (GL_MATRIX_MODE,
+GL_PROJECTION_MATRIX) answer from the mini-GL stacks.
+pfosg_web_stubs.cpp is deleted — one TU set for all three flavors.
+
+Web gotcha: gui.c redraws damage-only, assuming the framebuffer persists
+across swaps; WebGL invalidates it every composite (ANGLE: undefined).  The
+shim calls `pfuRedrawGUI()` each frame on GLES2 builds so the panel fully
+redraws.  Verified: full panel on native GLES2 (screenshot: every widget,
+sliders, checkboxes, 5x7-font labels) and on web; desktop unchanged.
+
+Remaining polish: `.rgb`/png osgDB plugins in the static OSG builds, vsync
+under ANGLE (SwapInterval ignored; runs unthrottled).
 
 ## Build & run
 

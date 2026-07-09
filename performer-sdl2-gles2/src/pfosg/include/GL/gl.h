@@ -1,15 +1,18 @@
 /* GL/gl.h - pfosg shim: route to the platform's GL header.
  *
- * Desktop builds get the real desktop GL.  Native GLES2 builds (ANGLE)
- * get <GLES2/gl2.h> plus DECLARATIONS of the legacy immediate-mode /
- * fixed-function entry points and tokens that the GUI/stats overlay code
- * references — their definitions are the inert no-ops in
- * pfosg_gles_compat.cpp (the GLES2 builds are GUI-less).  On Emscripten
- * the same declarations come from emscripten's own <GL/gl.h>. */
+ * Desktop builds get the real desktop GL.  GLES2 builds (web and native
+ * ANGLE) get <GLES2/gl2.h> plus the legacy immediate-mode / fixed-function
+ * surface the GUI/stats overlay code uses — implemented for real by the
+ * batched mini-GL in pfosg_gles_compat.cpp (matrix stacks, glBegin/glEnd
+ * batching through a small shader, attrib save/restore).  glGetIntegerv /
+ * glGetFloatv are interposed so legacy queries (GL_MATRIX_MODE,
+ * GL_PROJECTION_MATRIX) answer from the mini-GL's stacks; everything else
+ * forwards to the real GL. */
 #pragma once
-#if defined(PFOSG_GLES2) && !defined(__EMSCRIPTEN__)
+#ifdef PFOSG_GLES2
 
 #include <GLES2/gl2.h>
+#define __gl_h_ 1        /* suppress any other <GL/gl.h> in this TU */
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,6 +25,9 @@ typedef double GLdouble;
 #define GL_POLYGON                0x0009
 #define GL_MODELVIEW              0x1700
 #define GL_PROJECTION             0x1701
+#define GL_MATRIX_MODE            0x0BA0
+#define GL_MODELVIEW_MATRIX       0x0BA6
+#define GL_PROJECTION_MATRIX      0x0BA7
 #define GL_LIGHTING               0x0B50
 #define GL_LIGHT0                 0x4000
 #define GL_ALPHA_TEST             0x0BC0
@@ -51,7 +57,8 @@ typedef double GLdouble;
 #define GL_PIXEL_MAP_I_TO_B       0x0C74
 #define GL_PIXEL_MAP_I_TO_A       0x0C75
 
-/* legacy entry points; no-op definitions in pfosg_gles_compat.cpp */
+/* legacy entry points; real batched implementations in
+ * pfosg_gles_compat.cpp */
 void glBegin(GLenum mode);
 void glEnd(void);
 void glVertex2f(GLfloat x, GLfloat y);
@@ -66,6 +73,7 @@ void glColor3ub(GLubyte r, GLubyte g, GLubyte b);
 void glNormal3f(GLfloat x, GLfloat y, GLfloat z);
 void glNormal3fv(const GLfloat* v);
 void glTexCoord2f(GLfloat s, GLfloat t);
+void glIndexi(GLint index);
 
 void glMatrixMode(GLenum mode);
 void glLoadIdentity(void);
@@ -84,6 +92,13 @@ void glPopAttrib(void);
 void glPushClientAttrib(GLbitfield mask);
 void glPopClientAttrib(void);
 void glShadeModel(GLenum mode);
+
+/* legacy-aware query interposers (GL_MATRIX_MODE / GL_*_MATRIX answer from
+ * the mini-GL; other pnames forward to the real GL) */
+void pfoglGetIntegerv(GLenum pname, GLint* params);
+void pfoglGetFloatv(GLenum pname, GLfloat* params);
+#define glGetIntegerv pfoglGetIntegerv
+#define glGetFloatv   pfoglGetFloatv
 
 #ifdef __cplusplus
 }

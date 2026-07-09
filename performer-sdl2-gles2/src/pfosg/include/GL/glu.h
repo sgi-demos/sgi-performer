@@ -3,7 +3,7 @@
  * strings, so declare just that (no-op definition in
  * pfosg_gles_compat.cpp, as on Emscripten). */
 #pragma once
-#if defined(PFOSG_GLES2) && !defined(__EMSCRIPTEN__)
+#if defined(PFOSG_GLES2)
 #include <GL/gl.h>
 #ifdef __cplusplus
 extern "C" {

@@ -21,22 +21,17 @@ set_source_files_properties(${PFDB_PFB_C} PROPERTIES
     COMPILE_OPTIONS "-std=gnu89;-Wno-int-conversion;-Dfcos=cosf;-Dfsin=sinf"
     INCLUDE_DIRECTORIES "${PF_PERFORMER_SRC_DIR}/lib/libpfdb/libpfpfb")
 
-# libpfutil gui.c (the GUI panel) draws with immediate-mode GL that GLES2
-# lacks; the GLES2 builds (web and native ANGLE) are GUI-less, so exclude it
-# there and stub the pfu GUI-panel API it would provide (pfosg_web_stubs.cpp).
+# One TU set for every flavor: SGI's gui.c draws through the shim's GL
+# surface, which on GLES2 builds (web and native ANGLE) is the batched
+# immediate-mode mini-GL in pfosg_gles_compat.cpp.
+add_library(pfosg STATIC pfosg.cpp pfosg_perfly.cpp pfosg_gui.cpp
+            pfosg_pfb.cpp pfosg_pfb_stubs.cpp pfosg_gles_compat.cpp
+            ${PFU_PATH_C} ${PFU_GUI_C} ${PFDB_PFB_C})
 if(EMSCRIPTEN OR PF_GLES2)
-    add_library(pfosg STATIC pfosg.cpp pfosg_perfly.cpp pfosg_gui.cpp
-                pfosg_pfb.cpp pfosg_pfb_stubs.cpp pfosg_web_stubs.cpp
-                pfosg_gles_compat.cpp
-                ${PFU_PATH_C} ${PFDB_PFB_C})
     # the GLES2-subset render path (uber shader, aliasing/MVP uniforms, VBOs,
-    # alpha-test discard, state re-sync); PUBLIC so app TUs that include the
-    # shim headers see the same GL surface
+    # alpha-test discard, state re-sync, mini-GL overlays); PUBLIC so app TUs
+    # that include the shim headers see the same GL surface
     target_compile_definitions(pfosg PUBLIC PFOSG_GLES2)
-else()
-    add_library(pfosg STATIC pfosg.cpp pfosg_perfly.cpp pfosg_gui.cpp
-                pfosg_pfb.cpp pfosg_pfb_stubs.cpp
-                ${PFU_PATH_C} ${PFU_GUI_C} ${PFDB_PFB_C})
 endif()
 # shim include dir first; the pristine Performer include tree follows it so
 # the shim's pfutil.h/pfui.h can #include_next the real ones (and so samples
