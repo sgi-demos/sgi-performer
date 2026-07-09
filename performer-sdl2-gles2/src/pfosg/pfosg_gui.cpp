@@ -22,7 +22,9 @@
 #include <osg/MatrixTransform>
 #include <osg/Switch>
 
-#include <OpenGL/gl.h>
+#include <GL/gl.h>                 /* desktop GL; on wasm, emscripten's GL
+                                    * emulation header (immediate-mode entry
+                                    * points are no-op'd in pfosg_gles_compat.cpp) */
 
 #include <cctype>
 #include <cstdarg>
@@ -49,13 +51,16 @@ extern "C" void pfPopState(void)
 extern "C" void pfBasicState(void)
 {
     if (!pfosgInDrawPhase) return;
+#ifndef __EMSCRIPTEN__
+    /* fixed-function enums: GL_INVALID_ENUM per call on GLES2/WebGL */
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_FOG);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_COLOR_MATERIAL);
+#endif
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_SCISSOR_TEST);
     glShadeModel(GL_SMOOTH);

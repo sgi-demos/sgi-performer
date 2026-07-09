@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Performer Town — Tether &mdash; in your browser</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0b0d1a; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #e8ecff; }
+  #canvas { display: block; width: 100vw; height: 100vh; outline: none; }
+  #hud { position: fixed; left: 18px; top: 16px; pointer-events: none;
+    text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+  #hud h1 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: .2px; }
+  #hud p { margin: 4px 0 0; font-size: 12.5px; opacity: .72; }
+  #hint { position: fixed; right: 18px; bottom: 14px; font-size: 12px;
+    opacity: .55; pointer-events: none; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+  #load { position: fixed; inset: 0; display: flex; align-items: center;
+    justify-content: center; flex-direction: column; gap: 14px;
+    background: #0b0d1a; transition: opacity .6s; z-index: 10; }
+  #load.done { opacity: 0; pointer-events: none; }
+  #bar { width: 220px; height: 4px; border-radius: 2px; background: #232a4a;
+    overflow: hidden; }
+  #bar > i { display: block; height: 100%; width: 0; background: #6f8cff;
+    transition: width .2s; }
+  #load span { font-size: 13px; opacity: .7; }
+</style>
+</head>
+<body>
+  <canvas id="canvas" tabindex="-1" oncontextmenu="event.preventDefault()"></canvas>
+  <div id="hud">
+    <h1>Performer Town — Tether</h1>
+    <p>SGI OpenGL Performer &rarr; OpenSceneGraph &rarr; WebGL</p>
+  </div>
+  <div id="hint">drag to look &middot; scroll to zoom</div>
+  <div id="load"><div id="bar"><i></i></div><span>Loading Performer Town&hellip;</span></div>
+  <script type="text/javascript">
+    var Module = {
+      arguments: ['/data/town-tether.perfly'],   /* perfly config: tether ride */
+      canvas: document.getElementById('canvas'),
+      setStatus: function (t) {
+        var m = t && t.match(/([\d.]+)\/([\d.]+)/);
+        var bar = document.querySelector('#bar > i');
+        if (m) bar.style.width = (100 * (+m[1]) / (+m[2])) + '%';
+        if (!t) {   /* empty status = ready */
+          bar.style.width = '100%';
+          document.getElementById('load').classList.add('done');
+        }
+      }
+      /* print/printErr left to Emscripten's --emrun instrumentation, which
+         forwards stdout/stderr/console back to the emrun server for bring-up */
+    };
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>

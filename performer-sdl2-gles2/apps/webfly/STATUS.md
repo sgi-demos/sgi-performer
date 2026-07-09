@@ -1,0 +1,87 @@
+# webfly (web tether) — status
+
+**Goal:** SGI's `perfly` compiled byte-for-byte unmodified, running the shipped
+`town-tether.perfly` config in the browser (Emscripten/WebGL, GUI-less) via the
+pfosg shim on OSG-GLES2. The camera rides the Esprit through Performer Town.
+
+**Current state: WORKING.** The town renders in the browser, textured, with
+tree-billboard cutouts, at interactive frame rates; the camera rides the
+Esprit exactly as on desktop. All changes uncommitted.
+
+---
+
+## The black-screen bug, solved (2026-07-08)
+
+The long-standing "town loads, camera rides, framebuffer black" mystery was
+**never a rasterization, shader, camera, or geometry problem**. Hooking the
+WebGL context from the browser showed ~110k triangles drawing per frame with
+zero GL errors and the uber-shader program bound — into a **zero-width
+viewport**: `glViewport(934, 0, 0, 1500)`.
+
+Root cause chain:
+1. `town-tether.perfly` runs `-g 1` → GUI on, `GUI_VERTICAL` format.
+2. perfly's `updateGUI(TRUE)` (gui.c) computes the 3D master channel's
+   viewport **from** `pfuGetGUIViewport`: in the vertical format, the scene's
+   *left edge* is the GUI panel's *right edge* `r`.
+3. The web stub `pfuGetGUIViewport` (pfosg_web_stubs.cpp) ignored what
+   `pfuGUIViewport` had stored and returned a fabricated horizontal strip
+   `(0, 1, 0, 0.2)` → `r = 1.0` → master channel viewport `(1, 1, 0, 1)` —
+   zero pixels wide. Everything drew; nothing was visible.
+
+Desktop was immune because the real libpfutil gui.c faithfully round-trips
+the viewport. Same lesson as the cullDelta widget bug: **stubs must
+round-trip whatever perfly writes through them.**
+
+Fix: the stub now stores the GUI viewport's left/bottom edge and reports the
+GUI as occupying **zero area** there (r=l, t=b), so `updateGUI` hands the
+scene the full window — which is what GUI-less means.
+
+## Fixed in the same pass
+
+- **osg::State cache corruption from the aux-channel raw-GL sandbox.**
+  `pfosgRunAuxChannels` brackets perfly's DRAW callbacks with
+  `glPushAttrib/glPopAttrib` — inert stubs on GLES2, so real GL calls made
+  inside (this file's `glViewport`/`glBindBuffer(0)`, `pfBasicState`'s
+  `glDisable(GL_DEPTH_TEST/GL_CULL_FACE/GL_BLEND)` every frame from perfly's
+  message drawing) leak into the next frame behind OSG's back. On web, after
+  the callbacks run, the shim re-syncs: buffer-binding cache zeroed, and the
+  four GLES2-enable caches written with **GL truth** via
+  `State::applyMode(mode, glIsEnabled(mode))`.
+
+  ⚠️ Lesson: `State::dirtyAllModes()` is the WRONG re-sync here — it blindly
+  *flips* `last_applied_value`. OSG's own end-of-stage revert had already
+  left the depth-test cache coherent (false/false); the flip made it
+  true/false, so OSG skipped `glEnable(GL_DEPTH_TEST)` forever → the whole
+  scene rendered painter's-order (mountains over buildings, car body over
+  the world). Sampling `glIsEnabled` into `applyMode` is the correct sync.
+  `GL_DEPTH_TEST ON` is additionally asserted on the scene root's stateset
+  (webglSetupRoot) as belt-and-braces.
+- **Alpha test (cutout billboards).** GLES2 has no fixed-function
+  `glAlphaFunc`; town's trees drew as opaque white/yellow quads. The shim's
+  `PFSTATE_ALPHAFUNC` handler now also sets a `pfAlphaRef` uniform
+  (GREATER/GEQUAL funcs), and the uber fragment shader discards below it.
+- **`pfBasicState` FFP enums** gated off on web (each was a per-call
+  `GL_INVALID_ENUM` on WebGL).
+- **`--emrun` removed** from the link flags (it clobbered the shell's
+  `Module.arguments` and turned every console line into an HTTP POST; the
+  warning-flood stall it caused is gone — ~17 fps now). Plain
+  `webfly.html` URLs work; stdout/stderr go to the browser console.
+- Debug `fprintf`s removed from `pfFilePath()` / `pfdLoadFile()`.
+
+## Known cosmetics (not blockers)
+
+- `.rgb` (SGI image) textures aren't readable by the static web OSG build
+  (no sgi plugin) — affected geometry falls back to the 1×1 white default
+  texture. The town model itself is `.pfi`-textured and unaffected.
+- `osg::setNotifyLevel(FATAL)` stays on for the web build (SGI databases
+  carry FFP state OSG would warn about per drawable per frame). Note it also
+  hides GLSL compile logs — flip to `WARN` when debugging shaders.
+
+## Build & run
+
+```
+source ~/Github/emsdk/emsdk_env.sh
+cmake --build build-web --target webfly
+python3 -m http.server 8092 --directory build-web/apps/webfly
+# open: http://localhost:8092/webfly.html
+```

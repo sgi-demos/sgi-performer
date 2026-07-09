@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8777", "--directory", "performer-sdl2-gles2/build-web/apps/townview"],
       "port": 8777
+    },
+    {
+      "name": "webfly",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8092", "--directory", "performer-sdl2-gles2/build-web/apps/webfly"],
+      "port": 8092
     }
   ]
 }

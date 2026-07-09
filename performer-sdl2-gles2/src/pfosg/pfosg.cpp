@@ -39,7 +39,16 @@
 
 #include <SDL.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <osg/Program>
+#include <osg/Shader>
+#include <osg/Uniform>
+#include <osg/Image>
+#include <osg/Notify>
+#else
 #include <execinfo.h>
+#endif
 
 #include <iostream>
 
@@ -305,6 +314,17 @@ void openWindow()
     if (S.winOpen) return;
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+#ifdef __EMSCRIPTEN__
+    /* WebGL1 == GLES2 */
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    /* SGI databases carry fixed-function state (AlphaFunc, TexEnv, ShadeModel,
+     * GL_LIGHTING) that GLES2 lacks; OSG logs a "not supported" warning for
+     * each, per drawable, per frame.  Our GLES2 uber shader ignores them all,
+     * but the ~1000+ warnings/frame flood the console (and each is an HTTP
+     * POST under --emrun), stalling the browser to ~1 fps.  Silence them. */
+    osg::setNotifyLevel(osg::FATAL);
+#endif
     S.window = SDL_CreateWindow(S.winName.c_str(),
         S.winX ? S.winX : SDL_WINDOWPOS_CENTERED,
         S.winY ? S.winY : SDL_WINDOWPOS_CENTERED,
@@ -333,6 +353,16 @@ void openWindow()
 
     S.viewer->getCamera()->setAllowEventFocus(false);
     S.viewer->realize();
+#ifdef __EMSCRIPTEN__
+    /* GLES2 has no fixed-function vertex setup (glVertexPointer/glNormal...)
+     * and no built-in gl_ModelViewProjectionMatrix: drive geometry through
+     * generic vertex attributes and matrix uniforms instead (paired with the
+     * osg_* uber shader attached to the scene root; see webglSetupRoot) */
+    if (osg::State* state = S.gw->getState()) {
+        state->setUseModelViewAndProjectionUniforms(true);
+        state->setUseVertexAttributeAliasing(true);
+    }
+#endif
     S.winOpen = true;
 }
 
@@ -575,6 +605,9 @@ void compileGSet(PfOsgGSet* g)
         geom->getOrCreateStateSet()->setAttributeAndModes(
             new osg::LineWidth(g->lineWidth));
 
+#ifdef __EMSCRIPTEN__
+    geom->setUseVertexBufferObjects(true);   /* WebGL: no client vertex arrays */
+#endif
     geom->dirtyBound();
     geom->dirtyGLObjects();
 }
@@ -633,6 +666,9 @@ static osg::Geometry* newESkyGeometry(int nverts)
 {
     osg::Geometry* g = new osg::Geometry;
     g->setUseDisplayList(false);
+#ifdef __EMSCRIPTEN__
+    g->setUseVertexBufferObjects(true);      /* WebGL: no client vertex arrays */
+#endif
     osg::Vec3Array* v = new osg::Vec3Array(nverts);
     osg::Vec4Array* c = new osg::Vec4Array(nverts);
     v->setDataVariance(osg::Object::DYNAMIC);
@@ -725,6 +761,77 @@ static void updateESky()
     }
 }
 
+#ifdef __EMSCRIPTEN__
+/* GLES2 has no fixed-function pipeline.  OSG 3.6.5's ShaderGen emits desktop
+ * GLSL (gl_LightSource, gl_NormalMatrix, ...) that WebGL rejects, so attach
+ * our own GLES2 uber shader to the viewer root (covers scene + EarthSky).  It
+ * uses the osg_* attributes/uniforms OSG feeds once vertex-attribute aliasing
+ * + MVP uniforms are enabled (see openWindow, after realize).  A 1x1 white
+ * default texture makes untextured geometry sample white, so one program
+ * covers textured, flat-colored, and normal-less (EarthSky) surfaces. */
+static void webglSetupRoot(osg::Group* root)
+{
+    static bool done = false;
+    if (done || !root) return;
+    done = true;
+
+    static const char* vsrc =
+        "precision highp float;\n"
+        "attribute vec4 osg_Vertex;\n"
+        "attribute vec3 osg_Normal;\n"
+        "attribute vec4 osg_Color;\n"
+        "attribute vec4 osg_MultiTexCoord0;\n"
+        "uniform mat4 osg_ModelViewProjectionMatrix;\n"
+        "uniform mat3 osg_NormalMatrix;\n"
+        "varying vec2 uv;\n"
+        "varying vec4 vcolor;\n"
+        "varying float diffuse;\n"
+        "void main() {\n"
+        "  gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
+        "  vec3 nn = osg_NormalMatrix * osg_Normal;\n"
+        "  float nl = length(nn);\n"           /* EarthSky has no normals */
+        "  vec3 L = normalize(vec3(0.3, -0.4, 1.0));\n"
+        "  diffuse = nl < 1e-4 ? 1.3 : 0.95 + 0.45 * max(dot(nn / nl, L), 0.0);\n"
+        "  uv = osg_MultiTexCoord0.xy;\n"
+        "  vcolor = osg_Color;\n"
+        "}\n";
+    static const char* fsrc =
+        "precision highp float;\n"
+        "uniform sampler2D tex;\n"
+        "uniform float pfAlphaRef;\n"     /* alpha test (cutout billboards) */
+        "varying vec2 uv;\n"
+        "varying vec4 vcolor;\n"
+        "varying float diffuse;\n"
+        "void main() {\n"
+        "  vec4 t = texture2D(tex, uv);\n"
+        "  float a = t.a * vcolor.a;\n"
+        "  if (a < pfAlphaRef) discard;\n"
+        "  vec3 c = t.rgb * vcolor.rgb * diffuse * 1.25;\n"   /* daylight gain */
+        "  gl_FragColor = vec4(c, a);\n"
+        "}\n";
+    osg::Program* prog = new osg::Program;
+    prog->addShader(new osg::Shader(osg::Shader::VERTEX, vsrc));
+    prog->addShader(new osg::Shader(osg::Shader::FRAGMENT, fsrc));
+    osg::StateSet* ss = root->getOrCreateStateSet();
+    ss->setAttributeAndModes(prog);
+    ss->addUniform(new osg::Uniform("tex", 0));
+    ss->addUniform(new osg::Uniform("pfAlphaRef", 0.0f));   /* default: off */
+    /* depth test lives in the camera's global stateset, but per-frame raw GL
+     * from the perfly draw callbacks can knock it out behind OSG's cache;
+     * asserting it on the scene root keeps it in the per-frame apply path */
+    ss->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
+
+    osg::Image* wimg = new osg::Image;
+    wimg->allocateImage(1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+    unsigned char* px = (unsigned char*)wimg->data();
+    px[0] = px[1] = px[2] = px[3] = 255;
+    osg::Texture2D* white = new osg::Texture2D(wimg);
+    white->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+    white->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
+    ss->setTextureAttributeAndModes(0, white);
+}
+#endif
+
 void applyChannel()
 {
     if (!S.viewer) return;
@@ -732,6 +839,9 @@ void applyChannel()
         if (!S.root) S.root = new osg::Group;
         if (S.viewer->getSceneData() != S.root.get())
             S.viewer->setSceneData(S.root.get());
+#ifdef __EMSCRIPTEN__
+        webglSetupRoot(S.root.get());
+#endif
         if (!S.root->containsNode(S.scene.get())) {
             /* replace a previous scene, keeping the esky child */
             for (unsigned i = S.root->getNumChildren(); i-- > 0;) {
@@ -1151,6 +1261,12 @@ extern "C" int pfFrame(void)
         if (osgDB::writeImageFile(*img, name))
             fprintf(stderr, "pfosg: wrote %s\n", name);
     }
+#ifdef __EMSCRIPTEN__
+    /* perfly's main() drives a blocking frame loop; Asyncify unwinds here so
+     * the browser can composite the swapped frame and pump input, then resumes
+     * mid-loop on the next tick (built with -sASYNCIFY) */
+    emscripten_sleep(0);
+#endif
     return 1;
 }
 
@@ -1220,9 +1336,11 @@ extern "C" void pfNotify(int severity, int, const char* format, ...)
     fprintf(stderr, "PF %s: %s\n",
             (severity >= 0 && severity <= 5) ? sev[severity] : "?", msg);
     if (severity == PFNFY_FATAL) {
+#ifndef __EMSCRIPTEN__
         void* frames[32];
         int n = backtrace(frames, 32);
         backtrace_symbols_fd(frames, n, 2);
+#endif
         pfExit();
         exit(1);
     }
@@ -1584,6 +1702,15 @@ struct PfOsgGState {
     int alphaFunc = PFAF_OFF;
     void applyAlpha()
     {
+#ifdef __EMSCRIPTEN__
+        /* GLES2 has no fixed-function alpha test; the uber shader discards
+         * fragments with alpha < pfAlphaRef (webglSetupRoot).  GREATER /
+         * GEQUAL are the cutout-billboard cases (town trees); other funcs
+         * are not used by the demos and fall back to no test. */
+        bool cutout = alphaFunc == PFAF_GREATER || alphaFunc == PFAF_GEQUAL;
+        ss->addUniform(new osg::Uniform("pfAlphaRef",
+                                        cutout ? alphaRef : 0.0f));
+#endif
         if (alphaFunc == PFAF_OFF) {
             ss->removeAttribute(osg::StateAttribute::ALPHAFUNC);
             return;
@@ -2078,6 +2205,30 @@ void pfosgRunAuxChannels(void)
     glPopMatrix();
     glPopClientAttrib();
     glPopAttrib();
+
+#ifdef __EMSCRIPTEN__
+    /* glPushAttrib/glPopAttrib above are inert stubs on GLES2 (see
+     * pfosg_gles_compat.cpp), so the real GL calls made here and inside the
+     * callbacks (this glViewport/glBindBuffer, pfBasicState's glDisable of
+     * DEPTH_TEST/CULL_FACE/BLEND while a message overlay is up) survive
+     * into the next frame behind osg::State's cache.  Re-sync: zero the
+     * buffer-binding cache and mark every mode/attribute dirty so the next
+     * scene render re-applies state instead of trusting stale entries. */
+    if (S.gw.valid() && S.gw->getState()) {
+        osg::State* st = S.gw->getState();
+        st->unbindVertexBufferObject();
+        st->unbindElementBufferObject();
+        /* write GL truth into osg::State's mode cache (State::applyMode
+         * issues the redundant glEnable/glDisable and records the value),
+         * so the next frame's stateset application starts from a coherent
+         * base instead of skipping "already applied" modes */
+        st->applyMode(GL_DEPTH_TEST,   glIsEnabled(GL_DEPTH_TEST)   != 0);
+        st->applyMode(GL_CULL_FACE,    glIsEnabled(GL_CULL_FACE)    != 0);
+        st->applyMode(GL_BLEND,        glIsEnabled(GL_BLEND)        != 0);
+        st->applyMode(GL_SCISSOR_TEST, glIsEnabled(GL_SCISSOR_TEST) != 0);
+        st->dirtyAllAttributes();
+    }
+#endif
 }
 
 void pfosgCompileDirtyGSets(void)

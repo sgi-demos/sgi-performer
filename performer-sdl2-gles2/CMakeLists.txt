@@ -103,15 +103,20 @@ if(OPENSCENEGRAPH_FOUND)
     add_subdirectory(src/loaders/pfb2osg)
     add_subdirectory(apps/townview)
 
-    # the pfosg shim + perfly use immediate-mode/fixed-function GL (the GUI
-    # panel, stats overlay) that GLES2/WebGL lacks, so they are desktop-only
-    # for now; the web build is scene-first via townview
-    if(PF_HAVE_HEADERS AND NOT EMSCRIPTEN)
+    # the pfosg shim builds on both desktop and web.  The sample pguide
+    # programs and perfly's GUI panel use immediate-mode GL that GLES2/WebGL
+    # lacks; on the web perfly runs GUI-less (webfly), so the pguide samples
+    # stay desktop-only.
+    if(PF_HAVE_HEADERS)
         add_subdirectory(src/pfosg)
-        add_subdirectory(apps/simple)
-        add_subdirectory(apps/pguide)
-        add_subdirectory(apps/shim_tests)
-        add_subdirectory(apps/perfly)
+        if(NOT EMSCRIPTEN)
+            add_subdirectory(apps/simple)
+            add_subdirectory(apps/pguide)
+            add_subdirectory(apps/shim_tests)
+            add_subdirectory(apps/perfly)
+        else()
+            add_subdirectory(apps/webfly)
+        endif()
     elseif(NOT EMSCRIPTEN)
         message(STATUS "pfosg shim + perfly skipped (no Performer headers); "
                        "townview still builds against data/town")
