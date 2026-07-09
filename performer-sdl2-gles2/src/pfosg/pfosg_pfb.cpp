@@ -148,6 +148,30 @@ extern "C" void pfSeqTime(pfSequence* s, int index, double time)
         asSeq(s)->setTime((unsigned)index, (float)time);
 }
 
+/* ---- light-point state (sizing only; see pfosg_internal.h) -------------- */
+
+extern "C" pfLPointState* pfNewLPState(void*)
+{
+    return (pfLPointState*)new PfOsgLPState;
+}
+
+extern "C" void pfLPStateVal(pfLPointState* lps, int attr, float val)
+{
+    PfOsgLPState* s = (PfOsgLPState*)lps;
+    if (!s) return;
+    switch (attr) {
+    case 100 /*PFLPS_SIZE_MIN_PIXEL*/: s->sizeMinPixel = val; break;
+    case 101 /*PFLPS_SIZE_ACTUAL*/:    s->sizeActual = val; break;
+    case 102 /*PFLPS_SIZE_MAX_PIXEL*/: s->sizeMaxPixel = val; break;
+    }
+}
+
+extern "C" void pfLPStateMode(pfLPointState* lps, int mode, int val)
+{
+    PfOsgLPState* s = (PfOsgLPState*)lps;
+    if (s && mode == 10 /*PFLPS_SIZE_MODE*/) s->sizeMode = val;
+}
+
 /* ---- layers (decals) ----------------------------------------------------
  * child 0 is the base surface; later children are coplanar decals drawn
  * with increasing polygon offset, as in the pfb2osg loader. */

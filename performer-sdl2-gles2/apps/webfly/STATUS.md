@@ -171,6 +171,21 @@ Verified: green/amber bulbs lit at intersections on native GLES2 and
 desktop (street lamps got their lit points too); sequences run
 (PFSEQ_START in the database, osg::Sequence updates in the traversal).
 
+**Follow-up — lens-sized bulbs (2026-07-09):** a fixed 6px point looked
+tiny head-on and "fuller" at an angle (the lens foreshortens toward the
+dot; the dot never scales).  The lpstate is now captured for real
+(PfOsgLPState: PFLPS_SIZE_ACTUAL + pixel clamps; town: 0.75 world, min 1 /
+max 4 px) and points are PERSPECTIVE-SCALED:
+`clamp(world * projScale / w, min, max)` in the GLES2 uber shader
+(gl_PointSize + gl_PointCoord discard for round points), osg::Point with
+1/d distance attenuation + GL_POINT_SMOOTH on desktop.  Gotchas: the
+authored SIZE_ACTUAL is the calligraphic-era GLOW diameter, always tamed
+by the 4px cap on 1024-line displays — used raw it swallows the fixture,
+capped it's a speck.  The shim uses a lens fraction of it
+(PFOSG_LPOINT_SCALE, default 0.4) with density-scaled clamps, which makes
+the lit bulb fill the lamp lens at any distance/angle.  Sizing is deferred
+to applyChannel (projection/viewport don't exist at load time).
+
 ## Build & run
 
 ```

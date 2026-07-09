@@ -773,11 +773,8 @@ extern "C" void pfLODTransition(pfLOD* _lod, int index, float delta)
 { }
 extern "C" void pfLPStateBackColor(pfLPointState* _lpstate, float r, float g, float b, float a)
 { }
-extern "C" void pfLPStateMode(pfLPointState* _lpstate, int _mode, int _val)
-{ }
+/* pfLPStateMode/pfLPStateVal/pfNewLPState are real (pfosg_pfb.cpp) */
 extern "C" void pfLPStateShape(pfLPointState* _lpstate, float _horiz, float _vert, float _roll, float _falloff, float _ambient)
-{ }
-extern "C" void pfLPStateVal(pfLPointState* _lpstate, int _attr, float _val)
 { }
 extern "C" void pfLSourceAtten(pfLightSource* _lsource, float _a0, float _a1, float _a2)
 { }
@@ -827,8 +824,7 @@ extern "C" pfImageTile* pfNewImageTile(void *arena)
 { return 0; }
 extern "C" pfLODState* pfNewLODState(void)
 { return 0; }
-extern "C" pfLPointState* pfNewLPState(void *arena)
-{ return 0; }
+/* pfNewLPState is real (pfosg_pfb.cpp) */
 extern "C" pfMorph* pfNewMorph(void)
 { return 0; }
 extern "C" pfQueue* pfNewQueue(int _eltSize, int _nElts, void *arena)

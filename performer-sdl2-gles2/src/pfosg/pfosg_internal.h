@@ -37,6 +37,17 @@ struct PfOsgGSet {
     bool dirty = true;
 };
 
+/* one pfLPointState: just the sizing, captured for the light-point
+ * rendering path (pfosg.cpp compileGSet / pfGStateAttr); the rest of the
+ * light-point machinery (direction lobes, fog punch-through, callig) is
+ * accepted and ignored */
+struct PfOsgLPState {
+    float sizeActual = 0.25f;      /* world-space diameter */
+    float sizeMinPixel = 1.0f;
+    float sizeMaxPixel = 64.0f;
+    int sizeMode = 1;              /* PFLPS_SIZE_MODE_ON */
+};
+
 /* one pfTexture */
 struct PfOsgTex {
     osg::ref_ptr<osg::Texture2D> tex;
@@ -104,6 +115,11 @@ struct PfOsgState {
      * xformer) halts while rendering continues */
     bool paused = false;
     double pausedAt = 0.0;          /* frozen sim-time while paused */
+
+    /* light-point statesets awaiting a projection-scaled osg::Point
+     * (desktop GL path; sized in applyChannel once the window exists) */
+    std::vector<std::pair<osg::ref_ptr<osg::StateSet>, PfOsgLPState>>
+        pendingLPointSS;
 
     /* frame timing + scene counts for pfDrawChanStats */
     static const int STATS_DTS = 128;

@@ -818,13 +818,19 @@ static void gles2SetupRoot(osg::Group* root)
         "attribute vec4 osg_MultiTexCoord0;\n"
         "uniform mat4 osg_ModelViewProjectionMatrix;\n"
         "uniform mat3 osg_NormalMatrix;\n"
-        "uniform float pfPointSize;\n"     /* light points; 1.0 otherwise */
+        "uniform float pfPointSize;\n"     /* light points, fixed pixels */
+        "uniform vec3 pfPointWorld;\n"     /* world diameter, minPix, maxPix */
+        "uniform float pfProjScale;\n"     /* viewportH/2 * proj[1][1] */
         "varying vec2 uv;\n"
         "varying vec4 vcolor;\n"
         "varying float diffuse;\n"
         "void main() {\n"
         "  gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;\n"
-        "  gl_PointSize = pfPointSize;\n"
+        "  gl_PointSize = pfPointWorld.x > 0.0\n"
+        "      ? clamp(pfPointWorld.x * pfProjScale\n"
+        "                  / max(gl_Position.w, 1e-3),\n"
+        "              pfPointWorld.y, pfPointWorld.z)\n"
+        "      : pfPointSize;\n"
         "  vec3 nn = osg_NormalMatrix * osg_Normal;\n"
         "  float nl = length(nn);\n"           /* EarthSky has no normals */
         "  vec3 L = normalize(vec3(0.3, -0.4, 1.0));\n"
@@ -836,10 +842,16 @@ static void gles2SetupRoot(osg::Group* root)
         "precision highp float;\n"
         "uniform sampler2D tex;\n"
         "uniform float pfAlphaRef;\n"     /* alpha test (cutout billboards) */
+        "uniform float pfPointSize;\n"    /* >1 or world>0: point geoset */
+        "uniform vec3 pfPointWorld;\n"
         "varying vec2 uv;\n"
         "varying vec4 vcolor;\n"
         "varying float diffuse;\n"
         "void main() {\n"
+        "  if (pfPointWorld.x > 0.0 || pfPointSize > 1.0) {\n"
+        "    vec2 pc = gl_PointCoord * 2.0 - 1.0;\n"   /* round light points */
+        "    if (dot(pc, pc) > 1.0) discard;\n"
+        "  }\n"
         "  vec4 t = texture2D(tex, uv);\n"
         "  float a = t.a * vcolor.a;\n"
         "  if (a < pfAlphaRef) discard;\n"
@@ -854,6 +866,9 @@ static void gles2SetupRoot(osg::Group* root)
     ss->addUniform(new osg::Uniform("tex", 0));
     ss->addUniform(new osg::Uniform("pfAlphaRef", 0.0f));   /* default: off */
     ss->addUniform(new osg::Uniform("pfPointSize", 1.0f));
+    ss->addUniform(new osg::Uniform("pfPointWorld",
+                                    osg::Vec3(0.0f, 0.0f, 0.0f)));
+    ss->addUniform(new osg::Uniform("pfProjScale", 1.0f));
     /* depth test lives in the camera's global stateset, but per-frame raw GL
      * from the perfly draw callbacks can knock it out behind OSG's cache;
      * asserting it on the scene root keeps it in the per-frame apply path */
@@ -945,6 +960,48 @@ void applyChannel()
         osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
     S.viewer->getCamera()->setProjectionMatrixAsPerspective(
         fovy, aspect, S.nearD, S.farD);
+
+    /* light-point perspective sizing: pixels-per-world-unit at w=1 */
+    float projScale = (float)(S.viewer->getCamera()->getProjectionMatrix()(1, 1)
+                              * vh * 0.5);
+#ifdef PFOSG_GLES2
+    if (S.root.valid() && S.root->getStateSet())
+        S.root->getStateSet()->getOrCreateUniform(
+            "pfProjScale", osg::Uniform::FLOAT)->set(projScale);
+#endif
+    if (!S.pendingLPointSS.empty()) {
+        /* PFLPS_SIZE_ACTUAL is the glow diameter for the calligraphic-
+         * projector era, always tamed by a 4-pixel max clamp authored for
+         * 1024-line SGI displays — a speck on modern drawables.  Instead,
+         * approximate the visible lamp LENS (a fraction of the glow) and
+         * let true perspective scaling size it, with density-scaled clamps
+         * only as far/near guards.  PFOSG_LPOINT_SCALE tunes the lens
+         * fraction (default 0.4). */
+        static const float lensFrac = [] {
+            const char* e = getenv("PFOSG_LPOINT_SCALE");
+            return e ? (float)atof(e) : 0.4f;
+        }();
+        for (auto& p : S.pendingLPointSS) {
+            float world  = p.second.sizeActual * lensFrac;
+            float minPix = p.second.sizeMinPixel * (float)vh / 1024.0f;
+            float maxPix = (float)vh * 0.06f;    /* close-range safety cap */
+#ifdef PFOSG_GLES2
+            /* the uber vertex shader computes
+             * gl_PointSize = clamp(world * pfProjScale / w, min, max) */
+            p.first->addUniform(new osg::Uniform("pfPointWorld",
+                osg::Vec3(world, minPix, maxPix)));
+#else
+            /* fixed-function point attenuation 1/d gives size/w */
+            osg::Point* pt = new osg::Point(world * projScale);
+            pt->setMinSize(minPix);
+            pt->setMaxSize(maxPix);
+            pt->setDistanceAttenuation(osg::Vec3(0.0f, 0.0f, 1.0f));
+            p.first->setAttributeAndModes(pt);
+            p.first->setMode(GL_POINT_SMOOTH, osg::StateAttribute::ON);
+#endif
+        }
+        S.pendingLPointSS.clear();
+    }
 
     if (S.haveViewMat) {
         /* Performer view matrix: eye-to-world, row-vector convention.
@@ -1926,13 +1983,25 @@ extern "C" void pfGStateAttr(pfGeoState* gs, int which, void* attr)
         ss->setTextureAttributeAndModes(0, new osg::TexMat(m));
         break;
     }
+    case PFSTATE_LPOINTSTATE: {
+        /* light points (stoplight bulbs, street lamps): the lpstate carries
+         * the bulb's WORLD-SPACE diameter (PFLPS_SIZE_ACTUAL) plus pixel
+         * clamps.  Perspective-scale the point so head-on it fills the lamp
+         * lens like real Performer, instead of a fixed few pixels. */
+        if (!attr) break;
+        PfOsgLPState* lps = (PfOsgLPState*)attr;
+        /* the projection/viewport don't exist at load time; sized in
+         * applyChannel via the pending list (all flavors) */
+        S.pendingLPointSS.push_back(
+            {osg::ref_ptr<osg::StateSet>(ss), *lps});
+        break;
+    }
     case PFSTATE_FRONTMTL:
     case PFSTATE_BACKMTL:
     case PFSTATE_LIGHTMODEL:
     case PFSTATE_LIGHTS:
     case PFSTATE_FOG:
     case PFSTATE_HIGHLIGHT:
-    case PFSTATE_LPOINTSTATE:
     case PFSTATE_TEXGEN:
         break;      /* accepted; lighting comes from the viewer's sun */
     default: {

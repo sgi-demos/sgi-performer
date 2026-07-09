@@ -61,6 +61,10 @@ vehicle "Rocket Tux" rocket_tux.pfb tour.path  0. 0. 100.   90. 40. 0.   10.
 # The format of the tetherview command is:
 #	tetherview "Name" [x y z [h p r]]
 #
+# perfly's default tether view is the first one listed (curTetherView 0).
+# "Ahead" rides just past the Esprit's nose looking forward, so the ride is
+# an immersive drive through town with the car itself out of frame.
+tetherview "Ahead"	0. 20. 2.5
 tetherview "Inside"	0. 5. 2.
 tetherview "Behind"	0. -40. 7.
 #tetherview "Left"	0. 0. 2.	 90. 0. 0.
