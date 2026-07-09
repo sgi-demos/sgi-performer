@@ -300,8 +300,11 @@ osg::ref_ptr<osg::Image> Loader::loadPfi(const std::string& name)
     std::string path = dir + "/" + base;
     size_t dot = base.find_last_of('.');
     if (dot != std::string::npos && base.substr(dot) != ".pfi") {
-        /* .rgb and friends go through OSG's image plugins */
+        /* .rgb and friends go through OSG's image plugins; static OSG
+         * builds have none, so fall back to the built-in SGI reader */
         osg::ref_ptr<osg::Image> img = osgDB::readImageFile(path);
+        if (!img)
+            img = pfb2osgLoadRgbImage(path);
         if (!img)
             fprintf(stderr, "pfb2osg: cannot read texture image \"%s\"\n",
                     path.c_str());
@@ -311,6 +314,95 @@ osg::ref_ptr<osg::Image> Loader::loadPfi(const std::string& name)
 }
 
 }   /* namespace pfb2osg — reopened below for load() etc. */
+
+/* SGI image library format (.rgb/.rgba/.bw/.la): 512-byte big-endian
+ * header, channel-planar scanlines stored bottom-to-top (GL orientation),
+ * verbatim or RLE, 1 byte per component.  Needed because the static OSG
+ * builds (GLES2 web/native) carry no image plugins. */
+osg::ref_ptr<osg::Image> pfb2osgLoadRgbImage(const std::string& path)
+{
+    FILE* fp = fopen(path.c_str(), "rb");
+    if (!fp) return nullptr;
+    std::vector<unsigned char> file;
+    fseek(fp, 0, SEEK_END);
+    long sz = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    if (sz < 512) { fclose(fp); return nullptr; }
+    file.resize((size_t)sz);
+    size_t got = fread(file.data(), 1, (size_t)sz, fp);
+    fclose(fp);
+    if (got != (size_t)sz) return nullptr;
+
+    const unsigned char* h = file.data();
+    auto be16 = [&](size_t o) { return (h[o] << 8) | h[o + 1]; };
+    auto be32 = [&](size_t o) -> uint32_t {
+        return ((uint32_t)h[o] << 24) | ((uint32_t)h[o+1] << 16) |
+               ((uint32_t)h[o+2] << 8) | h[o+3];
+    };
+    if (be16(0) != 474) {
+        fprintf(stderr, "pfb2osg: \"%s\" is not an SGI image\n", path.c_str());
+        return nullptr;
+    }
+    int storage = h[2], bpc = h[3];
+    int xsize = be16(6), ysize = be16(8), zsize = be16(10);
+    if (bpc != 1 || xsize <= 0 || ysize <= 0 || zsize < 1 || zsize > 4) {
+        fprintf(stderr, "pfb2osg: \"%s\": unsupported SGI image "
+                "(bpc=%d z=%d)\n", path.c_str(), bpc, zsize);
+        return nullptr;
+    }
+
+    static const GLenum glfmt[] = { 0, GL_LUMINANCE, GL_LUMINANCE_ALPHA,
+                                    GL_RGB, GL_RGBA };
+    size_t npix = (size_t)xsize * ysize;
+    unsigned char* out = new unsigned char[npix * zsize];
+
+    bool ok = true;
+    if (storage == 0) {                       /* verbatim, channel-planar */
+        if (file.size() < 512 + npix * zsize) ok = false;
+        else
+            for (int z = 0; z < zsize; z++) {
+                const unsigned char* plane = h + 512 + (size_t)z * npix;
+                for (size_t p = 0; p < npix; p++)
+                    out[p * zsize + z] = plane[p];
+            }
+    } else {                                  /* RLE */
+        size_t ntab = (size_t)ysize * zsize;
+        if (file.size() < 512 + ntab * 8) ok = false;
+        for (int z = 0; ok && z < zsize; z++)
+            for (int y = 0; ok && y < ysize; y++) {
+                size_t ti = 512 + ((size_t)z * ysize + y) * 4;
+                uint32_t off = be32(ti), len = be32(ti + ntab * 4);
+                if (off + len > file.size()) { ok = false; break; }
+                const unsigned char* p = h + off;
+                const unsigned char* pend = p + len;
+                unsigned char* row = out + (size_t)y * xsize * zsize + z;
+                int x = 0;
+                while (p < pend) {
+                    int c = *p++, count = c & 0x7f;
+                    if (!count) break;
+                    if (count > xsize - x || (c & 0x80 ? p + count : p + 1) > pend)
+                        { ok = false; break; }
+                    if (c & 0x80)
+                        while (count--) { row[(size_t)x++ * zsize] = *p++; }
+                    else {
+                        unsigned char v = *p++;
+                        while (count--) row[(size_t)x++ * zsize] = v;
+                    }
+                }
+            }
+    }
+    if (!ok) {
+        fprintf(stderr, "pfb2osg: corrupt SGI image \"%s\"\n", path.c_str());
+        delete[] out;
+        return nullptr;
+    }
+
+    osg::ref_ptr<osg::Image> img = new osg::Image;
+    img->setImage(xsize, ysize, 1, glfmt[zsize], glfmt[zsize],
+                  GL_UNSIGNED_BYTE, out, osg::Image::USE_NEW_DELETE);
+    img->setFileName(path);
+    return img;
+}
 
 osg::ref_ptr<osg::Image> pfb2osgLoadPfiImage(const std::string& path)
 {

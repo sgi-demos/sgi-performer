@@ -350,7 +350,8 @@ void openWindow()
         fprintf(stderr, "pfosg: cannot open GL window: %s\n", SDL_GetError());
         exit(1);
     }
-    SDL_GL_SetSwapInterval(1);
+    if (SDL_GL_SetSwapInterval(1) != 0)
+        fprintf(stderr, "pfosg: vsync unavailable: %s\n", SDL_GetError());
     fprintf(stderr, "pfosg: GL renderer: %s | %s\n",
             (const char*)glGetString(GL_RENDERER),
             (const char*)glGetString(GL_VERSION));
@@ -1706,8 +1707,11 @@ extern "C" int pfLoadTexFile(pfTexture* tex, const char* fileName)
     std::string ext = dot == std::string::npos ? "" : path.substr(dot + 1);
     if (ext == "pfi")
         t->img = pfb2osgLoadPfiImage(path);
-    else
+    else {
         t->img = osgDB::readImageFile(path);   /* .rgb via OSG's sgi plugin */
+        if (!t->img)
+            t->img = pfb2osgLoadRgbImage(path);   /* plugin-less static OSG */
+    }
     if (!t->img) {
         pfNotify(PFNFY_WARN, PFNFY_PRINT,
                  "pfLoadTexFile: could not read \"%s\"", path.c_str());

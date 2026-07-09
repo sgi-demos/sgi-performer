@@ -15,4 +15,8 @@ osg::ref_ptr<osg::Node> pfb2osgLoadFile(const std::string& path);
  * pfosg shim).  Returns null on failure. */
 osg::ref_ptr<osg::Image> pfb2osgLoadPfiImage(const std::string& path);
 
+/* Loads an SGI image-library file (.rgb/.rgba/.bw/.la, bpc=1) — the
+ * fallback for static OSG builds that carry no osgDB image plugins. */
+osg::ref_ptr<osg::Image> pfb2osgLoadRgbImage(const std::string& path);
+
 #endif

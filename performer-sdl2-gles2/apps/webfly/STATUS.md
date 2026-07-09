@@ -134,8 +134,18 @@ shim calls `pfuRedrawGUI()` each frame on GLES2 builds so the panel fully
 redraws.  Verified: full panel on native GLES2 (screenshot: every widget,
 sliders, checkboxes, 5x7-font labels) and on web; desktop unchanged.
 
-Remaining polish: `.rgb`/png osgDB plugins in the static OSG builds, vsync
-under ANGLE (SwapInterval ignored; runs unthrottled).
+## .rgb textures + vsync (2026-07-08, same day)
+
+- **SGI `.rgb` images load on the GLES2 flavors** — `pfb2osgLoadRgbImage`
+  (src/loaders/pfb2osg) implements the SGI image-library format (512-byte
+  BE header, channel-planar, verbatim + RLE, bpc=1) and both dispatch
+  points (`pfLoadTexFile`, pfb2osg's `loadPfi` non-pfi branch) fall back to
+  it when `osgDB::readImageFile` has no plugin.  Zero texture-load warnings
+  on native GLES2 now (was: truck*, perfbann white).  Desktop still prefers
+  the osgDB plugin — identical behavior.
+- **ANGLE vsync**: `SDL_GL_SetSwapInterval(1)` reports success and the
+  native build runs ~65 fps with the GUI (failure now logged as
+  "vsync unavailable" if it ever regresses).
 
 ## Build & run
 
