@@ -50,6 +50,46 @@ The headline demo — **perfly riding the Esprit through Performer Town** — ru
 
 ## Building
 
+### OpenSceneGraph (first, once)
+
+The GLES2 and web builds link a static OpenSceneGraph 3.6.5 built from source with the GLES2 profile (no fixed-function pipeline). Clone it once into `external/` (local-only, gitignored); the same clone serves both builds below. The desktop-GL native build uses the system OSG instead and can skip this step.
+
+```
+git clone --depth 1 --branch OpenSceneGraph-3.6.5 \
+    https://github.com/openscenegraph/OpenSceneGraph.git external/OpenSceneGraph
+```
+
+<a name="osg-em"></a>**For the web** (Emscripten, static libs, windowing system `None`):
+
+```
+emcmake cmake -S external/OpenSceneGraph -B external/OpenSceneGraph/build-em -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 \
+    -DOPENGL_PROFILE=GLES2 -DDYNAMIC_OPENSCENEGRAPH=OFF \
+    -DOSG_WINDOWING_SYSTEM=None -DBUILD_OSG_APPLICATIONS=OFF \
+    -DOSG_GL1_AVAILABLE=OFF -DOSG_GL2_AVAILABLE=OFF -DOSG_GLES2_AVAILABLE=ON \
+    -DOSG_GL_DISPLAYLISTS_AVAILABLE=OFF -DOSG_GL_MATRICES_AVAILABLE=OFF \
+    -DOSG_GL_VERTEX_FUNCS_AVAILABLE=OFF -DOSG_GL_FIXED_FUNCTION_AVAILABLE=OFF \
+    -DEGL_LIBRARY=EGL -DOPENGL_egl_LIBRARY=EGL
+cmake --build external/OpenSceneGraph/build-em --target osg osgDB osgUtil osgGA osgViewer osgText
+```
+
+<a name="osg-gles2"></a>**For native GLES2** (ANGLE on macOS), pointing OSG's GL header at ANGLE's:
+
+```
+cmake -S external/OpenSceneGraph -B external/OpenSceneGraph/build-gles2 \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 \
+    -DOPENGL_PROFILE=GLES2 -DDYNAMIC_OPENSCENEGRAPH=OFF -DDYNAMIC_OPENTHREADS=OFF \
+    -DOSG_WINDOWING_SYSTEM=None \
+    -DOSG_GL1_AVAILABLE=OFF -DOSG_GL2_AVAILABLE=OFF -DOSG_GLES2_AVAILABLE=ON \
+    -DOSG_GL_DISPLAYLISTS_AVAILABLE=OFF -DOSG_GL_MATRICES_AVAILABLE=OFF \
+    -DOSG_GL_VERTEX_FUNCS_AVAILABLE=OFF -DOSG_GL_FIXED_FUNCTION_AVAILABLE=OFF \
+    -DOPENGL_HEADER1="#include <GLES2/gl2.h>" -DOPENGL_HEADER2="" \
+    -DCMAKE_C_FLAGS="-I$HOME/Github/opengl-for-mac/include" \
+    -DCMAKE_CXX_FLAGS="-I$HOME/Github/opengl-for-mac/include"
+cmake --build external/OpenSceneGraph/build-gles2 \
+    --target osg osgDB osgUtil osgGA osgViewer osgText
+```
+
 ### Native (desktop GL)
 
 Needs CMake, SDL2 and OpenSceneGraph — e.g. `brew install cmake ninja sdl2 open-scene-graph`:
@@ -71,24 +111,7 @@ cmake -B build -G Ninja && cmake --build build
 
 The same shim on a real GLES2 backend, so the native build exercises the exact render path the web build uses. On macOS this runs GLES2 on Metal via [ANGLE](https://github.com/google/angle) — the prebuilt dylibs from [`opengl-for-mac`](https://github.com/sgi-demos/opengl-for-mac) are the easy route (`PF_ANGLE` defaults to `~/Github/opengl-for-mac`).
 
-Build OSG for GLES2 once (shares the source tree with the web OSG; see [OSG for GLES2](#osg-for-gles2)), pointing its GL header at ANGLE:
-
-```
-cmake -S external/OpenSceneGraph -B external/OpenSceneGraph/build-gles2 \
-    -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 \
-    -DOPENGL_PROFILE=GLES2 -DDYNAMIC_OPENSCENEGRAPH=OFF -DDYNAMIC_OPENTHREADS=OFF \
-    -DOSG_WINDOWING_SYSTEM=None \
-    -DOSG_GL1_AVAILABLE=OFF -DOSG_GL2_AVAILABLE=OFF -DOSG_GLES2_AVAILABLE=ON \
-    -DOSG_GL_DISPLAYLISTS_AVAILABLE=OFF -DOSG_GL_MATRICES_AVAILABLE=OFF \
-    -DOSG_GL_VERTEX_FUNCS_AVAILABLE=OFF -DOSG_GL_FIXED_FUNCTION_AVAILABLE=OFF \
-    -DOPENGL_HEADER1="#include <GLES2/gl2.h>" -DOPENGL_HEADER2="" \
-    -DCMAKE_C_FLAGS="-I$HOME/Github/opengl-for-mac/include" \
-    -DCMAKE_CXX_FLAGS="-I$HOME/Github/opengl-for-mac/include"
-cmake --build external/OpenSceneGraph/build-gles2 \
-    --target osg osgDB osgUtil osgGA osgViewer osgText
-```
-
-Then the perfly app against it:
+Build perfly against the [OpenSceneGraph GLES2 build](#osg-gles2) from the first step:
 
 ```
 cmake -B build-gles2 -DPF_GLES2_OSG=$PWD/external/OpenSceneGraph
@@ -105,23 +128,7 @@ DYLD_FALLBACK_LIBRARY_PATH=$HOME/Github/opengl-for-mac/lib \
 
 **webfly** is SGI's perfly compiled to wasm — the town tether ride, GUI panel, stats, and all — with the town database bundled into the wasm virtual filesystem. townview (standalone orbit viewer) and the hello-triangle build for the web too.
 
-<a name="osg-for-gles2"></a>Build OSG from source for Emscripten once (the same clone serves the native-GLES2 build above):
-
-```
-git clone --depth 1 --branch OpenSceneGraph-3.6.5 \
-    https://github.com/openscenegraph/OpenSceneGraph.git external/OpenSceneGraph
-emcmake cmake -S external/OpenSceneGraph -B external/OpenSceneGraph/build-em -G Ninja \
-    -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=14 \
-    -DOPENGL_PROFILE=GLES2 -DDYNAMIC_OPENSCENEGRAPH=OFF \
-    -DOSG_WINDOWING_SYSTEM=None -DBUILD_OSG_APPLICATIONS=OFF \
-    -DOSG_GL1_AVAILABLE=OFF -DOSG_GL2_AVAILABLE=OFF -DOSG_GLES2_AVAILABLE=ON \
-    -DOSG_GL_DISPLAYLISTS_AVAILABLE=OFF -DOSG_GL_MATRICES_AVAILABLE=OFF \
-    -DOSG_GL_VERTEX_FUNCS_AVAILABLE=OFF -DOSG_GL_FIXED_FUNCTION_AVAILABLE=OFF \
-    -DEGL_LIBRARY=EGL -DOPENGL_egl_LIBRARY=EGL
-cmake --build external/OpenSceneGraph/build-em --target osg osgDB osgUtil osgGA osgViewer osgText
-```
-
-Then the web apps (town data is bundled into the wasm FS at link time):
+With [emsdk](https://emscripten.org/docs/getting_started/downloads.html) on the PATH, build the web apps against the [OpenSceneGraph Emscripten build](#osg-em) from the first step (town data is bundled into the wasm FS at link time):
 
 ```
 emcmake cmake -B build-web -G Ninja -DPF_EM_OSG=$PWD/external/OpenSceneGraph
@@ -137,6 +144,14 @@ python3 -m http.server 8080 --directory build-web/apps/townview
 webfly loads `data/town-tether.perfly` by default (baked into its shell). Drag to look, scroll to zoom; the GUI panel on the left is fully live (menus, sliders, Reset All, GUI Off).
 
 > Note: a change to bundled data (`data/…`) or the shell HTML doesn't relink on its own — remove the target's `.data`/`.html` (or touch a source file) to force a repackage.
+
+#### Publishing
+
+The browse page at [sgi-demos.github.io/browse](https://sgi-demos.github.io/browse/) runs webfly from this repo's GitHub Pages site, at `web/apps/webfly/web/`. That directory is the committed copy of the build output (the shell renamed to `index.html` so the directory URL works):
+
+```
+cp build-web/apps/webfly/webfly.{js,wasm,data} apps/webfly/web/ && cp build-web/apps/webfly/webfly.html apps/webfly/web/index.html
+```
 
 ## Roadmap
 
