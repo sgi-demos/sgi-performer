@@ -4,16 +4,16 @@
 ![Performer Town](performer-town.jpg)
 
 ## SGI Performer
-_SGI Performer binaries and source archive_
+_The open parts of OpenGL Performer, and a port that runs SGI's Performer demos on OpenSceneGraph, natively and in the browser_
 
-As far as I can tell, the only source released for Performer was for the demos and utility libraries.  SGI ported Performer to Windows and Linux and called it "OpenGL Performer".
+SGI never released the Performer core library (libpf, libpr) as source. It did release the headers, the sample programs (perfly and the rest), the utility libraries, the database loaders, and the Performer Town demo database, both with the product and through its open-source project at oss.sgi.com. This repository holds those open parts and a port built on them:
 
-Currently, this archive contains two versions:
+- [web/](web/README.md): the port. SGI's `perfly` and sample programs compiled unmodified against the Performer API, with the core library reimplemented on the open-source [OpenSceneGraph](https://github.com/openscenegraph/OpenSceneGraph) by the pfosg shim, on SDL2 and OpenGL ES 2 for native and Emscripten builds. [Performer Town in the browser](https://sgi-demos.github.io/sgi-performer/web/apps/webfly/web/).
+- [web/vendor/Performer/](web/vendor/Performer/README.md): the headers, samples, utility libraries, loaders, and tools from the OpenGL Performer 3.0 for Windows release (2002-12-10), verbatim.
+- [web/data/town/](web/data/town/README.md): the Performer Town database, textures, paths, and vehicles from the same release.
+- [oss.sgi.com/](oss.sgi.com/): SGI's open-source Performer tree, from an [archive.org mirror](https://web.archive.org/web/20171010104701/http://oss.sgi.com/cgi-bin/cvsweb.cgi/performer/) of the oss.sgi.com CVS.
 
-1. The open components of OpenGL Performer 3.0 for Windows (2002-12-10 release): headers, sample programs, utility libraries, database loaders, tools, and the Performer Town sample data, under [web/vendor/Performer](web/vendor/Performer/README.md) and [web/data/town](web/data/town/README.md).  These carry SGI's sample-code license.  The Performer core library (libpf, libpr) is reimplemented on the open-source [OpenSceneGraph](https://github.com/openscenegraph/OpenSceneGraph) library by the pfosg shim in [web/](web/README.md), so SGI's demos compile unmodified against the Performer API; see [sgi-demos/docs/COPYRIGHT.md](https://github.com/sgi-demos/sgi-demos/blob/main/docs/COPYRIGHT.md).
-
-2. SGI's oss.sgi.com Performer source.  This can also be found at [archive.org](https://web.archive.org/web/20171010104701/http://oss.sgi.com/cgi-bin/cvsweb.cgi/performer/), so consider this archive a more friendly Github mirror of this old CVSweb mirror.
-
+Not included: the OpenGL Performer 3.0 product itself (the core libraries, executables, installer, and license manager). The port does not use it; everything it needs is in the open parts above.
 
 ## License
 
